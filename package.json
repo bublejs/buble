@@ -1,0 +1,45 @@
+{
+  "name": "buble",
+  "version": "1.0.0",
+  "description": "Common sense JavaScript transpilation",
+  "main": "dist/buble.umd.js",
+  "scripts": {
+    "build": "npm run build:umd && npm run build:es",
+    "build:umd": "rollup -c -f umd -o dist/buble.umd.js",
+    "build:es": "rollup -c -f es6 -o dist/buble.es.js",
+    "test": "mocha test/test.js",
+    "pretest": "npm run build:umd",
+    "prepublish": "npm test && npm run build:es"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/Rich-Harris/buble.git"
+  },
+  "keywords": [
+    "javascript",
+    "transpilation",
+    "compilation",
+    "esnext",
+    "es2015",
+    "es2017",
+    "es6",
+    "es7"
+  ],
+  "author": "Rich Harris",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/Rich-Harris/buble/issues"
+  },
+  "homepage": "https://gitlab.com/Rich-Harris/buble#README",
+  "devDependencies": {
+    "eslint": "^2.6.0",
+    "mocha": "^2.4.5",
+    "rollup": "^0.25.8",
+    "source-map-support": "^0.4.0"
+  },
+  "dependencies": {
+    "acorn": "^3.0.4",
+    "estree-walker": "^0.2.0",
+    "magic-string": "^0.10.2"
+  }
+}

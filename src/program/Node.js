@@ -1,0 +1,62 @@
+import wrap from './wrap.js';
+
+export default class Node {
+	constructor ( raw, parent ) {
+		Object.defineProperties( this, {
+			parent: { value: parent },
+			program: { value: parent.program || parent },
+			depth: { value: parent.depth + 1 }
+		});
+
+		this.keys = Object.keys( raw );
+
+		this.keys.forEach( key => {
+			this[ key ] = wrap( raw[ key ], this );
+		});
+	}
+
+	findContextBoundary () {
+		return this.parent.findContextBoundary();
+	}
+
+	findNearest ( selector ) {
+		if ( selector.test( this.type ) ) return this;
+		return this.parent.findNearest( selector );
+	}
+
+	findScope () {
+		return this.parent.findScope();
+	}
+
+	initialise () {
+		//console.log( 'init', this.type )
+
+		this.keys.forEach( key => {
+			const value = this[ key ];
+
+			if ( Array.isArray( value ) ) {
+				value.forEach( node => node.initialise() );
+			} else if ( value && typeof value === 'object' ) {
+				value.initialise();
+			}
+		});
+	}
+
+	toString () {
+		return this.program.magicString.slice( this.start, this.end );
+	}
+
+	transpile () {
+		//console.log( 'transpile', this.type )
+
+		this.keys.forEach( key => {
+			const value = this[ key ];
+
+			if ( Array.isArray( value ) ) {
+				value.forEach( node => node.transpile() );
+			} else if ( value && typeof value === 'object' ) {
+				value.transpile();
+			}
+		});
+	}
+}
