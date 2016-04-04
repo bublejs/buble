@@ -17,6 +17,8 @@ export default class BlockStatement extends Node {
 	findContextBoundary () {
 		if ( this.type === 'Program' ) return this;
 		if ( /^Function/.test( this.parent.type ) ) return this;
+
+		return this.parent.findContextBoundary();
 	}
 
 	findScope () {
