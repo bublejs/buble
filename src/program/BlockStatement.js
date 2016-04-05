@@ -4,7 +4,12 @@ import Scope from './Scope.js';
 
 export default class BlockStatement extends Node {
 	initialise () {
-		this.scope = new Scope();
+		this.isFunctionBlock = this.parent.type === 'Root' || /Function/.test( this.parent.type );
+		this.scope = new Scope({
+			block: !this.isFunctionBlock,
+			parent: this.parent.findScope( false ),
+			params: null // TODO function params
+		});
 
 		const match = /\n(\s*)\S/.exec( this.program.magicString.slice( this.start ) );
 		if ( match ) {
@@ -14,14 +19,15 @@ export default class BlockStatement extends Node {
 		this.body.forEach( node => node.initialise() );
 	}
 
-	findContextBoundary () {
+	findLexicalBoundary () {
 		if ( this.type === 'Program' ) return this;
 		if ( /^Function/.test( this.parent.type ) ) return this;
 
-		return this.parent.findContextBoundary();
+		return this.parent.findLexicalBoundary();
 	}
 
-	findScope () {
+	findScope ( functionScope ) {
+		if ( functionScope && !this.isFunctionBlock ) return this.parent.findScope( functionScope );
 		return this.scope;
 	}
 
@@ -55,6 +61,20 @@ export default class BlockStatement extends Node {
 		}
 
 		if ( insert ) this.program.magicString.insert( this.body[0] ? this.body[0].start : this.start + 1, insert );
+
+		if ( this.isFunctionBlock ) {
+			Object.keys( this.scope.allDeclarations ).forEach( name => {
+				const declarations = this.scope.allDeclarations[ name ];
+				for ( let i = 1; i < declarations.length; i += 1 ) {
+					const declaration = declarations[i];
+					const alias = this.scope.createIdentifier( name );
+
+					declaration.instances.forEach( identifier => {
+						this.program.magicString.overwrite( identifier.start, identifier.end, alias );
+					});
+				}
+			});
+		}
 
 		super.transpile();
 	}

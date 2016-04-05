@@ -142,4 +142,146 @@ describe( 'buble', () => {
 			}, /Tagged template expressions are not supported/ );
 		});
 	});
+
+	describe.only( 'block scoping', () => {
+		it( 'transpiles let', () => {
+			var source = `let x = 'y';`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `var x = 'y';` );
+		});
+
+		it( 'deconflicts blocks in top-level scope', () => {
+			var source = `
+				if ( a ) {
+					let x = 1;
+					console.log( x );
+				} else if ( b ) {
+					let x = 2;
+					console.log( x );
+				} else {
+					let x = 3;
+					console.log( x );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				if ( a ) {
+					var x = 1;
+					console.log( x );
+				} else if ( b ) {
+					var x$1 = 2;
+					console.log( x$1 );
+				} else {
+					var x$2 = 3;
+					console.log( x$2 );
+				}` );
+		});
+
+		it( 'deconflicts blocks in same function scope', () => {
+			var source = `
+				var x = 'y';
+				function foo () {
+					if ( a ) {
+						let x = 1;
+						console.log( x );
+					} else if ( b ) {
+						let x = 2;
+						console.log( x );
+					} else {
+						let x = 3;
+						console.log( x );
+					}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var x = 'y';
+				function foo () {
+					if ( a ) {
+						var x = 1;
+						console.log( x );
+					} else if ( b ) {
+						var x$1 = 2;
+						console.log( x$1 );
+					} else {
+						var x$2 = 3;
+						console.log( x$2 );
+					}
+				}` );
+		});
+
+		it( 'transpiles block scoping inside loops with function bodies', () => {
+			var source = `
+				function log ( square ) {
+					console.log( square );
+				}
+
+				for ( let i = 0; i < 10; i += 1 ) {
+					const square = i * i;
+					setTimeout( function () {
+						log( square );
+					}, i * 100 );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				function log(square) {
+					console.log(square);
+				}
+
+				var forLoop = function ( i ) {
+					var square = i * i;
+					setTimeout( function () {
+						log( square );
+					}, i * 100 );
+				};
+
+				for ( var i = 0; i < 10; i += 1 ) {
+					forLoop( i );
+				}` );
+		});
+
+		it( 'transpiles block scoping inside loops without function bodies', () => {
+			var source = `
+				for ( let i = 0; i < 10; i += 1 ) {
+					const square = i * i;
+					console.log( square );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				for ( var i = 0; i < 10; i += 1 ) {
+					var square = i * i;
+					console.log( square );
+				}` );
+		});
+
+		it( 'disallows duplicate declarations', () => {
+			assert.throws( () => {
+				buble.transform( `
+					let x = 1;
+					let x = 2;
+				` );
+			}, /x is already declared/ );
+		});
+
+		it( 'disallows reassignment to constants', () => {
+			assert.throws( () => {
+				buble.transform( `
+					const x = 1;
+					x = 2;
+				` );
+			}, /x is read-only/ );
+		});
+
+		it( 'disallows updates to constants', () => {
+			assert.throws( () => {
+				buble.transform( `
+					const x = 1;
+					x++;
+				` );
+			}, /x is read-only/ );
+		});
+	});
 });

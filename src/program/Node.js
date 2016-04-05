@@ -15,8 +15,8 @@ export default class Node {
 		});
 	}
 
-	findContextBoundary () {
-		return this.parent.findContextBoundary();
+	findLexicalBoundary () {
+		return this.parent.findLexicalBoundary();
 	}
 
 	findNearest ( selector ) {
@@ -24,8 +24,8 @@ export default class Node {
 		return this.parent.findNearest( selector );
 	}
 
-	findScope () {
-		return this.parent.findScope();
+	findScope ( functionScope ) {
+		return this.parent.findScope( functionScope );
 	}
 
 	initialise () {

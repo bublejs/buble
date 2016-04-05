@@ -2,11 +2,11 @@ import Node from '../Node.js';
 
 export default class ThisExpression extends Node {
 	initialise () {
-		const contextBoundary = this.findContextBoundary();
+		const lexicalBoundary = this.findLexicalBoundary();
 		const arrowFunction = this.findNearest( /ArrowFunctionExpression/ );
 
-		if ( arrowFunction && arrowFunction.depth > contextBoundary.depth ) {
-			const thisAlias = contextBoundary.getThisAlias();
+		if ( arrowFunction && arrowFunction.depth > lexicalBoundary.depth ) {
+			const thisAlias = lexicalBoundary.getThisAlias();
 			if ( thisAlias ) this.alias = thisAlias;
 		}
 	}
