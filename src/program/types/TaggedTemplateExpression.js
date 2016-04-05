@@ -3,6 +3,6 @@ import unsupported from '../../utils/unsupported.js';
 
 export default class TaggedTemplateExpression extends Node {
 	initialise () {
-		unsupported( this, 'Tagged template expressions' );
+		unsupported( this, 'Tagged template expressions are not supported' );
 	}
 }

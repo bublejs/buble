@@ -300,5 +300,29 @@ describe( 'buble', () => {
 					this.answer = answer;
 				};` );
 		});
+
+		// TODO more tests
+	});
+
+	describe.only( 'destructuring', () => {
+		it( 'destructures an identifier', () => {
+			var source = `var { width, height } = point;`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `var width = point.width, height = point.height;` );
+		});
+
+		it( 'destructures a non-identifier', () => {
+			var source = `var { width, height } = getPoint();`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `var ref = getPoint(), width = ref.width, height = ref.height;` );
+		});
+
+		it( 'disallows compound destructuring', () => {
+			assert.throws( () => {
+				buble.transform( `var { a: { b: c } } = d;` );
+			}, /Compound destructuring is not supported/ );
+		});
 	});
 });

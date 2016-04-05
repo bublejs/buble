@@ -5,10 +5,9 @@ export default class Node {
 		Object.defineProperties( this, {
 			parent: { value: parent },
 			program: { value: parent.program || parent },
-			depth: { value: parent.depth + 1 }
+			depth: { value: parent.depth + 1 },
+			keys: { value: Object.keys( raw ) }
 		});
-
-		this.keys = Object.keys( raw );
 
 		this.keys.forEach( key => {
 			this[ key ] = wrap( raw[ key ], this );
