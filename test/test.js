@@ -143,7 +143,7 @@ describe( 'buble', () => {
 		});
 	});
 
-	describe.only( 'block scoping', () => {
+	describe( 'block scoping', () => {
 		it( 'transpiles let', () => {
 			var source = `let x = 'y';`;
 			var result = buble.transform( source ).code;
@@ -282,6 +282,23 @@ describe( 'buble', () => {
 					x++;
 				` );
 			}, /x is read-only/ );
+		});
+	});
+
+	describe( 'classes', () => {
+		it( 'transpiles a class declaration', () => {
+			var source = `
+				class Foo {
+					constructor ( answer ) {
+						this.answer = answer;
+					}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var Foo = function Foo ( answer ) {
+					this.answer = answer;
+				};` );
 		});
 	});
 });

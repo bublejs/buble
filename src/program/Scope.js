@@ -1,7 +1,9 @@
 //import Declaration from '../Declaration.js';
 import extractNames from './extractNames.js';
 
-const keyword = /\b(?:do|if|in|for|let|new|try|var|case|else|enum|eval|null|this|true|void|with|await|break|catch|class|const|false|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)\b/;
+let reserved = Object.create( null );
+'do if in for let new try var case else enum eval null this true void with await break catch class const false super throw while yield delete export import public return static switch typeof default extends finally package private continue debugger function arguments interface protected implements instanceof'.split( ' ' )
+	.forEach( word => reserved[ word ] = true );
 
 export default function Scope ( options ) {
 	options = options || {};
@@ -49,7 +51,7 @@ Scope.prototype = {
 		let name = base;
 		let counter = 1;
 
-		while ( this.allDeclarations[ name ] || this.aliases[ name ] || keyword.test( name ) ) {
+		while ( this.allDeclarations[ name ] || this.aliases[ name ] || name in reserved ) {
 			name = `${base}$${counter++}`;
 		}
 
