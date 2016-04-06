@@ -40,6 +40,6 @@
   "dependencies": {
     "acorn": "^3.0.4",
     "estree-walker": "^0.2.0",
-    "magic-string": "^0.10.2"
+    "magic-string": "^0.11.0-alpha"
   }
 }

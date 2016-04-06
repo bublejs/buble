@@ -24,14 +24,15 @@ export default class VariableDeclarator extends Node {
 			const name = simple ? this.init.name : this.findScope( true ).createIdentifier( 'ref' );
 
 			if ( !simple ) {
-				this.program.magicString.insert( this.start, `${name} = ${this.init.name}, ` );
+				this.program.magicString.insert( this.start, `${name} = ` );
+				this.program.magicString.move( this.init.start, this.init.end, this.start );
+				this.program.magicString.insert( this.start, `, ` );
 			}
 
 			if ( this.id.type === 'ObjectPattern' ) {
 				const props = this.id.properties;
 
 				this.program.magicString.remove( this.start, props[0].start );
-				this.program.magicString.remove( props[ props.length - 1 ].end, this.end );
 
 				props.forEach( property => {
 					this.program.magicString.overwrite( property.start, property.end, `${property.value.name} = ${name}.${property.key.name}` );

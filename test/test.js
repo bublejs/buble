@@ -304,7 +304,7 @@ describe( 'buble', () => {
 		// TODO more tests
 	});
 
-	describe.only( 'destructuring', () => {
+	describe( 'destructuring', () => {
 		it( 'destructures an identifier', () => {
 			var source = `var { width, height } = point;`;
 			var result = buble.transform( source ).code;
