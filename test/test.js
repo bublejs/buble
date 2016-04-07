@@ -211,7 +211,7 @@ describe( 'buble', () => {
 				}` );
 		});
 
-		it( 'transpiles block scoping inside loops with function bodies', () => {
+		it.skip( 'transpiles block scoping inside loops with function bodies', () => {
 			var source = `
 				function log ( square ) {
 					console.log( square );
