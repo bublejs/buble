@@ -1,3 +1,4 @@
+import { walk } from 'estree-walker';
 import wrap from './wrap.js';
 
 export default class Node {
@@ -12,6 +13,16 @@ export default class Node {
 		this.keys.forEach( key => {
 			this[ key ] = wrap( raw[ key ], this );
 		});
+	}
+
+	findChildren ( selector ) {
+		let children = [];
+		walk( this, {
+			enter ( node ) {
+				if ( node.type === selector ) children.push( node );
+			}
+		});
+		return children;
 	}
 
 	findLexicalBoundary () {

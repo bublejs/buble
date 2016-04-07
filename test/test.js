@@ -301,6 +301,94 @@ describe( 'buble', () => {
 				};` );
 		});
 
+		it( 'transpiles a class declaration with a non-constructor method', () => {
+			var source = `
+				class Foo {
+					constructor ( answer ) {
+						this.answer = answer;
+					}
+
+					bar ( str ) {
+						return str + 'bar';
+					}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var Foo = function Foo ( answer ) {
+					this.answer = answer;
+				};
+
+				Foo.prototype.bar = function bar ( str ) {
+					return str + 'bar';
+				};` );
+		});
+
+		it( 'transpiles a class declaration without a constructor function', () => {
+			var source = `
+				class Foo {
+					bar ( str ) {
+						return str + 'bar';
+					}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var Foo = function Foo () {};
+
+				Foo.prototype.bar = function bar ( str ) {
+					return str + 'bar';
+				};` );
+		});
+
+		it( 'transpiles a class declaration with a static method', () => {
+			var source = `
+				class Foo {
+					bar ( str ) {
+						return str + 'bar';
+					}
+
+					static baz ( str ) {
+						return str + 'baz';
+					}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var Foo = function Foo () {};
+
+				Foo.prototype.bar = function bar ( str ) {
+					return str + 'bar';
+				};
+
+				Foo.baz = function baz ( str ) {
+					return str + 'baz';
+				};` );
+		});
+
+		it( 'transpiles a subclass', () => {
+			var source = `
+				class Foo extends Bar {
+					baz ( str ) {
+						return str + 'baz';
+					}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var Foo = (function (Bar) {
+					function Foo () {
+						Bar.call(this);
+					}
+
+					Foo.prototype.baz = function baz ( str ) {
+						return str + 'baz';
+					};
+
+					return Foo;
+				}(Bar));` );
+		});
+
 		// TODO more tests
 	});
 
