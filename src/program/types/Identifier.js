@@ -4,7 +4,7 @@ export default class Identifier extends Node {
 	initialise () {
 		if ( this.name === 'arguments' && !this.findScope().contains( this.name ) ) {
 			const lexicalBoundary = this.findLexicalBoundary();
-			const arrowFunction = this.findNearest( /ArrowFunctionExpression/ );
+			const arrowFunction = this.findNearest( 'ArrowFunctionExpression' );
 
 			if ( arrowFunction && arrowFunction.depth > lexicalBoundary.depth ) {
 				const argumentsAlias = lexicalBoundary.getArgumentsAlias();

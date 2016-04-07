@@ -15,11 +15,11 @@ export default class Node {
 		});
 	}
 
-	findChildren ( selector ) {
+	findChildren ( type ) {
 		let children = [];
 		walk( this, {
 			enter ( node ) {
-				if ( node.type === selector ) children.push( node );
+				if ( node.type === type ) children.push( node );
 			}
 		});
 		return children;
@@ -29,9 +29,9 @@ export default class Node {
 		return this.parent.findLexicalBoundary();
 	}
 
-	findNearest ( selector ) {
-		if ( selector.test( this.type ) ) return this;
-		return this.parent.findNearest( selector );
+	findNearest ( type ) {
+		if ( this.type === type ) return this;
+		return this.parent.findNearest( type );
 	}
 
 	findScope ( functionScope ) {

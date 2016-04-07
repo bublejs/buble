@@ -3,6 +3,7 @@ import ArrowFunctionExpression from './ArrowFunctionExpression.js';
 import ClassDeclaration from './ClassDeclaration.js';
 import Identifier from './Identifier.js';
 import Property from './Property.js';
+import Super from './Super.js';
 import TaggedTemplateExpression from './TaggedTemplateExpression.js';
 import TemplateLiteral from './TemplateLiteral.js';
 import ThisExpression from './ThisExpression.js';
@@ -16,6 +17,7 @@ export default {
 	ClassDeclaration,
 	Identifier,
 	Property,
+	Super,
 	TaggedTemplateExpression,
 	TemplateLiteral,
 	ThisExpression,

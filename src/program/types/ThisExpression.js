@@ -3,7 +3,7 @@ import Node from '../Node.js';
 export default class ThisExpression extends Node {
 	initialise () {
 		const lexicalBoundary = this.findLexicalBoundary();
-		const arrowFunction = this.findNearest( /ArrowFunctionExpression/ );
+		const arrowFunction = this.findNearest( 'ArrowFunctionExpression' );
 
 		if ( arrowFunction && arrowFunction.depth > lexicalBoundary.depth ) {
 			const thisAlias = lexicalBoundary.getThisAlias();

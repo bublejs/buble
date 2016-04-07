@@ -389,7 +389,37 @@ describe( 'buble', () => {
 				}(Bar));` );
 		});
 
-		// TODO more tests
+		it.only( 'transpiles a subclass with super calls', function () {
+			var source = `
+				class Foo extends Bar {
+					constructor ( x ) {
+						super( x );
+						this.y = 'z';
+					}
+
+					baz ( a, b, c ) {
+						super.baz( a, b, c );
+					}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var Foo = (function (Bar) {
+					function Foo ( x ) {
+						Bar.call( this, x );
+						this.y = 'z';
+					}
+
+					Foo.prototype.baz = function baz ( a, b, c ) {
+						Bar.prototype.baz.call( this, a, b, c );
+					};
+
+					return Foo;
+				}(Bar));` );
+		});
+
+		// TODO more tests. e.g. getters and setters. computed method names
+		// 'super.*' is not allowed before super()
 	});
 
 	describe( 'destructuring', () => {
