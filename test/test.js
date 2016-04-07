@@ -285,7 +285,7 @@ describe( 'buble', () => {
 		});
 	});
 
-	describe.only( 'classes', () => {
+	describe( 'classes', () => {
 		it( 'transpiles a class declaration', () => {
 			var source = `
 				class Foo {
