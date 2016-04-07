@@ -1,5 +1,6 @@
 import AssignmentExpression from './AssignmentExpression.js';
 import ArrowFunctionExpression from './ArrowFunctionExpression.js';
+import ClassDeclaration from './ClassDeclaration.js';
 import Identifier from './Identifier.js';
 import Property from './Property.js';
 import TaggedTemplateExpression from './TaggedTemplateExpression.js';
@@ -12,6 +13,7 @@ import VariableDeclarator from './VariableDeclarator.js';
 export default {
 	AssignmentExpression,
 	ArrowFunctionExpression,
+	ClassDeclaration,
 	Identifier,
 	Property,
 	TaggedTemplateExpression,
