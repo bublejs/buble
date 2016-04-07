@@ -389,7 +389,7 @@ describe( 'buble', () => {
 				}(Bar));` );
 		});
 
-		it.only( 'transpiles a subclass with super calls', function () {
+		it( 'transpiles a subclass with super calls', function () {
 			var source = `
 				class Foo extends Bar {
 					constructor ( x ) {
