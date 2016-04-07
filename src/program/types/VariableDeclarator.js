@@ -27,6 +27,8 @@ export default class VariableDeclarator extends Node {
 				this.program.magicString.insert( this.start, `${name} = ` );
 				this.program.magicString.move( this.init.start, this.init.end, this.start );
 				this.program.magicString.insert( this.start, `, ` );
+			} else {
+				this.program.magicString.remove( this.init.start, this.init.end );
 			}
 
 			if ( this.id.type === 'ObjectPattern' ) {
@@ -37,6 +39,8 @@ export default class VariableDeclarator extends Node {
 				props.forEach( property => {
 					this.program.magicString.overwrite( property.start, property.end, `${property.value.name} = ${name}.${property.key.name}` );
 				});
+
+				this.program.magicString.remove( props[ props.length - 1 ].end, this.init.start );
 			} else if ( this.id.type === 'ArrayPattern' ) {
 
 			}
