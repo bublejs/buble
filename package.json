@@ -1,10 +1,11 @@
 {
   "name": "buble",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Common sense JavaScript transpilation",
   "main": "dist/buble.umd.js",
   "jsnext:main": "dist/buble.es.js",
   "files": [
+    "bin",
     "src",
     "dist",
     "README.md"

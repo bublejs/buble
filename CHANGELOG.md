@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.3.1
+
+* Add `bin` to package
+
 ## 0.3.0
 
 * (Very) basic CLI
