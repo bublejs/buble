@@ -1,7 +1,7 @@
 {
   "name": "buble",
   "version": "0.4.0",
-  "description": "Common sense JavaScript transpilation",
+  "description": "The blazing fast, batteries-included ES2015 compiler",
   "main": "dist/buble.umd.js",
   "jsnext:main": "dist/buble.es.js",
   "files": [
