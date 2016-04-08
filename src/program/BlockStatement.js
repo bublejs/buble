@@ -175,7 +175,8 @@ export default class BlockStatement extends Node {
 				if ( penultimateParam ) {
 					magicString.remove( penultimateParam ? penultimateParam.end : lastParam.start, lastParam.end );
 				} else {
-					magicString.overwrite( this.parent.id.end, this.parent.body.start, ' () ' );
+					const start = this.parent.id ? this.parent.id.end : /^Function/.test( this.parent.type ) ? this.parent.start + 9 : this.parent.start;
+					magicString.overwrite( start, this.parent.body.start, ' () ' );
 				}
 
 				if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
