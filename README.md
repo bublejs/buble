@@ -87,3 +87,5 @@ I love Babel: it's an amazing project that has changed how the world writes Java
 Bublé is an ES2015 compiler that I built to serve *my* needs and opinions – a no-frills, easy-to-use tool that handles the subset of ES2015 that I actually use (which excludes `for...of`, generators, and other things that don't transpile well). It doesn't attempt to boil the ocean. If you share my needs and opinions, you will prefer Bublé; if you don't, you should continue to use Babel, which is more complete, more mature, and better supported.
 
 ## License
+
+MIT
