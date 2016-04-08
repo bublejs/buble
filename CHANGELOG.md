@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.0
+
+* Self-hosting!
+
 ## 0.3.4
 
 * Class inheritance
