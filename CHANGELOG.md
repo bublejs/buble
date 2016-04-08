@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.1
+
+* Rest parameters
+
 ## 0.4.0
 
 * Self-hosting!
