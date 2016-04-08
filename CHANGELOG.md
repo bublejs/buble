@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.2.2
+
+* Initialise children of Property nodes
+* Prevent false positives with reference detection
+
 ## 0.2.1
 
 * Add missing files
