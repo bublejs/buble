@@ -284,6 +284,25 @@ describe( 'buble', () => {
 				` );
 			}, /x is read-only/ );
 		});
+
+		it( 'does not rewrite properties', () => {
+			var source = `
+				var foo = 'x';
+				if ( true ) {
+					let foo = 'y';
+					this.foo = 'z';
+					this[ foo ] = 'q';
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var foo = 'x';
+				if ( true ) {
+					var foo$1 = 'y';
+					this.foo = 'z';
+					this[ foo$1 ] = 'q';
+				}` );
+		});
 	});
 
 	describe( 'classes', () => {
