@@ -1,6 +1,6 @@
 {
   "name": "buble",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Common sense JavaScript transpilation",
   "main": "dist/buble.umd.js",
   "scripts": {
