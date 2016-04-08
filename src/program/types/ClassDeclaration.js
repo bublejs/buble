@@ -37,13 +37,13 @@ export default class ClassDeclaration extends Node {
 				magicString.move( this.constructor.value.start, this.constructor.value.end, this.body.start );
 				magicString.insert( this.body.start, ';' );
 			} else {
-				magicString.insert( this.body.start, `() {};\n\n${indentation}` );
+				magicString.insert( this.body.start, this.body.body.length ? `() {};\n\n${indentation}` : `() {};` );
 			}
 		}
 
 		let lastIndex = this.body.start;
 
-		magicString.remove( this.body.start, this.body.body[0].start );
+		if ( this.body.body.length ) magicString.remove( this.body.start, this.body.body[0].start );
 
 		this.body.body.forEach( method => {
 			lastIndex = method.end;

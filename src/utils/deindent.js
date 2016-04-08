@@ -6,7 +6,7 @@ export default function deindent ( node, magicString ) {
 	const start = node.start;
 	const end = node.end;
 
-	const indentStr = magicString.indentStr;
+	const indentStr = magicString.getIndentString();
 	const pattern = new RegExp( indentStr + '\\S', 'g' );
 
 	let isExcluded = {};

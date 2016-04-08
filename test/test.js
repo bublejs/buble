@@ -438,7 +438,7 @@ describe( 'buble', () => {
 				}(Bar));` );
 		});
 
-		it( 'handles export default class', function () {
+		it( 'transpiles export default class', function () {
 			var source = `
 				export default class Foo {
 					bar () {}
@@ -451,6 +451,13 @@ describe( 'buble', () => {
 				Foo.prototype.bar = function bar () {};
 
 				export default Foo;` );
+		});
+
+		it( 'transpiles empty class', function () {
+			var source = `class Foo {}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `var Foo = function Foo () {};` );
 		});
 
 		// TODO more tests. e.g. getters and setters. computed method names
