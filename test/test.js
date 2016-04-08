@@ -486,12 +486,16 @@ describe( 'buble', () => {
 		});
 	});
 
-	describe( 'default parameters', () => {
+	describe.only( 'default parameters', () => {
 		it( 'transpiles default parameters', () => {
 			var source = `
 				function foo ( a = 1, b = 2 ) {
 					console.log( a, b );
-				}`;
+				}
+
+				var bar = function ( a = 1, b = 2 ) {
+					console.log( a, b );
+				};`;
 			var result = buble.transform( source ).code;
 
 			assert.equal( result, `
@@ -500,7 +504,14 @@ describe( 'buble', () => {
 					if ( b === void 0 ) b = 2;
 
 					console.log( a, b );
-				}`);
+				}
+
+				var bar = function ( a, b ) {
+					if ( a === void 0 ) a = 1;
+					if ( b === void 0 ) b = 2;
+
+					console.log( a, b );
+				};` );
 		});
 	});
 

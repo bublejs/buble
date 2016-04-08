@@ -4,6 +4,10 @@ import Scope from './Scope.js';
 
 export default class BlockStatement extends Node {
 	initialise () {
+		this.thisAlias = null;
+		this.argumentsAlias = null;
+		this.defaultParameters = [];
+
 		this.isFunctionBlock = this.parent.type === 'Root' || /Function/.test( this.parent.type );
 		this.scope = new Scope({
 			block: !this.isFunctionBlock,
@@ -48,19 +52,40 @@ export default class BlockStatement extends Node {
 	}
 
 	transpile () {
-		let insert = '';
+		const magicString = this.program.magicString;
+		const start = this.body[0] ? this.body[0].start : this.start + 1;
+
+		let addedStuff = false;
 
 		if ( this.argumentsAlias ) {
 			const assignment = `var ${this.argumentsAlias} = arguments;`;
-			insert += this.indentation ? `${assignment}\n${this.indentation}` : ` ${assignment} `;
+			magicString.insert( start, assignment );
+			addedStuff = true;
 		}
 
 		if ( this.thisAlias ) {
+			if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
 			const assignment = `var ${this.thisAlias} = this;`;
-			insert += this.indentation ? `${assignment}\n${this.indentation}` : ` ${assignment} `;
+			magicString.insert( start, assignment );
+			addedStuff = true;
 		}
 
-		if ( insert ) this.program.magicString.insert( this.body[0] ? this.body[0].start : this.start + 1, insert );
+		if ( this.defaultParameters ) {
+			this.defaultParameters.forEach( param => {
+				if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
+
+				const lhs = `if ( ${param.left.name} === void 0 ) ${param.left.name}`;
+				magicString.insert( start, `${lhs}` );
+				magicString.move( param.left.end, param.right.end, start );
+				magicString.insert( start, `;` );
+
+				addedStuff = true;
+			});
+		}
+
+		if ( addedStuff ) {
+			magicString.insert( start, `\n\n${this.indentation}` );
+		}
 
 		if ( this.isFunctionBlock ) {
 			Object.keys( this.scope.allDeclarations ).forEach( name => {
