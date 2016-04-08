@@ -177,8 +177,9 @@ export default class BlockStatement extends Node {
 
 				const name = lastParam.argument.name;
 				const len = this.scope.createIdentifier( 'len' );
+				const count = params.length - 1;
 
-				magicString.insert( start, `var ${name} = [], ${len} = arguments.length - 3;\n${this.indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + 3 ];`)
+				magicString.insert( start, `var ${name} = [], ${len} = arguments.length - ${count};\n${this.indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];`)
 
 				addedStuff = true;
 			}
