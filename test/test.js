@@ -468,18 +468,19 @@ describe( 'buble', () => {
 			assert.equal( result, `var ref = getPoint(), x = ref[0], y = ref[1];` );
 		});
 
-		it( 'destructures a parameter with an array pattern', () => {
+		it( 'destructures a parameter with an object pattern', () => {
 			var source = `
-				function pythag ([ x, y ]) {
-					return Math.sqrt( x * x + y * y );
+				function pythag ( [ x, z = 1 ] ) {
+					return Math.sqrt( x * x + z * z );
 				}`
 			var result = buble.transform( source ).code;
 
 			assert.equal( result, `
 				function pythag ( ref ) {
-					var x = ref[0], y = ref[1];
+					var x = ref[0];
+					var ref_1 = ref[1], z = ref_1 === void 0 ? 1 : ref_1;
 
-					return Math.sqrt( x * x + y * y );
+					return Math.sqrt( x * x + z * z );
 				}` );
 		});
 

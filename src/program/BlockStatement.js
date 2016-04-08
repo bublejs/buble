@@ -125,6 +125,45 @@ export default class BlockStatement extends Node {
 
 				magicString.remove( lastIndex, param.end );
 			});
+
+			// array pattern. TODO dry this out
+			this.parent.params.filter( param => param.type === 'ArrayPattern' ).forEach( param => {
+				const ref = this.scope.createIdentifier( 'ref' );
+				magicString.insert( param.start, ref );
+
+				let lastIndex = param.start;
+
+				param.elements.forEach( ( element, i ) => {
+					magicString.remove( lastIndex, element.start );
+
+					if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
+
+					if ( element.type === 'Identifier' ) {
+						magicString.remove( element.start, element.end );
+						lastIndex = element.end;
+
+						magicString.insert( start, `var ${element.name} = ${ref}[${i}];` );
+					} else if ( element.type === 'AssignmentPattern' ) {
+						magicString.remove( element.start, element.right.start );
+						lastIndex = element.right.end;
+
+						const name = element.left.name;
+						magicString
+							.insert( start, `var ${ref}_${i} = ref[${i}], ${name} = ref_${i} === void 0 ? ` )
+							.move( element.right.start, element.right.end, start )
+							.insert( start, ` : ref_${i};` );
+					}
+
+					else {
+						throw new Error( `${element.type} not currently supported` ); // TODO...
+					}
+
+					addedStuff = true;
+					lastIndex = element.end;
+				});
+
+				magicString.remove( lastIndex, param.end );
+			});
 		}
 
 		if ( addedStuff ) {
