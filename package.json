@@ -1,8 +1,14 @@
 {
   "name": "buble",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Common sense JavaScript transpilation",
   "main": "dist/buble.umd.js",
+  "jsnext:main": "dist/buble.es.js",
+  "files": [
+    "src",
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "npm run build:umd && npm run build:es",
     "build:umd": "rollup -c -f umd -o dist/buble.umd.js",
