@@ -435,6 +435,21 @@ describe( 'buble', () => {
 			assert.equal( result, `var ref = getPoint(), x = ref.x, y = ref.y;` );
 		});
 
+		it( 'destructures a parameter with an object pattern', () => {
+			var source = `
+				function pythag ({ x, y }) {
+					return Math.sqrt( x * x + y * y );
+				}`
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				function pythag ( ref ) {
+					var x = ref.x, y = ref.y;
+
+					return Math.sqrt( x * x + y * y );
+				}` );
+		});
+
 		it( 'destructures an identifier with an array pattern', () => {
 			var source = `var [ x, y ] = point;`;
 			var result = buble.transform( source ).code;
@@ -449,10 +464,67 @@ describe( 'buble', () => {
 			assert.equal( result, `var ref = getPoint(), x = ref[0], y = ref[1];` );
 		});
 
+		it( 'destructures a parameter with an array pattern', () => {
+			var source = `
+				function pythag ([ x, y ]) {
+					return Math.sqrt( x * x + y * y );
+				}`
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				function pythag ( ref ) {
+					var x = ref[0], y = ref[1];
+
+					return Math.sqrt( x * x + y * y );
+				}` );
+		});
+
 		it( 'disallows compound destructuring', () => {
 			assert.throws( () => {
 				buble.transform( `var { a: { b: c } } = d;` );
 			}, /Compound destructuring is not supported/ );
+		});
+	});
+
+	describe( 'default parameters', () => {
+		it( 'transpiles default parameters', () => {
+			var source = `
+				function foo ( a = 1, b = 2 ) {
+					console.log( a, b );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				function foo ( a, b ) {
+					if ( a === void 0 ) a = 1;
+					if ( b === void 0 ) b = 2;
+
+					console.log( a, b );
+				}`);
+		});
+	});
+
+	describe( 'binary and octal', () => {
+		it( 'transpiles binary numbers', () => {
+			var source = `
+				var num = 0b111110111;
+				var str = '0b111110111';`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var num = 503;
+				var str = '0b111110111';` );
+		});
+
+		it( 'transpiles octal numbers', () => {
+			var source = `
+				var num = 0o767;
+				var str = '0o767';`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var num = 503;
+				var str = '0o767';` );
 		});
 	});
 });
