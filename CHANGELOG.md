@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.3.2
+
+* Handle empty `class` declarations
+
 ## 0.3.1
 
 * Add `bin` to package
