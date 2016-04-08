@@ -132,6 +132,13 @@ describe( 'buble', () => {
 			assert.equal( result, `var str = "foo" + bar + "baz";` );
 		});
 
+		it( 'handles arbitrary whitespace inside template elements', () => {
+			var source = 'var str = `foo${ bar }baz`;';
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `var str = "foo" + bar + "baz";` );
+		});
+
 		it( 'transpiles an untagged template literal containing complex expressions', () => {
 			var source = 'var str = `foo${bar + baz}qux`;';
 			var result = buble.transform( source ).code;

@@ -9,21 +9,29 @@ export default class TemplateLiteral extends Node {
 
 		const ordered = this.expressions.concat( this.quasis ).sort( ( a, b ) => a.start - b.start );
 
+		let lastIndex = this.start;
+		let closeParenthesis = false;
+
 		ordered.forEach( ( node, i ) => {
 			if ( node.type === 'TemplateElement' ) {
-				if ( i ) magicString.insert( node.start, ' + ' );
-				magicString.overwrite( node.start, node.end, JSON.stringify( node.value.cooked ) );
+				const stringified = JSON.stringify( node.value.cooked );
+				const replacement = `${closeParenthesis ? ')' : ''}${i ? ' + ' : ''}${stringified}`;
+				magicString.overwrite( lastIndex, node.end, replacement );
 
-				// TODO overwrite string content (newlines, escaped quotes etc)
+				closeParenthesis = false;
 			} else {
 				const parenthesise = node.type !== 'Identifier'; // TODO other cases where it's safe
 				const open = parenthesise ? ( i ? ' + (' : '(' ) : ' + ';
-				const close = parenthesise ? ')' : '';
 
-				magicString.overwrite( node.start - 2, node.start, open );
-				magicString.overwrite( node.end, node.end + 1, close );
+				magicString.overwrite( lastIndex, node.start, open );
+
+				closeParenthesis = parenthesise;
 			}
+
+			lastIndex = node.end;
 		});
+
+		magicString.remove( lastIndex, this.end );
 
 		super.transpile();
 	}
