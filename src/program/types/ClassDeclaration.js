@@ -17,20 +17,26 @@ export default class ClassDeclaration extends Node {
 		const indentation = this.getIndentation();
 		const indentStr = magicString.getIndentString();
 
+		const name = this.id.name;
+		const superName = this.superClass && this.superClass.name;
+
 		if ( this.superClass ) {
-			magicString.overwrite( this.start, this.start + 5, `var ${this.id.name} = (function (${this.superClass.name}) {\n${indentation + indentStr}function` );
+			magicString.overwrite( this.start, this.start + 5, `var ${name} = (function (${superName}) {\n${indentation + indentStr}function` );
 			magicString.remove( this.id.end, this.superClass.end );
 
 			if ( this.constructor ) {
 				magicString.remove( this.constructor.start, this.constructor.value.start );
 				magicString.move( this.constructor.value.start, this.constructor.value.end, this.body.start );
 			} else {
-				magicString.insert( this.body.start, `() {\n${indentation + indentStr + indentStr}${this.superClass.name}.apply(this, arguments);\n${indentation + indentStr}}\n\n${indentation + indentStr}` );
+				magicString.insert( this.body.start, `() {\n${indentation + indentStr + indentStr}${superName}.apply(this, arguments);\n${indentation + indentStr}}` );
 			}
+
+			magicString.insert( this.body.start, `\n\n${indentation + indentStr}${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${indentation + indentStr}${name}.prototype.constructor = ${name};` );
+			if ( !this.constructor ) magicString.insert( this.body.start, `\n\n${indentation + indentStr}` );
 		} else {
 			deindent( this.body, magicString );
 
-			magicString.overwrite( this.start, this.start + 5, `var ${this.id.name} = function` );
+			magicString.overwrite( this.start, this.start + 5, `var ${name} = function` );
 
 			if ( this.constructor ) {
 				magicString.remove( this.constructor.start, this.constructor.value.start );
@@ -53,8 +59,8 @@ export default class ClassDeclaration extends Node {
 			if ( method.static ) magicString.remove( method.start, method.start + 7 );
 
 			const lhs = method.static ?
-				`${this.id.name}.${method.key.name}` :
-				`${this.id.name}.prototype.${method.key.name}`;
+				`${name}.${method.key.name}` :
+				`${name}.prototype.${method.key.name}`;
 
 			magicString.insert( method.start, `${lhs} = function ` );
 			magicString.insert( method.end, ';' );
@@ -63,7 +69,7 @@ export default class ClassDeclaration extends Node {
 		magicString.remove( lastIndex, this.end );
 
 		if ( this.superClass ) {
-			magicString.insert( this.end, `\n\n${indentation + indentStr}return ${this.id.name};\n${indentation}}(${this.superClass.name}));` );
+			magicString.insert( this.end, `\n\n${indentation + indentStr}return ${name};\n${indentation}}(${superName}));` );
 		}
 
 		super.transpile();

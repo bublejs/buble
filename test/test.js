@@ -1,7 +1,7 @@
 var assert = require( 'assert' );
 var buble = require( '../dist/buble.umd.js' );
 
-require( 'source-map-support' ).install();
+// require( 'source-map-support' ).install();
 
 describe( 'buble', () => {
 	describe( 'arrow functions', () => {
@@ -415,6 +415,9 @@ describe( 'buble', () => {
 						Bar.apply(this, arguments);
 					}
 
+					Foo.prototype = Object.create( Bar && Bar.prototype );
+					Foo.prototype.constructor = Foo;
+
 					Foo.prototype.baz = function baz ( str ) {
 						return str + 'baz';
 					};
@@ -443,6 +446,9 @@ describe( 'buble', () => {
 						Bar.call( this, x );
 						this.y = 'z';
 					}
+
+					Foo.prototype = Object.create( Bar && Bar.prototype );
+					Foo.prototype.constructor = Foo;
 
 					Foo.prototype.baz = function baz ( a, b, c ) {
 						Bar.prototype.baz.call( this, a, b, c );
