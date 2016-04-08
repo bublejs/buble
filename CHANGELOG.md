@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.2
+
+* Fix bug-inducing typo
+
 ## 0.4.1
 
 * Rest parameters
