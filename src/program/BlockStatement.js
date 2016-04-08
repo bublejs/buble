@@ -70,16 +70,60 @@ export default class BlockStatement extends Node {
 			addedStuff = true;
 		}
 
-		if ( this.defaultParameters ) {
-			this.defaultParameters.forEach( param => {
+		if ( /Function/.test( this.parent.type ) ) {
+			// default parameters
+			this.parent.params.filter( param => param.type === 'AssignmentPattern' ).forEach( param => {
 				if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
 
 				const lhs = `if ( ${param.left.name} === void 0 ) ${param.left.name}`;
-				magicString.insert( start, `${lhs}` );
-				magicString.move( param.left.end, param.right.end, start );
-				magicString.insert( start, `;` );
+				magicString
+					.insert( start, `${lhs}` )
+					.move( param.left.end, param.right.end, start )
+					.insert( start, `;` );
 
 				addedStuff = true;
+			});
+
+			// object pattern
+			this.parent.params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
+				const ref = this.scope.createIdentifier( 'ref' );
+				magicString.insert( param.start, ref );
+
+				let lastIndex = param.start;
+
+				param.properties.forEach( prop => {
+					magicString.remove( lastIndex, prop.value.start );
+
+					if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
+
+					const key = prop.key.name;
+
+					if ( prop.value.type === 'Identifier' ) {
+						magicString.remove( prop.value.start, prop.value.end );
+						lastIndex = prop.value.end;
+
+						const value = prop.value.name;
+						magicString.insert( start, `var ${value} = ${ref}.${key};` );
+					} else if ( prop.value.type === 'AssignmentPattern' ) {
+						magicString.remove( prop.value.start, prop.value.right.start );
+						lastIndex = prop.value.right.end;
+
+						const value = prop.value.left.name;
+						magicString
+							.insert( start, `var ${ref}_${key} = ref.${key}, ${value} = ref_${key} === void 0 ? ` )
+							.move( prop.value.right.start, prop.value.right.end, start )
+							.insert( start, ` : ref_${key};` );
+					}
+
+					else {
+						throw new Error( `${prop.type} not currently supported` ); // TODO...
+					}
+
+					addedStuff = true;
+					lastIndex = prop.end;
+				});
+
+				magicString.remove( lastIndex, param.end );
 			});
 		}
 

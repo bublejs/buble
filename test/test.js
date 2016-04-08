@@ -49,6 +49,7 @@ describe( 'buble', () => {
 
 			assert.equal( result, `
 				var this$1 = this;
+
 				this.foo = 'bar';
 				var lexicallyScoped = function () { return this$1.foo; };` );
 		});
@@ -65,6 +66,7 @@ describe( 'buble', () => {
 			assert.equal( result, `
 				function firstArgument () {
 					var arguments$1 = arguments;
+
 					return function () { return arguments$1[0]; };
 				}
 				assert.equal( firstArgument( 1, 2, 3 )(), 1 )` );
@@ -85,6 +87,7 @@ describe( 'buble', () => {
 				function multiply () {
 					var arguments$1 = arguments;
 					var this$1 = this;
+
 					return function () {
 						return function () { return this$1 * arguments$1[0]; };
 					};
@@ -437,16 +440,17 @@ describe( 'buble', () => {
 
 		it( 'destructures a parameter with an object pattern', () => {
 			var source = `
-				function pythag ({ x, y }) {
-					return Math.sqrt( x * x + y * y );
+				function pythag ( { x, y: z = 1 } ) {
+					return Math.sqrt( x * x + z * z );
 				}`
 			var result = buble.transform( source ).code;
 
 			assert.equal( result, `
 				function pythag ( ref ) {
-					var x = ref.x, y = ref.y;
+					var x = ref.x;
+					var ref_y = ref.y, z = ref_y === void 0 ? 1 : ref_y;
 
-					return Math.sqrt( x * x + y * y );
+					return Math.sqrt( x * x + z * z );
 				}` );
 		});
 
@@ -486,7 +490,7 @@ describe( 'buble', () => {
 		});
 	});
 
-	describe.only( 'default parameters', () => {
+	describe( 'default parameters', () => {
 		it( 'transpiles default parameters', () => {
 			var source = `
 				function foo ( a = 1, b = 2 ) {
