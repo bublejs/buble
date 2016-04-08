@@ -421,18 +421,32 @@ describe( 'buble', () => {
 	});
 
 	describe( 'destructuring', () => {
-		it( 'destructures an identifier', () => {
-			var source = `var { width, height } = point;`;
+		it( 'destructures an identifier with an object pattern', () => {
+			var source = `var { x, y } = point;`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var width = point.width, height = point.height;` );
+			assert.equal( result, `var x = point.x, y = point.y;` );
 		});
 
-		it( 'destructures a non-identifier', () => {
-			var source = `var { width, height } = getPoint();`;
+		it( 'destructures a non-identifier with an object pattern', () => {
+			var source = `var { x, y } = getPoint();`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var ref = getPoint(), width = ref.width, height = ref.height;` );
+			assert.equal( result, `var ref = getPoint(), x = ref.x, y = ref.y;` );
+		});
+
+		it( 'destructures an identifier with an array pattern', () => {
+			var source = `var [ x, y ] = point;`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `var x = point[0], y = point[1];` );
+		});
+
+		it( 'destructures a non-identifier with an array pattern', () => {
+			var source = `var [ x, y ] = getPoint();`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `var ref = getPoint(), x = ref[0], y = ref[1];` );
 		});
 
 		it( 'disallows compound destructuring', () => {

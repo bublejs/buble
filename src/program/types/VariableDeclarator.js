@@ -3,10 +3,12 @@ import unsupported from '../../utils/unsupported.js';
 
 export default class VariableDeclarator extends Node {
 	initialise () {
+		this.isObjectPattern = this.id.type === 'ObjectPattern';
+
 		// disallow compound destructuring, for now at least
 		if ( /Pattern/.test( this.id.type ) ) {
-			this.id[ this.id.type === 'ObjectPattern' ? 'properties' : 'elements' ].forEach( property => {
-				if ( /Pattern/.test( property.value.type ) ) {
+			this.id[ this.isObjectPattern ? 'properties' : 'elements' ].forEach( node => {
+				if ( /Pattern/.test( this.isObjectPattern ? node.value.type : node.type ) ) {
 					unsupported( this, 'Compound destructuring is not supported' );
 				}
 			});
@@ -31,23 +33,19 @@ export default class VariableDeclarator extends Node {
 				this.program.magicString.remove( this.init.start, this.init.end );
 			}
 
-			if ( this.id.type === 'ObjectPattern' ) {
-				const props = this.id.properties;
+			const props = this.isObjectPattern ? this.id.properties : this.id.elements;
 
-				this.program.magicString.remove( this.start, props[0].start );
+			this.program.magicString.remove( this.start, props[0].start );
 
-				props.forEach( property => {
+			props.forEach( this.isObjectPattern ?
+				property => {
 					this.program.magicString.overwrite( property.start, property.end, `${property.value.name} = ${name}.${property.key.name}` );
+				} :
+				( property, i ) => {
+					this.program.magicString.overwrite( property.start, property.end, `${property.name} = ${name}[${i}]` );
 				});
 
-				this.program.magicString.remove( props[ props.length - 1 ].end, this.init.start );
-			} else if ( this.id.type === 'ArrayPattern' ) {
-
-			}
-
-			else {
-				throw new Error( 'Well, this is unexpected.' );
-			}
+			this.program.magicString.remove( props[ props.length - 1 ].end, this.init.start );
 		}
 
 		super.transpile();
