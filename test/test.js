@@ -1,7 +1,7 @@
 var assert = require( 'assert' );
 var buble = require( '../dist/buble.umd.js' );
 
-// require( 'source-map-support' ).install();
+require( 'source-map-support' ).install();
 
 describe( 'buble', () => {
 	describe( 'arrow functions', () => {
@@ -578,6 +578,24 @@ describe( 'buble', () => {
 
 					console.log( a, b );
 				};` );
+		});
+	});
+
+	describe( 'rest parameters', () => {
+		it( 'transpiles rest parameters', () => {
+			var source = `
+				function foo ( a, b, c, ...theRest ) {
+					console.log( theRest );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				function foo ( a, b, c ) {
+					var theRest = [], len = arguments.length - 3;
+					while ( len-- > 0 ) theRest[ len ] = arguments[ len + 3 ];
+
+					console.log( theRest );
+				}`)
 		});
 	});
 

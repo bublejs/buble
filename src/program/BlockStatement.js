@@ -71,8 +71,10 @@ export default class BlockStatement extends Node {
 		}
 
 		if ( /Function/.test( this.parent.type ) ) {
+			const params = this.parent.params;
+
 			// default parameters
-			this.parent.params.filter( param => param.type === 'AssignmentPattern' ).forEach( param => {
+			params.filter( param => param.type === 'AssignmentPattern' ).forEach( param => {
 				if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
 
 				const lhs = `if ( ${param.left.name} === void 0 ) ${param.left.name}`;
@@ -85,7 +87,7 @@ export default class BlockStatement extends Node {
 			});
 
 			// object pattern
-			this.parent.params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
+			params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
 				const ref = this.scope.createIdentifier( 'ref' );
 				magicString.insert( param.start, ref );
 
@@ -127,7 +129,7 @@ export default class BlockStatement extends Node {
 			});
 
 			// array pattern. TODO dry this out
-			this.parent.params.filter( param => param.type === 'ArrayPattern' ).forEach( param => {
+			params.filter( param => param.type === 'ArrayPattern' ).forEach( param => {
 				const ref = this.scope.createIdentifier( 'ref' );
 				magicString.insert( param.start, ref );
 
@@ -164,6 +166,22 @@ export default class BlockStatement extends Node {
 
 				magicString.remove( lastIndex, param.end );
 			});
+
+			// rest parameter
+			const lastParam = params[ params.length - 1 ];
+			if ( lastParam && lastParam.type === 'RestElement' ) {
+				const penultimateParam = params[ params.length - 2 ];
+				magicString.remove( penultimateParam ? penultimateParam.end : lastParam.start, lastParam.end );
+
+				if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
+
+				const name = lastParam.argument.name;
+				const len = this.scope.createIdentifier( 'len' );
+
+				magicString.insert( start, `var ${name} = [], ${len} = arguments.length - 3;\n${this.indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + 3 ];`)
+
+				addedStuff = true;
+			}
 		}
 
 		if ( addedStuff ) {
