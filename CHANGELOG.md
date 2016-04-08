@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.3.0
+
+* (Very) basic CLI
+* Handle `export default class ...`
+
 ## 0.2.2
 
 * Initialise children of Property nodes
