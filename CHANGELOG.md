@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.3
+
+* Handle arbitrary whitespace inside template literals
+
 ## 0.4.2
 
 * Fix bug-inducing typo
