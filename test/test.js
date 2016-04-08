@@ -211,7 +211,7 @@ describe( 'buble', () => {
 				}` );
 		});
 
-		it.skip( 'transpiles block scoping inside loops with function bodies', () => {
+		it( 'transpiles block scoping inside loops with function bodies', () => {
 			var source = `
 				function log ( square ) {
 					console.log( square );
@@ -226,8 +226,8 @@ describe( 'buble', () => {
 			var result = buble.transform( source ).code;
 
 			assert.equal( result, `
-				function log(square) {
-					console.log(square);
+				function log( square ) {
+					console.log( square );
 				}
 
 				var forLoop = function ( i ) {
