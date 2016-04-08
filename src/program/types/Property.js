@@ -6,6 +6,8 @@ export default class Property extends Node {
 		if ( this.computed ) {
 			unsupported( this, 'Computed properties are not supported' );
 		}
+
+		super.initialise();
 	}
 
 	transpile () {
