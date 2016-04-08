@@ -25,7 +25,7 @@ export default class ClassDeclaration extends Node {
 				magicString.remove( this.constructor.start, this.constructor.value.start );
 				magicString.move( this.constructor.value.start, this.constructor.value.end, this.body.start );
 			} else {
-				magicString.insert( this.body.start, `() {\n${indentation + indentStr + indentStr}${this.superClass.name}.call(this);\n${indentation + indentStr}}\n\n${indentation + indentStr}` );
+				magicString.insert( this.body.start, `() {\n${indentation + indentStr + indentStr}${this.superClass.name}.apply(this, arguments);\n${indentation + indentStr}}\n\n${indentation + indentStr}` );
 			}
 		} else {
 			deindent( this.body, magicString );

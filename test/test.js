@@ -412,7 +412,7 @@ describe( 'buble', () => {
 			assert.equal( result, `
 				var Foo = (function (Bar) {
 					function Foo () {
-						Bar.call(this);
+						Bar.apply(this, arguments);
 					}
 
 					Foo.prototype.baz = function baz ( str ) {
