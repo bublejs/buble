@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.3.4
+
+* Class inheritance
+
 ## 0.3.3
 
 * Handle quote marks in template literals
