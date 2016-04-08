@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+var fs = require( 'fs' );
+var buble = require( '../dist/buble.umd.js' );
+
+var args = process.argv.slice( 2 );
+
+if ( args.length !== 1 ) {
+	console.error( 'Usage: buble [file]' );
+}
+
+var source = fs.readFileSync( args[0], 'utf-8' );
+var result = buble.transform( source ).code;
+
+console.log( result );

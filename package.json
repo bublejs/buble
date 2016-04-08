@@ -17,6 +17,9 @@
     "pretest": "npm run build:umd",
     "prepublish": "npm test && npm run build:es"
   },
+  "bin": {
+    "buble": "./bin/buble"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/Rich-Harris/buble.git"
@@ -41,6 +44,7 @@
     "eslint": "^2.6.0",
     "mocha": "^2.4.5",
     "rollup": "^0.25.8",
+    "rollup-plugin-buble": "^0.2.3",
     "source-map-support": "^0.4.0"
   },
   "dependencies": {
