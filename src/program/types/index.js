@@ -2,6 +2,7 @@ import AssignmentExpression from './AssignmentExpression.js';
 import ArrowFunctionExpression from './ArrowFunctionExpression.js';
 import ClassDeclaration from './ClassDeclaration.js';
 import ForStatement from './ForStatement.js';
+import Literal from './Literal.js';
 import Identifier from './Identifier.js';
 import Property from './Property.js';
 import Super from './Super.js';
@@ -17,6 +18,7 @@ export default {
 	ArrowFunctionExpression,
 	ClassDeclaration,
 	ForStatement,
+	Literal,
 	Identifier,
 	Property,
 	Super,
