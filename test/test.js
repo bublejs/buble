@@ -438,6 +438,21 @@ describe( 'buble', () => {
 				}(Bar));` );
 		});
 
+		it( 'handles export default class', function () {
+			var source = `
+				export default class Foo {
+					bar () {}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var Foo = function Foo () {};
+
+				Foo.prototype.bar = function bar () {};
+
+				export default Foo;` );
+		});
+
 		// TODO more tests. e.g. getters and setters. computed method names
 		// 'super.*' is not allowed before super()
 	});

@@ -14,8 +14,7 @@ export default class ClassDeclaration extends Node {
 	transpile () {
 		const magicString = this.program.magicString;
 
-		const match = /[ \t]+$/.exec( magicString.original.slice( 0, this.start ) );
-		const indentation = match ? match[0] : '';
+		const indentation = this.getIndentation();
 		const indentStr = magicString.indentStr;
 
 		if ( this.superClass ) {
@@ -41,8 +40,6 @@ export default class ClassDeclaration extends Node {
 				magicString.insert( this.body.start, `() {};\n\n${indentation}` );
 			}
 		}
-
-
 
 		let lastIndex = this.body.start;
 

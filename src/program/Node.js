@@ -38,6 +38,11 @@ export default class Node {
 		return this.parent.findScope( functionScope );
 	}
 
+	getIndentation () {
+		const lastLine = /\n(.+)$/.exec( this.program.magicString.original.slice( 0, this.start ) );
+		return lastLine ? /^[ \t]*/.exec( lastLine[1] )[0] : '';
+	}
+
 	initialise () {
 		//console.log( 'init', this.type )
 

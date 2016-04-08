@@ -1,6 +1,7 @@
 import AssignmentExpression from './AssignmentExpression.js';
 import ArrowFunctionExpression from './ArrowFunctionExpression.js';
 import ClassDeclaration from './ClassDeclaration.js';
+import ExportDefaultDeclaration from './ExportDefaultDeclaration.js';
 import ForStatement from './ForStatement.js';
 import FunctionDeclaration from './FunctionDeclaration.js';
 import FunctionExpression from './FunctionExpression.js';
@@ -19,6 +20,7 @@ export default {
 	AssignmentExpression,
 	ArrowFunctionExpression,
 	ClassDeclaration,
+	ExportDefaultDeclaration,
 	ForStatement,
 	FunctionDeclaration,
 	FunctionExpression,
