@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.3.3
+
+* Handle quote marks in template literals
+
 ## 0.3.2
 
 * Handle empty `class` declarations
