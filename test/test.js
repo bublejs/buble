@@ -582,7 +582,23 @@ describe( 'buble', () => {
 	});
 
 	describe( 'rest parameters', () => {
-		it( 'transpiles rest parameters', () => {
+		it( 'transpiles solo rest parameters', () => {
+			var source = `
+				function foo ( ...theRest ) {
+					console.log( theRest );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				function foo () {
+					var theRest = [], len = arguments.length;
+					while ( len-- ) theRest[ len ] = arguments[ len ];
+
+					console.log( theRest );
+				}`)
+		});
+
+		it( 'transpiles rest parameters following other parameters', () => {
 			var source = `
 				function foo ( a, b, c, ...theRest ) {
 					console.log( theRest );

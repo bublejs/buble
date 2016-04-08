@@ -171,7 +171,12 @@ export default class BlockStatement extends Node {
 			const lastParam = params[ params.length - 1 ];
 			if ( lastParam && lastParam.type === 'RestElement' ) {
 				const penultimateParam = params[ params.length - 2 ];
-				magicString.remove( penultimateParam ? penultimateParam.end : lastParam.start, lastParam.end );
+
+				if ( penultimateParam ) {
+					magicString.remove( penultimateParam ? penultimateParam.end : lastParam.start, lastParam.end );
+				} else {
+					magicString.overwrite( this.parent.id.end, this.parent.body.start, ' () ' );
+				}
 
 				if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
 
@@ -179,7 +184,11 @@ export default class BlockStatement extends Node {
 				const len = this.scope.createIdentifier( 'len' );
 				const count = params.length - 1;
 
-				magicString.insert( start, `var ${name} = [], ${len} = arguments.length - ${count};\n${this.indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];`)
+				if ( count ) {
+					magicString.insert( start, `var ${name} = [], ${len} = arguments.length - ${count};\n${this.indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];` );
+				} else {
+					magicString.insert( start, `var ${name} = [], ${len} = arguments.length;\n${this.indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ];` );
+				}
 
 				addedStuff = true;
 			}
