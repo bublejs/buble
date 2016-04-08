@@ -129,14 +129,28 @@ describe( 'buble', () => {
 			var source = 'var str = `foo${bar}baz`;';
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var str = 'foo' + bar + 'baz';` );
+			assert.equal( result, `var str = "foo" + bar + "baz";` );
 		});
 
 		it( 'transpiles an untagged template literal containing complex expressions', () => {
 			var source = 'var str = `foo${bar + baz}qux`;';
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var str = 'foo' + (bar + baz) + 'qux';` );
+			assert.equal( result, `var str = "foo" + (bar + baz) + "qux";` );
+		});
+
+		it( 'transpiles a template literal containing single quotes', () => {
+			var source = "var singleQuote = `'`;";
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `var singleQuote = "'";` );
+		});
+
+		it( 'transpiles a template literal containing double quotes', () => {
+			var source = 'var doubleQuote = `"`;';
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `var doubleQuote = "\\"";` );
 		});
 
 		it( 'does not transpile tagged template literals', () => {

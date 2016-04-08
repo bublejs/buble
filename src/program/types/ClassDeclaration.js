@@ -15,7 +15,7 @@ export default class ClassDeclaration extends Node {
 		const magicString = this.program.magicString;
 
 		const indentation = this.getIndentation();
-		const indentStr = magicString.indentStr;
+		const indentStr = magicString.getIndentString();
 
 		if ( this.superClass ) {
 			magicString.overwrite( this.start, this.start + 5, `var ${this.id.name} = (function (${this.superClass.name}) {\n${indentation + indentStr}function` );
