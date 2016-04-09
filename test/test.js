@@ -423,6 +423,44 @@ describe( 'buble', () => {
 				}` );
 		});
 
+		it( 'deconflicts with function expression inside function body', () => {
+			var source = `
+				var bar = function foo () {
+					if ( x ) {
+						let foo = 'y';
+						console.log( foo );
+					}
+				};`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var bar = function foo () {
+					if ( x ) {
+						var foo$1 = 'y';
+						console.log( foo$1 );
+					}
+				};` );
+		});
+
+		it( 'deconflicts with parameters', () => {
+			var source = `
+				function bar ( foo ) {
+					if ( x ) {
+						let foo = 'y';
+						console.log( foo );
+					}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				function bar ( foo ) {
+					if ( x ) {
+						var foo$1 = 'y';
+						console.log( foo$1 );
+					}
+				}` );
+		});
+
 		it( 'deconflicts with class declarations', () => {
 			var source = `
 				class foo {}

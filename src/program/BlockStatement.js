@@ -4,11 +4,12 @@ import Scope from './Scope.js';
 
 export default class BlockStatement extends Node {
 	createScope () {
-		this.isFunctionBlock = this.parent.type === 'Root' || /Function/.test( this.parent.type );
+		this.parentIsFunction = /Function/.test( this.parent.type );
+		this.isFunctionBlock = this.parentIsFunction || this.parent.type === 'Root';
 		this.scope = new Scope({
 			block: !this.isFunctionBlock,
 			parent: this.parent.findScope( false ),
-			params: null // TODO function params
+			params: this.parentIsFunction ? this.parent.params : null
 		});
 	}
 
