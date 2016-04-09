@@ -3,17 +3,25 @@ import Node from './Node.js';
 import Scope from './Scope.js';
 
 export default class BlockStatement extends Node {
-	initialise () {
-		this.thisAlias = null;
-		this.argumentsAlias = null;
-		this.defaultParameters = [];
-
+	createScope () {
 		this.isFunctionBlock = this.parent.type === 'Root' || /Function/.test( this.parent.type );
 		this.scope = new Scope({
 			block: !this.isFunctionBlock,
 			parent: this.parent.findScope( false ),
 			params: null // TODO function params
 		});
+	}
+
+	initialise () {
+		this.thisAlias = null;
+		this.argumentsAlias = null;
+		this.defaultParameters = [];
+
+		// normally the scope gets created here, during initialisation,
+		// but in some cases (e.g. `for` statements), we need to create
+		// the scope early, as it pertains to both the init block and
+		// the body of the statement
+		if ( !this.scope ) this.createScope();
 
 		const match = /\n(\s*)\S/.exec( this.program.magicString.slice( this.start ) );
 		if ( match ) {

@@ -264,6 +264,19 @@ describe( 'buble', () => {
 				for ( var i = 0; i < 10; i += 1 ) forLoop( i );` );
 		});
 
+		it( 'transpiles block-less for loops with block-scoped declarations inside function body', () => {
+			var source = `
+				for ( let i = 0; i < 10; i += 1 ) setTimeout( () => console.log( i ), i * 100 );`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var forLoop = function ( i ) {
+					setTimeout( function () { return console.log( i ); }, i * 100 );
+				};
+
+				for ( var i = 0; i < 10; i += 1 ) forLoop( i );` );
+		});
+
 		it( 'transpiles block scoping inside loops without function bodies', () => {
 			var source = `
 				for ( let i = 0; i < 10; i += 1 ) {
@@ -277,6 +290,15 @@ describe( 'buble', () => {
 					var square = i * i;
 					console.log( square );
 				}` );
+		});
+
+		it( 'transpiles block-less for loops without block-scoped declarations inside function body', () => {
+			var source = `
+				for ( let i = 0; i < 10; i += 1 ) console.log( i );`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				for ( var i = 0; i < 10; i += 1 ) console.log( i );` );
 		});
 
 		it( 'disallows duplicate declarations', () => {

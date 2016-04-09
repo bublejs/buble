@@ -3,16 +3,14 @@ import extractNames from '../extractNames.js';
 
 export default class ForStatement extends Node {
 	findScope ( functionScope ) {
-		return functionScope || !this.initialisedBody ? this.parent.findScope( functionScope ) : this.body.scope;
+		return functionScope || !this.createdScope ? this.parent.findScope( functionScope ) : this.body.scope;
 	}
 
 	initialise () {
-		this.body.initialise();
-		this.initialisedBody = true;
+		this.body.createScope();
+		this.createdScope = true;
 
-		this.init.initialise();
-		this.test.initialise();
-		this.update.initialise();
+		super.initialise();
 	}
 
 	transpile () {
@@ -29,7 +27,7 @@ export default class ForStatement extends Node {
 			let j = declaration.instances.length;
 			while ( j-- ) {
 				const instance = declaration.instances[j];
-				const nearestFunctionExpression = instance.findNearest( 'FunctionExpression' );
+				const nearestFunctionExpression = instance.findNearest( /Function/ );
 
 				if ( nearestFunctionExpression && nearestFunctionExpression.depth > this.depth ) {
 					shouldRewriteAsFunction = true;
@@ -43,17 +41,19 @@ export default class ForStatement extends Node {
 		if ( shouldRewriteAsFunction ) {
 			const magicString = this.program.magicString;
 
-			const match = /[ \t]+$/.exec( magicString.original.slice( 0, this.start ) );
-			const indentation = match ? match[0] : '';
+			const indentation = this.getIndentation();
 
 			// which variables are declared in the init statement?
 			const names = this.init.type === 'VariableDeclaration' ?
 				[].concat.apply( [], this.init.declarations.map( declarator => extractNames( declarator.id ) ) ) :
 				[];
 
-			magicString.insert( this.start, `var forLoop = function ( ${names.join( ', ' )} ) ` );
+			const before = `var forLoop = function ( ${names.join( ', ' )} ) ` + ( this.body.synthetic ? `{\n${indentation}${magicString.getIndentString()}` : '' );
+			const after = ( this.body.synthetic ? `\n${indentation}}` : '' ) + `;\n\n${indentation}`;
+
+			magicString.insert( this.start, before );
 			magicString.move( this.body.start, this.body.end, this.start );
-			magicString.insert( this.start, `;\n\n${indentation}` );
+			magicString.insert( this.start, after );
 
 			magicString.insert( this.end, `forLoop( ${names.join( ', ' )} );` );
 		}

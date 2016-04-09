@@ -1,6 +1,12 @@
 import { walk } from 'estree-walker';
 import wrap from './wrap.js';
 
+const statementsWithBlocks = {
+	IfStatement: 'consequent',
+	ForStatement: 'body',
+	WhileStatement: 'body'
+};
+
 export default class Node {
 	constructor ( raw, parent ) {
 		Object.defineProperties( this, {
@@ -9,6 +15,22 @@ export default class Node {
 			depth: { value: parent.depth + 1 },
 			keys: { value: Object.keys( raw ) }
 		});
+
+		// special case – body-less if/for/while statements. TODO others?
+		const type = statementsWithBlocks[ raw.type ];
+		if ( type && raw[ type ].type !== 'BlockStatement' ) {
+			const nonBlock = raw[ type ];
+
+			// create a synthetic block statement, otherwise all hell
+			// breaks loose when it comes to block scoping
+			raw[ type ] = {
+				start: nonBlock.start,
+				end: nonBlock.end,
+				type: 'BlockStatement',
+				body: [ nonBlock ],
+				synthetic: true
+			};
+		}
 
 		this.keys.forEach( key => {
 			this[ key ] = wrap( raw[ key ], this );
@@ -30,7 +52,8 @@ export default class Node {
 	}
 
 	findNearest ( type ) {
-		if ( this.type === type ) return this;
+		if ( typeof type === 'string' ) type = new RegExp( `^${type}$` );
+		if ( type.test( this.type ) ) return this;
 		return this.parent.findNearest( type );
 	}
 
