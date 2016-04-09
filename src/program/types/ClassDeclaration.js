@@ -64,6 +64,12 @@ export default class ClassDeclaration extends Node {
 
 			magicString.insert( method.start, `${lhs} = function ` );
 			magicString.insert( method.end, ';' );
+
+			// prevent function name shadowing an existing declaration
+			const scope = this.findScope( false );
+			if ( scope.contains( method.key.name ) ) {
+				magicString.overwrite( method.key.start, method.key.end, scope.createIdentifier( method.key.name ) );
+			}
 		});
 
 		magicString.remove( lastIndex, this.end );

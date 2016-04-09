@@ -404,6 +404,27 @@ describe( 'buble', () => {
 				};` );
 		});
 
+		it( 'deshadows method names', () => {
+			var source = `
+				var bar = 'x';
+
+				class Foo {
+					bar ( str ) {
+						return str + 'bar';
+					}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var bar = 'x';
+
+				var Foo = function Foo () {};
+
+				Foo.prototype.bar = function bar$1 ( str ) {
+					return str + 'bar';
+				};` );
+		});
+
 		it( 'transpiles a class declaration with a static method', () => {
 			var source = `
 				class Foo {
