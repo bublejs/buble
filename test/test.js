@@ -346,6 +346,120 @@ describe( 'buble', () => {
 					this[ foo$1 ] = 'q';
 				}` );
 		});
+
+		it( 'deconflicts with default imports', () => {
+			var source = `
+				import foo from './foo.js';
+
+				if ( x ) {
+					let foo = 'y';
+					console.log( foo );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				import foo from './foo.js';
+
+				if ( x ) {
+					var foo$1 = 'y';
+					console.log( foo$1 );
+				}` );
+		});
+
+		it( 'deconflicts with named imports', () => {
+			var source = `
+				import { foo } from './foo.js';
+
+				if ( x ) {
+					let foo = 'y';
+					console.log( foo );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				import { foo } from './foo.js';
+
+				if ( x ) {
+					var foo$1 = 'y';
+					console.log( foo$1 );
+				}` );
+		});
+
+		it( 'deconflicts with function declarations', () => {
+			var source = `
+				function foo () {}
+
+				if ( x ) {
+					let foo = 'y';
+					console.log( foo );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				function foo () {}
+
+				if ( x ) {
+					var foo$1 = 'y';
+					console.log( foo$1 );
+				}` );
+		});
+
+		it( 'does not deconflict with function expressions', () => {
+			var source = `
+				var bar = function foo () {};
+
+				if ( x ) {
+					let foo = 'y';
+					console.log( foo );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var bar = function foo () {};
+
+				if ( x ) {
+					var foo = 'y';
+					console.log( foo );
+				}` );
+		});
+
+		it( 'deconflicts with class declarations', () => {
+			var source = `
+				class foo {}
+
+				if ( x ) {
+					let foo = 'y';
+					console.log( foo );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var foo = function foo () {};
+
+				if ( x ) {
+					var foo$1 = 'y';
+					console.log( foo$1 );
+				}` );
+		});
+
+		it( 'does not deconflict with class expressions', () => {
+			var source = `
+				var bar = class foo {};
+
+				if ( x ) {
+					let foo = 'y';
+					console.log( foo );
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var bar = function foo () {};
+
+				if ( x ) {
+					var foo = 'y';
+					console.log( foo );
+				}` );
+		});
 	});
 
 	describe( 'classes', () => {
@@ -553,7 +667,7 @@ describe( 'buble', () => {
 			var source = `
 				function pythag ( { x, y: z = 1 } ) {
 					return Math.sqrt( x * x + z * z );
-				}`
+				}`;
 			var result = buble.transform( source ).code;
 
 			assert.equal( result, `
@@ -583,7 +697,7 @@ describe( 'buble', () => {
 			var source = `
 				function pythag ( [ x, z = 1 ] ) {
 					return Math.sqrt( x * x + z * z );
-				}`
+				}`;
 			var result = buble.transform( source ).code;
 
 			assert.equal( result, `
@@ -645,7 +759,7 @@ describe( 'buble', () => {
 					while ( len-- ) theRest[ len ] = arguments[ len ];
 
 					console.log( theRest );
-				}`)
+				}` );
 		});
 
 		it( 'transpiles rest parameters following other parameters', () => {
@@ -661,7 +775,7 @@ describe( 'buble', () => {
 					while ( len-- > 0 ) theRest[ len ] = arguments[ len + 3 ];
 
 					console.log( theRest );
-				}`)
+				}` );
 		});
 	});
 

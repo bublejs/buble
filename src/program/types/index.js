@@ -5,6 +5,8 @@ import ExportDefaultDeclaration from './ExportDefaultDeclaration.js';
 import ForStatement from './ForStatement.js';
 import FunctionDeclaration from './FunctionDeclaration.js';
 import FunctionExpression from './FunctionExpression.js';
+import ImportSpecifier from './ImportSpecifier.js';
+import ImportDefaultSpecifier from './ImportDefaultSpecifier.js';
 import Literal from './Literal.js';
 import Identifier from './Identifier.js';
 import Property from './Property.js';
@@ -24,6 +26,8 @@ export default {
 	ForStatement,
 	FunctionDeclaration,
 	FunctionExpression,
+	ImportSpecifier,
+	ImportDefaultSpecifier,
 	Literal,
 	Identifier,
 	Property,
