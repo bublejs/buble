@@ -111,7 +111,7 @@ export default class BlockStatement extends Node {
 					const key = prop.key.name;
 
 					if ( prop.value.type === 'Identifier' ) {
-						prop.value.remove();
+						code.remove( prop.value.start, prop.value.end );
 						lastIndex = prop.value.end;
 
 						const value = prop.value.name;
@@ -151,7 +151,7 @@ export default class BlockStatement extends Node {
 					if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
 					if ( element.type === 'Identifier' ) {
-						element.remove();
+						code.remove( element.start, element.end );
 						lastIndex = element.end;
 
 						code.insert( start, `var ${element.name} = ${ref}[${i}];` );
@@ -219,7 +219,7 @@ export default class BlockStatement extends Node {
 
 					if ( name !== alias ) {
 						declaration.instances.forEach( identifier => {
-							identifier.replaceWith( alias, true );
+							code.overwrite( identifier.start, identifier.end, alias, true );
 						});
 					}
 				}

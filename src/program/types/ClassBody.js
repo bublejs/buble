@@ -21,7 +21,7 @@ export default class ClassBody extends Node {
 		code.insert( this.start, `function ${name} ` );
 		if ( constructor ) {
 			code.remove( constructor.start, constructor.value.start );
-			constructor.value.moveTo( this.start );
+			code.move( constructor.value.start, constructor.value.end, this.start );
 		} else {
 			let body = superName ?
 				`() {\n${indentation}${indentStr}${indentStr}${superName}.apply(this, arguments);\n${indentation}${indentStr}}` :
@@ -52,7 +52,7 @@ export default class ClassBody extends Node {
 			// prevent function name shadowing an existing declaration
 			const scope = this.findScope( false );
 			if ( scope.contains( method.key.name ) ) {
-				method.key.replaceWith( scope.createIdentifier( method.key.name ), true );
+				code.overwrite( method.key.start, method.key.end, scope.createIdentifier( method.key.name ), true );
 			}
 		});
 
@@ -60,7 +60,7 @@ export default class ClassBody extends Node {
 			code.remove( this.start, this.body[0].start );
 			code.remove( this.body[ this.body.length - 1 ].end, this.end );
 		} else {
-			this.remove();
+			code.remove( this.start, this.end );
 		}
 
 		super.transpile( code );

@@ -25,10 +25,10 @@ export default class VariableDeclarator extends Node {
 
 			if ( !simple ) {
 				code.insert( this.start, `${name} = ` );
-				this.init.moveTo( this.start );
+				code.move( this.init.start, this.init.end, this.start );
 				code.insert( this.start, `, ` );
 			} else {
-				this.init.remove();
+				code.remove( this.init.start, this.init.end );
 			}
 
 			const props = this.isObjectPattern ? this.id.properties : this.id.elements;
@@ -37,10 +37,10 @@ export default class VariableDeclarator extends Node {
 
 			props.forEach( this.isObjectPattern ?
 				property => {
-					property.replaceWith( `${property.value.name} = ${name}.${property.key.name}` );
+					code.overwrite( property.start, property.end, `${property.value.name} = ${name}.${property.key.name}` );
 				} :
 				( property, i ) => {
-					property.replaceWith( `${property.name} = ${name}[${i}]` );
+					code.overwrite( property.start, property.end, `${property.name} = ${name}[${i}]` );
 				});
 
 			code.remove( props[ props.length - 1 ].end, this.init.start );

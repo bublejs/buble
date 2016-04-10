@@ -2,11 +2,11 @@
 // not its current edited state.
 // That's not a problem for the way that it's currently used, but it could
 // be in future...
-export default function deindent ( node, magicString ) {
+export default function deindent ( node, code ) {
 	const start = node.start;
 	const end = node.end;
 
-	const indentStr = magicString.getIndentString();
+	const indentStr = code.getIndentString();
 	const pattern = new RegExp( indentStr + '\\S', 'g' );
 
 	let isExcluded = {};
@@ -16,13 +16,13 @@ export default function deindent ( node, magicString ) {
 		}
 	});
 
-	if ( magicString.original.slice( start - indentStr.length, start ) === indentStr ) {
-		magicString.remove( start - indentStr.length, start );
+	if ( code.original.slice( start - indentStr.length, start ) === indentStr ) {
+		code.remove( start - indentStr.length, start );
 	}
 
-	const slice = magicString.original.slice( start, end );
+	const slice = code.original.slice( start, end );
 	let match;
 	while ( match = pattern.exec( slice ) ) {
-		if ( !isExcluded[ match.index ] ) magicString.remove( start + match.index, start + match.index + indentStr.length );
+		if ( !isExcluded[ match.index ] ) code.remove( start + match.index, start + match.index + indentStr.length );
 	}
 }

@@ -68,8 +68,6 @@ export default class Node {
 	}
 
 	initialise () {
-		//console.log( 'init', this.type )
-
 		this.keys.forEach( key => {
 			const value = this[ key ];
 
@@ -81,33 +79,11 @@ export default class Node {
 		});
 	}
 
-	insertAtEnd ( content ) {
-		this.program.magicString.insert( this.end, content );
-	}
-
-	insertAtStart ( content ) {
-		this.program.magicString.insert( this.start, content );
-	}
-
-	moveTo( location ) {
-		this.program.magicString.move( this.start, this.end, location );
-	}
-
-	remove () {
-		this.program.magicString.remove( this.start, this.end );
-	}
-
-	replaceWith ( replacement, storeName ) {
-		this.program.magicString.overwrite( this.start, this.end, replacement, storeName );
-	}
-
 	toString () {
 		return this.program.magicString.slice( this.start, this.end );
 	}
 
 	transpile ( code ) {
-		//console.log( 'transpile', this.type )
-
 		this.keys.forEach( key => {
 			const value = this[ key ];
 

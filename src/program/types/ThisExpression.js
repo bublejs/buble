@@ -13,7 +13,7 @@ export default class ThisExpression extends Node {
 
 	transpile ( code ) {
 		if ( this.alias ) {
-			this.replaceWith( this.alias, true );
+			code.overwrite( this.start, this.end, this.alias, true );
 		}
 	}
 }
