@@ -185,6 +185,20 @@ describe( 'buble', () => {
 				buble.transform( 'var str = x`y`' );
 			}, /Tagged template expressions are not supported/ );
 		});
+
+		it( 'parenthesises template strings as necessary', () => {
+			var source = 'var str = `x${y}`.toUpperCase();';
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, 'var str = ("x" + y).toUpperCase();' );
+		});
+
+		it( 'does not parenthesise template strings in arithmetic expressions', () => {
+			var source = 'var str = `x${y}` + z; var str2 = `x${y}` * z;';
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, 'var str = "x" + y + z; var str2 = ("x" + y) * z;' );
+		});
 	});
 
 	describe( 'block scoping', () => {

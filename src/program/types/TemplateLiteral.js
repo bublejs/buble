@@ -13,7 +13,7 @@ export default class TemplateLiteral extends Node {
 		ordered.forEach( ( node, i ) => {
 			if ( node.type === 'TemplateElement' ) {
 				const stringified = JSON.stringify( node.value.cooked );
-				const replacement = `${closeParenthesis ? ')' : ''}${i ? ' + ' : ''}${stringified}`;
+				const replacement = ( closeParenthesis ? ')' : '' ) + ( ( node.tail && !node.value.cooked.length && i !== 0 ) ? '' : `${i ? ' + ' : ''}${stringified}` );
 				code.overwrite( lastIndex, node.end, replacement );
 
 				closeParenthesis = false;
@@ -30,6 +30,15 @@ export default class TemplateLiteral extends Node {
 		});
 
 		code.remove( lastIndex, this.end );
+
+		const parenthesise = this.parent.type !== 'AssignmentExpression' &&
+		                     this.parent.type !== 'VariableDeclarator' &&
+		                     ( this.parent.type !== 'BinaryExpression' || this.parent.operator !== '+' );
+
+		if ( parenthesise ) {
+			code.insert( this.start, '(' );
+			code.insert( this.end, ')' );
+		}
 
 		super.transpile( code );
 	}
