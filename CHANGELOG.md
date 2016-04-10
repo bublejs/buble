@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.5
+
+* Sourcemap support
+
 ## 0.4.4
 
 * Support for class expressions
