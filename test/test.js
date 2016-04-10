@@ -1,7 +1,28 @@
 var assert = require( 'assert' );
+var chalk = require( 'chalk' );
 var buble = require( '../dist/buble.umd.js' );
 
 // require( 'source-map-support' ).install();
+
+// monkey-patch assert.equal
+var equal = assert.equal;
+assert.equal = function ( a, b, message ) {
+	return equal( showInvisibles( a ), showInvisibles( b ), message );
+};
+
+function showInvisibles ( str ) {
+	return str
+		.replace( /^\t+/gm, tabs => repeat( chalk.gray( '›   ' ), tabs.length ) )
+		.replace( /\t+$/gm, tabs => repeat( chalk.gray( '›   ' ), tabs.length ) )
+		.replace( /^ +/gm, spaces => repeat( chalk.gray( '•' ), spaces.length ) )
+		.replace( / +$/gm, spaces => repeat( chalk.gray( '•' ), spaces.length ) );
+}
+
+function repeat ( str, times ) {
+	var result = '';
+	while ( times-- ) result += str;
+	return result;
+}
 
 describe( 'buble', () => {
 	describe( 'arrow functions', () => {
