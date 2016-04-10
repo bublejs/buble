@@ -1,7 +1,7 @@
 var assert = require( 'assert' );
 var buble = require( '../dist/buble.umd.js' );
 
-require( 'source-map-support' ).install();
+// require( 'source-map-support' ).install();
 
 describe( 'buble', () => {
 	describe( 'arrow functions', () => {
@@ -491,7 +491,11 @@ describe( 'buble', () => {
 			var result = buble.transform( source ).code;
 
 			assert.equal( result, `
-				var bar = function foo () {};
+				var bar = (function () {
+					function foo () {}
+
+					return foo;
+				}());
 
 				if ( x ) {
 					var foo = 'y';
@@ -733,10 +737,16 @@ describe( 'buble', () => {
 		});
 
 		it( 'transpiles an anonymous empty class expression', function () {
-			var source = `var Foo = class {};`
+			var source = `
+				var Foo = class {};`
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var Foo = function () {};` );
+			assert.equal( result, `
+				var Foo = (function () {
+					function Foo () {}
+
+					return Foo;
+				}());` );
 		});
 
 		it( 'transpiles an anonymous class expression with a constructor', function () {
@@ -749,9 +759,13 @@ describe( 'buble', () => {
 			var result = buble.transform( source ).code;
 
 			assert.equal( result, `
-				var Foo = function () {
-					this.x = x;
-				};` );
+				var Foo = (function () {
+					function Foo ( x ) {
+						this.x = x;
+					}
+
+					return Foo;
+				}());` );
 		});
 
 		it( 'transpiles an anonymous class expression with a non-constructor method', function () {
@@ -764,11 +778,15 @@ describe( 'buble', () => {
 			var result = buble.transform( source ).code;
 
 			assert.equal( result, `
-				var Foo = function () {};
+				var Foo = (function () {
+					function Foo () {}
 
-				Foo.prototype.bar = function bar ( x ) {
-					console.log( x );
-				};` );
+					Foo.prototype.bar = function bar ( x ) {
+						console.log( x );
+					};
+
+					return Foo;
+				}());` );
 		});
 
 		// TODO more tests. e.g. getters and setters. computed method names
