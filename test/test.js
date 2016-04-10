@@ -732,6 +732,45 @@ describe( 'buble', () => {
 			assert.equal( result, `var Foo = function Foo () {};` );
 		});
 
+		it( 'transpiles an anonymous empty class expression', function () {
+			var source = `var Foo = class {};`
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `var Foo = function () {};` );
+		});
+
+		it( 'transpiles an anonymous class expression with a constructor', function () {
+			var source = `
+				var Foo = class {
+					constructor ( x ) {
+						this.x = x;
+					}
+				};`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var Foo = function () {
+					this.x = x;
+				};` );
+		});
+
+		it( 'transpiles an anonymous class expression with a non-constructor method', function () {
+			var source = `
+				var Foo = class {
+					bar ( x ) {
+						console.log( x );
+					}
+				};`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var Foo = function () {};
+
+				Foo.prototype.bar = function bar ( x ) {
+					console.log( x );
+				};` );
+		});
+
 		// TODO more tests. e.g. getters and setters. computed method names
 		// 'super.*' is not allowed before super()
 	});
