@@ -1,6 +1,7 @@
 import wrap from './wrap.js';
 import Node from './Node.js';
 import Scope from './Scope.js';
+import unsupported from '../utils/unsupported.js';
 
 export default class BlockStatement extends Node {
 	createScope () {
@@ -128,7 +129,7 @@ export default class BlockStatement extends Node {
 					}
 
 					else {
-						throw new Error( `${prop.type} not currently supported` ); // TODO...
+						unsupported( this, `Compound destructuring is not supported` ); // TODO...
 					}
 
 					addedStuff = true;
@@ -167,7 +168,7 @@ export default class BlockStatement extends Node {
 					}
 
 					else {
-						throw new Error( `${element.type} not currently supported` ); // TODO...
+						unsupported( this, `Compound destructuring is not supported` ); // TODO...
 					}
 
 					addedStuff = true;

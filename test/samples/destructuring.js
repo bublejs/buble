@@ -64,8 +64,14 @@ module.exports = [
 	},
 
 	{
-		description: 'disallows compound destructuring',
+		description: 'disallows compound destructuring in declarations',
 		input: `var { a: { b: c } } = d;`,
+		error: /Compound destructuring is not supported/
+	},
+
+	{
+		description: 'disallows compound destructuring in parameters',
+		input: `function foo ( { a: { b: c } } ) {}`,
 		error: /Compound destructuring is not supported/
 	}
 ];
