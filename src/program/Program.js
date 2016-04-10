@@ -13,7 +13,7 @@ export default function Program ( source, ast ) {
 	this.body = new BlockStatement( ast, this );
 
 	this.body.initialise();
-	this.body.transpile();
+	this.body.transpile( this.magicString );
 }
 
 Program.prototype = {

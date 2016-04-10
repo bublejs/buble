@@ -24,7 +24,7 @@ export default class Super extends Node {
 		}
 	}
 
-	transpile () {
+	transpile ( code ) {
 		const expression = this.isCalled ? this.superClassName : `${this.superClassName}.prototype`;
 		this.replaceWith( expression, true );
 
@@ -36,7 +36,7 @@ export default class Super extends Node {
 			if ( callExpression.arguments.length ) {
 				callExpression.arguments[0].insertAtStart( `this, ` );
 			} else {
-				this.program.magicString.insert( callExpression.end - 1, `this` );
+				code.insert( callExpression.end - 1, `this` );
 			}
 		}
 	}

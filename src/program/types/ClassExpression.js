@@ -8,16 +8,15 @@ export default class ClassExpression extends Node {
 		            this.findScope( true ).createIdentifier( 'anonymous' );
 	}
 
-	transpile () {
-		const magicString = this.program.magicString;
+	transpile ( code ) {
 		const superName = this.superClass && this.superClass.name;
 
 		const indentation = this.getIndentation();
-		const indentStr = magicString.getIndentString();
+		const indentStr = code.getIndentString();
 
-		magicString.overwrite( this.start, this.body.start, `(function (${superName || ''}) {\n${indentation}${indentStr}` );
+		code.overwrite( this.start, this.body.start, `(function (${superName || ''}) {\n${indentation}${indentStr}` );
 
-		this.body.transpile( true );
+		this.body.transpile( code, true );
 
 		this.insertAtEnd( `\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(${superName || ''}))` );
 	}

@@ -18,7 +18,7 @@ export default class VariableDeclarator extends Node {
 		super.initialise();
 	}
 
-	transpile () {
+	transpile ( code ) {
 		if ( this.id.type !== 'Identifier' ) {
 			const simple = this.init.type === 'Identifier';
 			const name = simple ? this.init.name : this.findScope( true ).createIdentifier( 'ref' );
@@ -33,7 +33,7 @@ export default class VariableDeclarator extends Node {
 
 			const props = this.isObjectPattern ? this.id.properties : this.id.elements;
 
-			this.program.magicString.remove( this.start, props[0].start );
+			code.remove( this.start, props[0].start );
 
 			props.forEach( this.isObjectPattern ?
 				property => {
@@ -43,9 +43,9 @@ export default class VariableDeclarator extends Node {
 					property.replaceWith( `${property.name} = ${name}[${i}]` );
 				});
 
-			this.program.magicString.remove( props[ props.length - 1 ].end, this.init.start );
+			code.remove( props[ props.length - 1 ].end, this.init.start );
 		}
 
-		super.transpile();
+		super.transpile( code );
 	}
 }

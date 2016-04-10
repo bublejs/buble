@@ -29,11 +29,6 @@ export default class BlockStatement extends Node {
 		// the body of the statement
 		if ( !this.scope ) this.createScope();
 
-		const match = /\n(\s*)\S/.exec( this.program.magicString.slice( this.start ) );
-		if ( match ) {
-			this.indentation = match[1];
-		}
-
 		this.body.forEach( node => node.initialise() );
 	}
 
@@ -65,22 +60,23 @@ export default class BlockStatement extends Node {
 		return this.thisAlias;
 	}
 
-	transpile () {
-		const magicString = this.program.magicString;
+	transpile ( code ) {
 		const start = this.body[0] ? this.body[0].start : this.start + 1;
+
+		const indentation = this.body.length ? this.body[0].getIndentation() : '';
 
 		let addedStuff = false;
 
 		if ( this.argumentsAlias ) {
 			const assignment = `var ${this.argumentsAlias} = arguments;`;
-			magicString.insert( start, assignment );
+			code.insert( start, assignment );
 			addedStuff = true;
 		}
 
 		if ( this.thisAlias ) {
-			if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
+			if ( addedStuff ) code.insert( start, `\n${indentation}` );
 			const assignment = `var ${this.thisAlias} = this;`;
-			magicString.insert( start, assignment );
+			code.insert( start, assignment );
 			addedStuff = true;
 		}
 
@@ -89,10 +85,10 @@ export default class BlockStatement extends Node {
 
 			// default parameters
 			params.filter( param => param.type === 'AssignmentPattern' ).forEach( param => {
-				if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
+				if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
 				const lhs = `if ( ${param.left.name} === void 0 ) ${param.left.name}`;
-				magicString
+				code
 					.insert( start, `${lhs}` )
 					.move( param.left.end, param.right.end, start )
 					.insert( start, `;` );
@@ -108,9 +104,9 @@ export default class BlockStatement extends Node {
 				let lastIndex = param.start;
 
 				param.properties.forEach( prop => {
-					magicString.remove( lastIndex, prop.value.start );
+					code.remove( lastIndex, prop.value.start );
 
-					if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
+					if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
 					const key = prop.key.name;
 
@@ -119,13 +115,13 @@ export default class BlockStatement extends Node {
 						lastIndex = prop.value.end;
 
 						const value = prop.value.name;
-						magicString.insert( start, `var ${value} = ${ref}.${key};` );
+						code.insert( start, `var ${value} = ${ref}.${key};` );
 					} else if ( prop.value.type === 'AssignmentPattern' ) {
-						magicString.remove( prop.value.start, prop.value.right.start );
+						code.remove( prop.value.start, prop.value.right.start );
 						lastIndex = prop.value.right.end;
 
 						const value = prop.value.left.name;
-						magicString
+						code
 							.insert( start, `var ${ref}_${key} = ref.${key}, ${value} = ref_${key} === void 0 ? ` )
 							.move( prop.value.right.start, prop.value.right.end, start )
 							.insert( start, ` : ref_${key};` );
@@ -139,32 +135,32 @@ export default class BlockStatement extends Node {
 					lastIndex = prop.end;
 				});
 
-				magicString.remove( lastIndex, param.end );
+				code.remove( lastIndex, param.end );
 			});
 
 			// array pattern. TODO dry this out
 			params.filter( param => param.type === 'ArrayPattern' ).forEach( param => {
 				const ref = this.scope.createIdentifier( 'ref' );
-				magicString.insert( param.start, ref );
+				code.insert( param.start, ref );
 
 				let lastIndex = param.start;
 
 				param.elements.forEach( ( element, i ) => {
-					magicString.remove( lastIndex, element.start );
+					code.remove( lastIndex, element.start );
 
-					if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
+					if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
 					if ( element.type === 'Identifier' ) {
 						element.remove();
 						lastIndex = element.end;
 
-						magicString.insert( start, `var ${element.name} = ${ref}[${i}];` );
+						code.insert( start, `var ${element.name} = ${ref}[${i}];` );
 					} else if ( element.type === 'AssignmentPattern' ) {
-						magicString.remove( element.start, element.right.start );
+						code.remove( element.start, element.right.start );
 						lastIndex = element.right.end;
 
 						const name = element.left.name;
-						magicString
+						code
 							.insert( start, `var ${ref}_${i} = ref[${i}], ${name} = ref_${i} === void 0 ? ` )
 							.move( element.right.start, element.right.end, start )
 							.insert( start, ` : ref_${i};` );
@@ -178,7 +174,7 @@ export default class BlockStatement extends Node {
 					lastIndex = element.end;
 				});
 
-				magicString.remove( lastIndex, param.end );
+				code.remove( lastIndex, param.end );
 			});
 
 			// rest parameter
@@ -187,22 +183,22 @@ export default class BlockStatement extends Node {
 				const penultimateParam = params[ params.length - 2 ];
 
 				if ( penultimateParam ) {
-					magicString.remove( penultimateParam ? penultimateParam.end : lastParam.start, lastParam.end );
+					code.remove( penultimateParam ? penultimateParam.end : lastParam.start, lastParam.end );
 				} else {
 					const start = this.parent.id ? this.parent.id.end : /^Function/.test( this.parent.type ) ? this.parent.start + 9 : this.parent.start;
-					magicString.overwrite( start, this.parent.body.start, ' () ' );
+					code.overwrite( start, this.parent.body.start, ' () ' );
 				}
 
-				if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
+				if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
 				const name = lastParam.argument.name;
 				const len = this.scope.createIdentifier( 'len' );
 				const count = params.length - 1;
 
 				if ( count ) {
-					magicString.insert( start, `var ${name} = [], ${len} = arguments.length - ${count};\n${this.indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];` );
+					code.insert( start, `var ${name} = [], ${len} = arguments.length - ${count};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];` );
 				} else {
-					magicString.insert( start, `var ${name} = [], ${len} = arguments.length;\n${this.indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ];` );
+					code.insert( start, `var ${name} = [], ${len} = arguments.length;\n${indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ];` );
 				}
 
 				addedStuff = true;
@@ -210,7 +206,7 @@ export default class BlockStatement extends Node {
 		}
 
 		if ( addedStuff ) {
-			magicString.insert( start, `\n\n${this.indentation}` );
+			code.insert( start, `\n\n${indentation}` );
 		}
 
 		if ( this.isFunctionBlock ) {
@@ -230,6 +226,6 @@ export default class BlockStatement extends Node {
 			});
 		}
 
-		super.transpile();
+		super.transpile( code );
 	}
 }

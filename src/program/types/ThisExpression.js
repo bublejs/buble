@@ -11,7 +11,7 @@ export default class ThisExpression extends Node {
 		}
 	}
 
-	transpile () {
+	transpile ( code ) {
 		if ( this.alias ) {
 			this.replaceWith( this.alias, true );
 		}

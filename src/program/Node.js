@@ -105,16 +105,16 @@ export default class Node {
 		return this.program.magicString.slice( this.start, this.end );
 	}
 
-	transpile () {
+	transpile ( code ) {
 		//console.log( 'transpile', this.type )
 
 		this.keys.forEach( key => {
 			const value = this[ key ];
 
 			if ( Array.isArray( value ) ) {
-				value.forEach( node => node.transpile() );
+				value.forEach( node => node.transpile( code ) );
 			} else if ( value && typeof value === 'object' ) {
-				value.transpile();
+				value.transpile( code );
 			}
 		});
 	}

@@ -13,7 +13,7 @@ export default class ForStatement extends Node {
 		super.initialise();
 	}
 
-	transpile () {
+	transpile ( code ) {
 		// see if any block-scoped declarations are referenced
 		// inside function expressions
 		const names = Object.keys( this.body.scope.declarations );
@@ -39,8 +39,6 @@ export default class ForStatement extends Node {
 		}
 
 		if ( shouldRewriteAsFunction ) {
-			const magicString = this.program.magicString;
-
 			const indentation = this.getIndentation();
 
 			// which variables are declared in the init statement?
@@ -48,16 +46,16 @@ export default class ForStatement extends Node {
 				[].concat.apply( [], this.init.declarations.map( declarator => extractNames( declarator.id ) ) ) :
 				[];
 
-			const before = `var forLoop = function ( ${names.join( ', ' )} ) ` + ( this.body.synthetic ? `{\n${indentation}${magicString.getIndentString()}` : '' );
+			const before = `var forLoop = function ( ${names.join( ', ' )} ) ` + ( this.body.synthetic ? `{\n${indentation}${code.getIndentString()}` : '' );
 			const after = ( this.body.synthetic ? `\n${indentation}}` : '' ) + `;\n\n${indentation}`;
 
-			magicString.insert( this.start, before );
-			magicString.move( this.body.start, this.body.end, this.start );
-			magicString.insert( this.start, after );
+			code.insert( this.start, before );
+			code.move( this.body.start, this.body.end, this.start );
+			code.insert( this.start, after );
 
-			magicString.insert( this.end, `forLoop( ${names.join( ', ' )} );` );
+			code.insert( this.end, `forLoop( ${names.join( ', ' )} );` );
 		}
 
-		super.transpile();
+		super.transpile( code );
 	}
 }

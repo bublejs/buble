@@ -10,15 +10,15 @@ export default class Property extends Node {
 		super.initialise();
 	}
 
-	transpile () {
+	transpile ( code ) {
 		if ( this.parent.type !== 'ObjectPattern' ) {
 			if ( this.shorthand ) {
-				this.program.magicString.insert( this.start, `${this.key.name}: ` );
+				code.insert( this.start, `${this.key.name}: ` );
 			} else if ( this.method ) {
-				this.program.magicString.insert( this.key.end, `: function` );
+				code.insert( this.key.end, `: function` );
 			}
 		}
 
-		super.transpile();
+		super.transpile( code );
 	}
 }

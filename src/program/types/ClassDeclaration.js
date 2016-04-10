@@ -9,12 +9,11 @@ export default class ClassDeclaration extends Node {
 		super.initialise();
 	}
 
-	transpile () {
-		const magicString = this.program.magicString;
+	transpile ( code ) {
 		const superName = this.superClass && this.superClass.name;
 
 		const indentation = this.getIndentation();
-		const indentStr = magicString.getIndentString();
+		const indentStr = code.getIndentString();
 
 		const intro = this.superClass ?
 			`var ${this.name} = (function (${superName}) {\n${indentation}${indentStr}` :
@@ -24,12 +23,12 @@ export default class ClassDeclaration extends Node {
 			`\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(${superName}));` :
 			``;
 
-		magicString.remove( this.start, this.body.start );
+		code.remove( this.start, this.body.start );
 		this.insertAtStart( intro );
 		this.insertAtEnd( outro );
 
-		if ( !this.superClass ) deindent( this.body, magicString );
+		if ( !this.superClass ) deindent( this.body, code );
 
-		this.body.transpile( !!this.superClass );
+		this.body.transpile( code, !!this.superClass );
 	}
 }

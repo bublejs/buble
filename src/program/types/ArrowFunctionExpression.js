@@ -6,12 +6,12 @@ export default class ArrowFunctionExpression extends Node {
 		super.initialise();
 	}
 
-	transpile () {
+	transpile ( code ) {
 		if ( this.params.length === 0 ) {
-			this.program.magicString.overwrite( this.start, this.body.start, 'function () ' );
+			code.overwrite( this.start, this.body.start, 'function () ' );
 		} else {
-			this.program.magicString.overwrite( this.start, this.params[0].start, 'function ( ' );
-			this.program.magicString.overwrite( this.params[ this.params.length - 1 ].end, this.body.start, ' ) ' );
+			code.overwrite( this.start, this.params[0].start, 'function ( ' );
+			code.overwrite( this.params[ this.params.length - 1 ].end, this.body.start, ' ) ' );
 		}
 
 		if ( this.body.synthetic ) {
@@ -19,6 +19,6 @@ export default class ArrowFunctionExpression extends Node {
 			this.body.insertAtEnd( '; }' );
 		}
 
-		super.transpile();
+		super.transpile( code );
 	}
 }
