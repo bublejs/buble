@@ -7,6 +7,12 @@ export default class TemplateLiteral extends Node {
 
 		const ordered = this.expressions.concat( this.quasis ).sort( ( a, b ) => a.start - b.start );
 
+		const parenthesise = this.parent.type !== 'AssignmentExpression' &&
+		                     this.parent.type !== 'VariableDeclarator' &&
+		                     ( this.parent.type !== 'BinaryExpression' || this.parent.operator !== '+' );
+
+		if ( parenthesise ) code.insert( this.start, '(' );
+
 		let lastIndex = this.start;
 		let closeParenthesis = false;
 
@@ -29,16 +35,7 @@ export default class TemplateLiteral extends Node {
 			lastIndex = node.end;
 		});
 
-		code.remove( lastIndex, this.end );
-
-		const parenthesise = this.parent.type !== 'AssignmentExpression' &&
-		                     this.parent.type !== 'VariableDeclarator' &&
-		                     ( this.parent.type !== 'BinaryExpression' || this.parent.operator !== '+' );
-
-		if ( parenthesise ) {
-			code.insert( this.start, '(' );
-			code.insert( this.end, ')' );
-		}
+		code.overwrite( lastIndex, this.end, parenthesise ? ')' : '' );
 
 		super.transpile( code );
 	}
