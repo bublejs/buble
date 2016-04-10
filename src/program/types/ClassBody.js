@@ -7,39 +7,45 @@ export default class ClassBody extends Node {
 		const superName = this.parent.superClass && this.parent.superClass.name;
 
 		const indentStr = code.getIndentString();
-		let indentation = this.getIndentation();
+		let indentation = this.getIndentation() + ( inFunctionExpression ? indentStr : '' );
 
 		const constructorIndex = this.body.findIndex( node => node.kind === 'constructor' );
 		const constructor = this.body[ constructorIndex ];
 
-		// if ( constructorIndex > 0 ) {
-		// 	code.remove( this.body[ constructorIndex - 1 ].end, constructor.start );
-		// }
-
-		const methods = this.body.filter( node => node.kind !== 'constructor' );
-
-		code.insert( this.start, `function ${name} ` );
 		if ( constructor ) {
-			code.remove( constructor.start, constructor.value.start );
-			code.move( constructor.value.start, constructor.value.end, this.start );
+			// ensure constructor is first
+			if ( constructorIndex > 0 ) {
+				const previousMethod = this.body[ constructorIndex - 1 ];
+				const nextMethod = this.body[ constructorIndex + 1 ];
+
+				code.remove( previousMethod.end, constructor.start );
+				code.move( constructor.start, nextMethod ? nextMethod.start : this.end - 1, this.body[0].start );
+			}
+
+			if ( !inFunctionExpression ) code.insert( constructor.end, ';' );
 		} else {
-			let body = superName ?
-				`() {\n${indentation}${indentStr}${indentStr}${superName}.apply(this, arguments);\n${indentation}${indentStr}}` :
-				`() {}`;
-
-			code.insert( this.start, body );
+			const fn = `function ${name} () {` + ( superName ?
+				`\n${indentation}${indentStr}${superName}.apply(this, arguments);\n${indentation}}` :
+				`}` ) + ( inFunctionExpression ? '' : ';' ) + ( this.body.length ? `\n\n${indentation}` : '' );
+			code.insert( this.start, fn );
 		}
-
-		if ( !inFunctionExpression ) code.insert( this.start, ';' );
-
-		if ( superName || methods.length ) code.insert( this.start, `\n\n${indentation}` );
 
 		if ( this.parent.superClass ) {
-			code.insert( this.start, `${indentStr}${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${indentation + indentStr}${name}.prototype.constructor = ${name};` );
-			if ( !constructor ) code.insert( this.start, `\n\n${indentation + indentStr}` );
+			let inheritanceBlock = `${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${indentation}${name}.prototype.constructor = ${name};`;
+
+			if ( constructor ) {
+				code.insert( constructor.end, `\n\n${indentation}` + inheritanceBlock );
+			} else {
+				code.insert( this.start, inheritanceBlock + `\n\n${indentation}` );
+			}
 		}
 
-		methods.forEach( method => {
+		this.body.forEach( method => {
+			if ( method.kind === 'constructor' ) {
+				code.overwrite( method.key.start, method.key.end, `function ${name}` );
+				return;
+			}
+
 			if ( method.static ) code.remove( method.start, method.start + 7 );
 
 			const lhs = method.static ?

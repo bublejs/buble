@@ -809,6 +809,55 @@ describe( 'buble', () => {
 				}());` );
 		});
 
+		it( 'allows constructor to be in middle or end of body', () => {
+			var source = `
+				class Foo {
+					before () {
+						// code goes here
+					}
+
+					constructor () {
+						// constructor goes here
+					}
+				}
+
+				class Bar {
+					before () {
+						// code goes here
+					}
+
+					constructor () {
+						// constructor goes here
+					}
+
+					after () {
+						// code goes here
+					}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var Foo = function Foo () {
+					// constructor goes here
+				};
+
+				Foo.prototype.before = function before () {
+					// code goes here
+				};
+
+				var Bar = function Bar () {
+					// constructor goes here
+				};
+
+				Bar.prototype.before = function before () {
+					// code goes here
+				};
+
+				Bar.prototype.after = function after () {
+					// code goes here
+				};` );
+		});
+
 		// TODO more tests. e.g. getters and setters. computed method names
 		// 'super.*' is not allowed before super()
 	});
