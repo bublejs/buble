@@ -1,5 +1,11 @@
 # buble changelog
 
+## 0.4.4
+
+* Support for class expressions
+* More robust deconflicting
+* Various bugfixes
+
 ## 0.4.3
 
 * Handle arbitrary whitespace inside template literals
