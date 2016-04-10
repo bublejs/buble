@@ -5,9 +5,9 @@ export default class ExportDefaultDeclaration extends Node {
 		super.transpile( code );
 
 		if ( this.declaration.type === 'ClassDeclaration' ) {
-			this.insertAtEnd( `\n\n${this.getIndentation()}` );
+			code.insert( this.end, `\n\n${this.getIndentation()}` );
 			code.move( this.start, this.declaration.start, this.end );
-			this.insertAtEnd( `${this.declaration.id.name};` );
+			code.insert( this.end, `${this.declaration.id.name};` );
 		}
 	}
 }

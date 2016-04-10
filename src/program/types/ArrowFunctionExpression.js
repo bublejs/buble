@@ -15,8 +15,8 @@ export default class ArrowFunctionExpression extends Node {
 		}
 
 		if ( this.body.synthetic ) {
-			this.body.insertAtStart( '{ return ' );
-			this.body.insertAtEnd( '; }' );
+			code.insert( this.body.start, '{ return ' );
+			code.insert( this.body.end, '; }' );
 		}
 
 		super.transpile( code );

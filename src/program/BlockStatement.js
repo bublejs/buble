@@ -99,7 +99,7 @@ export default class BlockStatement extends Node {
 			// object pattern
 			params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
 				const ref = this.scope.createIdentifier( 'ref' );
-				param.insertAtStart( ref );
+				code.insert( param.start, ref );
 
 				let lastIndex = param.start;
 

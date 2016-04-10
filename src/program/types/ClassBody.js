@@ -18,7 +18,7 @@ export default class ClassBody extends Node {
 
 		const methods = this.body.filter( node => node.kind !== 'constructor' );
 
-		this.insertAtStart( `function ${name} ` );
+		code.insert( this.start, `function ${name} ` );
 		if ( constructor ) {
 			code.remove( constructor.start, constructor.value.start );
 			constructor.value.moveTo( this.start );
@@ -27,16 +27,16 @@ export default class ClassBody extends Node {
 				`() {\n${indentation}${indentStr}${indentStr}${superName}.apply(this, arguments);\n${indentation}${indentStr}}` :
 				`() {}`;
 
-			this.insertAtStart( body );
+			code.insert( this.start, body );
 		}
 
-		if ( !inFunctionExpression ) this.insertAtStart( ';' );
+		if ( !inFunctionExpression ) code.insert( this.start, ';' );
 
-		if ( superName || methods.length ) this.insertAtStart( `\n\n${indentation}` );
+		if ( superName || methods.length ) code.insert( this.start, `\n\n${indentation}` );
 
 		if ( this.parent.superClass ) {
-			this.insertAtStart( `${indentStr}${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${indentation + indentStr}${name}.prototype.constructor = ${name};` );
-			if ( !constructor ) this.insertAtStart( `\n\n${indentation + indentStr}` );
+			code.insert( this.start, `${indentStr}${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${indentation + indentStr}${name}.prototype.constructor = ${name};` );
+			if ( !constructor ) code.insert( this.start, `\n\n${indentation + indentStr}` );
 		}
 
 		methods.forEach( method => {
@@ -46,8 +46,8 @@ export default class ClassBody extends Node {
 				`${name}.${method.key.name}` :
 				`${name}.prototype.${method.key.name}`;
 
-			method.insertAtStart( `${lhs} = function ` );
-			method.insertAtEnd( ';' );
+			code.insert( method.start, `${lhs} = function ` );
+			code.insert( method.end, ';' );
 
 			// prevent function name shadowing an existing declaration
 			const scope = this.findScope( false );

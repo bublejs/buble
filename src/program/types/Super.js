@@ -31,10 +31,10 @@ export default class Super extends Node {
 		const callExpression = this.isCalled ? this.parent : this.parent.parent;
 
 		if ( callExpression && callExpression.type === 'CallExpression' ) {
-			callExpression.callee.insertAtEnd( '.call' );
+			code.insert( callExpression.callee.end, '.call' );
 
 			if ( callExpression.arguments.length ) {
-				callExpression.arguments[0].insertAtStart( `this, ` );
+				code.insert( callExpression.arguments[0].start, `this, ` );
 			} else {
 				code.insert( callExpression.end - 1, `this` );
 			}

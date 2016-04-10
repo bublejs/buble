@@ -24,9 +24,9 @@ export default class VariableDeclarator extends Node {
 			const name = simple ? this.init.name : this.findScope( true ).createIdentifier( 'ref' );
 
 			if ( !simple ) {
-				this.insertAtStart( `${name} = ` );
+				code.insert( this.start, `${name} = ` );
 				this.init.moveTo( this.start );
-				this.insertAtStart( `, ` );
+				code.insert( this.start, `, ` );
 			} else {
 				this.init.remove();
 			}

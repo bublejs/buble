@@ -24,8 +24,8 @@ export default class ClassDeclaration extends Node {
 			``;
 
 		code.remove( this.start, this.body.start );
-		this.insertAtStart( intro );
-		this.insertAtEnd( outro );
+		code.insert( this.start, intro );
+		code.insert( this.end, outro );
 
 		if ( !this.superClass ) deindent( this.body, code );
 

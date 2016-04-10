@@ -18,6 +18,6 @@ export default class ClassExpression extends Node {
 
 		this.body.transpile( code, true );
 
-		this.insertAtEnd( `\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(${superName || ''}))` );
+		code.insert( this.end, `\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(${superName || ''}))` );
 	}
 }
