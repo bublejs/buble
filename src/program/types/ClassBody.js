@@ -20,18 +20,24 @@ export default class ClassBody extends Node {
 		}
 
 		if ( constructor ) {
+			const previousMethod = this.body[ constructorIndex - 1 ];
+			const nextMethod = this.body[ constructorIndex + 1 ];
+
 			// ensure constructor is first
 			if ( constructorIndex > 0 ) {
-				const previousMethod = this.body[ constructorIndex - 1 ];
-				const nextMethod = this.body[ constructorIndex + 1 ];
-
 				code.remove( previousMethod.end, constructor.start );
 				code.move( constructor.start, nextMethod ? nextMethod.start : this.end - 1, this.body[0].start );
 			}
 
 			if ( !inFunctionExpression ) code.insert( constructor.end, ';' );
 
-			if ( constructorIndex > 0 ) code.insert( constructor.end, `\n\n${indentation}` );
+			if ( constructorIndex > 0 ) {
+				if ( nextMethod ) {
+					code.insert( nextMethod.start, `\n\n${indentation}` );
+				} else {
+					code.insert( constructor.end, `\n\n${indentation}` );
+				}
+			}
 		} else {
 			const fn = `function ${name} () {` + ( superName ?
 				`\n${indentation}${indentStr}${superName}.apply(this, arguments);\n${indentation}}` :
