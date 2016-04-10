@@ -16,14 +16,9 @@ export default function Scope ( options ) {
 	this.functionScope = scope;
 
 	this.declarations = Object.create( null );
-	this.allDeclarations = this.isBlockScope ? null : Object.create( null );
+	this.references = Object.create( null );
+	this.blockScopedDeclarations = this.isBlockScope ? null : Object.create( null );
 	this.aliases = this.isBlockScope ? null : Object.create( null );
-
-	if ( options.params ) {
-		options.params.forEach( node => {
-			this.addDeclaration( node, 'param' );
-		});
-	}
 }
 
 Scope.prototype = {
@@ -37,9 +32,21 @@ Scope.prototype = {
 			const declaration = { node, kind, instances: [] };
 			this.declarations[ name ] = declaration;
 
-			if ( !this.functionScope.allDeclarations[ name ] ) this.functionScope.allDeclarations[ name ] = [];
-			this.functionScope.allDeclarations[ name ].push( declaration );
+			if ( this.isBlockScope ) {
+				if ( !this.functionScope.blockScopedDeclarations[ name ] ) this.functionScope.blockScopedDeclarations[ name ] = [];
+				this.functionScope.blockScopedDeclarations[ name ].push( declaration );
+			}
 		});
+	},
+
+	addReference ( identifier ) {
+		const declaration = this.declarations[ identifier.name ];
+		if ( declaration ) {
+			declaration.instances.push( identifier );
+		} else {
+			this.references[ identifier.name ] = true;
+			if ( this.parent ) this.parent.addReference( identifier );
+		}
 	},
 
 	contains ( name ) {
@@ -51,7 +58,7 @@ Scope.prototype = {
 		let name = base;
 		let counter = 1;
 
-		while ( this.allDeclarations[ name ] || this.aliases[ name ] || name in reserved ) {
+		while ( this.declarations[ name ] || this.references[ name ] || this.aliases[ name ] || name in reserved ) {
 			name = `${base}$${counter++}`;
 		}
 

@@ -4,7 +4,8 @@ import wrap from './wrap.js';
 const statementsWithBlocks = {
 	IfStatement: 'consequent',
 	ForStatement: 'body',
-	WhileStatement: 'body'
+	WhileStatement: 'body',
+	ArrowFunctionExpression: 'body'
 };
 
 export default class Node {

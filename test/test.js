@@ -498,6 +498,56 @@ describe( 'buble', () => {
 					console.log( foo );
 				}` );
 		});
+
+		it( 'deconflicts across multiple function boundaries', () => {
+			var source = `
+				function foo ( x ) {
+					return function () {
+						if ( true ) {
+							const x = 'y';
+							console.log( x );
+						}
+
+						console.log( x );
+					};
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				function foo ( x ) {
+					return function () {
+						if ( true ) {
+							var x$1 = 'y';
+							console.log( x$1 );
+						}
+
+						console.log( x );
+					};
+				}` );
+		});
+
+		it( 'does not deconflict unnecessarily', () => {
+			var source = `
+				function foo ( x ) {
+					return function () {
+						if ( true ) {
+							const x = 'y';
+							console.log( x );
+						}
+					};
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				function foo ( x ) {
+					return function () {
+						if ( true ) {
+							var x = 'y';
+							console.log( x );
+						}
+					};
+				}` );
+		});
 	});
 
 	describe( 'classes', () => {

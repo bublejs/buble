@@ -3,7 +3,6 @@ import BlockStatement from './BlockStatement.js';
 
 export default function Program ( source, ast ) {
 	this.type = 'Root';
-	this.assumedGlobals = Object.create( null );
 
 	this.source = source;
 	this.magicString = new MagicString( source );

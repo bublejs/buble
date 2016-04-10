@@ -8,9 +8,14 @@ export default class BlockStatement extends Node {
 		this.isFunctionBlock = this.parentIsFunction || this.parent.type === 'Root';
 		this.scope = new Scope({
 			block: !this.isFunctionBlock,
-			parent: this.parent.findScope( false ),
-			params: this.parentIsFunction ? this.parent.params : null
+			parent: this.parent.findScope( false )
 		});
+
+		if ( this.parentIsFunction ) {
+			this.parent.params.forEach( node => {
+				this.scope.addDeclaration( node, 'param' );
+			});
+		}
 	}
 
 	initialise () {
@@ -209,15 +214,18 @@ export default class BlockStatement extends Node {
 		}
 
 		if ( this.isFunctionBlock ) {
-			Object.keys( this.scope.allDeclarations ).forEach( name => {
-				const declarations = this.scope.allDeclarations[ name ];
-				for ( let i = 1; i < declarations.length; i += 1 ) {
+			Object.keys( this.scope.blockScopedDeclarations ).forEach( name => {
+				const declarations = this.scope.blockScopedDeclarations[ name ];
+
+				for ( let i = 0; i < declarations.length; i += 1 ) {
 					const declaration = declarations[i];
 					const alias = this.scope.createIdentifier( name );
 
-					declaration.instances.forEach( identifier => {
-						this.program.magicString.overwrite( identifier.start, identifier.end, alias );
-					});
+					if ( name !== alias ) {
+						declaration.instances.forEach( identifier => {
+							this.program.magicString.overwrite( identifier.start, identifier.end, alias );
+						});
+					}
 				}
 			});
 		}
