@@ -809,19 +809,9 @@ describe( 'buble', () => {
 				}());` );
 		});
 
-		it( 'allows constructor to be in middle or end of body', () => {
+		it( 'allows constructor to be in middle of body', () => {
 			var source = `
 				class Foo {
-					before () {
-						// code goes here
-					}
-
-					constructor () {
-						// constructor goes here
-					}
-				}
-
-				class Bar {
 					before () {
 						// code goes here
 					}
@@ -845,15 +835,30 @@ describe( 'buble', () => {
 					// code goes here
 				};
 
-				var Bar = function Bar () {
+				Foo.prototype.after = function after () {
+					// code goes here
+				};` );
+		});
+
+		it( 'allows constructor to be at end of body', () => {
+			var source = `
+				class Foo {
+					before () {
+						// code goes here
+					}
+
+					constructor () {
+						// constructor goes here
+					}
+				}`;
+			var result = buble.transform( source ).code;
+
+			assert.equal( result, `
+				var Foo = function Foo () {
 					// constructor goes here
 				};
 
-				Bar.prototype.before = function before () {
-					// code goes here
-				};
-
-				Bar.prototype.after = function after () {
+				Foo.prototype.before = function before () {
 					// code goes here
 				};` );
 		});

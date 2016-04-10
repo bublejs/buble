@@ -12,6 +12,13 @@ export default class ClassBody extends Node {
 		const constructorIndex = this.body.findIndex( node => node.kind === 'constructor' );
 		const constructor = this.body[ constructorIndex ];
 
+		if ( this.body.length ) {
+			code.remove( this.start, this.body[0].start );
+			code.remove( this.body[ this.body.length - 1 ].end, this.end );
+		} else {
+			code.remove( this.start, this.end );
+		}
+
 		if ( constructor ) {
 			// ensure constructor is first
 			if ( constructorIndex > 0 ) {
@@ -23,6 +30,8 @@ export default class ClassBody extends Node {
 			}
 
 			if ( !inFunctionExpression ) code.insert( constructor.end, ';' );
+
+			if ( constructorIndex > 0 ) code.insert( constructor.end, `\n\n${indentation}` );
 		} else {
 			const fn = `function ${name} () {` + ( superName ?
 				`\n${indentation}${indentStr}${superName}.apply(this, arguments);\n${indentation}}` :
@@ -61,13 +70,6 @@ export default class ClassBody extends Node {
 				code.overwrite( method.key.start, method.key.end, scope.createIdentifier( method.key.name ), true );
 			}
 		});
-
-		if ( this.body.length ) {
-			code.remove( this.start, this.body[0].start );
-			code.remove( this.body[ this.body.length - 1 ].end, this.end );
-		} else {
-			code.remove( this.start, this.end );
-		}
 
 		super.transpile( code );
 	}
