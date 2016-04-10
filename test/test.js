@@ -12,10 +12,10 @@ assert.equal = function ( a, b, message ) {
 
 function showInvisibles ( str ) {
 	return str
-		.replace( /^\t+/gm, tabs => repeat( chalk.gray( '›   ' ), tabs.length ) )
-		.replace( /\t+$/gm, tabs => repeat( chalk.gray( '›   ' ), tabs.length ) )
-		.replace( /^ +/gm, spaces => repeat( chalk.gray( '•' ), spaces.length ) )
-		.replace( / +$/gm, spaces => repeat( chalk.gray( '•' ), spaces.length ) );
+		.replace( /^ +/gm, spaces => repeat( '•', spaces.length ) )
+		.replace( / +$/gm, spaces => repeat( '•', spaces.length ) )
+		.replace( /^\t+/gm, tabs => repeat( '›   ', tabs.length ) )
+		.replace( /\t+$/gm, tabs => repeat( '›   ', tabs.length ) );
 }
 
 function repeat ( str, times ) {

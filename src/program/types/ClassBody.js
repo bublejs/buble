@@ -1,5 +1,4 @@
 import Node from '../Node.js';
-import deindent from '../../utils/deindent.js';
 
 // TODO this code is pretty wild, tidy it up
 export default class ClassBody extends Node {
@@ -14,6 +13,10 @@ export default class ClassBody extends Node {
 
 		const constructorIndex = this.body.findIndex( node => node.kind === 'constructor' );
 		const constructor = this.body[ constructorIndex ];
+
+		// if ( constructorIndex > 0 ) {
+		// 	magicString.remove( this.body[ constructorIndex - 1 ].end, constructor.start );
+		// }
 
 		const methods = this.body.filter( node => node.kind !== 'constructor' );
 

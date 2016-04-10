@@ -42,6 +42,7 @@
   },
   "homepage": "https://gitlab.com/Rich-Harris/buble#README",
   "devDependencies": {
+    "chalk": "^1.1.3",
     "eslint": "^2.6.0",
     "mocha": "^2.4.5",
     "rollup": "^0.25.8",
