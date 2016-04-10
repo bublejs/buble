@@ -1,5 +1,4 @@
 var assert = require( 'assert' );
-var chalk = require( 'chalk' );
 var buble = require( '../dist/buble.umd.js' );
 
 // require( 'source-map-support' ).install();
