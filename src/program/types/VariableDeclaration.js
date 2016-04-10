@@ -8,7 +8,7 @@ export default class VariableDeclaration extends Node {
 
 	transpile ( code ) {
 		if ( this.kind !== 'var' ) {
-			code.overwrite( this.start, this.start + this.kind.length, 'var' );
+			code.overwrite( this.start, this.start + this.kind.length, 'var', true );
 		}
 
 		this.declarations.forEach( declarator => declarator.transpile( code ) );

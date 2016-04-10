@@ -10,5 +10,5 @@ export function transform ( source, options ) {
 
 	var program = new Program( source, ast );
 
-	return program.export();
+	return program.export( options );
 }

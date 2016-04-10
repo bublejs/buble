@@ -17,10 +17,14 @@ export default function Program ( source, ast ) {
 }
 
 Program.prototype = {
-	export () {
+	export ( options = {} ) {
 		return {
 			code: this.magicString.toString(),
-			map: this.magicString.generateMap()
+			map: this.magicString.generateMap({
+				file: options.file,
+				source: options.source,
+				includeContent: options.includeContent !== false
+			})
 		};
 	},
 

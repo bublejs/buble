@@ -36,6 +36,9 @@ export default class Node {
 		this.keys.forEach( key => {
 			this[ key ] = wrap( raw[ key ], this );
 		});
+
+		this.program.magicString.addSourcemapLocation( this.start );
+		this.program.magicString.addSourcemapLocation( this.end );
 	}
 
 	findChildren ( type ) {

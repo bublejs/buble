@@ -1,13 +1,13 @@
 var assert = require( 'assert' );
+var SourceMapConsumer = require( 'source-map' ).SourceMapConsumer;
+var getLocation = require( './utils/getLocation.js' );
 var buble = require( '../dist/buble.umd.js' );
 
 // require( 'source-map-support' ).install();
 
-// monkey-patch assert.equal
-var equal = assert.equal;
-assert.equal = function ( a, b, message ) {
-	return equal( showInvisibles( a ), showInvisibles( b ), message );
-};
+function equal ( a, b ) {
+	assert.equal( showInvisibles( a ), showInvisibles( b ) );
+}
 
 function showInvisibles ( str ) {
 	return str
@@ -29,21 +29,21 @@ describe( 'buble', () => {
 			var source = `var answer = () => 42`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var answer = function () { return 42; }` );
+			equal( result, `var answer = function () { return 42; }` );
 		});
 
 		it( 'transpiles an arrow function with a naked parameter', () => {
 			var source = `var double = x => x * 2`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var double = function ( x ) { return x * 2; }` );
+			equal( result, `var double = function ( x ) { return x * 2; }` );
 		});
 
 		it( 'transpiles an arrow function with parenthesised parameters', () => {
 			var source = `var add = ( a, b ) => a + b`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var add = function ( a, b ) { return a + b; }` );
+			equal( result, `var add = function ( a, b ) { return a + b; }` );
 		});
 
 		it( 'transpiles an arrow function with a body', () => {
@@ -54,7 +54,7 @@ describe( 'buble', () => {
 
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var add = function ( a, b ) {
 					return a + b;
 				};` );
@@ -67,7 +67,7 @@ describe( 'buble', () => {
 
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var this$1 = this;
 
 				this.foo = 'bar';
@@ -79,17 +79,17 @@ describe( 'buble', () => {
 				function firstArgument () {
 					return () => arguments[0];
 				}
-				assert.equal( firstArgument( 1, 2, 3 )(), 1 )`;
+				equal( firstArgument( 1, 2, 3 )(), 1 )`;
 
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function firstArgument () {
 					var arguments$1 = arguments;
 
 					return function () { return arguments$1[0]; };
 				}
-				assert.equal( firstArgument( 1, 2, 3 )(), 1 )` );
+				equal( firstArgument( 1, 2, 3 )(), 1 )` );
 		});
 
 		it( 'only adds one `this` or `arguments` per context', () => {
@@ -99,11 +99,11 @@ describe( 'buble', () => {
 						return () => this * arguments[0];
 					};
 				}
-				assert.equal( multiply.call( 2, 3 )()(), 6 )`;
+				equal( multiply.call( 2, 3 )()(), 6 )`;
 
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function multiply () {
 					var arguments$1 = arguments;
 					var this$1 = this;
@@ -112,7 +112,7 @@ describe( 'buble', () => {
 						return function () { return this$1 * arguments$1[0]; };
 					};
 				}
-				assert.equal( multiply.call( 2, 3 )()(), 6 )` );
+				equal( multiply.call( 2, 3 )()(), 6 )` );
 		});
 	});
 
@@ -121,7 +121,7 @@ describe( 'buble', () => {
 			var source = `obj = { x, y }`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `obj = { x: x, y: y }` );
+			equal( result, `obj = { x: x, y: y }` );
 		});
 
 		it( 'transpiles shorthand methods', () => {
@@ -130,7 +130,7 @@ describe( 'buble', () => {
 			}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `obj = {
+			equal( result, `obj = {
 				foo: function () { return 42; }
 			}` );
 		});
@@ -149,35 +149,35 @@ describe( 'buble', () => {
 			var source = 'var str = `foo${bar}baz`;';
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var str = "foo" + bar + "baz";` );
+			equal( result, `var str = "foo" + bar + "baz";` );
 		});
 
 		it( 'handles arbitrary whitespace inside template elements', () => {
 			var source = 'var str = `foo${ bar }baz`;';
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var str = "foo" + bar + "baz";` );
+			equal( result, `var str = "foo" + bar + "baz";` );
 		});
 
 		it( 'transpiles an untagged template literal containing complex expressions', () => {
 			var source = 'var str = `foo${bar + baz}qux`;';
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var str = "foo" + (bar + baz) + "qux";` );
+			equal( result, `var str = "foo" + (bar + baz) + "qux";` );
 		});
 
 		it( 'transpiles a template literal containing single quotes', () => {
 			var source = "var singleQuote = `'`;";
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var singleQuote = "'";` );
+			equal( result, `var singleQuote = "'";` );
 		});
 
 		it( 'transpiles a template literal containing double quotes', () => {
 			var source = 'var doubleQuote = `"`;';
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var doubleQuote = "\\"";` );
+			equal( result, `var doubleQuote = "\\"";` );
 		});
 
 		it( 'does not transpile tagged template literals', () => {
@@ -190,14 +190,14 @@ describe( 'buble', () => {
 			var source = 'var str = `x${y}`.toUpperCase();';
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, 'var str = ("x" + y).toUpperCase();' );
+			equal( result, 'var str = ("x" + y).toUpperCase();' );
 		});
 
 		it( 'does not parenthesise template strings in arithmetic expressions', () => {
 			var source = 'var str = `x${y}` + z; var str2 = `x${y}` * z;';
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, 'var str = "x" + y + z; var str2 = ("x" + y) * z;' );
+			equal( result, 'var str = "x" + y + z; var str2 = ("x" + y) * z;' );
 		});
 	});
 
@@ -206,7 +206,7 @@ describe( 'buble', () => {
 			var source = `let x = 'y';`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var x = 'y';` );
+			equal( result, `var x = 'y';` );
 		});
 
 		it( 'deconflicts blocks in top-level scope', () => {
@@ -223,7 +223,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				if ( a ) {
 					var x = 1;
 					console.log( x );
@@ -253,7 +253,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var x = 'y';
 				function foo () {
 					if ( a ) {
@@ -283,7 +283,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function log ( square ) {
 					console.log( square );
 				}
@@ -303,7 +303,7 @@ describe( 'buble', () => {
 				for ( let i = 0; i < 10; i += 1 ) setTimeout( () => console.log( i ), i * 100 );`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var forLoop = function ( i ) {
 					setTimeout( function () { return console.log( i ); }, i * 100 );
 				};
@@ -319,7 +319,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				for ( var i = 0; i < 10; i += 1 ) {
 					var square = i * i;
 					console.log( square );
@@ -331,7 +331,7 @@ describe( 'buble', () => {
 				for ( let i = 0; i < 10; i += 1 ) console.log( i );`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				for ( var i = 0; i < 10; i += 1 ) console.log( i );` );
 		});
 
@@ -372,7 +372,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var foo = 'x';
 				if ( true ) {
 					var foo$1 = 'y';
@@ -391,7 +391,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				import foo from './foo.js';
 
 				if ( x ) {
@@ -410,7 +410,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				import { foo } from './foo.js';
 
 				if ( x ) {
@@ -429,7 +429,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function foo () {}
 
 				if ( x ) {
@@ -448,7 +448,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var bar = function foo () {};
 
 				if ( x ) {
@@ -467,7 +467,7 @@ describe( 'buble', () => {
 				};`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var bar = function foo () {
 					if ( x ) {
 						var foo$1 = 'y';
@@ -486,7 +486,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function bar ( foo ) {
 					if ( x ) {
 						var foo$1 = 'y';
@@ -505,7 +505,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var foo = function foo () {};
 
 				if ( x ) {
@@ -524,7 +524,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var bar = (function () {
 					function foo () {}
 
@@ -551,7 +551,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function foo ( x ) {
 					return function () {
 						if ( true ) {
@@ -576,7 +576,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function foo ( x ) {
 					return function () {
 						if ( true ) {
@@ -598,7 +598,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = function Foo ( answer ) {
 					this.answer = answer;
 				};` );
@@ -617,7 +617,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = function Foo ( answer ) {
 					this.answer = answer;
 				};
@@ -636,7 +636,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = function Foo () {};
 
 				Foo.prototype.bar = function bar ( str ) {
@@ -655,7 +655,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var bar = 'x';
 
 				var Foo = function Foo () {};
@@ -678,7 +678,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = function Foo () {};
 
 				Foo.prototype.bar = function bar ( str ) {
@@ -699,7 +699,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = (function (Bar) {
 					function Foo () {
 						Bar.apply(this, arguments);
@@ -730,7 +730,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = (function (Bar) {
 					function Foo ( x ) {
 						Bar.call( this, x );
@@ -755,7 +755,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = function Foo () {};
 
 				Foo.prototype.bar = function bar () {};
@@ -767,7 +767,7 @@ describe( 'buble', () => {
 			var source = `class Foo {}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var Foo = function Foo () {};` );
+			equal( result, `var Foo = function Foo () {};` );
 		});
 
 		it( 'transpiles an anonymous empty class expression', function () {
@@ -775,7 +775,7 @@ describe( 'buble', () => {
 				var Foo = class {};`
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = (function () {
 					function Foo () {}
 
@@ -792,7 +792,7 @@ describe( 'buble', () => {
 				};`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = (function () {
 					function Foo ( x ) {
 						this.x = x;
@@ -811,7 +811,7 @@ describe( 'buble', () => {
 				};`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = (function () {
 					function Foo () {}
 
@@ -840,7 +840,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = function Foo () {
 					// constructor goes here
 				};
@@ -867,7 +867,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var Foo = function Foo () {
 					// constructor goes here
 				};
@@ -886,14 +886,14 @@ describe( 'buble', () => {
 			var source = `var { x, y } = point;`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var x = point.x, y = point.y;` );
+			equal( result, `var x = point.x, y = point.y;` );
 		});
 
 		it( 'destructures a non-identifier with an object pattern', () => {
 			var source = `var { x, y } = getPoint();`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var ref = getPoint(), x = ref.x, y = ref.y;` );
+			equal( result, `var ref = getPoint(), x = ref.x, y = ref.y;` );
 		});
 
 		it( 'destructures a parameter with an object pattern', () => {
@@ -903,7 +903,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function pythag ( ref ) {
 					var x = ref.x;
 					var ref_y = ref.y, z = ref_y === void 0 ? 1 : ref_y;
@@ -916,14 +916,14 @@ describe( 'buble', () => {
 			var source = `var [ x, y ] = point;`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var x = point[0], y = point[1];` );
+			equal( result, `var x = point[0], y = point[1];` );
 		});
 
 		it( 'destructures a non-identifier with an array pattern', () => {
 			var source = `var [ x, y ] = getPoint();`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `var ref = getPoint(), x = ref[0], y = ref[1];` );
+			equal( result, `var ref = getPoint(), x = ref[0], y = ref[1];` );
 		});
 
 		it( 'destructures a parameter with an object pattern', () => {
@@ -933,7 +933,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function pythag ( ref ) {
 					var x = ref[0];
 					var ref_1 = ref[1], z = ref_1 === void 0 ? 1 : ref_1;
@@ -961,7 +961,7 @@ describe( 'buble', () => {
 				};`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function foo ( a, b ) {
 					if ( a === void 0 ) a = 1;
 					if ( b === void 0 ) b = 2;
@@ -986,7 +986,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function foo () {
 					var theRest = [], len = arguments.length;
 					while ( len-- ) theRest[ len ] = arguments[ len ];
@@ -1002,7 +1002,7 @@ describe( 'buble', () => {
 				}`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				function foo ( a, b, c ) {
 					var theRest = [], len = arguments.length - 3;
 					while ( len-- > 0 ) theRest[ len ] = arguments[ len + 3 ];
@@ -1019,7 +1019,7 @@ describe( 'buble', () => {
 				var str = '0b111110111';`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var num = 503;
 				var str = '0b111110111';` );
 		});
@@ -1030,9 +1030,145 @@ describe( 'buble', () => {
 				var str = '0o767';`;
 			var result = buble.transform( source ).code;
 
-			assert.equal( result, `
+			equal( result, `
 				var num = 503;
 				var str = '0o767';` );
+		});
+	});
+
+	describe( 'sourcemaps', () => {
+		it( 'generates a valid sourcemap', () => {
+			var map = buble.transform( '' ).map;
+			assert.equal( map.version, 3 );
+		});
+
+		it( 'uses provided file and source', () => {
+			var map = buble.transform( '', {
+				file: 'output.js',
+				source: 'input.js'
+			}).map;
+
+			assert.equal( map.file, 'output.js' );
+			assert.deepEqual( map.sources, [ 'input.js' ] );
+		});
+
+		it( 'includes content by default', () => {
+			var source = `let { x, y } = foo();`;
+			var map = buble.transform( source ).map;
+
+			assert.deepEqual( map.sourcesContent, [ source ] );
+		});
+
+		it( 'excludes content if requested', () => {
+			var source = `let { x, y } = foo();`;
+			var map = buble.transform( source, {
+				includeContent: false
+			}).map;
+
+			assert.deepEqual( map.sourcesContent, [ null ] );
+		});
+
+		it( 'locates original content', () => {
+			var source = `const add = ( a, b ) => a + b;`;
+			var result = buble.transform( source, {
+				file: 'output.js',
+				source: 'input.js'
+			});
+
+			var smc = new SourceMapConsumer( result.map );
+
+			var location = getLocation( result.code, 'add' );
+			var expected = getLocation( source, 'add' );
+
+			var actual = smc.originalPositionFor( location );
+
+			assert.deepEqual( actual, {
+				line: expected.line,
+				column: expected.column,
+				source: 'input.js',
+				name: null
+			});
+
+			location = getLocation( result.code, 'a +' );
+			expected = getLocation( source, 'a +' );
+
+			actual = smc.originalPositionFor( location );
+
+			assert.deepEqual( actual, {
+				line: expected.line,
+				column: expected.column,
+				source: 'input.js',
+				name: null
+			});
+		});
+
+		it( 'recovers names', () => {
+			var source = `
+				const foo = 1;
+				if ( x ) {
+					const foo = 2;
+				}`;
+
+			var result = buble.transform( source, {
+				file: 'output.js',
+				source: 'input.js'
+			});
+			var smc = new SourceMapConsumer( result.map );
+
+			var location = getLocation( result.code, 'var' );
+			var actual = smc.originalPositionFor( location );
+
+			assert.equal( actual.name, 'const' );
+
+			location = getLocation( result.code, 'var', location.char + 1 );
+			actual = smc.originalPositionFor( location );
+
+			assert.equal( actual.name, 'const' );
+
+			location = getLocation( result.code, 'foo$1', location.char + 1 );
+			actual = smc.originalPositionFor( location );
+
+			assert.equal( actual.name, 'foo' );
+		});
+
+		it( 'handles moved content', () => {
+			var source = `
+				for ( let i = 0; i < 10; i += 1 ) {
+					const square = i * i;
+					setTimeout( function () {
+						log( square );
+					}, i * 100 );
+				}`;
+
+			var result = buble.transform( source, {
+				file: 'output.js',
+				source: 'input.js'
+			});
+			var smc = new SourceMapConsumer( result.map );
+
+			var location = getLocation( result.code, 'i < 10' );
+			var expected = getLocation( source, 'i < 10' );
+
+			var actual = smc.originalPositionFor( location );
+
+			assert.deepEqual( actual, {
+				line: expected.line,
+				column: expected.column,
+				source: 'input.js',
+				name: null
+			});
+
+			location = getLocation( result.code, 'setTimeout' );
+			expected = getLocation( source, 'setTimeout' );
+
+			actual = smc.originalPositionFor( location );
+
+			assert.deepEqual( actual, {
+				line: expected.line,
+				column: expected.column,
+				source: 'input.js',
+				name: null
+			});
 		});
 	});
 });
