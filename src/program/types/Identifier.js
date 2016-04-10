@@ -32,7 +32,7 @@ export default class Identifier extends Node {
 
 	transpile () {
 		if ( this.alias ) {
-			this.program.magicString.overwrite( this.start, this.end, this.alias );
+			this.replaceWith( this.alias, true );
 		}
 	}
 }

@@ -103,7 +103,7 @@ export default class BlockStatement extends Node {
 			// object pattern
 			params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
 				const ref = this.scope.createIdentifier( 'ref' );
-				magicString.insert( param.start, ref );
+				param.insertAtStart( ref );
 
 				let lastIndex = param.start;
 
@@ -115,7 +115,7 @@ export default class BlockStatement extends Node {
 					const key = prop.key.name;
 
 					if ( prop.value.type === 'Identifier' ) {
-						magicString.remove( prop.value.start, prop.value.end );
+						prop.value.remove();
 						lastIndex = prop.value.end;
 
 						const value = prop.value.name;
@@ -155,7 +155,7 @@ export default class BlockStatement extends Node {
 					if ( addedStuff ) magicString.insert( start, `\n${this.indentation}` );
 
 					if ( element.type === 'Identifier' ) {
-						magicString.remove( element.start, element.end );
+						element.remove();
 						lastIndex = element.end;
 
 						magicString.insert( start, `var ${element.name} = ${ref}[${i}];` );
@@ -223,7 +223,7 @@ export default class BlockStatement extends Node {
 
 					if ( name !== alias ) {
 						declaration.instances.forEach( identifier => {
-							this.program.magicString.overwrite( identifier.start, identifier.end, alias );
+							identifier.replaceWith( alias, true );
 						});
 					}
 				}

@@ -28,11 +28,11 @@ export default class ClassDeclaration extends Node {
 				magicString.remove( this.constructor.start, this.constructor.value.start );
 				magicString.move( this.constructor.value.start, this.constructor.value.end, this.body.start );
 			} else {
-				magicString.insert( this.body.start, `() {\n${indentation + indentStr + indentStr}${superName}.apply(this, arguments);\n${indentation + indentStr}}` );
+				this.body.insertAtStart( `() {\n${indentation + indentStr + indentStr}${superName}.apply(this, arguments);\n${indentation + indentStr}}` );
 			}
 
-			magicString.insert( this.body.start, `\n\n${indentation + indentStr}${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${indentation + indentStr}${name}.prototype.constructor = ${name};` );
-			if ( !this.constructor ) magicString.insert( this.body.start, `\n\n${indentation + indentStr}` );
+			this.body.insertAtStart( `\n\n${indentation + indentStr}${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${indentation + indentStr}${name}.prototype.constructor = ${name};` );
+			if ( !this.constructor ) this.body.insertAtStart( `\n\n${indentation + indentStr}` );
 		} else {
 			deindent( this.body, magicString );
 
@@ -40,10 +40,10 @@ export default class ClassDeclaration extends Node {
 
 			if ( this.constructor ) {
 				magicString.remove( this.constructor.start, this.constructor.value.start );
-				magicString.move( this.constructor.value.start, this.constructor.value.end, this.body.start );
-				magicString.insert( this.body.start, ';' );
+				this.constructor.value.moveTo( this.body.start );
+				this.body.insertAtStart( ';' );
 			} else {
-				magicString.insert( this.body.start, this.body.body.length ? `() {};\n\n${indentation}` : `() {};` );
+				this.body.insertAtStart( this.body.body.length ? `() {};\n\n${indentation}` : `() {};` );
 			}
 		}
 
@@ -62,20 +62,20 @@ export default class ClassDeclaration extends Node {
 				`${name}.${method.key.name}` :
 				`${name}.prototype.${method.key.name}`;
 
-			magicString.insert( method.start, `${lhs} = function ` );
-			magicString.insert( method.end, ';' );
+			method.insertAtStart( `${lhs} = function ` );
+			method.insertAtEnd( ';' );
 
 			// prevent function name shadowing an existing declaration
 			const scope = this.findScope( false );
 			if ( scope.contains( method.key.name ) ) {
-				magicString.overwrite( method.key.start, method.key.end, scope.createIdentifier( method.key.name ) );
+				method.key.replaceWith( scope.createIdentifier( method.key.name ), true );
 			}
 		});
 
 		magicString.remove( lastIndex, this.end );
 
 		if ( this.superClass ) {
-			magicString.insert( this.end, `\n\n${indentation + indentStr}return ${name};\n${indentation}}(${superName}));` );
+			this.insertAtEnd( `\n\n${indentation + indentStr}return ${name};\n${indentation}}(${superName}));` );
 		}
 
 		super.transpile();

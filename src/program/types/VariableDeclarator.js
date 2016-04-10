@@ -19,18 +19,16 @@ export default class VariableDeclarator extends Node {
 	}
 
 	transpile () {
-
-
 		if ( this.id.type !== 'Identifier' ) {
 			const simple = this.init.type === 'Identifier';
 			const name = simple ? this.init.name : this.findScope( true ).createIdentifier( 'ref' );
 
 			if ( !simple ) {
-				this.program.magicString.insert( this.start, `${name} = ` );
-				this.program.magicString.move( this.init.start, this.init.end, this.start );
-				this.program.magicString.insert( this.start, `, ` );
+				this.insertAtStart( `${name} = ` );
+				this.init.moveTo( this.start );
+				this.insertAtStart( `, ` );
 			} else {
-				this.program.magicString.remove( this.init.start, this.init.end );
+				this.init.remove();
 			}
 
 			const props = this.isObjectPattern ? this.id.properties : this.id.elements;
@@ -39,10 +37,10 @@ export default class VariableDeclarator extends Node {
 
 			props.forEach( this.isObjectPattern ?
 				property => {
-					this.program.magicString.overwrite( property.start, property.end, `${property.value.name} = ${name}.${property.key.name}` );
+					property.replaceWith( `${property.value.name} = ${name}.${property.key.name}` );
 				} :
 				( property, i ) => {
-					this.program.magicString.overwrite( property.start, property.end, `${property.name} = ${name}[${i}]` );
+					property.replaceWith( `${property.name} = ${name}[${i}]` );
 				});
 
 			this.program.magicString.remove( props[ props.length - 1 ].end, this.init.start );

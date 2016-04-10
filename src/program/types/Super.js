@@ -26,21 +26,18 @@ export default class Super extends Node {
 
 	transpile () {
 		const expression = this.isCalled ? this.superClassName : `${this.superClassName}.prototype`;
+		this.replaceWith( expression, true );
+
 		const callExpression = this.isCalled ? this.parent : this.parent.parent;
 
 		if ( callExpression && callExpression.type === 'CallExpression' ) {
-			this.program.magicString.overwrite( this.start, this.end, expression, true );
-			this.program.magicString.insert( callExpression.callee.end, '.call' );
+			callExpression.callee.insertAtEnd( '.call' );
 
 			if ( callExpression.arguments.length ) {
-				this.program.magicString.insert( callExpression.arguments[0].start, `this, ` );
+				callExpression.arguments[0].insertAtStart( `this, ` );
 			} else {
 				this.program.magicString.insert( callExpression.end - 1, `this` );
 			}
-		}
-
-		else {
-			this.program.magicString.overwrite( this.start, this.end, expression );
 		}
 	}
 }
