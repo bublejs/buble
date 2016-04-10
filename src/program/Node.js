@@ -75,7 +75,7 @@ export default class Node {
 			const value = this[ key ];
 
 			if ( Array.isArray( value ) ) {
-				value.forEach( node => node.initialise() );
+				value.forEach( node => node && node.initialise() );
 			} else if ( value && typeof value === 'object' ) {
 				value.initialise();
 			}
@@ -91,7 +91,7 @@ export default class Node {
 			const value = this[ key ];
 
 			if ( Array.isArray( value ) ) {
-				value.forEach( node => node.transpile( code ) );
+				value.forEach( node => node && node.transpile( code ) );
 			} else if ( value && typeof value === 'object' ) {
 				value.transpile( code );
 			}

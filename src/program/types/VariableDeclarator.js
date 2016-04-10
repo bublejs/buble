@@ -8,7 +8,7 @@ export default class VariableDeclarator extends Node {
 		// disallow compound destructuring, for now at least
 		if ( /Pattern/.test( this.id.type ) ) {
 			this.id[ this.isObjectPattern ? 'properties' : 'elements' ].forEach( node => {
-				if ( /Pattern/.test( this.isObjectPattern ? node.value.type : node.type ) ) {
+				if ( node && /Pattern/.test( this.isObjectPattern ? node.value.type : node.type ) ) {
 					unsupported( this, 'Compound destructuring is not supported' );
 				}
 			});
@@ -35,15 +35,21 @@ export default class VariableDeclarator extends Node {
 
 			code.remove( this.start, props[0].start );
 
-			props.forEach( this.isObjectPattern ?
-				property => {
-					code.overwrite( property.start, property.end, `${property.value.name} = ${name}.${property.key.name}` );
-				} :
-				( property, i ) => {
-					code.overwrite( property.start, property.end, `${property.name} = ${name}[${i}]` );
-				});
+			let lastIndex = this.start;
+			let first = true;
 
-			code.remove( props[ props.length - 1 ].end, this.init.start );
+			props.forEach( ( property, i ) => {
+				if ( property ) {
+					const lhs = this.isObjectPattern ? property.value.name : property.name;
+					const rhs = this.isObjectPattern ? `${name}.${property.key.name}` : `${name}[${i}]`;
+
+					code.overwrite( lastIndex, property.end, `${first ? '' : ', '}${lhs} = ${rhs}` );
+					lastIndex = property.end;
+					first = false;
+				}
+			});
+
+			code.remove( lastIndex, this.init.start );
 		}
 
 		super.transpile( code );

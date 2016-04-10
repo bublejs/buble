@@ -35,13 +35,19 @@ module.exports = [
 	},
 
 	{
+		description: 'destructures an identifier with a sparse array pattern',
+		input: `var [ x, , z ] = point;`,
+		output: `var x = point[0], z = point[2];`
+	},
+
+	{
 		description: 'destructures a non-identifier with an array pattern',
 		input: `var [ x, y ] = getPoint();`,
 		output: `var ref = getPoint(), x = ref[0], y = ref[1];`
 	},
 
 	{
-		description: 'destructures a parameter with an object pattern',
+		description: 'destructures a parameter with an array pattern',
 
 		input: `
 			function pythag ( [ x, z = 1 ] ) {

@@ -5,7 +5,7 @@ var SourceMapConsumer = require( 'source-map' ).SourceMapConsumer;
 var getLocation = require( './utils/getLocation.js' );
 var buble = require( '../dist/buble.umd.js' );
 
-// require( 'source-map-support' ).install();
+require( 'source-map-support' ).install();
 
 function equal ( a, b ) {
 	assert.equal( showInvisibles( a ), showInvisibles( b ) );
@@ -31,7 +31,7 @@ describe( 'buble', () => {
 
 		describe( path.basename( file ), () => {
 			samples.forEach( sample => {
-				it( sample.description, () => {
+				( sample.solo ? it.only : it )( sample.description, () => {
 					if ( sample.error ) {
 						assert.throws( () => {
 							buble.transform( sample.input );
