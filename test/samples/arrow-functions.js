@@ -2,7 +2,7 @@ module.exports = [
 	{
 		description: 'transpiles an arrow function',
 		input: `var answer = () => 42`,
-		output: `var answer = function () { return 42; }`
+		output: `var answer = function () { return 42; } // nope`
 	},
 
 	{
