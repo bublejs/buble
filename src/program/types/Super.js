@@ -1,26 +1,26 @@
 import Node from '../Node.js';
+import CompileError from '../../utils/CompileError.js';
 
 export default class Super extends Node {
 	initialise () {
 		this.method = this.findNearest( 'MethodDefinition' );
-		this.superClassName = this.findNearest( 'ClassBody' ).parent.superClass.name;
+		if ( !this.method ) throw new CompileError( this, 'use of super outside class method' );
 
-		if ( !this.method ) {
-			throw new Error( 'super outside method' ); // TODO location etc
-		}
+		const parentClass = this.findNearest( 'ClassBody' ).parent;
+		this.superClassName = parentClass.superClass && parentClass.superClass.name;
 
-		this.isCalled = this.parent.type === 'CallExpression';
+		if ( !this.superClassName ) throw new CompileError( this, 'super used in base class' );
 
-		if ( this.method.kind === 'constructor' ) {
-			if ( !this.isCalled ) throw new Error( 'super cannot be referred to in constructor outside a call expression' ); // TODO this is cryptic
-		} else {
-			if ( this.isCalled ) throw new Error( 'super() not allowed outside class constructor' );
+		this.isCalled = this.parent.type === 'CallExpression' && this === this.parent.callee;
+
+		if ( this.method.kind !== 'constructor' && this.isCalled ) {
+			throw new CompileError( this, 'super() not allowed outside class constructor' );
 		}
 
 		this.isMember = this.parent.type === 'MemberExpression';
 
 		if ( !this.isCalled && !this.isMember ) {
-			throw new Error( 'Unexpected use of `super` (expected `super(...)` or `super.*`)' );
+			throw new CompileError( this, 'Unexpected use of `super` (expected `super(...)` or `super.*`)' );
 		}
 	}
 

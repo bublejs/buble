@@ -12,7 +12,16 @@ export default function Program ( source, ast ) {
 
 	this.body = new BlockStatement( ast, this );
 
+	this.templateElements = [];
 	this.body.initialise();
+
+	this.indentExclusions = {};
+	this.templateElements.forEach( node => {
+		for ( let i = node.start; i < node.end; i += 1 ) {
+			this.indentExclusions[ node.start + i ] = true;
+		}
+	});
+
 	this.body.transpile( this.magicString );
 }
 

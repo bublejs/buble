@@ -1,8 +1,8 @@
 import Node from '../Node.js';
-import unsupported from '../../utils/unsupported.js';
+import CompileError from '../../utils/CompileError.js';
 
 export default class TaggedTemplateExpression extends Node {
 	initialise () {
-		unsupported( this, 'Tagged template expressions are not supported' );
+		throw new CompileError( this.tag, 'Tagged template expressions are not supported' );
 	}
 }

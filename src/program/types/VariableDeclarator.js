@@ -1,5 +1,5 @@
 import Node from '../Node.js';
-import unsupported from '../../utils/unsupported.js';
+import CompileError from '../../utils/CompileError.js';
 
 export default class VariableDeclarator extends Node {
 	initialise () {
@@ -9,7 +9,7 @@ export default class VariableDeclarator extends Node {
 		if ( /Pattern/.test( this.id.type ) ) {
 			this.id[ this.isObjectPattern ? 'properties' : 'elements' ].forEach( node => {
 				if ( node && /Pattern/.test( this.isObjectPattern ? node.value.type : node.type ) ) {
-					unsupported( this, 'Compound destructuring is not supported' );
+					throw new CompileError( node.value, 'Compound destructuring is not supported' );
 				}
 			});
 		}

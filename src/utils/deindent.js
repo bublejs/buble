@@ -9,13 +9,6 @@ export default function deindent ( node, code ) {
 	const indentStr = code.getIndentString();
 	const pattern = new RegExp( indentStr + '\\S', 'g' );
 
-	let isExcluded = {};
-	node.findChildren( 'TemplateLiteral' ).forEach( node => {
-		for ( let i = node.start; i < node.end; i += 1 ) {
-			isExcluded[i] = true;
-		}
-	});
-
 	if ( code.original.slice( start - indentStr.length, start ) === indentStr ) {
 		code.remove( start - indentStr.length, start );
 	}
@@ -23,6 +16,6 @@ export default function deindent ( node, code ) {
 	const slice = code.original.slice( start, end );
 	let match;
 	while ( match = pattern.exec( slice ) ) {
-		if ( !isExcluded[ match.index ] ) code.remove( start + match.index, start + match.index + indentStr.length );
+		if ( !node.program.indentExclusions[ match.index ] ) code.remove( start + match.index, start + match.index + indentStr.length );
 	}
 }

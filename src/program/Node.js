@@ -41,16 +41,6 @@ export default class Node {
 		this.program.magicString.addSourcemapLocation( this.end );
 	}
 
-	findChildren ( type ) {
-		let children = [];
-		walk( this, {
-			enter ( node ) {
-				if ( node.type === type ) children.push( node );
-			}
-		});
-		return children;
-	}
-
 	findLexicalBoundary () {
 		return this.parent.findLexicalBoundary();
 	}

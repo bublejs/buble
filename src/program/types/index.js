@@ -14,6 +14,7 @@ import Identifier from './Identifier.js';
 import Property from './Property.js';
 import Super from './Super.js';
 import TaggedTemplateExpression from './TaggedTemplateExpression.js';
+import TemplateElement from './TemplateElement.js';
 import TemplateLiteral from './TemplateLiteral.js';
 import ThisExpression from './ThisExpression.js';
 import UpdateExpression from './UpdateExpression.js';
@@ -37,6 +38,7 @@ export default {
 	Property,
 	Super,
 	TaggedTemplateExpression,
+	TemplateElement,
 	TemplateLiteral,
 	ThisExpression,
 	UpdateExpression,

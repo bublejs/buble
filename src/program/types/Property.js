@@ -1,10 +1,10 @@
 import Node from '../Node.js';
-import unsupported from '../../utils/unsupported.js';
+import CompileError from '../../utils/CompileError.js';
 
 export default class Property extends Node {
 	initialise () {
 		if ( this.computed ) {
-			unsupported( this, 'Computed properties are not supported' );
+			throw new CompileError( this.key, 'Computed properties are not supported' );
 		}
 
 		super.initialise();
