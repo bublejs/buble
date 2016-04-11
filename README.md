@@ -50,7 +50,7 @@ Currently:
 
 Bublé only transpiles *language features* – it doesn't attempt to shim or polyfill the environment. If you want to use things like `array.findIndex(...)` or `'x'.repeat(3)` you'll have to bring your own polyfill.
 
-It also refuses to transpile things that result in ES5 code with size or performance hazards, or which are altogether impossible to transpile to ES5.
+It also refuses to transpile things that result in ES5 code with size or performance hazards (subject to change! It might support some of these features in future), or which are altogether impossible to transpile to ES5.
 
 * Computed properties of objects and classes
 * Tagged template strings
@@ -60,6 +60,7 @@ It also refuses to transpile things that result in ES5 code with size or perform
 * Modules (pssst... use [Rollup](rollupjs.org)!)
 * `Map`, `Set`, `WeakMap`, `WeakSet`, `Proxy`, `Symbol`
 * Tail call optimisation
+* Compound destructuring
 
 
 ## Caveats
