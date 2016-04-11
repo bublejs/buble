@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.7
+
+* Add browser version
+
 ## 0.4.6
 
 * Report locations of parse/compile errors ([#4](https://gitlab.com/Rich-Harris/buble/issues/4))
