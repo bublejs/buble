@@ -1,12 +1,12 @@
 import Node from '../Node.js';
+import CompileError from '../../utils/CompileError.js';
 
 export default class AssignmentExpression extends Node {
 	initialise () {
 		if ( this.left.type === 'Identifier' ) {
 			const declaration = this.findScope( false ).findDeclaration( this.left.name );
 			if ( declaration && declaration.kind === 'const' ) {
-				// TODO location etc
-				throw new Error( `${this.left.name} is read-only` );
+				throw new CompileError( this.left, `${this.left.name} is read-only` );
 			}
 		}
 

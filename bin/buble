@@ -9,6 +9,14 @@ if ( args.length !== 1 ) {
 }
 
 var source = fs.readFileSync( args[0], 'utf-8' );
-var result = buble.transform( source ).code;
 
-console.log( result );
+try {
+	var result = buble.transform( source ).code;
+	console.log( result );
+} catch ( err ) {
+	console.error( err.message );
+	if ( err.snippet ) console.error( '---\n' + err.snippet );
+	if ( err.stack ) console.error( err.stack );
+
+	process.exit( 1 );
+}

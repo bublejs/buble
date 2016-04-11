@@ -46,6 +46,35 @@ describe( 'buble', () => {
 		});
 	});
 
+	describe( 'errors', () => {
+		it( 'reports the location of a syntax error', () => {
+			var source = `var 42 = nope;`;
+
+			try {
+				buble.transform( source );
+			} catch ( err ) {
+				assert.equal( err.name, 'SyntaxError' );
+				assert.deepEqual( err.loc, { line: 1, column: 4 });
+				assert.equal( err.message, 'Unexpected token (1:4)' );
+				assert.equal( err.snippet, `1 : var 42 = nope;\n        ^` );
+			}
+		});
+
+		it( 'reports the location of a compile error', () => {
+			var source = `const x = 1; x++;`;
+
+			try {
+				buble.transform( source );
+			} catch ( err ) {
+				assert.equal( err.name, 'CompileError' );
+				assert.equal( err.loc.line, 1 );
+				assert.equal( err.loc.column, 13 );
+				assert.equal( err.message, 'x is read-only (1:13)' );
+				assert.equal( err.snippet, `1 : const x = 1; x++;\n                 ^^^` );
+			}
+		});
+	});
+
 	describe( 'sourcemaps', () => {
 		it( 'generates a valid sourcemap', () => {
 			var map = buble.transform( '' ).map;
