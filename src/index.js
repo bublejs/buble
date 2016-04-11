@@ -1,4 +1,4 @@
-import { parse } from 'acorn';
+import { parse } from 'acorn/src/index.js';
 import Program from './program/Program.js';
 import getSnippet from './utils/getSnippet.js';
 

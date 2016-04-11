@@ -9,6 +9,9 @@ export default {
 	plugins: [
 		buble({
 			include: [ 'src/**', 'node_modules/acorn/**' ]
+		}),
+		nodeResolve({
+			jsnext: true
 		})
 	],
 	sourceMap: true
