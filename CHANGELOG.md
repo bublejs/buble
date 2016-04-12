@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.4.9
+
+* Support getters and setters on subclasses
+* Disallow unsupported features e.g. generators
+
 ## 0.4.8
 
 * Support getters and setters on classes
