@@ -25,10 +25,11 @@ export default class ClassDeclaration extends Node {
 
 		code.remove( this.start, this.body.start );
 		code.insert( this.start, intro );
+
+		this.body.transpile( code, !!this.superClass );
+
 		code.insert( this.end, outro );
 
 		if ( !this.superClass ) deindent( this.body, code );
-
-		this.body.transpile( code, !!this.superClass );
 	}
 }
