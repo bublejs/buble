@@ -59,7 +59,7 @@ It also refuses to transpile things that result in ES5 code with size or perform
 * Iterators
 * Generators
 * Regex unicode flag
-* Modules (pssst... use [Rollup](rollupjs.org)!)
+* Modules (pssst... use [Rollup](http://rollupjs.org)!)
 * `Map`, `Set`, `WeakMap`, `WeakSet`, `Proxy`, `Symbol`
 * Tail call optimisation
 * Compound destructuring
