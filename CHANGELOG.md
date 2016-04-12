@@ -1,5 +1,11 @@
 # buble changelog
 
+## 0.4.8
+
+* Support getters and setters on classes
+* Allow identifiers to be renamed in block-scoped destructuring ([#8](https://gitlab.com/Rich-Harris/buble/issues/8))
+* Transpile body-less arrow functions correctly ([#9](https://gitlab.com/Rich-Harris/buble/issues/4))
+
 ## 0.4.7
 
 * Add browser version
