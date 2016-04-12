@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.11
+
+* Remove source-map-support from CLI (only useful during development)
+
 ## 0.4.10
 
 * Basic support for spread operator
