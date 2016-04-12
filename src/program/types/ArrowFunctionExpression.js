@@ -10,15 +10,46 @@ export default class ArrowFunctionExpression extends Node {
 		if ( this.params.length === 0 ) {
 			code.overwrite( this.start, this.body.start, 'function () ' );
 		} else {
-			code.overwrite( this.start, this.params[0].start, 'function ( ' );
-			code.overwrite( this.params[ this.params.length - 1 ].end, this.body.start, ' ) ' );
+			code.insert( this.start, 'function ' );
+
+			let parenthesised = false;
+			let charIndex = this.start;
+			while ( charIndex < this.params[0].start ) {
+				if ( code.original[ charIndex ] === '(' ) {
+					parenthesised = true;
+					break;
+				}
+			}
+
+			if ( !parenthesised ) {
+				code.insert( this.start, '( ' );
+			}
+
+			charIndex = this.params[ this.params.length -1 ].end;
+			while ( code.original[ charIndex ] !== '=' ) charIndex += 1;
+
+			// remove the `=> `
+			code.overwrite( charIndex, this.body.start, parenthesised ? '' : ') ' );
 		}
 
 		if ( this.body.synthetic ) {
-			code.insert( this.body.start, '{ return ' );
-			code.insert( this.body.end, '; }' );
+			if ( this.params.find( param => param.type === 'RestElement' || /Pattern/.test( param.type ) ) ) {
+				const indentation = this.getIndentation();
+				code.insert( this.body.start, `{\n${indentation}${code.getIndentString()}` );
+				super.transpile( code );
+				code.insert( this.body.body[0].start, 'return ' );
+				code.insert( this.body.end, `;\n${indentation}}` );
+			}
+
+			else {
+				code.insert( this.body.start, `{ return ` );
+				super.transpile( code );
+				code.insert( this.body.end, `; }` );
+			}
 		}
 
-		super.transpile( code );
+		else {
+			super.transpile( code );
+		}
 	}
 }

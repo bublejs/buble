@@ -84,5 +84,20 @@ module.exports = [
 				};
 			}
 			equal( multiply.call( 2, 3 )()(), 6 )`
+	},
+
+	{
+		description: 'transpiles a body-less arrow function with rest params',
+
+		input: `
+			const sum = ( ...nums ) => nums.reduce( ( t, n ) => t + n, 0 );`,
+
+		output: `
+			var sum = function () {
+				var nums = [], len = arguments.length;
+				while ( len-- ) nums[ len ] = arguments[ len ];
+
+				return nums.reduce( function ( t, n ) { return t + n; }, 0 );
+			};`
 	}
 ];

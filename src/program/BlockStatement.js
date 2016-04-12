@@ -64,7 +64,9 @@ export default class BlockStatement extends Node {
 	transpile ( code ) {
 		const start = this.body[0] ? this.body[0].start : this.start + 1;
 
-		const indentation = this.body.length ? this.body[0].getIndentation() : '';
+		const indentation = this.synthetic ?
+			this.getIndentation() + code.getIndentString() :
+			( this.body.length ? this.body[0].getIndentation() : '' );
 
 		let addedStuff = false;
 
@@ -186,8 +188,12 @@ export default class BlockStatement extends Node {
 				if ( penultimateParam ) {
 					code.remove( penultimateParam ? penultimateParam.end : lastParam.start, lastParam.end );
 				} else {
-					const start = this.parent.id ? this.parent.id.end : /^Function/.test( this.parent.type ) ? this.parent.start + 9 : this.parent.start;
-					code.overwrite( start, this.parent.body.start, ' () ' );
+					let start = lastParam.start, end = lastParam.end; // TODO https://gitlab.com/Rich-Harris/buble/issues/8
+
+					while ( /\s/.test( code.original[ start - 1 ] ) ) start -= 1;
+					while ( /\s/.test( code.original[ end ] ) ) end += 1;
+
+					code.remove( start, end );
 				}
 
 				if ( addedStuff ) code.insert( start, `\n${indentation}` );
