@@ -55,27 +55,58 @@ export default class ClassBody extends Node {
 			}
 		}
 
+		const scope = this.findScope( false );
+
+		let gettersAndSetters = [];
+		let accessors;
+
 		this.body.forEach( method => {
 			if ( method.kind === 'constructor' ) {
 				code.overwrite( method.key.start, method.key.end, `function ${name}` );
 				return;
 			}
 
+			const isAccessor = method.kind === 'get' || method.kind === 'set';
+
+			if ( isAccessor ) {
+				code.remove( method.start, method.key.end );
+
+				if ( !~gettersAndSetters.indexOf( method.key.name ) ) gettersAndSetters.push( method.key.name );
+				if ( !accessors ) accessors = scope.createIdentifier( 'accessors' );
+			}
+
 			if ( method.static ) code.remove( method.start, method.start + 7 );
 
 			const lhs = method.static ?
 				`${name}.${method.key.name}` :
-				`${name}.prototype.${method.key.name}`;
+				method.kind === 'method' ?
+					`${name}.prototype.${method.key.name}` :
+					`${accessors}.${method.key.name}.${method.kind}`;
 
-			code.insert( method.start, `${lhs} = function ` );
+			code.insert( method.start, `${lhs} = function` + ( isAccessor ? '' : ' ' ) );
 			code.insert( method.end, ';' );
 
 			// prevent function name shadowing an existing declaration
-			const scope = this.findScope( false );
 			if ( scope.contains( method.key.name ) ) {
 				code.overwrite( method.key.start, method.key.end, scope.createIdentifier( method.key.name ), true );
 			}
 		});
+
+		if ( gettersAndSetters.length ) {
+			const intro = `var ${accessors} = { ${
+				gettersAndSetters.map( name => `${name}: {}` ).join( ',' )
+			} };`;
+
+			const outro = `Object.defineProperties( ${name}.prototype, ${accessors} );`;
+
+			if ( constructor ) {
+				code.insert( constructor.end, `\n\n${indentation}${intro}` );
+			} else {
+				code.insert( this.start, `${intro}\n\n${indentation}` );
+			}
+
+			code.insert( this.end, `\n\n${indentation}${outro}` );
+		}
 
 		super.transpile( code );
 	}

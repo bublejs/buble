@@ -298,6 +298,42 @@ module.exports = [
 			Foo.prototype.before = function before () {
 				// code goes here
 			};`
+	},
+
+	{
+		description: 'transpiles getters and setters',
+
+		input: `
+			class Circle {
+				constructor ( radius ) {
+					this.radius = radius;
+				}
+
+				get area () {
+					return Math.PI * Math.pow( this.radius, 2 );
+				}
+
+				set area ( area ) {
+					this.radius = Math.sqrt( area / Math.PI );
+				}
+			}`,
+
+		output: `
+			var Circle = function Circle ( radius ) {
+				this.radius = radius;
+			};
+
+			var accessors = { area: {} };
+
+			accessors.area.get = function () {
+				return Math.PI * Math.pow( this.radius, 2 );
+			};
+
+			accessors.area.set = function ( area ) {
+				this.radius = Math.sqrt( area / Math.PI );
+			};
+
+			Object.defineProperties( Circle.prototype, accessors );`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
