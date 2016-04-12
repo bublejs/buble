@@ -2,8 +2,6 @@
 var fs = require( 'fs' );
 var buble = require( '../dist/buble.umd.js' );
 
-require( 'source-map-support' ).install();
-
 var args = process.argv.slice( 2 );
 
 if ( args.length !== 1 ) {
