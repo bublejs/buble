@@ -24,6 +24,18 @@ module.exports = [
 	},
 
 	{
+		skip: true,
+		description: 'transpiles a spread operator in a method call of an expression',
+
+		input: `
+			( foo || bar ).baz( ...values );`,
+
+		output: `
+			var ref;
+			( ref = foo || bar ).baz.apply( ref, values );`
+	},
+
+	{
 		description: 'transpiles a lone spread operator in a function call',
 		input: `log( ...values );`,
 		output: `log.apply( void 0, values );`
@@ -33,6 +45,12 @@ module.exports = [
 		description: 'transpiles a spread operator in a function call with other arguments',
 		input: `sprintf( str, ...values );`,
 		output: `sprintf.apply( void 0, [ str ].concat( values ) );`
+	},
+
+	{
+		description: 'transpiles a spread operator in an expression call',
+		input: `( foo || bar )( ...values );`,
+		output: `( foo || bar ).apply( void 0, values );`
 	}
 
 	// TODO expression callee

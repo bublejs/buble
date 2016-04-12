@@ -13,7 +13,7 @@ export default class CallExpression extends Node {
 				if ( this.callee.object.type === 'Identifier' ) {
 					context = this.callee.object.name;
 				} else {
-					throw new CompileError( 'Calling members of expressions with a spread operator is not currently supported' );
+					throw new CompileError( lastArgument, 'Calling members of expressions with a spread operator is not currently supported' );
 				}
 			} else {
 				context = 'void 0';
