@@ -20,6 +20,6 @@ export default class ArrayExpression extends Node {
 			code.overwrite( charIndex, charIndex + 1, ')' );
 		}
 
-		super.transpile();
+		super.transpile( code );
 	}
 }

@@ -1,11 +1,5 @@
 module.exports = [
 	{
-		description: 'disallows the spread operator (temporarily)',
-		input: `foo( a, b, ...others );`,
-		error: /The spread operator is not currently supported/
-	},
-
-	{
 		description: 'transpiles a lone spread operator',
 		input: `var chars = [ ...string ]`,
 		output: `var chars = [].concat( string )`
@@ -24,7 +18,7 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles a lone spread operator in a method call',
+		description: 'transpiles a spread operator in a method call with other arguments',
 		input: `var max = Math.max( 0, ...values );`,
 		output: `var max = Math.max.apply( Math, [ 0 ].concat( values ) );`
 	},
@@ -40,4 +34,6 @@ module.exports = [
 		input: `sprintf( str, ...values );`,
 		output: `sprintf.apply( void 0, [ str ].concat( values ) );`
 	}
+
+	// TODO expression callee
 ];
