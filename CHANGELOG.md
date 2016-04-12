@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.10
+
+* Basic support for spread operator
+
 ## 0.4.9
 
 * Support getters and setters on subclasses
