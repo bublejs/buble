@@ -1,7 +1,12 @@
 import Node from '../Node.js';
+import CompileError from '../../utils/CompileError.js';
 
 export default class FunctionExpression extends Node {
 	initialise () {
+		if ( this.generator ) {
+			throw new CompileError( this, 'Generators are not supported' );
+		}
+
 		this.body.createScope();
 
 		if ( this.id ) {
