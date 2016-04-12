@@ -1,5 +1,6 @@
-import AssignmentExpression from './AssignmentExpression.js';
+import ArrayExpression from './ArrayExpression.js';
 import ArrowFunctionExpression from './ArrowFunctionExpression.js';
+import AssignmentExpression from './AssignmentExpression.js';
 import ClassBody from './ClassBody.js';
 import ClassDeclaration from './ClassDeclaration.js';
 import ClassExpression from './ClassExpression.js';
@@ -13,7 +14,6 @@ import ImportDefaultSpecifier from './ImportDefaultSpecifier.js';
 import Literal from './Literal.js';
 import Identifier from './Identifier.js';
 import Property from './Property.js';
-import SpreadElement from './SpreadElement.js';
 import Super from './Super.js';
 import TaggedTemplateExpression from './TaggedTemplateExpression.js';
 import TemplateElement from './TemplateElement.js';
@@ -24,8 +24,9 @@ import VariableDeclaration from './VariableDeclaration.js';
 import VariableDeclarator from './VariableDeclarator.js';
 
 export default {
-	AssignmentExpression,
+	ArrayExpression,
 	ArrowFunctionExpression,
+	AssignmentExpression,
 	ClassBody,
 	ClassDeclaration,
 	ClassExpression,
@@ -39,7 +40,6 @@ export default {
 	Literal,
 	Identifier,
 	Property,
-	SpreadElement,
 	Super,
 	TaggedTemplateExpression,
 	TemplateElement,
