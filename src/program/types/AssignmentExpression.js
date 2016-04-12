@@ -10,6 +10,10 @@ export default class AssignmentExpression extends Node {
 			}
 		}
 
+		if ( this.left.type === 'ArrayPattern' ) {
+			throw new CompileError( this.left, 'Assigning to an array pattern is not currently supported' );
+		}
+
 		super.initialise();
 	}
 }

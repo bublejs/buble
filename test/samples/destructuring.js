@@ -73,5 +73,11 @@ module.exports = [
 		description: 'disallows compound destructuring in parameters',
 		input: `function foo ( { a: { b: c } } ) {}`,
 		error: /Compound destructuring is not supported/
+	},
+
+	{
+		description: 'disallows array pattern in assignment (temporary)',
+		input: `[ a, b ] = [ b, a ]`,
+		error: /Assigning to an array pattern is not currently supported/
 	}
 ];

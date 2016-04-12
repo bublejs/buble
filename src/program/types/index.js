@@ -5,6 +5,7 @@ import ClassDeclaration from './ClassDeclaration.js';
 import ClassExpression from './ClassExpression.js';
 import ExportDefaultDeclaration from './ExportDefaultDeclaration.js';
 import ForStatement from './ForStatement.js';
+import ForOfStatement from './ForOfStatement.js';
 import FunctionDeclaration from './FunctionDeclaration.js';
 import FunctionExpression from './FunctionExpression.js';
 import ImportSpecifier from './ImportSpecifier.js';
@@ -12,6 +13,7 @@ import ImportDefaultSpecifier from './ImportDefaultSpecifier.js';
 import Literal from './Literal.js';
 import Identifier from './Identifier.js';
 import Property from './Property.js';
+import SpreadElement from './SpreadElement.js';
 import Super from './Super.js';
 import TaggedTemplateExpression from './TaggedTemplateExpression.js';
 import TemplateElement from './TemplateElement.js';
@@ -29,6 +31,7 @@ export default {
 	ClassExpression,
 	ExportDefaultDeclaration,
 	ForStatement,
+	ForOfStatement,
 	FunctionDeclaration,
 	FunctionExpression,
 	ImportSpecifier,
@@ -36,6 +39,7 @@ export default {
 	Literal,
 	Identifier,
 	Property,
+	SpreadElement,
 	Super,
 	TaggedTemplateExpression,
 	TemplateElement,
