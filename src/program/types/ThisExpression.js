@@ -4,10 +4,14 @@ export default class ThisExpression extends Node {
 	initialise () {
 		const lexicalBoundary = this.findLexicalBoundary();
 		const arrowFunction = this.findNearest( 'ArrowFunctionExpression' );
+		const loop = this.findNearest( /(?:For|While)Statement/ );
 
 		if ( arrowFunction && arrowFunction.depth > lexicalBoundary.depth ) {
-			const thisAlias = lexicalBoundary.getThisAlias();
-			if ( thisAlias ) this.alias = thisAlias;
+			this.alias = lexicalBoundary.getThisAlias();
+		}
+
+		if ( loop && loop.depth > lexicalBoundary.depth ) {
+			this.alias = lexicalBoundary.getThisAlias();
 		}
 	}
 

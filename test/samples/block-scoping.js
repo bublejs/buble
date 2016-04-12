@@ -459,5 +459,30 @@ module.exports = [
 				var first = y[0], second = y[1], x$1 = y.slice( 2 );
 				console.log( x$1 );
 			}`
+	},
+
+	{
+		description: 'preserves correct `this` and `arguments` inside block scoped loop (#10)',
+
+		input: `
+			for ( let i = 0; i < 10; i += 1 ) {
+				console.log( this, arguments, i );
+				setTimeout( function () {
+					console.log( this, arguments, i );
+				}, i * 100 );
+			}`,
+
+		output: `
+			var arguments$1 = arguments;
+			var this$1 = this;
+
+			var forLoop = function ( i ) {
+				console.log( this$1, arguments$1, i );
+				setTimeout( function () {
+					console.log( this, arguments, i );
+				}, i * 100 );
+			};
+
+			for ( var i = 0; i < 10; i += 1 ) forLoop( i );`
 	}
 ];

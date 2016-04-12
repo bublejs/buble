@@ -11,13 +11,10 @@ export default class ForStatement extends Node {
 		this.createdScope = true;
 
 		super.initialise();
-	}
 
-	transpile ( code ) {
 		// see if any block-scoped declarations are referenced
 		// inside function expressions
 		const names = Object.keys( this.body.scope.declarations );
-		let shouldRewriteAsFunction = false;
 
 		let i = names.length;
 		while ( i-- ) {
@@ -30,15 +27,17 @@ export default class ForStatement extends Node {
 				const nearestFunctionExpression = instance.findNearest( /Function/ );
 
 				if ( nearestFunctionExpression && nearestFunctionExpression.depth > this.depth ) {
-					shouldRewriteAsFunction = true;
+					this.shouldRewriteAsFunction = true;
 					break;
 				}
 			}
 
-			if ( shouldRewriteAsFunction ) break;
+			if ( this.shouldRewriteAsFunction ) break;
 		}
+	}
 
-		if ( shouldRewriteAsFunction ) {
+	transpile ( code ) {
+		if ( this.shouldRewriteAsFunction ) {
 			const indentation = this.getIndentation();
 
 			// which variables are declared in the init statement?

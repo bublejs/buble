@@ -19,10 +19,14 @@ export default class Identifier extends Node {
 			if ( this.name === 'arguments' && !this.findScope( false ).contains( this.name ) ) {
 				const lexicalBoundary = this.findLexicalBoundary();
 				const arrowFunction = this.findNearest( 'ArrowFunctionExpression' );
+				const loop = this.findNearest( /(?:For|While)Statement/ );
 
 				if ( arrowFunction && arrowFunction.depth > lexicalBoundary.depth ) {
-					const argumentsAlias = lexicalBoundary.getArgumentsAlias();
-					if ( argumentsAlias ) this.alias = argumentsAlias;
+					this.alias = lexicalBoundary.getArgumentsAlias();
+				}
+
+				if ( loop && loop.depth > lexicalBoundary.depth ) {
+					this.alias = lexicalBoundary.getArgumentsAlias();
 				}
 			}
 
