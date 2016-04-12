@@ -31,7 +31,7 @@ describe( 'buble', () => {
 
 		describe( path.basename( file ), () => {
 			samples.forEach( sample => {
-				( sample.solo ? it.only : it )( sample.description, () => {
+				( sample.solo ? it.only : sample.skip ? it.skip : it )( sample.description, () => {
 					if ( sample.error ) {
 						assert.throws( () => {
 							buble.transform( sample.input );

@@ -398,5 +398,66 @@ module.exports = [
 					}
 				};
 			}`
+	},
+
+	{
+		description: 'deconflicts object pattern declarations',
+
+		input: `
+			let x;
+
+			if ( true ) {
+				let { x, y } = point;
+				console.log( x );
+			}`,
+
+		output: `
+			var x;
+
+			if ( true ) {
+				var x$1 = point.x, y = point.y;
+				console.log( x$1 );
+			}`
+	},
+
+	{
+		description: 'deconflicts array pattern declarations',
+
+		input: `
+			let x;
+
+			if ( true ) {
+				let [ x, y ] = point;
+				console.log( x );
+			}`,
+
+		output: `
+			var x;
+
+			if ( true ) {
+				var x$1 = point[0], y = point[1];
+				console.log( x$1 );
+			}`
+	},
+
+	{
+		skip: true,
+		description: 'deconflicts rest element declarations',
+
+		input: `
+			let x;
+
+			if ( true ) {
+				let [ first, second, ...x ] = y;
+				console.log( x );
+			}`,
+
+		output: `
+			var x;
+
+			if ( true ) {
+				var first = y[0], second = y[1], x$1 = y.slice( 2 );
+				console.log( x$1 );
+			}`
 	}
 ];

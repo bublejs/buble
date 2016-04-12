@@ -40,10 +40,12 @@ export default class VariableDeclarator extends Node {
 
 			props.forEach( ( property, i ) => {
 				if ( property ) {
-					const lhs = this.isObjectPattern ? property.value.name : property.name;
+					const id = this.isObjectPattern ? property.value : property;
 					const rhs = this.isObjectPattern ? `${name}.${property.key.name}` : `${name}[${i}]`;
 
-					code.overwrite( lastIndex, property.end, `${first ? '' : ', '}${lhs} = ${rhs}` );
+					code.overwrite( lastIndex, property.start, `${first ? '' : ', '}` );
+					code.insert( id.end, ` = ${rhs}` );
+
 					lastIndex = property.end;
 					first = false;
 				}
