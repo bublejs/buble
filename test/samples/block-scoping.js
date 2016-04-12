@@ -484,5 +484,57 @@ module.exports = [
 			};
 
 			for ( var i = 0; i < 10; i += 1 ) forLoop( i );`
+	},
+
+	{
+		solo: true,
+		description: 'maintains value of for loop variables between iterations (#11)',
+
+		input: `
+			var fns = [];
+
+			for ( let i = 0; i < 10; i++ ) {
+				fns.push(function () { return i; });
+				i += 1;
+			}`,
+
+		output: `
+			var fns = [];
+
+			var forLoop = function ( i ) {
+				fns.push(function () { return i; });
+				i += 1;
+
+				i$1 = i;
+			};
+
+			for ( var i$1 = 0; i$1 < 10; i$1 += 1 ) forLoop( i$1 );`
+	},
+
+	{
+		solo: true,
+		description: 'maintains value of for loop variables between iterations, with conflict (#11)',
+
+		input: `
+			var i = 'conflicting';
+			var fns = [];
+
+			for ( let i = 0; i < 10; i++ ) {
+				fns.push(function () { return i; });
+				i += 1;
+			}`,
+
+		output: `
+			var i = 'conflicting';
+			var fns = [];
+
+			var forLoop = function ( i ) {
+				fns.push(function () { return i; });
+				i += 1;
+
+				i$1 = i;
+			};
+
+			for ( var i$1 = 0; i$1 < 10; i$1 += 1 ) forLoop( i$1 );`
 	}
 ];

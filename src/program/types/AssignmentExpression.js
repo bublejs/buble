@@ -8,6 +8,12 @@ export default class AssignmentExpression extends Node {
 			if ( declaration && declaration.kind === 'const' ) {
 				throw new CompileError( this.left, `${this.left.name} is read-only` );
 			}
+
+			// special case – https://gitlab.com/Rich-Harris/buble/issues/11
+			const statement = declaration && declaration.node.parent.parent.parent;
+			if ( statement.type === 'ForStatement' ) {
+				statement.reassigned[ this.left.name ] = true;
+			}
 		}
 
 		if ( this.left.type === 'ArrayPattern' ) {

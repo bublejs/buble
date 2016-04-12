@@ -10,6 +10,8 @@ export default class ForStatement extends Node {
 		this.body.createScope();
 		this.createdScope = true;
 
+		this.reassigned = Object.create( null );
+
 		super.initialise();
 
 		// see if any block-scoped declarations are referenced
