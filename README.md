@@ -14,6 +14,8 @@ Yes – insofar as it's a tool that can transform ES2015 into JavaScript that wi
 * There are no plugins or presets – less extensibility, but also zero configuration
 * It's comparatively tiny and many times faster
 
+Unlike Babel, 100% spec compliance isn't an over-riding goal – for example it won't add runtime checks to ensure that you're not instantiating classes without `new`. (Complete spec compliance is impossible anyway, as some ES2015 features can't be transpiled.) You'll also need to bring your own polyfill. You have been warned!
+
 
 ## How do I use it?
 
