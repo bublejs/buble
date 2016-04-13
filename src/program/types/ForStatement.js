@@ -42,8 +42,8 @@ export default class ForStatement extends Node {
 
 	transpile ( code ) {
 		if ( this.shouldRewriteAsFunction ) {
-			const indentation = this.getIndentation();
-			const indentString = code.getIndentString();
+			const i0 = this.getIndentation();
+			const i1 = i0 + code.getIndentString();
 
 			// which variables are declared in the init statement?
 			const names = this.init.type === 'VariableDeclaration' ?
@@ -63,18 +63,32 @@ export default class ForStatement extends Node {
 					code.insert( this.body.body[0].end, `; ${updates.join(` `)}` );
 				} else {
 					const lastStatement = this.body.body[ this.body.body.length - 1 ];
-					code.insert( lastStatement.end, `\n\n${indentation}${indentString}${updates.join(`\n${indentation}${indentString}`)}` );
+					code.insert( lastStatement.end, `\n\n${i1}${updates.join(`\n${i1}`)}` );
 				}
 			}
 
-			const before = `var forLoop = function ( ${params.join( ', ' )} ) ` + ( this.body.synthetic ? `{\n${indentation}${code.getIndentString()}` : '' );
-			const after = ( this.body.synthetic ? `\n${indentation}}` : '' ) + `;\n\n${indentation}`;
+			const functionScope = this.findScope( true );
+			const loop = functionScope.createIdentifier( 'loop' );
+
+			const before = `var ${loop} = function ( ${params.join( ', ' )} ) ` + ( this.body.synthetic ? `{\n${i0}${code.getIndentString()}` : '' );
+			const after = ( this.body.synthetic ? `\n${i0}}` : '' ) + `;\n\n${i0}`;
 
 			code.insert( this.start, before );
 			code.move( this.body.start, this.body.end, this.start );
 			code.insert( this.start, after );
 
-			code.insert( this.end, `forLoop( ${args.join( ', ' )} );` );
+			if ( this.canBreak || this.canReturn ) {
+				const returned = functionScope.createIdentifier( 'returned' );
+
+				let insert = `{\n${i1}var ${returned} = ${loop}( ${args.join( ', ' )} );\n`;
+				if ( this.canBreak ) insert += `\n${i1}if ( ${returned} === 'break' ) break;`;
+				if ( this.canReturn ) insert += `\n${i1}if ( ${returned} ) return returned.v;`;
+				insert += `\n${i0}}`;
+
+				code.insert( this.end, insert );
+			} else {
+				code.insert( this.end, `${loop}( ${args.join( ', ' )} );` );
+			}
 		}
 
 		super.transpile( code );
