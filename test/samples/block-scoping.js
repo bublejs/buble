@@ -87,14 +87,14 @@ module.exports = [
 				console.log( square );
 			}
 
-			var forLoop = function ( i ) {
+			var loop = function ( i ) {
 				var square = i * i;
 				setTimeout( function () {
 					log( square );
 				}, i * 100 );
 			};
 
-			for ( var i = 0; i < 10; i += 1 ) forLoop( i );`
+			for ( var i = 0; i < 10; i += 1 ) loop( i );`
 	},
 
 	{
@@ -104,11 +104,11 @@ module.exports = [
 			for ( let i = 0; i < 10; i += 1 ) setTimeout( () => console.log( i ), i * 100 );`,
 
 		output: `
-			var forLoop = function ( i ) {
+			var loop = function ( i ) {
 				setTimeout( function () { return console.log( i ); }, i * 100 );
 			};
 
-			for ( var i = 0; i < 10; i += 1 ) forLoop( i );`
+			for ( var i = 0; i < 10; i += 1 ) loop( i );`
 	},
 
 	{
@@ -476,14 +476,14 @@ module.exports = [
 			var arguments$1 = arguments;
 			var this$1 = this;
 
-			var forLoop = function ( i ) {
+			var loop = function ( i ) {
 				console.log( this$1, arguments$1, i );
 				setTimeout( function () {
 					console.log( this, arguments, i );
 				}, i * 100 );
 			};
 
-			for ( var i = 0; i < 10; i += 1 ) forLoop( i );`
+			for ( var i = 0; i < 10; i += 1 ) loop( i );`
 	},
 
 	{
@@ -500,14 +500,14 @@ module.exports = [
 		output: `
 			var fns = [];
 
-			var forLoop = function ( i$1 ) {
+			var loop = function ( i$1 ) {
 				fns.push(function () { return i$1; });
 				i$1 += 1;
 
 				i = i$1;
 			};
 
-			for ( var i = 0; i < 10; i += 1 ) forLoop( i );`
+			for ( var i = 0; i < 10; i += 1 ) loop( i );`
 	},
 
 	{
@@ -526,17 +526,18 @@ module.exports = [
 			var i = 'conflicting';
 			var fns = [];
 
-			var forLoop = function ( i$2 ) {
+			var loop = function ( i$2 ) {
 				fns.push(function () { return i$2; });
 				i$2 += 1;
 
 				i$1 = i$2;
 			};
 
-			for ( var i$1 = 0; i$1 < 10; i$1 += 1 ) forLoop( i$1 );`
+			for ( var i$1 = 0; i$1 < 10; i$1 += 1 ) loop( i$1 );`
 	},
 
 	{
+		solo: true,
 		description: 'handles break and continue inside block-scoped loops (#12)',
 
 		input: `
@@ -550,16 +551,16 @@ module.exports = [
 			}`,
 
 		output: `
-			function () {
-				var forLoop = function ( i ) {
+			function foo () {
+				var loop = function ( i ) {
 					if ( i % 2 ) return;
 					if ( i > 5 ) return 'break';
 					if ( i === 'potato' ) return { v: 'huh?' };
 					setTimeout( function () { return console.log( i ); } );
 				};
 
-				for ( let i = 0; i < 10; i += 1 ) {
-					var returned = forLoop( i );
+				for ( var i = 0; i < 10; i += 1 ) {
+					var returned = loop( i );
 
 					if ( returned === 'break' ) break;
 					if ( returned ) return returned.v;

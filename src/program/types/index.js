@@ -1,10 +1,12 @@
 import ArrayExpression from './ArrayExpression.js';
 import ArrowFunctionExpression from './ArrowFunctionExpression.js';
 import AssignmentExpression from './AssignmentExpression.js';
+import BreakStatement from './BreakStatement.js';
 import CallExpression from './CallExpression.js';
 import ClassBody from './ClassBody.js';
 import ClassDeclaration from './ClassDeclaration.js';
 import ClassExpression from './ClassExpression.js';
+import ContinueStatement from './ContinueStatement.js';
 import ExportDefaultDeclaration from './ExportDefaultDeclaration.js';
 import ForStatement from './ForStatement.js';
 import ForOfStatement from './ForOfStatement.js';
@@ -15,6 +17,7 @@ import ImportDefaultSpecifier from './ImportDefaultSpecifier.js';
 import Literal from './Literal.js';
 import Identifier from './Identifier.js';
 import Property from './Property.js';
+import ReturnStatement from './ReturnStatement.js';
 import Super from './Super.js';
 import TaggedTemplateExpression from './TaggedTemplateExpression.js';
 import TemplateElement from './TemplateElement.js';
@@ -28,10 +31,12 @@ export default {
 	ArrayExpression,
 	ArrowFunctionExpression,
 	AssignmentExpression,
+	BreakStatement,
 	CallExpression,
 	ClassBody,
 	ClassDeclaration,
 	ClassExpression,
+	ContinueStatement,
 	ExportDefaultDeclaration,
 	ForStatement,
 	ForOfStatement,
@@ -42,6 +47,7 @@ export default {
 	Literal,
 	Identifier,
 	Property,
+	ReturnStatement,
 	Super,
 	TaggedTemplateExpression,
 	TemplateElement,
