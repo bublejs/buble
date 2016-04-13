@@ -534,5 +534,36 @@ module.exports = [
 			};
 
 			for ( var i$1 = 0; i$1 < 10; i$1 += 1 ) forLoop( i$1 );`
+	},
+
+	{
+		description: 'handles break and continue inside block-scoped loops (#12)',
+
+		input: `
+			function foo () {
+				for ( let i = 0; i < 10; i += 1 ) {
+					if ( i % 2 ) continue;
+					if ( i > 5 ) break;
+					if ( i === 'potato' ) return 'huh?';
+					setTimeout( () => console.log( i ) );
+				}
+			}`,
+
+		output: `
+			function () {
+				var forLoop = function ( i ) {
+					if ( i % 2 ) return;
+					if ( i > 5 ) return 'break';
+					if ( i === 'potato' ) return { v: 'huh?' };
+					setTimeout( function () { return console.log( i ); } );
+				};
+
+				for ( let i = 0; i < 10; i += 1 ) {
+					var returned = forLoop( i );
+
+					if ( returned === 'break' ) break;
+					if ( returned ) return returned.v;
+				}
+			}`
 	}
 ];
