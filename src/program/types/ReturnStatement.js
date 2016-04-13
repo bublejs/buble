@@ -10,15 +10,17 @@ export default class ReturnStatement extends Node {
 			this.shouldWrap = true;
 		}
 
-		this.argument.initialise();
+		if ( this.argument ) this.argument.initialise();
 	}
 
 	transpile ( code ) {
-		const shouldWrap = this.shouldWrap && this.loop && this.loop.shouldRewriteAsFunction;
-		if ( shouldWrap ) code.insert( this.argument.start, `{ v: ` );
+		if ( this.argument ) {
+			const shouldWrap = this.shouldWrap && this.loop && this.loop.shouldRewriteAsFunction;
+			if ( shouldWrap ) code.insert( this.argument.start, `{ v: ` );
 
-		this.argument.transpile( code );
+			if ( this.argument ) this.argument.transpile( code );
 
-		if ( shouldWrap ) code.insert( this.argument.end, ` }` );
+			if ( shouldWrap ) code.insert( this.argument.end, ` }` );
+		}
 	}
 }

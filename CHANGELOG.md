@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.13
+
+* Fix return statement bug
+
 ## 0.4.12
 
 * More complete and robust transpilation of loops that need to be rewritten as functions to simulate block scoping ([#11](https://gitlab.com/Rich-Harris/buble/issues/11), [#12](https://gitlab.com/Rich-Harris/buble/issues/12), [#13](https://gitlab.com/Rich-Harris/buble/issues/13))
