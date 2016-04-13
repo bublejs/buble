@@ -15,6 +15,7 @@ import FunctionExpression from './FunctionExpression.js';
 import ImportSpecifier from './ImportSpecifier.js';
 import ImportDefaultSpecifier from './ImportDefaultSpecifier.js';
 import Literal from './Literal.js';
+import LoopStatement from './shared/LoopStatement.js';
 import Identifier from './Identifier.js';
 import Property from './Property.js';
 import ReturnStatement from './ReturnStatement.js';
@@ -37,6 +38,7 @@ export default {
 	ClassDeclaration,
 	ClassExpression,
 	ContinueStatement,
+	DoWhileStatement: LoopStatement,
 	ExportDefaultDeclaration,
 	ForStatement,
 	ForOfStatement,
@@ -55,5 +57,6 @@ export default {
 	ThisExpression,
 	UpdateExpression,
 	VariableDeclaration,
-	VariableDeclarator
+	VariableDeclarator,
+	WhileStatement: LoopStatement
 };

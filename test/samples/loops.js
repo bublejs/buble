@@ -30,6 +30,68 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles block scoping inside while loops with function bodies',
+
+		input: `
+			function log ( square ) {
+				console.log( square );
+			}
+
+			while ( i-- ) {
+				const square = i * i;
+				setTimeout( function () {
+					log( square );
+				}, i * 100 );
+			}`,
+
+		output: `
+			function log ( square ) {
+				console.log( square );
+			}
+
+			var loop = function () {
+				var square = i * i;
+				setTimeout( function () {
+					log( square );
+				}, i * 100 );
+			};
+
+			while ( i-- ) loop();`
+	},
+
+	{
+		description: 'transpiles block scoping inside do-while loops with function bodies',
+
+		input: `
+			function log ( square ) {
+				console.log( square );
+			}
+
+			do {
+				const square = i * i;
+				setTimeout( function () {
+					log( square );
+				}, i * 100 );
+			} while ( i-- );`,
+
+		output: `
+			function log ( square ) {
+				console.log( square );
+			}
+
+			var loop = function () {
+				var square = i * i;
+				setTimeout( function () {
+					log( square );
+				}, i * 100 );
+			};
+
+			do {
+				loop();
+			} while ( i-- );`
+	},
+
+	{
 		description: 'transpiles block-less for loops with block-scoped declarations inside function body',
 
 		input: `
