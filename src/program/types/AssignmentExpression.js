@@ -10,8 +10,8 @@ export default class AssignmentExpression extends Node {
 			}
 
 			// special case – https://gitlab.com/Rich-Harris/buble/issues/11
-			const statement = declaration && declaration.node.parent.parent.parent;
-			if ( statement.type === 'ForStatement' ) {
+			const statement = declaration && declaration.node.ancestor( 3 );
+			if ( statement && statement.type === 'ForStatement' && statement.body.contains( this ) ) {
 				statement.reassigned[ this.left.name ] = true;
 			}
 		}

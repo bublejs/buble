@@ -14,7 +14,12 @@ export default class VariableDeclarator extends Node {
 			});
 		}
 
-		this.parent.scope.addDeclaration( this.id, this.parent.kind );
+		let kind = this.parent.kind;
+		if ( kind === 'let' && this.parent.parent.type === 'ForStatement' ) {
+			kind = 'for.let'; // special case...
+		}
+
+		this.parent.scope.addDeclaration( this.id, kind );
 		super.initialise();
 	}
 

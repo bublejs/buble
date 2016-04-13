@@ -222,12 +222,43 @@ export default class BlockStatement extends Node {
 
 				for ( let i = 0; i < declarations.length; i += 1 ) {
 					const declaration = declarations[i];
-					const alias = this.scope.createIdentifier( name );
+					let cont = false; // TODO implement proper continue...
 
-					if ( name !== alias ) {
-						declaration.instances.forEach( identifier => {
-							code.overwrite( identifier.start, identifier.end, alias, true );
-						});
+					if ( declaration.kind === 'for.let' ) {
+						// special case
+						const forStatement = declaration.node.findNearest( 'ForStatement' );
+
+						if ( forStatement.reassigned[ name ] ) {
+							const outerAlias = this.scope.createIdentifier( name );
+							const innerAlias = this.scope.createIdentifier( name );
+
+							forStatement.aliases[ name ] = {
+								outer: outerAlias,
+								inner: innerAlias
+							};
+
+							declaration.instances.forEach( identifier => {
+								const alias = forStatement.body.contains( identifier ) ?
+									innerAlias :
+									outerAlias;
+
+								if ( name !== alias ) {
+									code.overwrite( identifier.start, identifier.end, alias, true );
+								}
+							});
+
+							cont = true;
+						}
+					}
+
+					if ( !cont ) {
+						const alias = this.scope.createIdentifier( name );
+
+						if ( name !== alias ) {
+							declaration.instances.forEach( identifier => {
+								code.overwrite( identifier.start, identifier.end, alias, true );
+							});
+						}
 					}
 				}
 			});
