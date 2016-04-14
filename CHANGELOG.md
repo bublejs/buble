@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.4.14
+
+* Allow classes to extend expressions ([#15](https://gitlab.com/Rich-Harris/buble/issues/15))
+* Experimental (partially implemented) API for disabling transforms based on target environment or custom requirements
+
 ## 0.4.13
 
 * Fix return statement bug
