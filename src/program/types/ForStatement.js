@@ -6,7 +6,7 @@ export default class ForStatement extends LoopStatement {
 		return functionScope || !this.createdScope ? this.parent.findScope( functionScope ) : this.body.scope;
 	}
 
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		const i1 = this.getIndentation() + code.getIndentString();
 
 		if ( this.shouldRewriteAsFunction ) {
@@ -33,6 +33,6 @@ export default class ForStatement extends LoopStatement {
 			}
 		}
 
-		super.transpile( code );
+		super.transpile( code, transforms );
 	}
 }

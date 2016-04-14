@@ -2,7 +2,7 @@ import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 
 export default class Literal extends Node {
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		const leading = this.raw.slice( 0, 2 );
 		if ( leading === '0b' || leading === '0o' ) {
 			code.overwrite( this.start, this.end, String( this.value ), true );

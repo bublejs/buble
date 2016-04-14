@@ -8,7 +8,7 @@ export default class ClassExpression extends Node {
 		            this.findScope( true ).createIdentifier( 'anonymous' );
 	}
 
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		const superName = this.superClass && this.superClass.name;
 
 		const indentation = this.getIndentation();
@@ -16,7 +16,7 @@ export default class ClassExpression extends Node {
 
 		code.overwrite( this.start, this.body.start, `(function (${superName || ''}) {\n${indentation}${indentStr}` );
 
-		this.body.transpile( code, true );
+		this.body.transpile( code, transforms, true );
 
 		code.insert( this.end, `\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(${superName || ''}))` );
 	}

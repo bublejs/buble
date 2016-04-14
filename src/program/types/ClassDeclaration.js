@@ -9,7 +9,7 @@ export default class ClassDeclaration extends Node {
 		super.initialise();
 	}
 
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		const superName = this.superClass && this.superClass.name;
 
 		const indentation = this.getIndentation();
@@ -26,7 +26,7 @@ export default class ClassDeclaration extends Node {
 		code.remove( this.start, this.body.start );
 		code.insert( this.start, intro );
 
-		this.body.transpile( code, !!this.superClass );
+		this.body.transpile( code, transforms, !!this.superClass );
 
 		code.insert( this.end, outro );
 

@@ -1,7 +1,7 @@
 import MagicString from 'magic-string';
 import BlockStatement from './BlockStatement.js';
 
-export default function Program ( source, ast ) {
+export default function Program ( source, ast, transforms ) {
 	this.type = 'Root';
 
 	this.source = source;
@@ -22,7 +22,7 @@ export default function Program ( source, ast ) {
 		}
 	});
 
-	this.body.transpile( this.magicString );
+	this.body.transpile( this.magicString, transforms );
 }
 
 Program.prototype = {

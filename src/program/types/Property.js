@@ -10,7 +10,7 @@ export default class Property extends Node {
 		super.initialise();
 	}
 
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		if ( this.parent.type !== 'ObjectPattern' ) {
 			if ( this.shorthand ) {
 				code.insert( this.start, `${this.key.name}: ` );
@@ -19,6 +19,6 @@ export default class Property extends Node {
 			}
 		}
 
-		super.transpile( code );
+		super.transpile( code, transforms );
 	}
 }

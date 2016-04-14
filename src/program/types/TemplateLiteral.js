@@ -1,7 +1,7 @@
 import Node from '../Node.js';
 
 export default class TemplateLiteral extends Node {
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		code.remove( this.start, this.start + 1 );
 		code.remove( this.end - 1, this.end );
 
@@ -37,6 +37,6 @@ export default class TemplateLiteral extends Node {
 
 		code.overwrite( lastIndex, this.end, parenthesise ? ')' : '' );
 
-		super.transpile( code );
+		super.transpile( code, transforms );
 	}
 }

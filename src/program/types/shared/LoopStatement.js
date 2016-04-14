@@ -40,7 +40,7 @@ export default class LoopStatement extends Node {
 		}
 	}
 
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 
 		if ( this.shouldRewriteAsFunction ) {
 			const i0 = this.getIndentation();
@@ -83,6 +83,6 @@ export default class LoopStatement extends Node {
 			}
 		}
 
-		super.transpile( code );
+		super.transpile( code, transforms );
 	}
 }

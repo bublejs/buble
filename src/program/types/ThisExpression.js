@@ -15,7 +15,7 @@ export default class ThisExpression extends Node {
 		}
 	}
 
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		if ( this.alias ) {
 			code.overwrite( this.start, this.end, this.alias, true );
 		}

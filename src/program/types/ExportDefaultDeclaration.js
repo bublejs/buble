@@ -1,8 +1,8 @@
 import Node from '../Node.js';
 
 export default class ExportDefaultDeclaration extends Node {
-	transpile ( code ) {
-		super.transpile( code );
+	transpile ( code, transforms ) {
+		super.transpile( code, transforms );
 
 		if ( this.declaration.type === 'ClassDeclaration' ) {
 			code.insert( this.end, `\n\n${this.getIndentation()}` );

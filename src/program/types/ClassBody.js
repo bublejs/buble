@@ -2,7 +2,7 @@ import Node from '../Node.js';
 
 // TODO this code is pretty wild, tidy it up
 export default class ClassBody extends Node {
-	transpile ( code, inFunctionExpression ) {
+	transpile ( code, transforms, inFunctionExpression ) {
 		const name = this.parent.name;
 		const superName = this.parent.superClass && this.parent.superClass.name;
 
@@ -108,6 +108,6 @@ export default class ClassBody extends Node {
 			code.insert( this.end, `\n\n${indentation}${outro}` );
 		}
 
-		super.transpile( code );
+		super.transpile( code, transforms );
 	}
 }

@@ -6,11 +6,11 @@ export default class VariableDeclaration extends Node {
 		this.declarations.forEach( declarator => declarator.initialise() );
 	}
 
-	transpile ( code ) {
-		if ( this.kind !== 'var' ) {
+	transpile ( code, transforms ) {
+		if ( transforms.letConst && this.kind !== 'var' ) {
 			code.overwrite( this.start, this.start + this.kind.length, 'var', true );
 		}
 
-		this.declarations.forEach( declarator => declarator.transpile( code ) );
+		this.declarations.forEach( declarator => declarator.transpile( code, transforms ) );
 	}
 }

@@ -34,12 +34,12 @@ describe( 'buble', () => {
 				( sample.solo ? it.only : sample.skip ? it.skip : it )( sample.description, () => {
 					if ( sample.error ) {
 						assert.throws( () => {
-							buble.transform( sample.input );
+							buble.transform( sample.input, sample.options );
 						}, sample.error );
 					}
 
 					else {
-						equal( buble.transform( sample.input ).code, sample.output );
+						equal( buble.transform( sample.input, sample.options  ).code, sample.output );
 					}
 				});
 			});
@@ -72,6 +72,38 @@ describe( 'buble', () => {
 				assert.equal( err.message, 'x is read-only (1:13)' );
 				assert.equal( err.snippet, `1 : const x = 1; x++;\n                 ^^^` );
 			}
+		});
+	});
+
+	describe( 'target', () => {
+		it( 'determines necessary transforms for a target environment', () => {
+			var transforms = buble.target({ chrome: 49 });
+
+			assert.ok( transforms.moduleImport );
+			assert.ok( !transforms.arrow );
+		});
+
+		it( 'returns lowest common denominator support info', () => {
+			var transforms = buble.target({ chrome: 49, node: 5 });
+
+			assert.ok( transforms.defaultParameter );
+			assert.ok( !transforms.arrow );
+		});
+
+		it( 'only applies necessary transforms', () => {
+			var source = `
+				const power = ( base, exponent = 2 ) => Math.pow( base, exponent );`;
+
+			var result = buble.transform( source, {
+				target: { chrome: 49, node: 5 }
+			}).code;
+
+			assert.equal( result, `
+				const power = ( base, exponent ) => {
+					if ( exponent === void 0 ) exponent = 2;
+
+					return Math.pow( base, exponent );
+				};` );
 		});
 	});
 

@@ -23,7 +23,7 @@ export default class VariableDeclarator extends Node {
 		super.initialise();
 	}
 
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		if ( this.id.type !== 'Identifier' ) {
 			const simple = this.init.type === 'Identifier';
 			const name = simple ? this.init.name : this.findScope( true ).createIdentifier( 'ref' );
@@ -59,6 +59,6 @@ export default class VariableDeclarator extends Node {
 			code.remove( lastIndex, this.init.start );
 		}
 
-		super.transpile( code );
+		super.transpile( code, transforms );
 	}
 }

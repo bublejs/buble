@@ -7,7 +7,7 @@ export default class BreakStatement extends Node {
 		this.loop.canBreak = true;
 	}
 
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		if ( this.loop.shouldRewriteAsFunction ) {
 			if ( this.label ) throw new CompileError( this, 'Labels are not currently supported in a loop with locally-scoped variables' );
 			code.overwrite( this.start, this.start + 5, `return 'break'` );

@@ -95,14 +95,14 @@ export default class Node {
 		return this.program.magicString.slice( this.start, this.end );
 	}
 
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		this.keys.forEach( key => {
 			const value = this[ key ];
 
 			if ( Array.isArray( value ) ) {
-				value.forEach( node => node && node.transpile( code ) );
+				value.forEach( node => node && node.transpile( code, transforms ) );
 			} else if ( value && typeof value === 'object' ) {
-				value.transpile( code );
+				value.transpile( code, transforms );
 			}
 		});
 	}

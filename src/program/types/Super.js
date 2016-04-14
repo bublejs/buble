@@ -24,7 +24,7 @@ export default class Super extends Node {
 		}
 	}
 
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		const expression = this.isCalled ? this.superClassName : `${this.superClassName}.prototype`;
 		code.overwrite( this.start, this.end, expression, true );
 

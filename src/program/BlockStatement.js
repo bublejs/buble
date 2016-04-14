@@ -61,7 +61,7 @@ export default class BlockStatement extends Node {
 		return this.thisAlias;
 	}
 
-	transpile ( code ) {
+	transpile ( code, transforms ) {
 		const start = this.body[0] ? this.body[0].start : this.start + 1;
 
 		const indentation = this.synthetic ?
@@ -264,6 +264,6 @@ export default class BlockStatement extends Node {
 			});
 		}
 
-		super.transpile( code );
+		super.transpile( code, transforms );
 	}
 }

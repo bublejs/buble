@@ -51,6 +51,20 @@ module.exports = [
 		description: 'transpiles a spread operator in an expression call',
 		input: `( foo || bar )( ...values );`,
 		output: `( foo || bar ).apply( void 0, values );`
+	},
+
+	{
+		description: 'can be disabled in array expressions `transforms.spreadRest: false`',
+		options: { transforms: { spreadRest: false } },
+		input: `var chars = [ ...string ]`,
+		output: `var chars = [ ...string ]`
+	},
+
+	{
+		description: 'can be disabled in call expressions with `transforms.spreadRest: false`',
+		options: { transforms: { spreadRest: false } },
+		input: `var max = Math.max( ...values );`,
+		output: `var max = Math.max( ...values );`
 	}
 
 	// TODO expression callee
