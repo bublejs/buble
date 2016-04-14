@@ -400,6 +400,68 @@ module.exports = [
 					this.answer = answer;
 				}
 			}`
+	},
+
+	{
+		description: 'declaration extends from an expression (#15)',
+
+		input: `
+			const q = {a: class {}};
+
+			class b extends q.a {
+				c () {}
+			}`,
+
+		output: `
+			var q = {a: (function () {
+				function anonymous () {}
+
+				return anonymous;
+			}())};
+
+			var b = (function (superclass) {
+				function b () {
+					superclass.apply(this, arguments);
+				}
+
+				b.prototype = Object.create( superclass && superclass.prototype );
+				b.prototype.constructor = b;
+
+				b.prototype.c = function c () {};
+
+				return b;
+			}(q.a));`
+	},
+
+	{
+		description: 'expression extends from an expression (#15)',
+
+		input: `
+			const q = {a: class {}};
+
+			const b = class b extends q.a {
+				c () {}
+			};`,
+
+		output: `
+			var q = {a: (function () {
+				function anonymous () {}
+
+				return anonymous;
+			}())};
+
+			var b = (function (superclass) {
+				function b () {
+					superclass.apply(this, arguments);
+				}
+
+				b.prototype = Object.create( superclass && superclass.prototype );
+				b.prototype.constructor = b;
+
+				b.prototype.c = function c () {};
+
+				return b;
+			}(q.a));`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names

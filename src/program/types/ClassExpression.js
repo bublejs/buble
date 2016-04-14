@@ -10,16 +10,30 @@ export default class ClassExpression extends Node {
 
 	transpile ( code, transforms ) {
 		if ( transforms.classes ) {
-			const superName = this.superClass && this.superClass.name;
+			const superName = this.superClass && ( this.superClass.name || 'superclass' );
 
-			const indentation = this.getIndentation();
-			const indentStr = code.getIndentString();
+			const i0 = this.getIndentation();
+			const i1 = i0 + code.getIndentString();
 
-			code.overwrite( this.start, this.body.start, `(function (${superName || ''}) {\n${indentation}${indentStr}` );
+			if ( this.superClass ) {
+				code.remove( this.start, this.superClass.start );
+				code.remove( this.superClass.end, this.body.start );
+				code.insert( this.start, `(function (${superName}) {\n${i1}` );
+			} else {
+				code.overwrite( this.start, this.body.start, `(function () {\n${i1}` );
+			}
 
-			this.body.transpile( code, transforms, true );
+			this.body.transpile( code, transforms, true, superName );
 
-			code.insert( this.end, `\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(${superName || ''}))` );
+			const outro = `\n\n${i1}return ${this.name};\n${i0}}(`;
+
+			if ( this.superClass ) {
+				code.insert( this.end, outro );
+				code.move( this.superClass.start, this.superClass.end, this.end );
+				code.insert( this.end, '))' );
+			} else {
+				code.insert( this.end, `\n\n${i1}return ${this.name};\n${i0}}())` );
+			}
 		}
 
 		else {

@@ -11,31 +11,33 @@ export default class ClassDeclaration extends Node {
 
 	transpile ( code, transforms ) {
 		if ( transforms.classes ) {
-			const superName = this.superClass && this.superClass.name;
+			const superName = this.superClass && ( this.superClass.name || 'superclass' );
 
 			const indentation = this.getIndentation();
 			const indentStr = code.getIndentString();
 
-			const intro = this.superClass ?
-				`var ${this.name} = (function (${superName}) {\n${indentation}${indentStr}` :
-				`var ${this.name} = `;
+			code.overwrite( this.start, this.id.start, 'var ' );
 
-			const outro = this.superClass ?
-				`\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(${superName}));` :
-				``;
+			if ( this.superClass ) {
+				code.overwrite( this.id.end, this.superClass.start, ' = ' );
+				code.overwrite( this.superClass.end, this.body.start, `(function (${superName}) {\n${indentation}${indentStr}` );
+			} else {
+				code.overwrite( this.id.end, this.body.start, ' = ' );
+			}
 
-			code.remove( this.start, this.body.start );
-			code.insert( this.start, intro );
+			this.body.transpile( code, transforms, !!this.superClass, superName );
 
-			this.body.transpile( code, transforms, !!this.superClass );
-
-			code.insert( this.end, outro );
+			if ( this.superClass ) {
+				code.insert( this.end, `\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(` );
+				code.move( this.superClass.start, this.superClass.end, this.end );
+				code.insert( this.end, '));' );
+			}
 
 			if ( !this.superClass ) deindent( this.body, code );
 		}
 
 		else {
-			this.body.transpile( code, transforms, false );
+			this.body.transpile( code, transforms, false, null );
 		}
 	}
 }

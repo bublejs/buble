@@ -2,10 +2,9 @@ import Node from '../Node.js';
 
 // TODO this code is pretty wild, tidy it up
 export default class ClassBody extends Node {
-	transpile ( code, transforms, inFunctionExpression ) {
+	transpile ( code, transforms, inFunctionExpression, superName ) {
 		if ( transforms.classes ) {
 			const name = this.parent.name;
-			const superName = this.parent.superClass && this.parent.superClass.name;
 
 			const indentStr = code.getIndentString();
 			let indentation = this.getIndentation() + ( inFunctionExpression ? indentStr : '' );
