@@ -379,6 +379,27 @@ module.exports = [
 
 				return Circle;
 			}(Shape));`
+	},
+
+	{
+		description: 'can be disabled with `transforms.classes: false`',
+		options: { transforms: { classes: false } },
+
+		input: `
+			class Foo extends Bar {
+				constructor ( answer ) {
+					super();
+					this.answer = answer;
+				}
+			}`,
+
+		output: `
+			class Foo extends Bar {
+				constructor ( answer ) {
+					super();
+					this.answer = answer;
+				}
+			}`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names

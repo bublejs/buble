@@ -2,41 +2,45 @@ import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 
 export default class Super extends Node {
-	initialise () {
-		this.method = this.findNearest( 'MethodDefinition' );
-		if ( !this.method ) throw new CompileError( this, 'use of super outside class method' );
+	initialise ( transforms ) {
+		if ( transforms.classes ) {
+			this.method = this.findNearest( 'MethodDefinition' );
+			if ( !this.method ) throw new CompileError( this, 'use of super outside class method' );
 
-		const parentClass = this.findNearest( 'ClassBody' ).parent;
-		this.superClassName = parentClass.superClass && parentClass.superClass.name;
+			const parentClass = this.findNearest( 'ClassBody' ).parent;
+			this.superClassName = parentClass.superClass && parentClass.superClass.name;
 
-		if ( !this.superClassName ) throw new CompileError( this, 'super used in base class' );
+			if ( !this.superClassName ) throw new CompileError( this, 'super used in base class' );
 
-		this.isCalled = this.parent.type === 'CallExpression' && this === this.parent.callee;
+			this.isCalled = this.parent.type === 'CallExpression' && this === this.parent.callee;
 
-		if ( this.method.kind !== 'constructor' && this.isCalled ) {
-			throw new CompileError( this, 'super() not allowed outside class constructor' );
-		}
+			if ( this.method.kind !== 'constructor' && this.isCalled ) {
+				throw new CompileError( this, 'super() not allowed outside class constructor' );
+			}
 
-		this.isMember = this.parent.type === 'MemberExpression';
+			this.isMember = this.parent.type === 'MemberExpression';
 
-		if ( !this.isCalled && !this.isMember ) {
-			throw new CompileError( this, 'Unexpected use of `super` (expected `super(...)` or `super.*`)' );
+			if ( !this.isCalled && !this.isMember ) {
+				throw new CompileError( this, 'Unexpected use of `super` (expected `super(...)` or `super.*`)' );
+			}
 		}
 	}
 
 	transpile ( code, transforms ) {
-		const expression = this.isCalled ? this.superClassName : `${this.superClassName}.prototype`;
-		code.overwrite( this.start, this.end, expression, true );
+		if ( transforms.classes ) {
+			const expression = this.isCalled ? this.superClassName : `${this.superClassName}.prototype`;
+			code.overwrite( this.start, this.end, expression, true );
 
-		const callExpression = this.isCalled ? this.parent : this.parent.parent;
+			const callExpression = this.isCalled ? this.parent : this.parent.parent;
 
-		if ( callExpression && callExpression.type === 'CallExpression' ) {
-			code.insert( callExpression.callee.end, '.call' );
+			if ( callExpression && callExpression.type === 'CallExpression' ) {
+				code.insert( callExpression.callee.end, '.call' );
 
-			if ( callExpression.arguments.length ) {
-				code.insert( callExpression.arguments[0].start, `this, ` );
-			} else {
-				code.insert( callExpression.end - 1, `this` );
+				if ( callExpression.arguments.length ) {
+					code.insert( callExpression.arguments[0].start, `this, ` );
+				} else {
+					code.insert( callExpression.end - 1, `this` );
+				}
 			}
 		}
 	}

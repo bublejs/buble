@@ -13,7 +13,7 @@ export default function Program ( source, ast, transforms ) {
 	this.body = new BlockStatement( ast, this );
 
 	this.templateElements = [];
-	this.body.initialise();
+	this.body.initialise( transforms );
 
 	this.indentExclusions = {};
 	this.templateElements.forEach( node => {

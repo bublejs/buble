@@ -2,7 +2,7 @@ import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 
 export default class AssignmentExpression extends Node {
-	initialise () {
+	initialise ( transforms ) {
 		if ( this.left.type === 'Identifier' ) {
 			const declaration = this.findScope( false ).findDeclaration( this.left.name );
 			if ( declaration && declaration.kind === 'const' ) {
@@ -20,6 +20,6 @@ export default class AssignmentExpression extends Node {
 			throw new CompileError( this.left, 'Assigning to an array pattern is not currently supported' );
 		}
 
-		super.initialise();
+		super.initialise( transforms );
 	}
 }

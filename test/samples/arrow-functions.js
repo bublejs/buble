@@ -99,5 +99,22 @@ module.exports = [
 
 				return nums.reduce( function ( t, n ) { return t + n; }, 0 );
 			};`
+	},
+
+	{
+		description: 'can be disabled with `transforms.arrow: false`',
+		options: { transforms: { arrow: false } },
+
+		input: `
+			var add = ( a, b ) => {
+				console.log( 'this, arguments', this, arguments )
+				a = b;
+			}`,
+
+		output: `
+			var add = ( a, b ) => {
+				console.log( 'this, arguments', this, arguments )
+				a = b;
+			}`
 	}
 ];

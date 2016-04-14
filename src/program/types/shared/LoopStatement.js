@@ -6,7 +6,7 @@ export default class LoopStatement extends Node {
 		return functionScope || !this.createdScope ? this.parent.findScope( functionScope ) : this.body.scope;
 	}
 
-	initialise () {
+	initialise ( transforms ) {
 		this.body.createScope();
 		this.createdScope = true;
 
@@ -14,7 +14,7 @@ export default class LoopStatement extends Node {
 		this.reassigned = Object.create( null );
 		this.aliases = Object.create( null );
 
-		super.initialise();
+		super.initialise( transforms );
 
 		// see if any block-scoped declarations are referenced
 		// inside function expressions

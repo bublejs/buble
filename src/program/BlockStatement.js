@@ -19,7 +19,7 @@ export default class BlockStatement extends Node {
 		}
 	}
 
-	initialise () {
+	initialise ( transforms ) {
 		this.thisAlias = null;
 		this.argumentsAlias = null;
 		this.defaultParameters = [];
@@ -30,7 +30,7 @@ export default class BlockStatement extends Node {
 		// the body of the statement
 		if ( !this.scope ) this.createScope();
 
-		this.body.forEach( node => node.initialise() );
+		this.body.forEach( node => node.initialise( transforms ) );
 	}
 
 	findLexicalBoundary () {
@@ -87,17 +87,19 @@ export default class BlockStatement extends Node {
 			const params = this.parent.params;
 
 			// default parameters
-			params.filter( param => param.type === 'AssignmentPattern' ).forEach( param => {
-				if ( addedStuff ) code.insert( start, `\n${indentation}` );
+			if ( transforms.defaultParameter ) {
+				params.filter( param => param.type === 'AssignmentPattern' ).forEach( param => {
+					if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
-				const lhs = `if ( ${param.left.name} === void 0 ) ${param.left.name}`;
-				code
-					.insert( start, `${lhs}` )
-					.move( param.left.end, param.right.end, start )
-					.insert( start, `;` );
+					const lhs = `if ( ${param.left.name} === void 0 ) ${param.left.name}`;
+					code
+						.insert( start, `${lhs}` )
+						.move( param.left.end, param.right.end, start )
+						.insert( start, `;` );
 
-				addedStuff = true;
-			});
+					addedStuff = true;
+				});
+			}
 
 			// object pattern
 			params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
@@ -216,7 +218,7 @@ export default class BlockStatement extends Node {
 			code.insert( start, `\n\n${indentation}` );
 		}
 
-		if ( this.isFunctionBlock ) {
+		if ( transforms.letConst && this.isFunctionBlock ) {
 			Object.keys( this.scope.blockScopedDeclarations ).forEach( name => {
 				const declarations = this.scope.blockScopedDeclarations[ name ];
 

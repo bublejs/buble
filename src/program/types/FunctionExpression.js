@@ -2,7 +2,7 @@ import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 
 export default class FunctionExpression extends Node {
-	initialise () {
+	initialise ( transforms ) {
 		if ( this.generator ) {
 			throw new CompileError( this, 'Generators are not supported' );
 		}
@@ -14,6 +14,6 @@ export default class FunctionExpression extends Node {
 			this.body.scope.addDeclaration( this.id, 'function' );
 		}
 
-		super.initialise();
+		super.initialise( transforms );
 	}
 }

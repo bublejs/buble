@@ -1,7 +1,7 @@
 import Node from '../Node.js';
 
 export default class ClassExpression extends Node {
-	initialise () {
+	initialise ( transforms ) {
 		this.name = this.id ? this.id.name :
 		            this.parent.type === 'VariableDeclarator' ? this.parent.id.name :
 		            this.parent.type === 'AssignmentExpression' ? this.parent.left.name :
@@ -9,15 +9,21 @@ export default class ClassExpression extends Node {
 	}
 
 	transpile ( code, transforms ) {
-		const superName = this.superClass && this.superClass.name;
+		if ( transforms.classes ) {
+			const superName = this.superClass && this.superClass.name;
 
-		const indentation = this.getIndentation();
-		const indentStr = code.getIndentString();
+			const indentation = this.getIndentation();
+			const indentStr = code.getIndentString();
 
-		code.overwrite( this.start, this.body.start, `(function (${superName || ''}) {\n${indentation}${indentStr}` );
+			code.overwrite( this.start, this.body.start, `(function (${superName || ''}) {\n${indentation}${indentStr}` );
 
-		this.body.transpile( code, transforms, true );
+			this.body.transpile( code, transforms, true );
 
-		code.insert( this.end, `\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(${superName || ''}))` );
+			code.insert( this.end, `\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(${superName || ''}))` );
+		}
+
+		else {
+			this.body.transpile( code, transforms, false );
+		}
 	}
 }

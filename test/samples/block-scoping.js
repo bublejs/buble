@@ -389,5 +389,30 @@ module.exports = [
 				var first = y[0], second = y[1], x$1 = y.slice( 2 );
 				console.log( x$1 );
 			}`
+	},
+
+	{
+		description: 'can be disabled with `transforms.letConst: false`',
+		options: { transforms: { letConst: false } },
+
+		input: `
+			let a = 1;
+
+			if ( x ) {
+				let a = 2;
+				console.log( a );
+			}
+
+			console.log( a );`,
+
+		output: `
+			let a = 1;
+
+			if ( x ) {
+				let a = 2;
+				console.log( a );
+			}
+
+			console.log( a );`
 	}
 ];

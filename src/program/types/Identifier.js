@@ -14,8 +14,8 @@ export default class Identifier extends Node {
 		return this.parent.findScope( functionScope	);
 	}
 
-	initialise () {
-		if ( isReference( this, this.parent ) ) {
+	initialise ( transforms ) {
+		if ( transforms.arrow && isReference( this, this.parent ) ) {
 			if ( this.name === 'arguments' && !this.findScope( false ).contains( this.name ) ) {
 				const lexicalBoundary = this.findLexicalBoundary();
 				const arrowFunction = this.findNearest( 'ArrowFunctionExpression' );

@@ -2,7 +2,7 @@ import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 
 export default class VariableDeclarator extends Node {
-	initialise () {
+	initialise ( transforms ) {
 		this.isObjectPattern = this.id.type === 'ObjectPattern';
 
 		// disallow compound destructuring, for now at least
@@ -20,7 +20,7 @@ export default class VariableDeclarator extends Node {
 		}
 
 		this.parent.scope.addDeclaration( this.id, kind );
-		super.initialise();
+		super.initialise( transforms );
 	}
 
 	transpile ( code, transforms ) {

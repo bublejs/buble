@@ -1,9 +1,9 @@
 import Node from '../Node.js';
 
 export default class VariableDeclaration extends Node {
-	initialise () {
+	initialise ( transforms ) {
 		this.scope = this.findScope( this.kind === 'var' );
-		this.declarations.forEach( declarator => declarator.initialise() );
+		this.declarations.forEach( declarator => declarator.initialise( transforms ) );
 	}
 
 	transpile ( code, transforms ) {

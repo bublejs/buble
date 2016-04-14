@@ -25,5 +25,28 @@ module.exports = [
 
 				console.log( a, b );
 			};`
+	},
+
+	{
+		description: 'can be disabled with `transforms.defaultParameter: false`',
+		options: { transforms: { defaultParameter: false } },
+
+		input: `
+			function foo ( a = 1, b = 2 ) {
+				console.log( a, b );
+			}
+
+			var bar = function ( a = 1, b = 2 ) {
+				console.log( a, b );
+			};`,
+
+		output: `
+			function foo ( a = 1, b = 2 ) {
+				console.log( a, b );
+			}
+
+			var bar = function ( a = 1, b = 2 ) {
+				console.log( a, b );
+			};`
 	}
 ];

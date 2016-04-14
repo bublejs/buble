@@ -79,14 +79,14 @@ export default class Node {
 		return lastLine ? /^[ \t]*/.exec( lastLine[1] )[0] : '';
 	}
 
-	initialise () {
+	initialise ( transforms ) {
 		this.keys.forEach( key => {
 			const value = this[ key ];
 
 			if ( Array.isArray( value ) ) {
-				value.forEach( node => node && node.initialise() );
+				value.forEach( node => node && node.initialise( transforms ) );
 			} else if ( value && typeof value === 'object' ) {
-				value.initialise();
+				value.initialise( transforms );
 			}
 		});
 	}

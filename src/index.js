@@ -43,7 +43,7 @@ export function transform ( source, options = {} ) {
 	let transforms = target( options.target || {} );
 	Object.keys( options.transforms || {} ).forEach( name => {
 		if ( !( name in transforms ) ) throw new Error( `Unknown transform '${name}'` );
-		transforms = options.transforms[ name ];
+		transforms[ name ] = options.transforms[ name ];
 	});
 
 	return new Program( source, ast, transforms ).export( options );

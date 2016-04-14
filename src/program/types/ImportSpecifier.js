@@ -1,8 +1,8 @@
 import Node from '../Node.js';
 
 export default class ImportSpecifier extends Node {
-	initialise () {
+	initialise ( transforms ) {
 		this.findScope( true ).addDeclaration( this.local, 'import' );
-		super.initialise();
+		super.initialise( transforms );
 	}
 }

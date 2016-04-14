@@ -2,7 +2,7 @@ import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 
 export default class BreakStatement extends Node {
-	initialise () {
+	initialise ( transforms ) {
 		this.loop = this.findNearest( /(?:For|While)Statement/ );
 		this.loop.canBreak = true;
 	}

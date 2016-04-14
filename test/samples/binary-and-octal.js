@@ -21,5 +21,12 @@ module.exports = [
 		output: `
 			var num = 503;
 			var str = '0o767';`
+	},
+
+	{
+		description: 'can be disabled with `transforms.numericLiteral: false`',
+		options: { transforms: { numericLiteral: false } },
+		input: '0b111110111',
+		output: '0b111110111'
 	}
 ];

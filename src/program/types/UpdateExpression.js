@@ -2,7 +2,7 @@ import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 
 export default class UpdateExpression extends Node {
-	initialise () {
+	initialise ( transforms ) {
 		if ( this.argument.type === 'Identifier' ) {
 			const declaration = this.findScope( false ).findDeclaration( this.argument.name );
 			if ( declaration && declaration.kind === 'const' ) {
@@ -10,6 +10,6 @@ export default class UpdateExpression extends Node {
 			}
 		}
 
-		super.initialise();
+		super.initialise( transforms );
 	}
 }

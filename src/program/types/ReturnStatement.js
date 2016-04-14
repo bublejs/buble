@@ -1,7 +1,7 @@
 import Node from '../Node.js';
 
 export default class ReturnStatement extends Node {
-	initialise () {
+	initialise ( transforms ) {
 		this.loop = this.findNearest( /(?:For|While)Statement/ );
 		this.nearestFunction = this.findNearest( /Function/ );
 
@@ -10,7 +10,7 @@ export default class ReturnStatement extends Node {
 			this.shouldWrap = true;
 		}
 
-		if ( this.argument ) this.argument.initialise();
+		if ( this.argument ) this.argument.initialise( transforms );
 	}
 
 	transpile ( code, transforms ) {

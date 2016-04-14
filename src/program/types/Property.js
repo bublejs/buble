@@ -2,12 +2,12 @@ import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 
 export default class Property extends Node {
-	initialise () {
+	initialise ( transforms ) {
 		if ( this.computed ) {
 			throw new CompileError( this.key, 'Computed properties are not supported' );
 		}
 
-		super.initialise();
+		super.initialise( transforms );
 	}
 
 	transpile ( code, transforms ) {
