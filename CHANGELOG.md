@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.20
+
+* Bump to resolve unknown npm issue
+
 ## 0.4.19
 
 * Fix block scoping bug with for loops that don't need to be rewritten as functions
