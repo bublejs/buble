@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.15
+
+* Rewrite reserved properties if specified ([#9](https://gitlab.com/Rich-Harris/buble/issues/9))
+
 ## 0.4.14
 
 * Allow classes to extend expressions ([#15](https://gitlab.com/Rich-Harris/buble/issues/15))
