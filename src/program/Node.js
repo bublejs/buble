@@ -1,4 +1,3 @@
-import { walk } from 'estree-walker';
 import wrap from './wrap.js';
 
 const statementsWithBlocks = {
