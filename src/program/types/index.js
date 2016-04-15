@@ -12,11 +12,12 @@ import ForStatement from './ForStatement.js';
 import ForOfStatement from './ForOfStatement.js';
 import FunctionDeclaration from './FunctionDeclaration.js';
 import FunctionExpression from './FunctionExpression.js';
+import Identifier from './Identifier.js';
 import ImportSpecifier from './ImportSpecifier.js';
 import ImportDefaultSpecifier from './ImportDefaultSpecifier.js';
 import Literal from './Literal.js';
 import LoopStatement from './shared/LoopStatement.js';
-import Identifier from './Identifier.js';
+import MemberExpression from './MemberExpression.js';
 import Property from './Property.js';
 import ReturnStatement from './ReturnStatement.js';
 import Super from './Super.js';
@@ -44,10 +45,11 @@ export default {
 	ForOfStatement,
 	FunctionDeclaration,
 	FunctionExpression,
+	Identifier,
 	ImportSpecifier,
 	ImportDefaultSpecifier,
 	Literal,
-	Identifier,
+	MemberExpression,
 	Property,
 	ReturnStatement,
 	Super,

@@ -1,5 +1,4 @@
 import Node from '../Node.js';
-import reserved from '../../utils/reserved.js';
 import isReference from '../../utils/isReference.js';
 
 export default class Identifier extends Node {
@@ -38,14 +37,6 @@ export default class Identifier extends Node {
 	transpile ( code, transforms ) {
 		if ( this.alias ) {
 			code.overwrite( this.start, this.end, this.alias, true );
-		}
-
-		if ( transforms.reservedProperties && reserved[ this.name ] ) {
-			const { type, object, property } = this.parent;
-			if ( type === 'MemberExpression' && this === property && !this.computed ) {
-				code.overwrite( object.end, this.start, `['` );
-				code.insert( this.end, `']` );
-			}
 		}
 	}
 }
