@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.19
+
+* Fix block scoping bug with for loops that don't need to be rewritten as functions
+
 ## 0.4.18
 
 * Fix break-inside-switch bug
