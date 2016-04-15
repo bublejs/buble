@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.21
+
+* Add `find` and `findIndex` helpers for 0.12 support
+
 ## 0.4.20
 
 * Bump to resolve unknown npm issue
