@@ -293,5 +293,21 @@ module.exports = [
 			};
 
 			for ( var foo in bar ) loop( foo );`
+	},
+
+	{
+		description: 'does not incorrectly rename variables declared in for loop head',
+
+		input: `
+			for ( let foo = 0; foo < 10; foo += 1 ) {
+				foo += 1;
+				console.log( foo );
+			}`,
+
+		output: `
+			for ( var foo = 0; foo < 10; foo += 1 ) {
+				foo += 1;
+				console.log( foo );
+			}`
 	}
 ];
