@@ -1,4 +1,5 @@
 import Node from '../Node.js';
+import { find } from '../../utils/array.js';
 
 export default class ArrowFunctionExpression extends Node {
 	initialise ( transforms ) {
@@ -35,7 +36,7 @@ export default class ArrowFunctionExpression extends Node {
 		}
 
 		if ( this.body.synthetic ) {
-			if ( this.params.find( param => param.type === 'RestElement' || /Pattern/.test( param.type ) ) ) {
+			if ( find( this.params, param => param.type === 'RestElement' || /Pattern/.test( param.type ) ) ) {
 				const indentation = this.getIndentation();
 				code.insert( this.body.start, `{\n${indentation}${code.getIndentString()}` );
 				super.transpile( code, transforms );

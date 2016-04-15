@@ -1,4 +1,5 @@
 import Node from '../Node.js';
+import { findIndex } from '../../utils/array.js';
 
 // TODO this code is pretty wild, tidy it up
 export default class ClassBody extends Node {
@@ -9,7 +10,7 @@ export default class ClassBody extends Node {
 			const indentStr = code.getIndentString();
 			let indentation = this.getIndentation() + ( inFunctionExpression ? indentStr : '' );
 
-			const constructorIndex = this.body.findIndex( node => node.kind === 'constructor' );
+			const constructorIndex = findIndex( this.body, node => node.kind === 'constructor' );
 			const constructor = this.body[ constructorIndex ];
 
 			if ( this.body.length ) {
