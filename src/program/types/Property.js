@@ -1,4 +1,5 @@
 import Node from '../Node.js';
+import reserved from '../../utils/reserved.js';
 import CompileError from '../../utils/CompileError.js';
 
 export default class Property extends Node {
@@ -17,6 +18,11 @@ export default class Property extends Node {
 			} else if ( this.method ) {
 				code.insert( this.key.end, `: function` );
 			}
+		}
+
+		if ( transforms.reservedProperties && reserved[ this.key.name ] ) {
+			code.insert( this.key.start, `'` );
+			code.insert( this.key.end, `'` );
 		}
 
 		super.transpile( code, transforms );
