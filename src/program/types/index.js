@@ -9,6 +9,7 @@ import ClassExpression from './ClassExpression.js';
 import ContinueStatement from './ContinueStatement.js';
 import ExportDefaultDeclaration from './ExportDefaultDeclaration.js';
 import ForStatement from './ForStatement.js';
+import ForInStatement from './ForInStatement.js';
 import ForOfStatement from './ForOfStatement.js';
 import FunctionDeclaration from './FunctionDeclaration.js';
 import FunctionExpression from './FunctionExpression.js';
@@ -42,6 +43,7 @@ export default {
 	DoWhileStatement: LoopStatement,
 	ExportDefaultDeclaration,
 	ForStatement,
+	ForInStatement,
 	ForOfStatement,
 	FunctionDeclaration,
 	FunctionExpression,

@@ -235,5 +235,43 @@ module.exports = [
 					if ( returned ) return returned.v;
 				}
 			}`
+	},
+
+	{
+		description: 'rewrites for-in loops as functions as necessary',
+
+		input: `
+			for ( let foo in bar ) {
+				setTimeout( function () { console.log( bar[ foo ] ) } );
+			}`,
+
+		output: `
+			var loop = function ( foo ) {
+				setTimeout( function () { console.log( bar[ foo ] ) } );
+			};
+
+			for ( var foo in bar ) loop( foo );`
+	},
+
+	{
+		description: 'allows breaking from for-in loops',
+
+		input: `
+			for ( let foo in bar ) {
+				if ( foo === 'baz' ) break;
+				setTimeout( function () { console.log( bar[ foo ] ) } );
+			}`,
+
+		output: `
+			var loop = function ( foo ) {
+				if ( foo === 'baz' ) return 'break';
+				setTimeout( function () { console.log( bar[ foo ] ) } );
+			};
+
+			for ( var foo in bar ) {
+				var returned = loop( foo );
+
+				if ( returned === 'break' ) break;
+			}`
 	}
 ];
