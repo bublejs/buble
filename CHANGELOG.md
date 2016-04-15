@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.18
+
+* Fix break-inside-switch bug
+
 ## 0.4.17
 
 * Support `for...in` loops and block scoping
