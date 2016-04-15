@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.16
+
+* Add `ie` and `edge` to support matrix
+
 ## 0.4.15
 
 * Rewrite reserved properties if specified ([#9](https://gitlab.com/Rich-Harris/buble/issues/9))
