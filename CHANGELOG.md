@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.17
+
+* Support `for...in` loops and block scoping
+
 ## 0.4.16
 
 * Add `ie` and `edge` to support matrix
