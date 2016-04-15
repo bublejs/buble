@@ -273,5 +273,25 @@ module.exports = [
 
 				if ( returned === 'break' ) break;
 			}`
+	},
+
+	{
+		description: 'transpiles block-less for-in statements',
+		input: `for ( let foo in bar ) baz( foo );`,
+		output: `for ( var foo in bar ) baz( foo );`
+	},
+
+	{
+		description: 'transpiles block-less for-in statements as functions',
+
+		input: `
+			for ( let foo in bar ) setTimeout( function () { log( foo ) } );`,
+
+		output: `
+			var loop = function ( foo ) {
+				setTimeout( function () { log( foo ) } );
+			};
+
+			for ( var foo in bar ) loop( foo );`
 	}
 ];
