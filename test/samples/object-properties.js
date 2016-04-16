@@ -27,5 +27,19 @@ module.exports = [
 			}`,
 
 		error: /Computed properties are not supported/
+	},
+
+	{
+		description: 'shorthand properties can be disabled with `transforms.conciseMethodProperty === false`',
+		options: { transforms: { conciseMethodProperty: false } },
+		input: `var obj = { x, y, z () {} }`,
+		output: `var obj = { x, y, z () {} }`
+	},
+
+	{
+		description: 'computed properties can be allowed with `transforms.computedProperty === false`',
+		options: { transforms: { computedProperty: false } },
+		input: `var obj = { [x]: 'x' }`,
+		output: `var obj = { [x]: 'x' }`
 	}
 ];

@@ -4,7 +4,7 @@ import CompileError from '../../utils/CompileError.js';
 
 export default class Property extends Node {
 	initialise ( transforms ) {
-		if ( this.computed ) {
+		if ( this.computed && transforms.computedProperty ) {
 			throw new CompileError( this.key, 'Computed properties are not supported' );
 		}
 
@@ -12,7 +12,7 @@ export default class Property extends Node {
 	}
 
 	transpile ( code, transforms ) {
-		if ( this.parent.type !== 'ObjectPattern' ) {
+		if ( transforms.conciseMethodProperty && this.parent.type !== 'ObjectPattern' ) {
 			if ( this.shorthand ) {
 				code.insert( this.start, `${this.key.name}: ` );
 			} else if ( this.method ) {
