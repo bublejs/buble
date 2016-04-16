@@ -65,8 +65,11 @@ describe( 'buble', () => {
 					env: {
 						PATH: path.resolve( __dirname, '../bin' ) + ':' + process.env.PATH
 					}
-				}, ( err ) => {
+				}, ( err, stdout, stderr ) => {
 					if ( err ) return done( err );
+
+					if ( stdout ) console.log( stdout );
+					if ( stderr ) console.error( stderr );
 
 					function catalogue ( subdir ) {
 						subdir = path.resolve( dir, subdir );

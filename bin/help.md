@@ -16,10 +16,23 @@ Basic options:
 
 Examples:
 
+# Compile input.js to output.js
 buble input.js > output.js
+
+# Compile input.js to output.js, write sourcemap to output.js.map
 buble input.js -o output.js -m
+
+# Compile input.js to output.js with inline sourcemap
 buble input.js -o output.js -m inline
+
+# Only use transforms necessary for output.js to run in FF43 and Node 5
 buble input.js -o output.js -t firefox:43,node:5
+
+# As above, but use arrow function and destructuring transforms
+buble input.js -o output.js -t firefox:43,node:5 -y arrow,destructuring
+
+# Compile all the files in src/ to dest/
+buble src -o dest
 
 Notes:
 

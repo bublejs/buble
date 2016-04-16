@@ -87,7 +87,17 @@ module.exports = function ( command ) {
 			});
 	}
 
-	console.error( options );
+	if ( command.yes ) {
+		command.yes.split( ',' ).forEach( function ( transform ) {
+			options.transforms[ transform ] = true;
+		});
+	}
+
+	if ( command.no ) {
+		command.no.split( ',' ).forEach( function ( transform ) {
+			options.transforms[ transform ] = false;
+		});
+	}
 
 	if ( command.input ) {
 		compile( command.input, command.output, command, options );
