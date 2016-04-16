@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.22
+
+* Allow double `var` declarations (only throw if `let` or `const` is redeclared)
+
 ## 0.4.21
 
 * Add `find` and `findIndex` helpers for 0.12 support
