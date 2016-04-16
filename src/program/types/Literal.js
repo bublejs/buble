@@ -11,8 +11,8 @@ export default class Literal extends Node {
 		}
 
 		if ( this.regex ) {
-			if ( /u/.test( this.regex.flags ) ) throw new CompileError( this, 'Regular expression unicode flag is not supported' );
-			if ( /y/.test( this.regex.flags ) ) throw new CompileError( this, 'Regular expression sticky flag is not supported' );
+			if ( transforms.unicodeRegExp && /u/.test( this.regex.flags ) ) throw new CompileError( this, 'Regular expression unicode flag is not supported' );
+			if ( transforms.stickyRegExp && /y/.test( this.regex.flags ) ) throw new CompileError( this, 'Regular expression sticky flag is not supported' );
 		}
 	}
 }
