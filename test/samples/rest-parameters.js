@@ -31,5 +31,20 @@ module.exports = [
 
 				console.log( theRest );
 			}`
+	},
+
+	{
+		description: 'can be disabled with `transforms.spreadRest === false`',
+		options: { transforms: { spreadRest: false } },
+
+		input: `
+			function foo ( ...list ) {
+				// code goes here
+			}`,
+
+		output: `
+			function foo ( ...list ) {
+				// code goes here
+			}`
 	}
 ];

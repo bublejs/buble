@@ -185,34 +185,36 @@ export default class BlockStatement extends Node {
 			}
 
 			// rest parameter
-			const lastParam = params[ params.length - 1 ];
-			if ( lastParam && lastParam.type === 'RestElement' ) {
-				const penultimateParam = params[ params.length - 2 ];
+			if ( transforms.spreadRest ) {
+				const lastParam = params[ params.length - 1 ];
+				if ( lastParam && lastParam.type === 'RestElement' ) {
+					const penultimateParam = params[ params.length - 2 ];
 
-				if ( penultimateParam ) {
-					code.remove( penultimateParam ? penultimateParam.end : lastParam.start, lastParam.end );
-				} else {
-					let start = lastParam.start, end = lastParam.end; // TODO https://gitlab.com/Rich-Harris/buble/issues/8
+					if ( penultimateParam ) {
+						code.remove( penultimateParam ? penultimateParam.end : lastParam.start, lastParam.end );
+					} else {
+						let start = lastParam.start, end = lastParam.end; // TODO https://gitlab.com/Rich-Harris/buble/issues/8
 
-					while ( /\s/.test( code.original[ start - 1 ] ) ) start -= 1;
-					while ( /\s/.test( code.original[ end ] ) ) end += 1;
+						while ( /\s/.test( code.original[ start - 1 ] ) ) start -= 1;
+						while ( /\s/.test( code.original[ end ] ) ) end += 1;
 
-					code.remove( start, end );
+						code.remove( start, end );
+					}
+
+					if ( addedStuff ) code.insert( start, `\n${indentation}` );
+
+					const name = lastParam.argument.name;
+					const len = this.scope.createIdentifier( 'len' );
+					const count = params.length - 1;
+
+					if ( count ) {
+						code.insert( start, `var ${name} = [], ${len} = arguments.length - ${count};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];` );
+					} else {
+						code.insert( start, `var ${name} = [], ${len} = arguments.length;\n${indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ];` );
+					}
+
+					addedStuff = true;
 				}
-
-				if ( addedStuff ) code.insert( start, `\n${indentation}` );
-
-				const name = lastParam.argument.name;
-				const len = this.scope.createIdentifier( 'len' );
-				const count = params.length - 1;
-
-				if ( count ) {
-					code.insert( start, `var ${name} = [], ${len} = arguments.length - ${count};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];` );
-				} else {
-					code.insert( start, `var ${name} = [], ${len} = arguments.length;\n${indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ];` );
-				}
-
-				addedStuff = true;
 			}
 		}
 
