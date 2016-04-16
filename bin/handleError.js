@@ -19,6 +19,10 @@ var handlers = {
 
 	DUPLICATE_IMPORT_OPTIONS: function ( err ) {
 		console.error( chalk.red( 'use --input, or pass input path as argument – not both' ) );
+	},
+
+	BAD_TARGET: function ( err ) {
+		console.error( chalk.red( 'illegal --target option' ) );
 	}
 };
 

@@ -73,6 +73,22 @@ module.exports = function ( command ) {
 		transforms: {}
 	};
 
+	if ( command.target ) {
+		if ( !/^(?:(\w+):([\d\.]+),)*(\w+):([\d\.]+)$/.test( command.target ) ) {
+			handleError({ code: 'BAD_TARGET' });
+		}
+
+		command.target.split( ',' )
+			.map( function ( target ) {
+				return target.split( ':' );
+			})
+			.forEach( function ( pair ) {
+				options.target[ pair[0] ] = pair[1];
+			});
+	}
+
+	console.error( options );
+
 	if ( command.input ) {
 		compile( command.input, command.output, command, options );
 	}

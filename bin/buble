@@ -8,7 +8,10 @@ var command = minimist( process.argv.slice( 2 ), {
 		i: 'input',
 		m: 'sourcemap',
 		o: 'output',
-		v: 'version'
+		v: 'version',
+		t: 'target',
+		y: 'yes',
+		n: 'no'
 	}
 });
 
