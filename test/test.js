@@ -1,6 +1,9 @@
 var path = require( 'path' );
 var fs = require( 'fs' );
+var rimraf = require( 'rimraf' );
+var child_process = require( 'child_process' );
 var assert = require( 'assert' );
+var glob = require( 'glob' );
 var SourceMapConsumer = require( 'source-map' ).SourceMapConsumer;
 var getLocation = require( './utils/getLocation.js' );
 var buble = require( '../dist/buble.umd.js' );
@@ -40,6 +43,58 @@ describe( 'buble', () => {
 
 					else {
 						equal( buble.transform( sample.input, sample.options  ).code, sample.output );
+					}
+				});
+			});
+		});
+	});
+
+	describe.only( 'cli', () => {
+		fs.readdirSync( 'test/cli' ).forEach( dir => {
+			if ( dir[0] === '.' ) return; // .DS_Store
+
+			it( dir, done => {
+				dir = path.resolve( 'test/cli', dir );
+				rimraf.sync( path.resolve( dir, 'actual' ) );
+
+				var commandFile = path.resolve( dir, 'command.sh' );
+
+				// var command = fs.readFileSync( commandFile, 'utf-8' );
+				child_process.execFile( commandFile, {
+					cwd: dir,
+					env: {
+						PATH: path.resolve( __dirname, '../bin' ) + ':' + process.env.PATH
+					}
+				}, ( err ) => {
+					if ( err ) return done( err );
+
+					function catalogue ( subdir ) {
+						subdir = path.resolve( dir, subdir );
+
+						return glob.sync( '**/*.js?(.map)', { cwd: subdir })
+							.sort()
+							.map( name => {
+								var contents = fs.readFileSync( path.resolve( subdir, name ), 'utf-8' ).trim();
+
+								if ( path.extname( name ) === '.map' ) {
+									contents = JSON.parse( contents );
+								}
+
+								return {
+									name: name,
+									contents: contents
+								};
+							});
+					}
+
+					var expected = catalogue( 'expected' );
+					var actual = catalogue( 'actual' );
+
+					try {
+						assert.deepEqual( actual, expected );
+						done();
+					} catch ( err ) {
+						done( err );
 					}
 				});
 			});

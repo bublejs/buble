@@ -1,0 +1,1 @@
+{"version":3,"file":"output.js","sources":["../input.js"],"sourcesContent":["const answer = () => 42;\n"],"names":["const"],"mappings":"AAAAA,GAAK,CAAC,MAAM,GAAG,YAAM,SAAA,EAAE,GAAA,CAAC;"}

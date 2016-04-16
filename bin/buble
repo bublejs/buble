@@ -1,22 +1,25 @@
 #!/usr/bin/env node
-var fs = require( 'fs' );
-var buble = require( '../dist/buble.umd.js' );
+var minimist = require( 'minimist' );
 
-var args = process.argv.slice( 2 );
+var command = minimist( process.argv.slice( 2 ), {
+	alias: {
+		// Short options
+		h: 'help',
+		i: 'input',
+		m: 'sourcemap',
+		o: 'output',
+		v: 'version'
+	}
+});
 
-if ( args.length !== 1 ) {
-	console.error( 'Usage: buble [file]' );
+if ( command.help || ( process.argv.length <= 2 && process.stdin.isTTY ) ) {
+	require( './showHelp' )();
 }
 
-var source = fs.readFileSync( args[0], 'utf-8' );
+else if ( command.version ) {
+	console.log( 'Bublé version ' + require( '../package.json' ).version );
+}
 
-try {
-	var result = buble.transform( source ).code;
-	console.log( result );
-} catch ( err ) {
-	console.error( err.message );
-	if ( err.snippet ) console.error( '---\n' + err.snippet );
-	if ( err.stack ) console.error( err.stack );
-
-	process.exit( 1 );
+else {
+	require( './runBuble' )( command );
 }
