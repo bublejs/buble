@@ -116,6 +116,7 @@ module.exports = [
 
 	{
 		description: 'deconflicts with default imports',
+		options: { transforms: { moduleImport: false } },
 
 		input: `
 			import foo from './foo.js';
@@ -136,6 +137,7 @@ module.exports = [
 
 	{
 		description: 'deconflicts with named imports',
+		options: { transforms: { moduleImport: false } },
 
 		input: `
 			import { foo } from './foo.js';

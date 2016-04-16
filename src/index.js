@@ -44,6 +44,12 @@ export function transform ( source, options = {} ) {
 
 	let transforms = target( options.target || {} );
 	Object.keys( options.transforms || {} ).forEach( name => {
+		if ( name === 'modules' ) {
+			if ( !( 'moduleImport' in options.transforms ) ) transforms.moduleImport = options.transforms.modules;
+			if ( !( 'moduleExport' in options.transforms ) ) transforms.moduleExport = options.transforms.modules;
+			return;
+		}
+
 		if ( !( name in transforms ) ) throw new Error( `Unknown transform '${name}'` );
 		transforms[ name ] = options.transforms[ name ];
 	});

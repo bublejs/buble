@@ -8,14 +8,16 @@ import ClassDeclaration from './ClassDeclaration.js';
 import ClassExpression from './ClassExpression.js';
 import ContinueStatement from './ContinueStatement.js';
 import ExportDefaultDeclaration from './ExportDefaultDeclaration.js';
+import ExportNamedDeclaration from './ExportNamedDeclaration.js';
 import ForStatement from './ForStatement.js';
 import ForInStatement from './ForInStatement.js';
 import ForOfStatement from './ForOfStatement.js';
 import FunctionDeclaration from './FunctionDeclaration.js';
 import FunctionExpression from './FunctionExpression.js';
 import Identifier from './Identifier.js';
-import ImportSpecifier from './ImportSpecifier.js';
+import ImportDeclaration from './ImportDeclaration.js';
 import ImportDefaultSpecifier from './ImportDefaultSpecifier.js';
+import ImportSpecifier from './ImportSpecifier.js';
 import Literal from './Literal.js';
 import LoopStatement from './shared/LoopStatement.js';
 import MemberExpression from './MemberExpression.js';
@@ -41,6 +43,7 @@ export default {
 	ClassExpression,
 	ContinueStatement,
 	DoWhileStatement: LoopStatement,
+	ExportNamedDeclaration,
 	ExportDefaultDeclaration,
 	ForStatement,
 	ForInStatement,
@@ -48,8 +51,9 @@ export default {
 	FunctionDeclaration,
 	FunctionExpression,
 	Identifier,
-	ImportSpecifier,
+	ImportDeclaration,
 	ImportDefaultSpecifier,
+	ImportSpecifier,
 	Literal,
 	MemberExpression,
 	Property,

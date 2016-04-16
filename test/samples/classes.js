@@ -167,6 +167,7 @@ module.exports = [
 
 	{
 		description: 'transpiles export default class',
+		options: { transforms: { moduleExport: false } },
 
 		input: `
 			export default class Foo {
