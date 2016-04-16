@@ -102,85 +102,87 @@ export default class BlockStatement extends Node {
 			}
 
 			// object pattern
-			params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
-				const ref = this.scope.createIdentifier( 'ref' );
-				code.insert( param.start, ref );
+			if ( transforms.destructuring ) {
+				params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
+					const ref = this.scope.createIdentifier( 'ref' );
+					code.insert( param.start, ref );
 
-				let lastIndex = param.start;
+					let lastIndex = param.start;
 
-				param.properties.forEach( prop => {
-					code.remove( lastIndex, prop.value.start );
+					param.properties.forEach( prop => {
+						code.remove( lastIndex, prop.value.start );
 
-					if ( addedStuff ) code.insert( start, `\n${indentation}` );
+						if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
-					const key = prop.key.name;
+						const key = prop.key.name;
 
-					if ( prop.value.type === 'Identifier' ) {
-						code.remove( prop.value.start, prop.value.end );
-						lastIndex = prop.value.end;
+						if ( prop.value.type === 'Identifier' ) {
+							code.remove( prop.value.start, prop.value.end );
+							lastIndex = prop.value.end;
 
-						const value = prop.value.name;
-						code.insert( start, `var ${value} = ${ref}.${key};` );
-					} else if ( prop.value.type === 'AssignmentPattern' ) {
-						code.remove( prop.value.start, prop.value.right.start );
-						lastIndex = prop.value.right.end;
+							const value = prop.value.name;
+							code.insert( start, `var ${value} = ${ref}.${key};` );
+						} else if ( prop.value.type === 'AssignmentPattern' ) {
+							code.remove( prop.value.start, prop.value.right.start );
+							lastIndex = prop.value.right.end;
 
-						const value = prop.value.left.name;
-						code
-							.insert( start, `var ${ref}_${key} = ref.${key}, ${value} = ref_${key} === void 0 ? ` )
-							.move( prop.value.right.start, prop.value.right.end, start )
-							.insert( start, ` : ref_${key};` );
-					}
+							const value = prop.value.left.name;
+							code
+								.insert( start, `var ${ref}_${key} = ref.${key}, ${value} = ref_${key} === void 0 ? ` )
+								.move( prop.value.right.start, prop.value.right.end, start )
+								.insert( start, ` : ref_${key};` );
+						}
 
-					else {
-						throw new CompileError( prop, `Compound destructuring is not supported` );
-					}
+						else {
+							throw new CompileError( prop, `Compound destructuring is not supported` );
+						}
 
-					addedStuff = true;
-					lastIndex = prop.end;
+						addedStuff = true;
+						lastIndex = prop.end;
+					});
+
+					code.remove( lastIndex, param.end );
 				});
 
-				code.remove( lastIndex, param.end );
-			});
+				// array pattern. TODO dry this out
+				params.filter( param => param.type === 'ArrayPattern' ).forEach( param => {
+					const ref = this.scope.createIdentifier( 'ref' );
+					code.insert( param.start, ref );
 
-			// array pattern. TODO dry this out
-			params.filter( param => param.type === 'ArrayPattern' ).forEach( param => {
-				const ref = this.scope.createIdentifier( 'ref' );
-				code.insert( param.start, ref );
+					let lastIndex = param.start;
 
-				let lastIndex = param.start;
+					param.elements.forEach( ( element, i ) => {
+						code.remove( lastIndex, element.start );
 
-				param.elements.forEach( ( element, i ) => {
-					code.remove( lastIndex, element.start );
+						if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
-					if ( addedStuff ) code.insert( start, `\n${indentation}` );
+						if ( element.type === 'Identifier' ) {
+							code.remove( element.start, element.end );
+							lastIndex = element.end;
 
-					if ( element.type === 'Identifier' ) {
-						code.remove( element.start, element.end );
+							code.insert( start, `var ${element.name} = ${ref}[${i}];` );
+						} else if ( element.type === 'AssignmentPattern' ) {
+							code.remove( element.start, element.right.start );
+							lastIndex = element.right.end;
+
+							const name = element.left.name;
+							code
+								.insert( start, `var ${ref}_${i} = ref[${i}], ${name} = ref_${i} === void 0 ? ` )
+								.move( element.right.start, element.right.end, start )
+								.insert( start, ` : ref_${i};` );
+						}
+
+						else {
+							throw new CompileError( element, `Compound destructuring is not supported` );
+						}
+
+						addedStuff = true;
 						lastIndex = element.end;
+					});
 
-						code.insert( start, `var ${element.name} = ${ref}[${i}];` );
-					} else if ( element.type === 'AssignmentPattern' ) {
-						code.remove( element.start, element.right.start );
-						lastIndex = element.right.end;
-
-						const name = element.left.name;
-						code
-							.insert( start, `var ${ref}_${i} = ref[${i}], ${name} = ref_${i} === void 0 ? ` )
-							.move( element.right.start, element.right.end, start )
-							.insert( start, ` : ref_${i};` );
-					}
-
-					else {
-						throw new CompileError( element, `Compound destructuring is not supported` );
-					}
-
-					addedStuff = true;
-					lastIndex = element.end;
+					code.remove( lastIndex, param.end );
 				});
-
-				code.remove( lastIndex, param.end );
-			});
+			}
 
 			// rest parameter
 			const lastParam = params[ params.length - 1 ];

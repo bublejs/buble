@@ -79,5 +79,19 @@ module.exports = [
 		description: 'disallows array pattern in assignment (temporary)',
 		input: `[ a, b ] = [ b, a ]`,
 		error: /Assigning to an array pattern is not currently supported/
+	},
+
+	{
+		description: 'can be disabled in declarations with `transforms.destructuring === false`',
+		options: { transforms: { destructuring: false } },
+		input: `var { x, y } = point;`,
+		output: `var { x, y } = point;`
+	},
+
+	{
+		description: 'can be disabled in function parameters with `transforms.destructuring === false`',
+		options: { transforms: { destructuring: false } },
+		input: `function foo ({ x, y }) {}`,
+		output: `function foo ({ x, y }) {}`
 	}
 ];
