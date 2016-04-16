@@ -16,27 +16,29 @@ export default class LoopStatement extends Node {
 
 		super.initialise( transforms );
 
-		// see if any block-scoped declarations are referenced
-		// inside function expressions
-		const names = Object.keys( this.body.scope.declarations );
+		if ( transforms.letConst ) {
+			// see if any block-scoped declarations are referenced
+			// inside function expressions
+			const names = Object.keys( this.body.scope.declarations );
 
-		let i = names.length;
-		while ( i-- ) {
-			const name = names[i];
-			const declaration = this.body.scope.declarations[ name ];
+			let i = names.length;
+			while ( i-- ) {
+				const name = names[i];
+				const declaration = this.body.scope.declarations[ name ];
 
-			let j = declaration.instances.length;
-			while ( j-- ) {
-				const instance = declaration.instances[j];
-				const nearestFunctionExpression = instance.findNearest( /Function/ );
+				let j = declaration.instances.length;
+				while ( j-- ) {
+					const instance = declaration.instances[j];
+					const nearestFunctionExpression = instance.findNearest( /Function/ );
 
-				if ( nearestFunctionExpression && nearestFunctionExpression.depth > this.depth ) {
-					this.shouldRewriteAsFunction = true;
-					break;
+					if ( nearestFunctionExpression && nearestFunctionExpression.depth > this.depth ) {
+						this.shouldRewriteAsFunction = true;
+						break;
+					}
 				}
-			}
 
-			if ( this.shouldRewriteAsFunction ) break;
+				if ( this.shouldRewriteAsFunction ) break;
+			}
 		}
 	}
 

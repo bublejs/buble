@@ -309,5 +309,24 @@ module.exports = [
 				foo += 1;
 				console.log( foo );
 			}`
+	},
+
+	{
+		description: 'does not rewrite as function if `transforms.letConst === false`',
+		options: { transforms: { letConst: false } },
+
+		input: `
+			for ( let i = 0; i < 10; i += 1 ) {
+				setTimeout( function () {
+					log( i );
+				}, i * 100 );
+			}`,
+
+		output: `
+			for ( let i = 0; i < 10; i += 1 ) {
+				setTimeout( function () {
+					log( i );
+				}, i * 100 );
+			}`
 	}
 ];
