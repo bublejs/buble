@@ -84,8 +84,10 @@ export default class ClassBody extends Node {
 						`${name}.prototype.${method.key.name}` :
 						`${accessors}.${method.key.name}.${method.kind}`;
 
-				code.insert( method.start, `${lhs} = function` + ( isAccessor ? '' : ' ' ) );
+				code.insert( method.start, `${lhs} = function` + ( method.value.generator ? '*' : '' ) + ( isAccessor ? '' : ' ' ) );
 				code.insert( method.end, ';' );
+
+				if ( method.value.generator ) code.remove( method.start, method.key.start );
 
 				// prevent function name shadowing an existing declaration
 				if ( scope.contains( method.key.name ) ) {

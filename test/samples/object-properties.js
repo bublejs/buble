@@ -15,7 +15,7 @@ module.exports = [
 
 		output: `
 			obj = {
-				foo: function () { return 42; }
+				foo: function foo () { return 42; }
 			}`
 	},
 

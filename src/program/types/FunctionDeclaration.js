@@ -3,7 +3,7 @@ import CompileError from '../../utils/CompileError.js';
 
 export default class FunctionDeclaration extends Node {
 	initialise ( transforms ) {
-		if ( this.generator ) {
+		if ( this.generator && transforms.generator ) {
 			throw new CompileError( this, 'Generators are not supported' );
 		}
 
