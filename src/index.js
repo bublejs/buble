@@ -1,4 +1,4 @@
-import { parse } from 'acorn/src/index.js';
+import { parse } from 'acorn';
 import Program from './program/Program.js';
 import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';
@@ -50,3 +50,5 @@ export function transform ( source, options = {} ) {
 
 	return new Program( source, ast, transforms ).export( options );
 }
+
+export { version as VERSION } from '../package.json';
