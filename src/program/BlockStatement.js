@@ -102,7 +102,7 @@ export default class BlockStatement extends Node {
 			}
 
 			// object pattern
-			if ( transforms.destructuring ) {
+			if ( transforms.parameterDestructuring ) {
 				params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
 					const ref = this.scope.createIdentifier( 'ref' );
 					code.insert( param.start, ref );

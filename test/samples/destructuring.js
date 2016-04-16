@@ -89,8 +89,8 @@ module.exports = [
 	},
 
 	{
-		description: 'can be disabled in function parameters with `transforms.destructuring === false`',
-		options: { transforms: { destructuring: false } },
+		description: 'can be disabled in function parameters with `transforms.parameterDestructuring === false`',
+		options: { transforms: { parameterDestructuring: false } },
 		input: `function foo ({ x, y }) {}`,
 		output: `function foo ({ x, y }) {}`
 	}
