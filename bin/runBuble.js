@@ -3,16 +3,56 @@ var path = require( 'path' );
 var buble = require( '../' );
 var handleError = require( './handleError.js' );
 
-function compile ( src, dest, options ) {
-
+function compile ( from, to, command, options ) {
+	try {
+		var stats = fs.statSync( from );
+		if ( stats.isDirectory() ) {
+			compileDir( from, to, command, options );
+		} else {
+			compileFile( from, to, command, options );
+		}
+	} catch ( err ) {
+		handleError( err );
+	}
 }
 
-function compileDir ( src, dest, options ) {
+function compileDir ( from, to, command, options ) {
+	if ( !command.output ) handleError({ code: 'MISSING_OUTPUT_DIR' });
 
+	fs.readdirSync( from ).forEach( file => {
+		compile( path.resolve( from, file ), path.resolve( to, file ), command, options );
+	});
 }
 
-function compileFile ( src, dest, options ) {
+function compileFile ( from, to, command, options ) {
+	var source = fs.readFileSync( from, 'utf-8' );
+	var result = buble.transform( source, {
+		target: options.target,
+		transforms: options.transforms,
+		source: from,
+		file: to
+	});
 
+	write( result, to, command );
+}
+
+function write ( result, to, command ) {
+	if ( command.sourcemap === 'inline' ) {
+		result.code += '\n//# sourceMappingURL=' + result.map.toUrl();
+	} else if ( command.sourcemap ) {
+		if ( !to ) {
+			handleError({ code: 'MISSING_OUTPUT_FILE' });
+		}
+
+		result.code += '\n//# sourceMappingURL=' + path.basename( to ) + '.map';
+		fs.writeFileSync( to + '.map', result.map.toString() );
+	}
+
+	if ( to ) {
+		fs.writeFileSync( to, result.code );
+	} else {
+		console.log( result.code ); // eslint-disable-line no-console
+	}
 }
 
 module.exports = function ( command ) {
@@ -28,56 +68,28 @@ module.exports = function ( command ) {
 		command.input = command._[0];
 	}
 
-	if ( !command.output && command.sourcemap === true ) {
-		handleError({ code: 'MISSING_OUTPUT_FILE' });
-	}
-
-	var isDir;
+	var options = {
+		target: {},
+		transforms: {}
+	};
 
 	if ( command.input ) {
-		try {
-			var stats = fs.statSync( command.input );
-			isDir = stats.isDirectory();
-		} catch ( err ) {
-			handleError({ code: 'FILE_DOES_NOT_EXIST' });
-		}
-	}
-
-	if ( isDir ) {
-		if ( !command.output ) {
-			handleError({ code: 'MISSING_OUTPUT_DIR' });
-		}
-
-		throw new Error( 'TODO directories' );
+		compile( command.input, command.output, command, options );
 	}
 
 	else {
-		var source = fs.readFileSync( command.input, 'utf-8' );
+		process.stdin.resume();
+		process.stdin.setEncoding( 'utf8' );
 
-		try {
-			var result = buble.transform( source, {
-				source: command.input,
-				file: command.output || null
-			});
-		} catch ( err ) {
-			handleError( err );
-		}
+		var source = '';
 
-		if ( command.output ) {
-			if ( command.sourcemap === 'inline' ) {
-				result.code += '\n//# sourceMappingURL=' + result.map.toUrl();
-			} else if ( command.sourcemap ) {
-				result.code += '\n//# sourceMappingURL=' + path.basename( command.output ) + '.map';
-				fs.writeFileSync( command.output + '.map', result.map.toString() );
-			}
+		process.stdin.on( 'data', function ( chunk ) {
+			source += chunk;
+		});
 
-			fs.writeFileSync( command.output, result.code );
-		} else {
-			if ( command.sourcemap && command.sourcemap !== 'inline' ) {
-				handleError({ code: 'MISSING_OUTPUT_FILE' });
-			}
-
-			console.log( result.code ); // eslint-disable-line no-console
-		}
+		process.stdin.on( 'end', function () {
+			var result = buble.transform( source, options );
+			write( result, null, command );
+		});
 	}
 };
