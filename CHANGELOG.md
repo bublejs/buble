@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.4.23
+
+* Add `buble.VERSION`
+* Tidy up build process (don't bundle Acorn incorrectly)
+
 ## 0.4.22
 
 * Allow double `var` declarations (only throw if `let` or `const` is redeclared)
