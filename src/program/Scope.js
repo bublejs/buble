@@ -24,7 +24,7 @@ Scope.prototype = {
 	addDeclaration ( node, kind ) {
 		extractNames( node ).forEach( name => {
 			const existingDeclaration = this.declarations[ name ];
-			if ( existingDeclaration && letConst.test( kind ) && letConst.test( existingDeclaration.kind ) ) {
+			if ( existingDeclaration && ( letConst.test( kind ) || letConst.test( existingDeclaration.kind ) ) ) {
 				// TODO warn about double var declarations?
 				throw new CompileError( node, `${name} is already declared` );
 			}

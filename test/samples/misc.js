@@ -49,5 +49,29 @@ module.exports = [
 				var x = 1;
 				var x = 2;
 			}`
+	},
+
+	{
+		description: 'var followed by let is not okay',
+
+		input: `
+			function foo () {
+				var x = 1;
+				let x = 2;
+			}`,
+
+		error: /x is already declared/
+	},
+
+	{
+		description: 'let followed by var is not okay',
+
+		input: `
+			function foo () {
+				let x = 1;
+				var x = 2;
+			}`,
+
+		error: /x is already declared/
 	}
 ];
