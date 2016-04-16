@@ -33,5 +33,21 @@ module.exports = [
 				default:
 				console.log( 'default' );
 			}`
+	},
+
+	{
+		description: 'double var is okay',
+
+		input: `
+			function foo () {
+				var x = 1;
+				var x = 2;
+			}`,
+
+		output: `
+			function foo () {
+				var x = 1;
+				var x = 2;
+			}`
 	}
 ];

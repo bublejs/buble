@@ -2,6 +2,8 @@ import extractNames from './extractNames.js';
 import reserved from '../utils/reserved.js';
 import CompileError from '../utils/CompileError.js';
 
+const letConst = /^(?:let|const)$/;
+
 export default function Scope ( options ) {
 	options = options || {};
 
@@ -21,7 +23,9 @@ export default function Scope ( options ) {
 Scope.prototype = {
 	addDeclaration ( node, kind ) {
 		extractNames( node ).forEach( name => {
-			if ( this.declarations[ name ] ) {
+			const existingDeclaration = this.declarations[ name ];
+			if ( existingDeclaration && letConst.test( kind ) && letConst.test( existingDeclaration.kind ) ) {
+				// TODO warn about double var declarations?
 				throw new CompileError( node, `${name} is already declared` );
 			}
 
