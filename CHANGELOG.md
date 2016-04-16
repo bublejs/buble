@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.4.24
+
+* Throw if `let`/`const` is redeclared, or `var` is redeclared with a `let`/`const` (0.4.22 regression)
+
 ## 0.4.23
 
 * Add `buble.VERSION`
