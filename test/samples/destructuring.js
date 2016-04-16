@@ -29,6 +29,12 @@ module.exports = [
 	},
 
 	{
+		description: 'uses different name than the property in a declaration',
+		input: `var { foo: bar } = obj;`,
+		output: `var bar = obj.foo;`
+	},
+
+	{
 		description: 'destructures an identifier with an array pattern',
 		input: `var [ x, y ] = point;`,
 		output: `var x = point[0], y = point[1];`
@@ -78,7 +84,7 @@ module.exports = [
 	{
 		description: 'disallows array pattern in assignment (temporary)',
 		input: `[ a, b ] = [ b, a ]`,
-		error: /Assigning to an array pattern is not currently supported/
+		error: /Destructuring assignments are not currently supported. Coming soon!/
 	},
 
 	{

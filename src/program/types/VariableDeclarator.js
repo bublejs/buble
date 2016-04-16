@@ -48,7 +48,7 @@ export default class VariableDeclarator extends Node {
 					const id = this.isObjectPattern ? property.value : property;
 					const rhs = this.isObjectPattern ? `${name}.${property.key.name}` : `${name}[${i}]`;
 
-					code.overwrite( lastIndex, property.start, `${first ? '' : ', '}` );
+					code.overwrite( lastIndex, id.start, `${first ? '' : ', '}` );
 					code.insert( id.end, ` = ${rhs}` );
 
 					lastIndex = property.end;

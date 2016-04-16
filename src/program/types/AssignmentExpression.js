@@ -16,8 +16,8 @@ export default class AssignmentExpression extends Node {
 			}
 		}
 
-		if ( this.left.type === 'ArrayPattern' ) {
-			throw new CompileError( this.left, 'Assigning to an array pattern is not currently supported' );
+		if ( /Pattern/.test( this.left.type ) ) {
+			throw new CompileError( this.left, 'Destructuring assignments are not currently supported. Coming soon!' );
 		}
 
 		super.initialise( transforms );

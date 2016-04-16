@@ -16,7 +16,7 @@ export default class Property extends Node {
 			if ( this.shorthand ) {
 				code.insert( this.start, `${this.key.name}: ` );
 			} else if ( this.method ) {
-				const name = this.findScope( false ).createIdentifier( this.key.name );
+				const name = this.findScope( true ).createIdentifier( this.key.name );
 				if ( this.value.generator ) code.remove( this.start, this.key.start );
 				code.insert( this.key.end, `: function${this.value.generator ? '*' : ''} ${name}` );
 			}
