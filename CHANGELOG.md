@@ -1,5 +1,16 @@
 # buble changelog
 
+## 0.5.0
+
+* Support `--target`, `--yes` and `--no` in CLI
+* Compile entire directory of files via CLI
+* Sourcemap support in CLI
+* All transforms can be disabled (or errors suppressed) with the `transforms` option (or `--yes` and `--no`, in the CLI)
+* `import` and `export` will throw an error unless `--no modules` transform is specified
+* Fix bug with destructuring
+* Fix bug with block scoping and loops
+
+
 ## 0.4.24
 
 * Throw if `let`/`const` is redeclared, or `var` is redeclared with a `let`/`const` (0.4.22 regression)
