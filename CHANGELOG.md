@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.5.1
+
+* Remove unused dependency
+
 ## 0.5.0
 
 * Support `--target`, `--yes` and `--no` in CLI
