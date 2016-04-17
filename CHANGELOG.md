@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.5.3
+
+* Add `register.js` to package. Yes I'm an idiot
+
 ## 0.5.2
 
 * Add `buble/register` for use with e.g. Mocha
