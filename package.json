@@ -8,6 +8,7 @@
     "bin",
     "src",
     "dist",
+    "register.js",
     "README.md"
   ],
   "scripts": {
