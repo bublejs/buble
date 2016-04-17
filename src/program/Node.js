@@ -14,7 +14,8 @@ export default class Node {
 			parent: { value: parent },
 			program: { value: parent.program || parent },
 			depth: { value: parent.depth + 1 },
-			keys: { value: Object.keys( raw ) }
+			keys: { value: Object.keys( raw ) },
+			skipTranspilation: { value: false, writable: true }
 		});
 
 		// special case – body-less if/for/while statements. TODO others?
