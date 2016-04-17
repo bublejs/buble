@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.5.2
+
+* Add `buble/register` for use with e.g. Mocha
+
 ## 0.5.1
 
 * Remove unused dependency
