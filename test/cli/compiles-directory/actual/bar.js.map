@@ -1,1 +1,1 @@
-{"version":3,"file":"bar.js","sources":["../src/bar.js"],"sourcesContent":["console.log( 'bar' );\n"],"names":[],"mappings":"AAAA,OAAO,CAAC,GAAG,EAAE,KAAK,EAAE,CAAC;"}
+{"version":3,"file":"bar.js","sources":["../src/bar.jsm"],"sourcesContent":["console.log( 'bar' );\n"],"names":[],"mappings":"AAAA,OAAO,CAAC,GAAG,EAAE,KAAK,EAAE,CAAC;"}
