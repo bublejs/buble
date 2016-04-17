@@ -234,9 +234,11 @@ export default class BlockStatement extends Node {
 						// special case
 						const forStatement = declaration.node.findNearest( 'ForStatement' );
 
-						if ( forStatement.shouldRewriteAsFunction && forStatement.reassigned[ name ] ) {
+						if ( forStatement.shouldRewriteAsFunction ) {
 							const outerAlias = this.scope.createIdentifier( name );
-							const innerAlias = this.scope.createIdentifier( name );
+							const innerAlias = forStatement.reassigned[ name ] ?
+								this.scope.createIdentifier( name ) :
+								name;
 
 							forStatement.aliases[ name ] = {
 								outer: outerAlias,

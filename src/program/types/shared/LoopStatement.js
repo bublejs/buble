@@ -43,7 +43,6 @@ export default class LoopStatement extends Node {
 	}
 
 	transpile ( code, transforms ) {
-
 		if ( this.shouldRewriteAsFunction ) {
 			const i0 = this.getIndentation();
 			const i1 = i0 + code.getIndentString();

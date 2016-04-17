@@ -328,5 +328,25 @@ module.exports = [
 					log( i );
 				}, i * 100 );
 			}`
+	},
+
+	{
+		description: 'calls synthetic loop function with correct argument',
+
+		input: `
+			let i = 999;
+
+			for ( let i = 0; i < 10; i += 1 ) {
+				setTimeout( () => console.log( i ) );
+			}`,
+
+		output: `
+			var i = 999;
+
+			var loop = function ( i ) {
+				setTimeout( function () { return console.log( i ); } );
+			};
+
+			for ( var i$1 = 0; i$1 < 10; i$1 += 1 ) loop( i$1 );`
 	}
 ];
