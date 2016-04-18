@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.5.4
+
+* Install missing `chalk` dependency
+* Informative error messages when `buble/register` fails
+
 ## 0.5.3
 
 * Add `register.js` to package. Yes I'm an idiot
