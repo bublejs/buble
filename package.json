@@ -1,6 +1,6 @@
 {
   "name": "buble",
-  "version": "0.5.1",
+  "version": "0.5.5",
   "description": "The blazing fast, batteries-included ES2015 compiler",
   "main": "dist/buble.umd.js",
   "jsnext:main": "dist/buble.es.js",
@@ -8,6 +8,7 @@
     "bin",
     "src",
     "dist",
+    "register.js",
     "README.md"
   ],
   "scripts": {
@@ -56,6 +57,7 @@
   },
   "dependencies": {
     "acorn": "^3.0.4",
+    "chalk": "^1.1.3",
     "magic-string": "^0.11.2",
     "minimist": "^1.2.0"
   }

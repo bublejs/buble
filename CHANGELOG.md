@@ -1,5 +1,23 @@
 # buble changelog
 
+## 0.5.5
+
+* Ensure `return` is in correct place when creating bodies for arrow functions ([#21](https://gitlab.com/Rich-Harris/buble/issues/21))
+* Prevent deindentation of class methods causing breakage with destructuring statements ([#22](https://gitlab.com/Rich-Harris/buble/issues/22))
+
+## 0.5.4
+
+* Install missing `chalk` dependency
+* Informative error messages when `buble/register` fails
+
+## 0.5.3
+
+* Add `register.js` to package. Yes I'm an idiot
+
+## 0.5.2
+
+* Add `buble/register` for use with e.g. Mocha
+
 ## 0.5.1
 
 * Remove unused dependency

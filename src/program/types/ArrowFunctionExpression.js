@@ -40,12 +40,11 @@ export default class ArrowFunctionExpression extends Node {
 				const indentation = this.getIndentation();
 				code.insert( this.body.start, `{\n${indentation}${code.getIndentString()}` );
 				super.transpile( code, transforms );
-				code.insert( this.body.body[0].start, 'return ' );
 				code.insert( this.body.end, `;\n${indentation}}` );
 			}
 
 			else if ( transforms.arrow ) {
-				code.insert( this.body.start, `{ return ` );
+				code.insert( this.body.start, `{ ` );
 				super.transpile( code, transforms );
 				code.insert( this.body.end, `; }` );
 			}

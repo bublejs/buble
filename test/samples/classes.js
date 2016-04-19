@@ -463,6 +463,25 @@ module.exports = [
 
 				return b;
 			}(q.a));`
+	},
+
+	{
+		description: 'deindents a function body with destructuring (#22)',
+
+		input: `
+			class Foo {
+				constructor ( options ) {
+					const {
+						a,
+						b
+					} = options;
+				}
+			}`,
+
+		output: `
+			var Foo = function Foo ( options ) {
+				var a = options.a, b = options.b;
+			};`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
