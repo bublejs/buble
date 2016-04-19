@@ -102,6 +102,20 @@ module.exports = [
 	},
 
 	{
+		description: 'handles combination of destructuring and template strings',
+
+		input: `
+			var shoutHello = ({ name }) => \`Hello \${name}!\`.toUpperCase();`,
+
+		output: `
+			var shoutHello = function (ref) {
+				var name = ref.name;
+
+				return ("Hello " + name + "!").toUpperCase();
+			};`
+	},
+
+	{
 		description: 'can be disabled with `transforms.arrow: false`',
 		options: { transforms: { arrow: false } },
 

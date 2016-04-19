@@ -272,6 +272,10 @@ export default class BlockStatement extends Node {
 			});
 		}
 
+		if ( this.synthetic && this.parent.type === 'ArrowFunctionExpression' ) {
+			code.insert( this.body[0].start, 'return ' );
+		}
+
 		super.transpile( code, transforms );
 	}
 }
