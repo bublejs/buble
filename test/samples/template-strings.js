@@ -38,8 +38,15 @@ module.exports = [
 	{
 		description: 'transpiles tagged template literals with `transforms.dangerousTaggedTemplateString = true`',
 		options: { transforms: { dangerousTaggedTemplateString: true } },
-		input: 'var str = x`y`',
-		output: `var str = x(["y"]);`
+		input: 'var str = x`y${(() => 42)()}`;',
+		output: `var str = x(["y", ""], (function () { return 42; })());`
+	},
+
+	{
+		description: 'transpiles tagged template literals with `transforms.dangerousTaggedTemplateString = true`',
+		options: { transforms: { dangerousTaggedTemplateString: true } },
+		input: 'var str = x`${(() => 42)()}y`;',
+		output: `var str = x(["", "y"], (function () { return 42; })());`
 	},
 
 	{

@@ -12,26 +12,24 @@ export default class TaggedTemplateExpression extends Node {
 
 	transpile ( code, transforms ) {
 		if ( transforms.templateString && transforms.dangerousTaggedTemplateString ) {
-			const endPoint = this.end;
-			const funcName = this.tag.name;
-			const expressions = this.quasi.expressions;
-			const templateStrings = this.quasi.quasis.map(quasi => {
-				code.remove( quasi.start, quasi.end );
-				return JSON.stringify(quasi.value.cooked);
-			});
+			const ordered = this.quasi.expressions.concat( this.quasi.quasis ).sort( ( a, b ) => a.start - b.start );
 
-			expressions.forEach((expression, i, arr) => {
-				const length = arr.length;
+			// insert strings at start
+			const templateStrings = this.quasi.quasis.map( quasi => JSON.stringify( quasi.value.cooked ) );
+			code.overwrite( this.tag.end, ordered[0].start, `([${templateStrings.join(', ')}]` );
 
-				code.move( expression.start, expression.end, endPoint );
-				if (i < length - 1) {
-					code.insert(endPoint, ', ' );
+			let lastIndex = ordered[0].start;
+			ordered.forEach( node => {
+				if ( node.type === 'TemplateElement' ) {
+					code.remove( lastIndex, node.end );
+				} else {
+					code.overwrite( lastIndex, node.start, ', ' );
 				}
-			});
-			const startOutput = `${ funcName }([${ templateStrings.join(', ') }]` + (expressions.length > 0 ? ', ': '');
 
-			code.overwrite( this.start, endPoint, startOutput );
-			code.insert(endPoint, ');');
+				lastIndex = node.end;
+			});
+
+			code.overwrite( lastIndex, this.end, ')' );
 		}
 
 		super.transpile( code, transforms );
