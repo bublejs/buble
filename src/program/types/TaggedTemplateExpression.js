@@ -2,8 +2,16 @@ import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 
 export default class TaggedTemplateExpression extends Node {
+	initialise ( transforms ) {
+		if ( transforms.templateString && !transforms.dangerousTaggedTemplateString ) {
+			throw new CompileError( this, 'Tagged template strings are not supported' );
+		}
+
+		super.initialise( transforms );
+	}
+
 	transpile ( code, transforms ) {
-		if ( transforms.templateString ) {
+		if ( transforms.templateString && transforms.dangerousTaggedTemplateString ) {
 			const endPoint = this.end;
 			const funcName = this.tag.name;
 			const expressions = this.quasi.expressions;
