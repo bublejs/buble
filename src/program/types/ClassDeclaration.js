@@ -11,6 +11,8 @@ export default class ClassDeclaration extends Node {
 
 	transpile ( code, transforms ) {
 		if ( transforms.classes ) {
+			if ( !this.superClass ) deindent( this.body, code );
+
 			const superName = this.superClass && ( this.superClass.name || 'superclass' );
 
 			const indentation = this.getIndentation();
@@ -32,8 +34,6 @@ export default class ClassDeclaration extends Node {
 				code.move( this.superClass.start, this.superClass.end, this.end );
 				code.insert( this.end, '));' );
 			}
-
-			if ( !this.superClass ) deindent( this.body, code );
 		}
 
 		else {
