@@ -2,7 +2,7 @@ import Node from '../Node.js';
 
 export default class TemplateLiteral extends Node {
 	transpile ( code, transforms ) {
-		if ( transforms.templateString && !this.skipTranspilation ) {
+		if ( transforms.templateString && this.parent.type !== 'TaggedTemplateExpression' ) {
 			code.remove( this.start, this.start + 1 );
 			code.remove( this.end - 1, this.end );
 

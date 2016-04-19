@@ -2,10 +2,6 @@ import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 
 export default class TaggedTemplateExpression extends Node {
-	initialise ( transforms ) {
-		this.quasi.skipTranspilation = true;
-	}
-
 	transpile ( code, transforms ) {
 		if ( transforms.templateString ) {
 			const endPoint = this.end;
