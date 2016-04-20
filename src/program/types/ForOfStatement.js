@@ -20,6 +20,11 @@ export default class ForOfStatement extends LoopStatement {
 		const key = scope.createIdentifier( 'i' );
 		const list = scope.createIdentifier( 'list' );
 
+		if ( this.body.synthetic ) {
+			code.insert( this.body.body[0].start, `{\n${i1}` );
+			code.insert( this.body.body[0].end, `\n${i0}}` );
+		}
+
 		// this is rather finicky, owing to magic-string's quirks
 		const bodyStart = this.body.body[0].start;
 		let startIndex = this.left.start;
