@@ -3,6 +3,10 @@ import Program from './program/Program.js';
 import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';
 
+const dangerousTransforms = [
+	'dangerousTaggedTemplateString'
+];
+
 export function target ( target ) {
 	const targets = Object.keys( target );
 	let bitmask = targets.length ?
@@ -23,6 +27,10 @@ export function target ( target ) {
 	let transforms = Object.create( null );
 	features.forEach( ( name, i ) => {
 		transforms[ name ] = !( bitmask & 1 << i );
+	});
+
+	dangerousTransforms.forEach( name => {
+		transforms[ name ] = false;
 	});
 
 	return transforms;
