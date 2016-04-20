@@ -4,7 +4,8 @@ import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';
 
 const dangerousTransforms = [
-	'dangerousTaggedTemplateString'
+	'dangerousTaggedTemplateString',
+	'dangerousForOf'
 ];
 
 export function target ( target ) {

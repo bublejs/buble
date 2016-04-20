@@ -4,6 +4,7 @@ const statementsWithBlocks = {
 	IfStatement: 'consequent',
 	ForStatement: 'body',
 	ForInStatement: 'body',
+	ForOfStatement: 'body',
 	WhileStatement: 'body',
 	ArrowFunctionExpression: 'body'
 };
