@@ -54,16 +54,18 @@ module.exports = [
 			for ( let member of [ 'a', 'b', 'c' ] ) {
 				setTimeout( function () {
 					doSomething( member );
-				}, i * 100 );
+				});
 			}`,
 
 		output: `
-			var loop = function ( i, member ) {
+			var loop = function () {
+				var member = list[i];
+
 				setTimeout( function () {
 					doSomething( member );
-				}, i * 100 );
+				});
 			};
 
-			for ( var i = 0, list = [ 'a', 'b', 'c' ]; i < list.length; i += 1 ) loop( i, list[i] );`
+			for ( var i = 0, list = [ 'a', 'b', 'c' ]; i < list.length; i += 1 ) loop();`
 	}
 ];

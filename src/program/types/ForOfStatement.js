@@ -20,12 +20,21 @@ export default class ForOfStatement extends LoopStatement {
 		const key = scope.createIdentifier( 'i' );
 		const list = scope.createIdentifier( 'list' );
 
-		code.overwrite( this.start + 3, this.left.start, ` ( var ${key} = 0, ${list} = ` );
-		code.move( this.right.start, this.right.end, this.left.start );
-		code.insert( this.left.start, `; ${key} < ${list}.length; ${key} += 1 ) {\n${i1}` );
-		code.insert( this.left.end, ` = ${list}[${key}];\n\n${i1}` );
+		// this is rather finicky, owing to magic-string's quirks
+		const bodyStart = this.body.body[0].start;
+		let startIndex = this.left.start;
+		while ( code.original[ startIndex - 1 ] !== '(' ) startIndex -= 1;
+
 		code.remove( this.left.end, this.right.start );
-		code.remove( this.right.end, this.body.body[0].start );
+		code.remove( startIndex, this.left.start );
+		code.remove( this.start + 3, startIndex );
+
+		code.insert( startIndex, ` ( var ${key} = 0, ${list} = ` );
+
+		code.move( this.left.start, this.left.end, bodyStart );
+		code.move( this.right.start, this.right.end, startIndex );
+		code.insert( startIndex, `; ${key} < ${list}.length; ${key} += 1` );
+		code.insert( bodyStart, ` = ${list}[${key}];\n\n${i1}` );
 
 		super.transpile( code, transforms );
 	}
