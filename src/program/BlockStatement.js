@@ -128,9 +128,9 @@ export default class BlockStatement extends Node {
 
 							const value = prop.value.left.name;
 							code
-								.insert( start, `var ${ref}_${key} = ref.${key}, ${value} = ref_${key} === void 0 ? ` )
+								.insert( start, `var ${ref}_${key} = ${ref}.${key}, ${value} = ${ref}_${key} === void 0 ? ` )
 								.move( prop.value.right.start, prop.value.right.end, start )
-								.insert( start, ` : ref_${key};` );
+								.insert( start, ` : ${ref}_${key};` );
 						}
 
 						else {
