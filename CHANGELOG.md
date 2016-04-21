@@ -1,5 +1,12 @@
 # buble changelog
 
+## 0.5.6
+
+* Add `dangerousTaggedTemplateString` ([!2](https://gitlab.com/Rich-Harris/buble/merge_requests/2)) and `dangerousForOf` ([!3](https://gitlab.com/Rich-Harris/buble/merge_requests/3)) transforms
+* Prevent deindentation causing errors with removed whitespace in class methods
+* Use correct identifier with default destructured function parameters ([#23](https://gitlab.com/Rich-Harris/buble/issues/23))
+
+
 ## 0.5.5
 
 * Ensure `return` is in correct place when creating bodies for arrow functions ([#21](https://gitlab.com/Rich-Harris/buble/issues/21))
