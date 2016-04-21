@@ -4,7 +4,7 @@ import CompileError from '../../utils/CompileError.js';
 export default class TaggedTemplateExpression extends Node {
 	initialise ( transforms ) {
 		if ( transforms.templateString && !transforms.dangerousTaggedTemplateString ) {
-			throw new CompileError( this, 'Tagged template strings are not supported' );
+			throw new CompileError( this, 'Tagged template strings are not supported. Use `transforms: { templateString: false }` to skip transformation and disable this error, or `transforms: { dangerousTaggedTemplateString: true }` if you know what you\'re doing' );
 		}
 
 		super.initialise( transforms );
