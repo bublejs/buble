@@ -29,7 +29,7 @@ Scope.prototype = {
 				throw new CompileError( node, `${name} is already declared` );
 			}
 
-			const declaration = { node, kind, instances: [] };
+			const declaration = { name, node, kind, instances: [] };
 			this.declarations[ name ] = declaration;
 
 			if ( this.isBlockScope ) {

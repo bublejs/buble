@@ -240,6 +240,8 @@ export default class BlockStatement extends Node {
 								this.scope.createIdentifier( name ) :
 								name;
 
+							declaration.name = outerAlias;
+
 							forStatement.aliases[ name ] = {
 								outer: outerAlias,
 								inner: innerAlias
@@ -263,6 +265,8 @@ export default class BlockStatement extends Node {
 						const alias = this.scope.createIdentifier( name );
 
 						if ( name !== alias ) {
+							declaration.name = alias;
+
 							for ( const identifier of declaration.instances ) {
 								code.overwrite( identifier.start, identifier.end, alias, true );
 							}
