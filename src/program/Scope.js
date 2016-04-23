@@ -22,7 +22,7 @@ export default function Scope ( options ) {
 
 Scope.prototype = {
 	addDeclaration ( node, kind ) {
-		extractNames( node ).forEach( name => {
+		for ( const name of extractNames( node ) ) {
 			const existingDeclaration = this.declarations[ name ];
 			if ( existingDeclaration && ( letConst.test( kind ) || letConst.test( existingDeclaration.kind ) ) ) {
 				// TODO warn about double var declarations?
@@ -36,7 +36,7 @@ Scope.prototype = {
 				if ( !this.functionScope.blockScopedDeclarations[ name ] ) this.functionScope.blockScopedDeclarations[ name ] = [];
 				this.functionScope.blockScopedDeclarations[ name ].push( declaration );
 			}
-		});
+		}
 	},
 
 	addReference ( identifier ) {

@@ -1,6 +1,7 @@
 import ArrayExpression from './ArrayExpression.js';
 import ArrowFunctionExpression from './ArrowFunctionExpression.js';
 import AssignmentExpression from './AssignmentExpression.js';
+import BinaryExpression from './BinaryExpression.js';
 import BreakStatement from './BreakStatement.js';
 import CallExpression from './CallExpression.js';
 import ClassBody from './ClassBody.js';
@@ -36,6 +37,7 @@ export default {
 	ArrayExpression,
 	ArrowFunctionExpression,
 	AssignmentExpression,
+	BinaryExpression,
 	BreakStatement,
 	CallExpression,
 	ClassBody,

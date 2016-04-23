@@ -41,6 +41,7 @@ export const features = [
 	'constRedef',
 	'defaultParameter',
 	'destructuring',
+	'exponentialOperator',
 	'extendNatives',
 	'forOf',
 	'generator',

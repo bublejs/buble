@@ -245,7 +245,7 @@ export default class BlockStatement extends Node {
 								inner: innerAlias
 							};
 
-							declaration.instances.forEach( identifier => {
+							for ( const identifier of declaration.instances ) {
 								const alias = forStatement.body.contains( identifier ) ?
 									innerAlias :
 									outerAlias;
@@ -253,7 +253,7 @@ export default class BlockStatement extends Node {
 								if ( name !== alias ) {
 									code.overwrite( identifier.start, identifier.end, alias, true );
 								}
-							});
+							}
 
 							cont = true;
 						}
@@ -263,9 +263,9 @@ export default class BlockStatement extends Node {
 						const alias = this.scope.createIdentifier( name );
 
 						if ( name !== alias ) {
-							declaration.instances.forEach( identifier => {
+							for ( const identifier of declaration.instances ) {
 								code.overwrite( identifier.start, identifier.end, alias, true );
-							});
+							}
 						}
 					}
 				}

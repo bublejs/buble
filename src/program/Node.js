@@ -34,9 +34,9 @@ export default class Node {
 			};
 		}
 
-		this.keys.forEach( key => {
+		for ( const key of this.keys ) {
 			this[ key ] = wrap( raw[ key ], this );
-		});
+		}
 
 		this.program.magicString.addSourcemapLocation( this.start );
 		this.program.magicString.addSourcemapLocation( this.end );
@@ -81,7 +81,7 @@ export default class Node {
 	}
 
 	initialise ( transforms ) {
-		this.keys.forEach( key => {
+		for ( var key of this.keys ) {
 			const value = this[ key ];
 
 			if ( Array.isArray( value ) ) {
@@ -89,7 +89,7 @@ export default class Node {
 			} else if ( value && typeof value === 'object' ) {
 				value.initialise( transforms );
 			}
-		});
+		}
 	}
 
 	toString () {
@@ -97,7 +97,7 @@ export default class Node {
 	}
 
 	transpile ( code, transforms ) {
-		this.keys.forEach( key => {
+		for ( const key of this.keys ) {
 			const value = this[ key ];
 
 			if ( Array.isArray( value ) ) {
@@ -105,6 +105,6 @@ export default class Node {
 			} else if ( value && typeof value === 'object' ) {
 				value.transpile( code, transforms );
 			}
-		});
+		}
 	}
 }

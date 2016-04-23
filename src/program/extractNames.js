@@ -10,15 +10,15 @@ const extractors = {
 	},
 
 	ObjectPattern ( names, param ) {
-		param.properties.forEach( prop => {
+		for ( const prop of param.properties ) {
 			extractors[ prop.value.type ]( names, prop.value );
-		});
+		}
 	},
 
 	ArrayPattern ( names, param ) {
-		param.elements.forEach( element => {
+		for ( const element of param.elements )  {
 			if ( element ) extractors[ element.type ]( names, element );
-		});
+		}
 	},
 
 	RestElement ( names, param ) {

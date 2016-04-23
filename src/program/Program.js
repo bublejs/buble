@@ -16,11 +16,11 @@ export default function Program ( source, ast, transforms ) {
 	this.body.initialise( transforms );
 
 	this.indentExclusions = {};
-	this.templateElements.forEach( node => {
+	for ( const node of this.templateElements ) {
 		for ( let i = node.start; i < node.end; i += 1 ) {
 			this.indentExclusions[ node.start + i ] = true;
 		}
-	});
+	}
 
 	this.body.transpile( this.magicString, transforms );
 }

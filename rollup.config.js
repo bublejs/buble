@@ -20,7 +20,10 @@ export default {
 		},
 		json(),
 		buble({
-			include: [ 'src/**', 'node_modules/acorn/**' ]
+			include: [ 'src/**', 'node_modules/acorn/**' ],
+			transforms: {
+				dangerousForOf: true
+			}
 		}),
 		nodeResolve({
 			jsnext: true,

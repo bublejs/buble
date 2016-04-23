@@ -42,7 +42,7 @@ export function transform ( source, options = {} ) {
 
 	try {
 		ast = parse( source, {
-			ecmaVersion: 6,
+			ecmaVersion: 7,
 			preserveParens: true,
 			sourceType: 'module'
 		});
