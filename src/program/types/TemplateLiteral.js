@@ -66,7 +66,11 @@ export default class TemplateLiteral extends Node {
 				lastIndex = node.end;
 			});
 
-			code.overwrite( lastIndex, this.end, parenthesise ? ')' : '' );
+			let close = '';
+			if ( closeParens ) close += ')';
+			if ( parenthesise ) close += ')';
+
+			code.overwrite( lastIndex, this.end, close );
 		}
 
 		super.transpile( code, transforms );

@@ -78,5 +78,11 @@ module.exports = [
 		description: 'includes leading empty string if necessary',
 		input: 'var str = `${a}${b}`',
 		output: 'var str = "" + a + b'
+	},
+
+	{
+		description: 'closes parens if final empty string is omitted',
+		input: 'var str = `1 + 1 = ${1 + 1}`;',
+		output: 'var str = "1 + 1 = " + (1 + 1);'
 	}
 ];
