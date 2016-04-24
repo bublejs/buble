@@ -56,6 +56,7 @@ describe( 'buble', () => {
 			it( dir, done => {
 				dir = path.resolve( 'test/cli', dir );
 				rimraf.sync( path.resolve( dir, 'actual' ) );
+				fs.mkdirSync( path.resolve( dir, 'actual' ) );
 
 				var commandFile = path.resolve( dir, 'command.sh' );
 
