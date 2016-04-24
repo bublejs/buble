@@ -66,5 +66,17 @@ module.exports = [
 		options: { transforms: { templateString: false } },
 		input: 'var a = `a`, b = c`b`;',
 		output: 'var a = `a`, b = c`b`;'
+	},
+
+	{
+		description: 'skips leading empty string if possible',
+		input: 'var str = `${a} ${b}`',
+		output: 'var str = a + " " + b'
+	},
+
+	{
+		description: 'includes leading empty string if necessary',
+		input: 'var str = `${a}${b}`',
+		output: 'var str = "" + a + b'
 	}
 ];

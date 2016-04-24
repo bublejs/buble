@@ -6,7 +6,29 @@ export default class TemplateLiteral extends Node {
 			code.remove( this.start, this.start + 1 );
 			code.remove( this.end - 1, this.end );
 
-			const ordered = this.expressions.concat( this.quasis ).sort( ( a, b ) => a.start - b.start );
+			let ordered = this.expressions.concat( this.quasis )
+				.sort( ( a, b ) => a.start - b.start || a.end - b.end )
+				.filter( ( node, i ) => {
+					// include all expressions
+					if ( node.type !== 'TemplateElement' ) return true;
+
+					// include all non-empty strings
+					if ( node.value.raw ) return true;
+
+					// exclude all empty strings not at the head
+					return !i;
+				});
+
+			// special case – we may be able to skip the first element,
+			// if it's the empty string, but only if the second and
+			// third elements aren't both expressions (since they maybe
+			// be numeric, and `1 + 2 + '3' === '33'`)
+			if ( ordered.length >= 3 ) {
+				const [ first, , third ] = ordered;
+				if ( first.type === 'TemplateElement' && first.value.raw === '' && third.type === 'TemplateElement' ) {
+					ordered.shift();
+				}
+			}
 
 			const parenthesise = this.parent.type !== 'AssignmentExpression' &&
 			                     this.parent.type !== 'VariableDeclarator' &&
@@ -15,22 +37,30 @@ export default class TemplateLiteral extends Node {
 			if ( parenthesise ) code.insert( this.start, '(' );
 
 			let lastIndex = this.start;
-			let closeParenthesis = false;
+			let closeParens = false;
 
 			ordered.forEach( ( node, i ) => {
 				if ( node.type === 'TemplateElement' ) {
-					const stringified = JSON.stringify( node.value.cooked );
-					const replacement = ( closeParenthesis ? ')' : '' ) + ( ( node.tail && !node.value.cooked.length && i !== 0 ) ? '' : `${i ? ' + ' : ''}${stringified}` );
+					let replacement = '';
+					if ( closeParens ) replacement += ')';
+					if ( !node.tail || node.value.cooked.length ) {
+						if ( i ) replacement += ' + ';
+						replacement += JSON.stringify( node.value.cooked );
+					}
+
 					code.overwrite( lastIndex, node.end, replacement );
 
-					closeParenthesis = false;
+					closeParens = false;
 				} else {
 					const parenthesise = node.type !== 'Identifier'; // TODO other cases where it's safe
-					const open = parenthesise ? ( i ? ' + (' : '(' ) : ' + ';
 
-					code.overwrite( lastIndex, node.start, open );
+					let replacement = '';
+					if ( i ) replacement += ' + ';
+					if ( parenthesise ) replacement += '(';
 
-					closeParenthesis = parenthesise;
+					code.overwrite( lastIndex, node.start, replacement );
+
+					closeParens = parenthesise;
 				}
 
 				lastIndex = node.end;
