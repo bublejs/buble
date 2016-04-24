@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.6.1
+
+* Always remember to close parens in template strings
+
 ## 0.6.0
 
 * Strip unnecessary empty strings from template literals
