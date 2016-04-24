@@ -75,8 +75,8 @@ module.exports = [
 			foo[ bar() ][ baz() ] **= y;`,
 
 		output: `
-			var property = baz();
 			var object = foo[ bar() ];
+			var property = baz();
 			object[property] = Math.pow( object[property], y );`
 	},
 
@@ -84,12 +84,11 @@ module.exports = [
 		description: 'transpiles an exponentiation assignment to a contrivedly complex reference (that is not a top-level statement)',
 
 		input: `
-			var lolwut = ( foo[ bar() ][ baz() ] **= y );`,
+			var baz = 1, lolwut = foo[ bar() ][ baz * 2 ] **= y;`,
 
 		output: `
-			var property = baz();
-			var object = foo[ bar() ];
-			var lolwut = ( object[property] = Math.pow( object[property], y ) );`
+			var object, property;
+			var baz = 1, lolwut = ( object = foo[ bar() ], property = baz * 2, object[property] = Math.pow( object[property], y ) );`
 	},
 
 	{

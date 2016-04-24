@@ -48,39 +48,70 @@ export default class AssignmentExpression extends Node {
 				base = getAlias( left.name );
 			} else if ( left.type === 'MemberExpression' ) {
 				let object;
+				let needsObjectVar = false;
 				let property;
+				let needsPropertyVar = false;
+				let dotProperty = false;
 
 				const statement = this.findNearest( /(?:Statement|Declaration)$/ );
 				const i0 = statement.getIndentation();
 
 				if ( left.property.type === 'Identifier' ) {
 					property = left.computed ? getAlias( left.property.name ) : left.property.name;
+					dotProperty = !left.computed;
 				} else {
 					property = scope.createIdentifier( 'property' );
-
-					code.insert( statement.start, `var ${property} = ` );
-					code.move( left.property.start, left.property.end, statement.start );
-					code.insert( statement.start, `;\n${i0}` );
-
-					code.overwrite( left.object.end, left.property.start, `[${property}]` );
-					code.remove( left.property.end, left.end );
+					needsPropertyVar = true;
 				}
 
 				if ( left.object.type === 'Identifier' ) {
 					object = getAlias( left.object.name );
 				} else {
 					object = scope.createIdentifier( 'object' );
+					needsObjectVar = true;
+				}
 
-					if ( statement.start === left.object.start ) {
-						code.insert( statement.start, `var ${object} = ` );
-						code.insert( left.object.end, `;\n${i0}${object}` );
-					} else {
-						code.insert( statement.start, `var ${object} = ` );
-						code.move( left.object.start, left.object.end, statement.start );
+				if ( left.start === statement.start ) {
+					// property
+					if ( needsPropertyVar ) {
+						code.insert( statement.start, `var ${property} = ` );
+						code.move( left.property.start, left.property.end, statement.start );
 						code.insert( statement.start, `;\n${i0}` );
 
-						code.insert( left.object.end, object );
+						code.overwrite( left.object.end, left.property.start, `[${property}]` );
+						code.remove( left.property.end, left.end );
 					}
+
+					// object
+					if ( needsObjectVar ) {
+						code.insert( statement.start, `var ${object} = ` );
+						code.insert( left.object.end, `;\n${i0}${object}` );
+					}
+				}
+
+				else {
+					let declarators = [];
+					if ( needsObjectVar ) declarators.push( object );
+					if ( needsPropertyVar ) declarators.push( property );
+					code.insert( statement.start, `var ${declarators.join( ', ' )};\n${i0}` );
+
+					code.insert( left.start, `( ` );
+
+					if ( needsObjectVar ) {
+						code.insert( left.start, `${object} = ` );
+						code.insert( left.object.end, `, ` );
+					}
+
+					if ( needsPropertyVar ) {
+						code.insert( left.object.end, `${property} = ` );
+						code.move( left.property.start, left.property.end, left.object.end );
+						// code.insert( left.end, `, ` );
+					}
+
+					code.remove( left.object.end, left.property.start );
+					code.overwrite( left.property.end, left.end, `, ${object}${ dotProperty ? `.${property}` : `[${property}]` }` );
+
+					code.insert( this.end, ` )` );
 				}
 
 				base = object + ( left.computed ? `[${property}]` : `.${property}` );
