@@ -99,5 +99,22 @@ module.exports = [
 		options: { transforms: { parameterDestructuring: false } },
 		input: `function foo ({ x, y }) {}`,
 		output: `function foo ({ x, y }) {}`
+	},
+
+	{
+		description: 'destructures parameters intelligently (#17)',
+
+		input: `
+			function drawRect ( { ctx, x1, y1, x2, y2 } ) {
+				ctx.fillRect( x1, y1, x2 - x1, y2 - y1 );
+			}`,
+
+		output: `
+			function drawRect ( ref ) {
+				var x1 = ref.x1;
+				var y1 = ref.y1;
+
+				ref.ctx.fillRect( x1, y1, ref.x2 - x1, ref.y2 - y1 );
+			}`
 	}
 ];

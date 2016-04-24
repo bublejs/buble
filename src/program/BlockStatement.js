@@ -112,8 +112,6 @@ export default class BlockStatement extends Node {
 					param.properties.forEach( prop => {
 						code.remove( lastIndex, prop.value.start );
 
-						if ( addedStuff ) code.insert( start, `\n${indentation}` );
-
 						const key = prop.key.name;
 
 						if ( prop.value.type === 'Identifier' ) {
@@ -121,23 +119,35 @@ export default class BlockStatement extends Node {
 							lastIndex = prop.value.end;
 
 							const value = prop.value.name;
-							code.insert( start, `var ${value} = ${ref}.${key};` );
+							const declaration = this.scope.findDeclaration( value );
+
+							if ( declaration.instances.length === 1 ) {
+								const instance = declaration.instances[0];
+								code.overwrite( instance.start, instance.end, `${ref}.${key}` );
+							} else {
+								if ( addedStuff ) code.insert( start, `\n${indentation}` );
+								code.insert( start, `var ${value} = ${ref}.${key};` );
+								addedStuff = true;
+							}
 						} else if ( prop.value.type === 'AssignmentPattern' ) {
 							code.remove( prop.value.start, prop.value.right.start );
 							lastIndex = prop.value.right.end;
+
+							if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
 							const value = prop.value.left.name;
 							code
 								.insert( start, `var ${ref}_${key} = ${ref}.${key}, ${value} = ${ref}_${key} === void 0 ? ` )
 								.move( prop.value.right.start, prop.value.right.end, start )
 								.insert( start, ` : ${ref}_${key};` );
+
+							addedStuff = true;
 						}
 
 						else {
 							throw new CompileError( prop, `Compound destructuring is not supported` );
 						}
 
-						addedStuff = true;
 						lastIndex = prop.end;
 					});
 

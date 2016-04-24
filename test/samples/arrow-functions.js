@@ -105,13 +105,13 @@ module.exports = [
 		description: 'handles combination of destructuring and template strings',
 
 		input: `
-			var shoutHello = ({ name }) => \`Hello \${name}!\`.toUpperCase();`,
+			var shoutHello = ({ name }) => \`\${name}! Hello \${name}!\`.toUpperCase();`,
 
 		output: `
 			var shoutHello = function (ref) {
 				var name = ref.name;
 
-				return ("Hello " + name + "!").toUpperCase();
+				return (name + "! Hello " + name + "!").toUpperCase();
 			};`
 	},
 
