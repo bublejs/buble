@@ -16,7 +16,7 @@
     "build:umd": "rollup -c -f umd -o dist/buble.umd.js",
     "build:browser": "rollup -c --environment DEPS -f umd -o dist/buble.deps.js",
     "build:es": "rollup -c -f es6 -o dist/buble.es.js",
-    "test": "mocha test/test.js",
+    "test": "mocha test/test.js --compilers js:buble/register",
     "pretest": "npm run build:umd",
     "prepublish": "npm test && npm run build:es && npm run build:browser"
   },
@@ -44,6 +44,7 @@
   },
   "homepage": "https://gitlab.com/Rich-Harris/buble#README",
   "devDependencies": {
+    "buble": "0.5.6",
     "eslint": "^2.6.0",
     "glob": "^7.0.3",
     "mocha": "^2.4.5",
