@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.6.0
+
+* Strip unnecessary empty strings from template literals
+* Intelligent destructuring for object patterns in parameters ([#17](https://gitlab.com/Rich-Harris/buble/issues/17))
+
 ## 0.5.8
 
 * Fix exponentiation assignment operator edge case
