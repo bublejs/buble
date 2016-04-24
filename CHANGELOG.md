@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.5.7
+
+* Exponentiation operator support ([#24](https://gitlab.com/Rich-Harris/buble/issues/24))
+* More informative error messages for for-of and tagged template strings
+
 ## 0.5.6
 
 * Add `dangerousTaggedTemplateString` ([!2](https://gitlab.com/Rich-Harris/buble/merge_requests/2)) and `dangerousForOf` ([!3](https://gitlab.com/Rich-Harris/buble/merge_requests/3)) transforms
