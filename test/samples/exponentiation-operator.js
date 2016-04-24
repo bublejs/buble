@@ -48,6 +48,17 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles an exponentiation assignment to a simple deep member expression',
+
+		input: `
+			foo.bar.baz **= y;`,
+
+		output: `
+			var object = foo.bar;
+			object.baz = Math.pow( object.baz, y );`
+	},
+
+	{
 		description: 'transpiles an exponentiation assignment to a simple computed member expression',
 
 		input: `

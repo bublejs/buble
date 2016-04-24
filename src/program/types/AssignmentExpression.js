@@ -31,20 +31,20 @@ export default class AssignmentExpression extends Node {
 				return declaration ? declaration.name : name;
 			};
 
-			// `**=` -> `=`
+			// first, the easy part – `**=` -> `=`
 			let charIndex = this.left.end;
 			while ( code.original[ charIndex ] !== '*' ) charIndex += 1;
 			code.remove( charIndex, charIndex + 2 );
 
+			// how we do the next part depends on a number of factors – whether
+			// this is a top-level statement, and whether we're updating a
+			// simple or complex reference
 			let base;
 
 			let left = this.left;
 			while ( left.type === 'ParenthesizedExpression' ) left = left.expression;
 
 			if ( left.type === 'Identifier' ) {
-				// const name = left.name;
-				// const declaration = scope.findDeclaration( name );
-				// base = declaration ? declaration.name : name;
 				base = getAlias( left.name );
 			} else if ( left.type === 'MemberExpression' ) {
 				let object;
@@ -72,20 +72,25 @@ export default class AssignmentExpression extends Node {
 				}
 
 				if ( left.start === statement.start ) {
-					// property
-					if ( needsPropertyVar ) {
+					if ( needsObjectVar && needsPropertyVar ) {
+						code.insert( statement.start, `var ${object} = ` );
+						code.overwrite( left.object.end, left.property.start, `;\n${i0}var ${property} = ` );
+						code.overwrite( left.property.end, left.end, `;\n${i0}${object}[${property}]` );
+					}
+
+					else if ( needsObjectVar ) {
+						code.insert( statement.start, `var ${object} = ` );
+						code.insert( left.object.end, `;\n${i0}` );
+						code.insert( left.object.end, object );
+					}
+
+					else if ( needsPropertyVar ) {
 						code.insert( statement.start, `var ${property} = ` );
 						code.move( left.property.start, left.property.end, statement.start );
 						code.insert( statement.start, `;\n${i0}` );
 
 						code.overwrite( left.object.end, left.property.start, `[${property}]` );
 						code.remove( left.property.end, left.end );
-					}
-
-					// object
-					if ( needsObjectVar ) {
-						code.insert( statement.start, `var ${object} = ` );
-						code.insert( left.object.end, `;\n${i0}${object}` );
 					}
 				}
 
@@ -105,7 +110,6 @@ export default class AssignmentExpression extends Node {
 					if ( needsPropertyVar ) {
 						code.insert( left.object.end, `${property} = ` );
 						code.move( left.property.start, left.property.end, left.object.end );
-						// code.insert( left.end, `, ` );
 					}
 
 					code.remove( left.object.end, left.property.start );
