@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.5.8
+
+* Fix exponentiation assignment operator edge case
+
 ## 0.5.7
 
 * Exponentiation operator support ([#24](https://gitlab.com/Rich-Harris/buble/issues/24))
