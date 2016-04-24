@@ -36,7 +36,7 @@ export default class AssignmentExpression extends Node {
 			while ( code.original[ charIndex ] !== '*' ) charIndex += 1;
 			code.remove( charIndex, charIndex + 2 );
 
-			// how we do the next part depends on a number of factors – whether
+			// how we do the next part depends on a number of factors – whether
 			// this is a top-level statement, and whether we're updating a
 			// simple or complex reference
 			let base;
@@ -51,14 +51,12 @@ export default class AssignmentExpression extends Node {
 				let needsObjectVar = false;
 				let property;
 				let needsPropertyVar = false;
-				let dotProperty = false;
 
 				const statement = this.findNearest( /(?:Statement|Declaration)$/ );
 				const i0 = statement.getIndentation();
 
 				if ( left.property.type === 'Identifier' ) {
 					property = left.computed ? getAlias( left.property.name ) : left.property.name;
-					dotProperty = !left.computed;
 				} else {
 					property = scope.createIdentifier( 'property' );
 					needsPropertyVar = true;
@@ -102,23 +100,29 @@ export default class AssignmentExpression extends Node {
 
 					code.insert( left.start, `( ` );
 
-					if ( needsObjectVar ) {
+					if ( needsObjectVar && needsPropertyVar ) {
 						code.insert( left.start, `${object} = ` );
-						code.insert( left.object.end, `, ` );
+						code.overwrite( left.object.end, left.property.start, `, ${property} = ` );
+						code.overwrite( left.property.end, left.end, `, ${object}[${property}]` );
 					}
 
-					if ( needsPropertyVar ) {
-						code.insert( left.object.end, `${property} = ` );
-						code.move( left.property.start, left.property.end, left.object.end );
+					else if ( needsObjectVar ) {
+						code.insert( left.start, `${object} = ` );
+						code.insert( left.object.end, `, ${object}` );
 					}
 
-					code.remove( left.object.end, left.property.start );
-					code.overwrite( left.property.end, left.end, `, ${object}${ dotProperty ? `.${property}` : `[${property}]` }` );
+					else if ( needsPropertyVar ) {
+						code.insert( left.start, `${property} = ` );
+						code.move( left.property.start, left.property.end, left.start );
+						code.insert( left.start, `, ` );
+						code.overwrite( left.object.end, left.property.start, `[${property}]` );
+						code.remove( left.property.end, left.end );
+					}
 
 					code.insert( this.end, ` )` );
 				}
 
-				base = object + ( left.computed ? `[${property}]` : `.${property}` );
+				base = object + ( left.computed || needsPropertyVar ? `[${property}]` : `.${property}` );
 			}
 
 			code.insert( this.right.start, `Math.pow( ${base}, ` );

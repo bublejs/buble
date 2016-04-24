@@ -103,6 +103,17 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles an exponentiation assignment to a contrivedly complex reference with simple object (that is not a top-level statement)',
+
+		input: `
+			var baz = 1, lolwut = foo[ bar() ] **= y;`,
+
+		output: `
+			var property;
+			var baz = 1, lolwut = ( property = bar(), foo[property] = Math.pow( foo[property], y ) );`
+	},
+
+	{
 		description: 'handles pathological bastard case',
 
 		input: `
