@@ -2,6 +2,7 @@ var fs = require( 'fs' );
 var path = require( 'path' );
 var buble = require( '../' );
 var handleError = require( './handleError.js' );
+var EOL = require('os').EOL;
 
 function compile ( from, to, command, options ) {
 	try {
@@ -44,13 +45,13 @@ function compileFile ( from, to, command, options ) {
 
 function write ( result, to, command ) {
 	if ( command.sourcemap === 'inline' ) {
-		result.code += '\n//# sourceMappingURL=' + result.map.toUrl();
+		result.code += EOL + '//# sourceMappingURL=' + result.map.toUrl();
 	} else if ( command.sourcemap ) {
 		if ( !to ) {
 			handleError({ code: 'MISSING_OUTPUT_FILE' });
 		}
 
-		result.code += '\n//# sourceMappingURL=' + path.basename( to ) + '.map';
+		result.code += EOL + '//# sourceMappingURL=' + path.basename( to ) + '.map';
 		fs.writeFileSync( to + '.map', result.map.toString() );
 	}
 
