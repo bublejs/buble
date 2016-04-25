@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.6.2
+
+* Handle body-less do-while blocks ([#27](https://gitlab.com/Rich-Harris/buble/issues/27))
+
 ## 0.6.1
 
 * Always remember to close parens in template strings
