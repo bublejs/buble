@@ -6,6 +6,7 @@ const statementsWithBlocks = {
 	ForInStatement: 'body',
 	ForOfStatement: 'body',
 	WhileStatement: 'body',
+	DoWhileStatement: 'body',
 	ArrowFunctionExpression: 'body'
 };
 

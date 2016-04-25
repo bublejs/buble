@@ -348,5 +348,11 @@ module.exports = [
 			};
 
 			for ( var i$1 = 0; i$1 < 10; i$1 += 1 ) loop( i$1 );`
+	},
+
+	{
+		description: 'handles body-less do-while loops (#27)',
+		input: `do foo(); while (bar)`,
+		output: `do foo(); while (bar)`
 	}
 ];
