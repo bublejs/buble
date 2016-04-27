@@ -1,1 +1,1 @@
-{"version":3,"file":"foo.js","sources":["../src/foo.js"],"sourcesContent":["console.log( 'foo' );\n"],"names":[],"mappings":"AAAA,OAAO,CAAC,GAAG,EAAE,KAAK,EAAE,CAAC;"}
+{"version":3,"file":"foo.js","sources":["../src/foo.js"],"sourcesContent":["console.log( 'foo' );"],"names":[],"mappings":"AAAA,OAAO,CAAC,GAAG,EAAE,KAAK,EAAE"}

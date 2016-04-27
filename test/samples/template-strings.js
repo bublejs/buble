@@ -84,5 +84,11 @@ module.exports = [
 		description: 'closes parens if final empty string is omitted',
 		input: 'var str = `1 + 1 = ${1 + 1}`;',
 		output: 'var str = "1 + 1 = " + (1 + 1);'
+	},
+
+	{
+		description: 'allows empty template string',
+		input: 'var str = ``;',
+		output: 'var str = "";'
 	}
 ];

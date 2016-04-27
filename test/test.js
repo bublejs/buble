@@ -58,14 +58,13 @@ describe( 'buble', () => {
 				rimraf.sync( path.resolve( dir, 'actual' ) );
 				fs.mkdirSync( path.resolve( dir, 'actual' ) );
 
+				var binFile = path.resolve(__dirname, '../bin/buble');
 				var commandFile = path.resolve( dir, 'command.sh' );
 
-				// var command = fs.readFileSync( commandFile, 'utf-8' );
-				child_process.execFile( commandFile, {
-					cwd: dir,
-					env: {
-						PATH: path.resolve( __dirname, '../bin' ) + ':' + process.env.PATH
-					}
+				var command = fs.readFileSync( commandFile, 'utf-8' )
+					.replace( 'buble', 'node ' + binFile );
+				child_process.exec( command, {
+					cwd: dir
 				}, ( err, stdout, stderr ) => {
 					if ( err ) return done( err );
 
