@@ -3,9 +3,6 @@ import Node from '../Node.js';
 export default class TemplateLiteral extends Node {
 	transpile ( code, transforms ) {
 		if ( transforms.templateString && this.parent.type !== 'TaggedTemplateExpression' ) {
-			code.remove( this.start, this.start + 1 );
-			code.remove( this.end - 1, this.end );
-
 			let ordered = this.expressions.concat( this.quasis )
 				.sort( ( a, b ) => a.start - b.start || a.end - b.end )
 				.filter( ( node, i ) => {
@@ -43,10 +40,8 @@ export default class TemplateLiteral extends Node {
 				if ( node.type === 'TemplateElement' ) {
 					let replacement = '';
 					if ( closeParens ) replacement += ')';
-					if ( !node.tail || node.value.cooked.length ) {
-						if ( i ) replacement += ' + ';
-						replacement += JSON.stringify( node.value.cooked );
-					}
+					if ( i ) replacement += ' + ';
+					replacement += JSON.stringify( node.value.cooked );
 
 					code.overwrite( lastIndex, node.end, replacement );
 
