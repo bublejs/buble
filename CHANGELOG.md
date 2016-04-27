@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.6.4
+
+* Add Node 6 to support matrix
+
 ## 0.6.3
 
 * Handle empty template strings ([#28](https://gitlab.com/Rich-Harris/buble/issues/28))
