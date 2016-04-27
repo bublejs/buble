@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.6.3
+
+* Handle empty template strings ([#28](https://gitlab.com/Rich-Harris/buble/issues/28))
+
 ## 0.6.2
 
 * Handle body-less do-while blocks ([#27](https://gitlab.com/Rich-Harris/buble/issues/27))
