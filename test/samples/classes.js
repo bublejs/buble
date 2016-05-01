@@ -317,6 +317,10 @@ module.exports = [
 				set area ( area ) {
 					this.radius = Math.sqrt( area / Math.PI );
 				}
+
+				static get description () {
+					return 'round';
+				}
 			}`,
 
 		output: `
@@ -324,17 +328,23 @@ module.exports = [
 				this.radius = radius;
 			};
 
-			var accessors = { area: {} };
+			var prototypeAccessors = { area: {} };
+			var staticAccessors = { description: {} };
 
-			accessors.area.get = function () {
+			prototypeAccessors.area.get = function () {
 				return Math.PI * Math.pow( this.radius, 2 );
 			};
 
-			accessors.area.set = function ( area ) {
+			prototypeAccessors.area.set = function ( area ) {
 				this.radius = Math.sqrt( area / Math.PI );
 			};
 
-			Object.defineProperties( Circle.prototype, accessors );`
+			staticAccessors.description.get = function () {
+				return 'round';
+			};
+
+			Object.defineProperties( Circle.prototype, prototypeAccessors );
+			Object.defineProperties( Circle, staticAccessors );`
 	},
 
 	{
@@ -354,6 +364,10 @@ module.exports = [
 				set area ( area ) {
 					this.radius = Math.sqrt( area / Math.PI );
 				}
+
+				static get description () {
+					return 'round';
+				}
 			}`,
 
 		output: `
@@ -366,17 +380,23 @@ module.exports = [
 				Circle.prototype = Object.create( Shape && Shape.prototype );
 				Circle.prototype.constructor = Circle;
 
-				var accessors = { area: {} };
+				var prototypeAccessors = { area: {} };
+				var staticAccessors = { description: {} };
 
-				accessors.area.get = function () {
+				prototypeAccessors.area.get = function () {
 					return Math.PI * Math.pow( this.radius, 2 );
 				};
 
-				accessors.area.set = function ( area ) {
+				prototypeAccessors.area.set = function ( area ) {
 					this.radius = Math.sqrt( area / Math.PI );
 				};
 
-				Object.defineProperties( Circle.prototype, accessors );
+				staticAccessors.description.get = function () {
+					return 'round';
+				};
+
+				Object.defineProperties( Circle.prototype, prototypeAccessors );
+				Object.defineProperties( Circle, staticAccessors );
 
 				return Circle;
 			}(Shape));`
