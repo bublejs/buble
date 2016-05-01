@@ -8,7 +8,7 @@ export default class Super extends Node {
 			if ( !this.method ) throw new CompileError( this, 'use of super outside class method' );
 
 			const parentClass = this.findNearest( 'ClassBody' ).parent;
-			this.superClassName = parentClass.superClass && parentClass.superClass.name;
+			this.superClassName = parentClass.superClass && (parentClass.superClass.name || 'superclass');
 
 			if ( !this.superClassName ) throw new CompileError( this, 'super used in base class' );
 
