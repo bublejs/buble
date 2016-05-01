@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.6.6
+
+* Fix another subclass `super()` bug ([#32](https://gitlab.com/Rich-Harris/buble/issues/32))
+
 ## 0.6.5
 
 * Fix `super()` call in subclass expression ([#32](https://gitlab.com/Rich-Harris/buble/issues/32))
