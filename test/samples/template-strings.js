@@ -56,6 +56,12 @@ module.exports = [
 	},
 
 	{
+		description: 'does not parenthesise plain template strings',
+		input: 'var str = `x`.toUpperCase();',
+		output: 'var str = "x".toUpperCase();'
+	},
+
+	{
 		description: 'does not parenthesise template strings in arithmetic expressions',
 		input: 'var str = `x${y}` + z; var str2 = `x${y}` * z;',
 		output: 'var str = "x" + y + z; var str2 = ("x" + y) * z;'
