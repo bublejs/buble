@@ -24,15 +24,14 @@ module.exports = [
 	},
 
 	{
-		skip: true,
 		description: 'transpiles a spread operator in a method call of an expression',
 
 		input: `
 			( foo || bar ).baz( ...values );`,
 
 		output: `
-			var ref;
-			( ref = foo || bar ).baz.apply( ref, values );`
+			var ref = ( foo || bar );
+			ref.baz.apply( ref, values );`
 	},
 
 	{
@@ -66,6 +65,4 @@ module.exports = [
 		input: `var max = Math.max( ...values );`,
 		output: `var max = Math.max( ...values );`
 	}
-
-	// TODO expression callee
 ];

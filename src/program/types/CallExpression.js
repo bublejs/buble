@@ -6,15 +6,17 @@ export default class CallExpression extends Node {
 		if ( transforms.spreadRest ) {
 			const lastArgument = this.arguments[ this.arguments.length - 1 ];
 			if ( lastArgument && lastArgument.type === 'SpreadElement' ) {
-				// TODO expression callee (`(a || b)(...values)`)
-
 				let context;
 
 				if ( this.callee.type === 'MemberExpression' ) {
 					if ( this.callee.object.type === 'Identifier' ) {
 						context = this.callee.object.name;
 					} else {
-						throw new CompileError( lastArgument, 'Calling members of expressions with a spread operator is not currently supported' );
+						const statement = this.callee.object;
+						const i0 = statement.getIndentation();
+						context = this.findScope( true ).createIdentifier( 'ref' );
+						code.insert( statement.start, `var ${context} = ` );
+						code.insert( statement.end, `;\n${i0}${context}` );
 					}
 				} else {
 					context = 'void 0';
