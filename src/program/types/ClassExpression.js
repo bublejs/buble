@@ -6,6 +6,8 @@ export default class ClassExpression extends Node {
 		            this.parent.type === 'VariableDeclarator' ? this.parent.id.name :
 		            this.parent.type === 'AssignmentExpression' ? this.parent.left.name :
 		            this.findScope( true ).createIdentifier( 'anonymous' );
+
+		super.initialise( transforms );
 	}
 
 	transpile ( code, transforms ) {

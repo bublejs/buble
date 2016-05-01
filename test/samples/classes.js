@@ -489,6 +489,29 @@ module.exports = [
 	},
 
 	{
+		description: 'anonymous expression extends named class (#31)',
+
+		input: `
+			SubClass = class extends SuperClass {
+				constructor() {
+					super();
+				}
+			};`,
+
+		output: `
+			SubClass = (function (SuperClass) {
+				function SubClass() {
+					SuperClass.call(this);
+				}
+
+				SubClass.prototype = Object.create( SuperClass && SuperClass.prototype );
+				SubClass.prototype.constructor = SubClass;
+
+				return SubClass;
+			}(SuperClass));`
+	},
+
+	{
 		description: 'deindents a function body with destructuring (#22)',
 
 		input: `

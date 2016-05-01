@@ -9,6 +9,8 @@ export default function isReference ( node, parent ) {
 		// i.e. an arrow function expression like `a => a`
 		if ( !parent ) return true;
 
+		if ( /(Function|Class)Expression/.test( parent.type ) ) return false;
+
 		// TODO is this right?
 		if ( parent.type === 'MemberExpression' || parent.type === 'MethodDefinition' ) {
 			return parent.computed || node === parent.object;
@@ -21,7 +23,7 @@ export default function isReference ( node, parent ) {
 		if ( parent.type === 'MethodDefinition' ) return false;
 
 		// disregard the `bar` in `export { foo as bar }`
-		if ( parent.type === 'ExportSpecifier' && node !== parent.local ) return;
+		if ( parent.type === 'ExportSpecifier' && node !== parent.local ) return false;
 
 		return true;
 	}
