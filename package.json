@@ -1,6 +1,6 @@
 {
   "name": "buble",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "The blazing fast, batteries-included ES2015 compiler",
   "main": "dist/buble.umd.js",
   "jsnext:main": "dist/buble.es.js",

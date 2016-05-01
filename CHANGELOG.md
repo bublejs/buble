@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.6.5
+
+* Fix `super()` call in subclass expression ([#32](https://gitlab.com/Rich-Harris/buble/issues/32))
+* Less defensive template string parenthesising ([!9](https://gitlab.com/Rich-Harris/buble/merge_requests/9))
+
 ## 0.6.4
 
 * Add Node 6 to support matrix
