@@ -466,6 +466,29 @@ module.exports = [
 	},
 
 	{
+		description: 'expression extends from an expression with super calls (#31)',
+
+		input: `
+			class b extends x.y.z {
+				constructor() {
+					super();
+				}
+			}`,
+
+		output: `
+			var b = (function (superclass) {
+				function b() {
+					superclass.call(this);
+				}
+
+				b.prototype = Object.create( superclass && superclass.prototype );
+				b.prototype.constructor = b;
+
+				return b;
+			}(x.y.z));`
+	},
+
+	{
 		description: 'deindents a function body with destructuring (#22)',
 
 		input: `
