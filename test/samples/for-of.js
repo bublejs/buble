@@ -82,5 +82,22 @@ module.exports = [
 
 				console.log( member );
 			}`
+	},
+
+	{
+		description: 'transpiles space-less for-of',
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			for (const key of this.keys) {
+				console.log(key);
+			}`,
+
+		output: `
+			for (var i = 0, list = this.keys; i < list.length; i += 1) {
+				var key = list[i];
+
+				console.log(key);
+			}`
 	}
 ];
