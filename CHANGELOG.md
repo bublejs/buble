@@ -1,5 +1,11 @@
 # buble changelog
 
+## 0.6.7
+
+* Support `static get` and `set` in classes ([#34](https://gitlab.com/Rich-Harris/buble/issues/34))
+* Support spread operator in expression method call ([!14](https://gitlab.com/Rich-Harris/buble/merge_requests/14))
+* Fix `for-of` loops with no space after opening paren ([#35](https://gitlab.com/Rich-Harris/buble/issues/35))
+
 ## 0.6.6
 
 * Fix another subclass `super()` bug ([#32](https://gitlab.com/Rich-Harris/buble/issues/32))
