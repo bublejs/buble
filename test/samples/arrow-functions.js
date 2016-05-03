@@ -76,8 +76,8 @@ module.exports = [
 
 		output: `
 			function multiply () {
-				var arguments$1 = arguments;
 				var this$1 = this;
+				var arguments$1 = arguments;
 
 				return function () {
 					return function () { return this$1 * arguments$1[0]; };

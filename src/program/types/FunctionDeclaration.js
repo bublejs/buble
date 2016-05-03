@@ -1,7 +1,7 @@
-import Node from '../Node.js';
+import Function from './shared/Function.js';
 import CompileError from '../../utils/CompileError.js';
 
-export default class FunctionDeclaration extends Node {
+export default class FunctionDeclaration extends Function {
 	initialise ( transforms ) {
 		if ( this.generator && transforms.generator ) {
 			throw new CompileError( this, 'Generators are not supported' );

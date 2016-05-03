@@ -143,8 +143,8 @@ module.exports = [
 			}`,
 
 		output: `
-			var arguments$1 = arguments;
 			var this$1 = this;
+			var arguments$1 = arguments;
 
 			var loop = function ( i ) {
 				console.log( this$1, arguments$1, i );

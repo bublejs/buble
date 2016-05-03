@@ -1,7 +1,7 @@
-import Node from '../Node.js';
+import Function from './shared/Function.js';
 import { find } from '../../utils/array.js';
 
-export default class ArrowFunctionExpression extends Node {
+export default class ArrowFunctionExpression extends Function {
 	initialise ( transforms ) {
 		this.body.createScope();
 		super.initialise( transforms );
