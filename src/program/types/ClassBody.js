@@ -58,8 +58,10 @@ export default class ClassBody extends Node {
 
 			const scope = this.findScope( false );
 
-			let gettersAndSetters = [];
-			let accessors;
+			let prototypeGettersAndSetters = [];
+			let staticGettersAndSetters = [];
+			let prototypeAccessors;
+			let staticAccessors;
 
 			this.body.forEach( method => {
 				if ( method.kind === 'constructor' ) {
@@ -67,22 +69,30 @@ export default class ClassBody extends Node {
 					return;
 				}
 
-				const isAccessor = method.kind === 'get' || method.kind === 'set';
+				if ( method.static ) code.remove( method.start, method.start + 7 );
+
+				const isAccessor = method.kind !== 'method';
+				let lhs;
 
 				if ( isAccessor ) {
 					code.remove( method.start, method.key.end );
 
-					if ( !~gettersAndSetters.indexOf( method.key.name ) ) gettersAndSetters.push( method.key.name );
-					if ( !accessors ) accessors = scope.createIdentifier( 'accessors' );
+					if ( method.static ) {
+						if ( !~staticGettersAndSetters.indexOf( method.key.name ) ) staticGettersAndSetters.push( method.key.name );
+						if ( !staticAccessors ) staticAccessors = scope.createIdentifier( 'staticAccessors' );
+
+						lhs = `${staticAccessors}.${method.key.name}.${method.kind}`;
+					} else {
+						if ( !~prototypeGettersAndSetters.indexOf( method.key.name ) ) prototypeGettersAndSetters.push( method.key.name );
+						if ( !prototypeAccessors ) prototypeAccessors = scope.createIdentifier( 'prototypeAccessors' );
+
+						lhs = `${prototypeAccessors}.${method.key.name}.${method.kind}`;
+					}
+				} else {
+					lhs = method.static ?
+						`${name}.${method.key.name}` :
+						`${name}.prototype.${method.key.name}`;
 				}
-
-				if ( method.static ) code.remove( method.start, method.start + 7 );
-
-				const lhs = method.static ?
-					`${name}.${method.key.name}` :
-					method.kind === 'method' ?
-						`${name}.prototype.${method.key.name}` :
-						`${accessors}.${method.key.name}.${method.kind}`;
 
 				code.insert( method.start, `${lhs} = function` + ( method.value.generator ? '*' : '' ) + ( isAccessor ? '' : ' ' ) );
 				code.insert( method.end, ';' );
@@ -95,20 +105,27 @@ export default class ClassBody extends Node {
 				}
 			});
 
-			if ( gettersAndSetters.length ) {
-				const intro = `var ${accessors} = { ${
-					gettersAndSetters.map( name => `${name}: {}` ).join( ',' )
-				} };`;
+			if ( prototypeGettersAndSetters.length || staticGettersAndSetters.length ) {
+				let intro = [];
+				let outro = [];
 
-				const outro = `Object.defineProperties( ${name}.prototype, ${accessors} );`;
-
-				if ( constructor ) {
-					code.insert( constructor.end, `\n\n${indentation}${intro}` );
-				} else {
-					code.insert( this.start, `${intro}\n\n${indentation}` );
+				if ( prototypeGettersAndSetters.length ) {
+					intro.push( `var ${prototypeAccessors} = { ${prototypeGettersAndSetters.map( name => `${name}: {}` ).join( ',' )} };` );
+					outro.push( `Object.defineProperties( ${name}.prototype, ${prototypeAccessors} );` );
 				}
 
-				code.insert( this.end, `\n\n${indentation}${outro}` );
+				if ( staticGettersAndSetters.length ) {
+					intro.push( `var ${staticAccessors} = { ${staticGettersAndSetters.map( name => `${name}: {}` ).join( ',' )} };` );
+					outro.push( `Object.defineProperties( ${name}, ${staticAccessors} );` );
+				}
+
+				if ( constructor ) {
+					code.insert( constructor.end, `\n\n${indentation}${intro.join( `\n${indentation}` )}` );
+				} else {
+					code.insert( this.start, `${intro.join( `\n${indentation}` )}\n\n${indentation}` );
+				}
+
+				code.insert( this.end, `\n\n${indentation}${outro.join( `\n${indentation}` )}` );
 			}
 		}
 
