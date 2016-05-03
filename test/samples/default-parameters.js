@@ -83,14 +83,14 @@ module.exports = [
 
 		input: `
 		function a(x, f = () => x) {
-			;
+			console.log( f() );
 		}`,
 
 		output: `
 		function a(x, f) {
 			if ( f === void 0 ) f = function () { return x; }
 
-			;
+			console.log( f() );
 		}`
 	}
 ];
