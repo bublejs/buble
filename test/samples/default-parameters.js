@@ -76,5 +76,21 @@ module.exports = [
 			var bar = function ( a = 1, b = 2 ) {
 				console.log( a, b );
 			};`
+	},
+
+	{
+		description: 'transpiles default arrow function parameters',
+
+		input: `
+		function a(x, f = () => x) {
+			console.log( f() );
+		}`,
+
+		output: `
+		function a(x, f) {
+			if ( f === void 0 ) f = function () { return x; };
+
+			console.log( f() );
+		}`
 	}
 ];

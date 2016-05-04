@@ -46,7 +46,7 @@ export default class ArrowFunctionExpression extends Node {
 			else if ( transforms.arrow ) {
 				code.insert( this.body.start, `{ ` );
 				super.transpile( code, transforms );
-				code.insert( this.body.end, `; }` );
+				code.insertAfter( this.body.end, `; }` );
 			}
 		}
 
