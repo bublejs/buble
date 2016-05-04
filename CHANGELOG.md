@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.7.0
+
+* Allow arrow functions to be used as default parameter values ([#36](https://gitlab.com/Rich-Harris/buble/issues/36))
+
 ## 0.6.7
 
 * Support `static get` and `set` in classes ([#34](https://gitlab.com/Rich-Harris/buble/issues/34))
