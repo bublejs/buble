@@ -153,21 +153,15 @@ export default class BlockStatement extends Node {
 					const ref = this.scope.createIdentifier( 'ref' );
 					code.insert( param.start, ref );
 
-					let lastIndex = param.start;
-
 					param.elements.forEach( ( element, i ) => {
-						code.remove( lastIndex, element.start );
-
 						if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
 						if ( element.type === 'Identifier' ) {
 							code.remove( element.start, element.end );
-							lastIndex = element.end;
 
 							code.insert( start, `var ${element.name} = ${ref}[${i}];` );
 						} else if ( element.type === 'AssignmentPattern' ) {
 							code.remove( element.start, element.right.start );
-							lastIndex = element.right.end;
 
 							const name = element.left.name;
 							code
@@ -181,10 +175,9 @@ export default class BlockStatement extends Node {
 						}
 
 						addedStuff = true;
-						lastIndex = element.end;
 					});
 
-					code.remove( lastIndex, param.end );
+					code.remove( param.start, param.end );
 				});
 			}
 
