@@ -107,16 +107,11 @@ export default class BlockStatement extends Node {
 					const ref = this.scope.createIdentifier( 'ref' );
 					code.insert( param.start, ref );
 
-					let lastIndex = param.start;
-
 					param.properties.forEach( prop => {
-						code.remove( lastIndex, prop.value.start );
-
 						const key = prop.key.name;
 
 						if ( prop.value.type === 'Identifier' ) {
 							code.remove( prop.value.start, prop.value.end );
-							lastIndex = prop.value.end;
 
 							const value = prop.value.name;
 							const declaration = this.scope.findDeclaration( value );
@@ -129,9 +124,10 @@ export default class BlockStatement extends Node {
 								code.insert( start, `var ${value} = ${ref}.${key};` );
 								addedStuff = true;
 							}
-						} else if ( prop.value.type === 'AssignmentPattern' ) {
+						}
+
+						else if ( prop.value.type === 'AssignmentPattern' ) {
 							code.remove( prop.value.start, prop.value.right.start );
-							lastIndex = prop.value.right.end;
 
 							if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
@@ -147,11 +143,9 @@ export default class BlockStatement extends Node {
 						else {
 							throw new CompileError( prop, `Compound destructuring is not supported` );
 						}
-
-						lastIndex = prop.end;
 					});
 
-					code.remove( lastIndex, param.end );
+					code.remove( param.start, param.end );
 				});
 
 				// array pattern. TODO dry this out
@@ -159,21 +153,15 @@ export default class BlockStatement extends Node {
 					const ref = this.scope.createIdentifier( 'ref' );
 					code.insert( param.start, ref );
 
-					let lastIndex = param.start;
-
 					param.elements.forEach( ( element, i ) => {
-						code.remove( lastIndex, element.start );
-
 						if ( addedStuff ) code.insert( start, `\n${indentation}` );
 
 						if ( element.type === 'Identifier' ) {
 							code.remove( element.start, element.end );
-							lastIndex = element.end;
 
 							code.insert( start, `var ${element.name} = ${ref}[${i}];` );
 						} else if ( element.type === 'AssignmentPattern' ) {
 							code.remove( element.start, element.right.start );
-							lastIndex = element.right.end;
 
 							const name = element.left.name;
 							code
@@ -187,10 +175,9 @@ export default class BlockStatement extends Node {
 						}
 
 						addedStuff = true;
-						lastIndex = element.end;
 					});
 
-					code.remove( lastIndex, param.end );
+					code.remove( param.start, param.end );
 				});
 			}
 

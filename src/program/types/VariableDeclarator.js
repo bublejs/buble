@@ -28,35 +28,27 @@ export default class VariableDeclarator extends Node {
 			const simple = this.init.type === 'Identifier';
 			const name = simple ? this.init.name : this.findScope( true ).createIdentifier( 'ref' );
 
-			if ( !simple ) {
-				code.insert( this.start, `${name} = ` );
-				code.move( this.init.start, this.init.end, this.start );
-				code.insert( this.start, `, ` );
-			} else {
-				code.remove( this.init.start, this.init.end );
-			}
-
 			const props = this.isObjectPattern ? this.id.properties : this.id.elements;
-
-			code.remove( this.start, props[0].start );
-
-			let lastIndex = this.start;
-			let first = true;
 
 			props.forEach( ( property, i ) => {
 				if ( property ) {
 					const id = this.isObjectPattern ? property.value : property;
 					const rhs = this.isObjectPattern ? `${name}.${property.key.name}` : `${name}[${i}]`;
 
-					code.overwrite( lastIndex, id.start, `${first ? '' : ', '}` );
-					code.insert( id.end, ` = ${rhs}` );
+					if (!simple || i !== 0) {
+						code.insert( this.end, `, ` );
+					}
 
-					lastIndex = property.end;
-					first = false;
+					code.move( id.start, id.end, this.end );
+					code.insert( this.end, ` = ${rhs}` );
 				}
 			});
 
-			code.remove( lastIndex, this.init.start );
+			if ( !simple ) {
+				code.overwrite( this.id.start, this.id.end, name );
+			} else {
+				code.remove( this.start, this.end );
+			}
 		}
 
 		super.transpile( code, transforms );
