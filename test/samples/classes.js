@@ -546,7 +546,8 @@ module.exports = [
 
 		output: `
 			var Foo = function Foo ( options ) {
-				var a = options.a, b = options.b;
+				var a = options.a;
+				var b = options.b;
 			};`
 	}
 
