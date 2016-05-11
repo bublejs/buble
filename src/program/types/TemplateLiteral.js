@@ -35,18 +35,14 @@ export default class TemplateLiteral extends Node {
 			if ( parenthesise ) code.insert( this.start, '(' );
 
 			let lastIndex = this.start;
-			let closeParens = false;
 
 			ordered.forEach( ( node, i ) => {
 				if ( node.type === 'TemplateElement' ) {
 					let replacement = '';
-					if ( closeParens ) replacement += ')';
 					if ( i ) replacement += ' + ';
 					replacement += JSON.stringify( node.value.cooked );
 
 					code.overwrite( lastIndex, node.end, replacement );
-
-					closeParens = false;
 				} else {
 					const parenthesise = node.type !== 'Identifier'; // TODO other cases where it's safe
 
@@ -56,14 +52,13 @@ export default class TemplateLiteral extends Node {
 
 					code.overwrite( lastIndex, node.start, replacement );
 
-					closeParens = parenthesise;
+					if ( parenthesise ) code.insert( node.end, ')' );
 				}
 
 				lastIndex = node.end;
 			});
 
 			let close = '';
-			if ( closeParens ) close += ')';
 			if ( parenthesise ) close += ')';
 
 			code.overwrite( lastIndex, this.end, close );

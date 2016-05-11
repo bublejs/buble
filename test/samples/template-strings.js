@@ -96,5 +96,11 @@ module.exports = [
 		description: 'allows empty template string',
 		input: 'var str = ``;',
 		output: 'var str = "";'
+	},
+
+	{
+		description: 'concats expression with variable',
+		input: 'var str = `${a + b}${c}`;',
+		output: 'var str = "" + (a + b) + c;'
 	}
 ];
