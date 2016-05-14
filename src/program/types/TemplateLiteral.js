@@ -32,7 +32,7 @@ export default class TemplateLiteral extends Node {
 			                     this.parent.type !== 'VariableDeclarator' &&
 			                     ( this.parent.type !== 'BinaryExpression' || this.parent.operator !== '+' );
 
-			if ( parenthesise ) code.insert( this.start, '(' );
+			if ( parenthesise ) code.insertRight( this.start, '(' );
 
 			let lastIndex = this.start;
 
@@ -52,7 +52,7 @@ export default class TemplateLiteral extends Node {
 
 					code.overwrite( lastIndex, node.start, replacement );
 
-					if ( parenthesise ) code.insert( node.end, ')' );
+					if ( parenthesise ) code.insertLeft( node.end, ')' );
 				}
 
 				lastIndex = node.end;

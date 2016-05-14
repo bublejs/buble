@@ -5,7 +5,7 @@ export default class MemberExpression extends Node {
 	transpile ( code, transforms ) {
 		if ( transforms.reservedProperties && reserved[ this.property.name ] ) {
 			code.overwrite( this.object.end, this.property.start, `['` );
-			code.insert( this.property.end, `']` );
+			code.insertLeft( this.property.end, `']` );
 		}
 
 		super.transpile( code, transforms );

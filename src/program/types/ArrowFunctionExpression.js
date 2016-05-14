@@ -12,8 +12,6 @@ export default class ArrowFunctionExpression extends Node {
 			if ( this.params.length === 0 ) {
 				code.overwrite( this.start, this.body.start, 'function () ' );
 			} else {
-				code.insert( this.start, 'function ' );
-
 				let parenthesised = false;
 				let charIndex = this.start;
 				while ( charIndex < this.params[0].start ) {
@@ -23,9 +21,10 @@ export default class ArrowFunctionExpression extends Node {
 					}
 				}
 
-				if ( !parenthesised ) {
-					code.insert( this.start, '( ' );
-				}
+				let start = 'function ';
+				if ( !parenthesised ) start += '( ';
+
+				code.insertRight( this.start, start );
 
 				charIndex = this.params[ this.params.length -1 ].end;
 				while ( code.original[ charIndex ] !== '=' ) charIndex += 1;
@@ -38,15 +37,15 @@ export default class ArrowFunctionExpression extends Node {
 		if ( this.body.synthetic ) {
 			if ( find( this.params, param => param.type === 'RestElement' || /Pattern/.test( param.type ) ) ) {
 				const indentation = this.getIndentation();
-				code.insert( this.body.start, `{\n${indentation}${code.getIndentString()}` );
+				code.insertLeft( this.body.start, `{\n${indentation}${code.getIndentString()}` );
 				super.transpile( code, transforms );
-				code.insert( this.body.end, `;\n${indentation}}` );
+				code.insertLeft( this.body.end, `;\n${indentation}}` );
 			}
 
 			else if ( transforms.arrow ) {
-				code.insert( this.body.start, `{ ` );
+				code.insertLeft( this.body.start, `{ ` );
 				super.transpile( code, transforms );
-				code.insertAfter( this.body.end, `; }` );
+				code.insertLeft( this.body.end, `; }` );
 			}
 		}
 

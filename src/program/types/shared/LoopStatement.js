@@ -56,9 +56,9 @@ export default class LoopStatement extends Node {
 			const before = `var ${loop} = function (${paramString}) ` + ( this.body.synthetic ? `{\n${i0}${code.getIndentString()}` : '' );
 			const after = ( this.body.synthetic ? `\n${i0}}` : '' ) + `;\n\n${i0}`;
 
-			code.insert( this.start, before );
+			code.insertRight( this.start, before );
 			code.move( this.body.start, this.body.end, this.start );
-			code.insert( this.start, after );
+			code.insertRight( this.start, after );
 
 			const index = this.type === 'DoWhileStatement' ?
 				this.start + 2 :
@@ -72,14 +72,14 @@ export default class LoopStatement extends Node {
 				if ( this.canReturn ) insert += `\n${i1}if ( ${returned} ) return returned.v;`;
 				insert += `\n${i0}}`;
 
-				code.insert( index, insert );
+				code.insertLeft( index, insert );
 			} else {
 				const callExpression = `${loop}(${argString});`;
 
 				if ( this.type === 'DoWhileStatement' ) {
 					code.overwrite( this.start, this.body.start, `do {\n${i1}${callExpression}\n${i0}}` );
 				} else {
-					code.insert( index, callExpression );
+					code.insertLeft( index, callExpression );
 				}
 			}
 		}

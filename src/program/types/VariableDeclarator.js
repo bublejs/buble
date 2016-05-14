@@ -36,13 +36,12 @@ export default class VariableDeclarator extends Node {
 					const id = this.isObjectPattern ? property.value : property;
 					const rhs = this.isObjectPattern ? `${name}.${property.key.name}` : `${name}[${i}]`;
 
-					if (!simple || i !== 0) {
-						code.insert( this.parent.end, `\n${indentation}` );
-					}
+					let start = 'var ';
+					if ( !simple || i > 0 ) start = `\n${indentation}${start}`;
 
-					code.insert( this.parent.end, 'var ' );
+					code.insertRight( property.start, start );
 					code.move( id.start, id.end, this.parent.end );
-					code.insert( this.parent.end, ` = ${rhs};` );
+					code.insertLeft( property.end, ` = ${rhs};` );
 				}
 			});
 

@@ -30,30 +30,36 @@ export default class ClassBody extends Node {
 					code.move( constructor.start, nextMethod ? nextMethod.start : this.end - 1, this.body[0].start );
 				}
 
-				if ( !inFunctionExpression ) code.insert( constructor.end, ';' );
+				if ( !inFunctionExpression ) code.insertLeft( constructor.end, ';' );
 
 				if ( constructorIndex > 0 ) {
 					if ( nextMethod ) {
-						code.insert( nextMethod.start, `\n\n${indentation}` );
+						code.insertRight( nextMethod.start, `\n\n${indentation}` );
 					} else {
-						code.insert( constructor.end, `\n\n${indentation}` );
+						code.insertLeft( constructor.end, `\n\n${indentation}` );
 					}
 				}
-			} else {
-				const fn = `function ${name} () {` + ( superName ?
-					`\n${indentation}${indentStr}${superName}.apply(this, arguments);\n${indentation}}` :
-					`}` ) + ( inFunctionExpression ? '' : ';' ) + ( this.body.length ? `\n\n${indentation}` : '' );
-				code.insert( this.start, fn );
 			}
 
 			if ( this.parent.superClass ) {
 				let inheritanceBlock = `${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${indentation}${name}.prototype.constructor = ${name};`;
 
 				if ( constructor ) {
-					code.insert( constructor.end, `\n\n${indentation}` + inheritanceBlock );
+					code.insertLeft( constructor.end, `\n\n${indentation}` + inheritanceBlock );
 				} else {
-					code.insert( this.start, inheritanceBlock + `\n\n${indentation}` );
+					const fn = `function ${name} () {` + ( superName ?
+						`\n${indentation}${indentStr}${superName}.apply(this, arguments);\n${indentation}}` :
+						`}` ) + ( inFunctionExpression ? '' : ';' ) + ( this.body.length ? `\n\n${indentation}` : '' );
+
+					inheritanceBlock = fn + inheritanceBlock;
+					code.insertRight( this.start, inheritanceBlock + `\n\n${indentation}` );
 				}
+			} else if ( !constructor ) {
+				let fn = `function ${name} () {}`;
+				if ( this.parent.type === 'ClassDeclaration' ) fn += ';'
+				if ( this.body.length ) fn += `\n\n${indentation}`;
+
+				code.insertRight( this.start, fn );
 			}
 
 			const scope = this.findScope( false );
@@ -94,8 +100,8 @@ export default class ClassBody extends Node {
 						`${name}.prototype.${method.key.name}`;
 				}
 
-				code.insert( method.start, `${lhs} = function` + ( method.value.generator ? '*' : '' ) + ( isAccessor ? '' : ' ' ) );
-				code.insert( method.end, ';' );
+				code.insertRight( method.start, `${lhs} = function` + ( method.value.generator ? '*' : '' ) + ( isAccessor ? '' : ' ' ) );
+				code.insertLeft( method.end, ';' );
 
 				if ( method.value.generator ) code.remove( method.start, method.key.start );
 
@@ -120,12 +126,12 @@ export default class ClassBody extends Node {
 				}
 
 				if ( constructor ) {
-					code.insert( constructor.end, `\n\n${indentation}${intro.join( `\n${indentation}` )}` );
+					code.insertLeft( constructor.end, `\n\n${indentation}${intro.join( `\n${indentation}` )}` );
 				} else {
-					code.insert( this.start, `${intro.join( `\n${indentation}` )}\n\n${indentation}` );
+					code.insertRight( this.start, `${intro.join( `\n${indentation}` )}\n\n${indentation}` );
 				}
 
-				code.insert( this.end, `\n\n${indentation}${outro.join( `\n${indentation}` )}` );
+				code.insertLeft( this.end, `\n\n${indentation}${outro.join( `\n${indentation}` )}` );
 			}
 		}
 

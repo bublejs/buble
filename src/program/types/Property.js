@@ -14,17 +14,17 @@ export default class Property extends Node {
 	transpile ( code, transforms ) {
 		if ( transforms.conciseMethodProperty && this.parent.type !== 'ObjectPattern' ) {
 			if ( this.shorthand ) {
-				code.insert( this.start, `${this.key.name}: ` );
+				code.insertRight( this.start, `${this.key.name}: ` );
 			} else if ( this.method ) {
 				const name = this.findScope( true ).createIdentifier( this.key.name );
 				if ( this.value.generator ) code.remove( this.start, this.key.start );
-				code.insert( this.key.end, `: function${this.value.generator ? '*' : ''} ${name}` );
+				code.insertLeft( this.key.end, `: function${this.value.generator ? '*' : ''} ${name}` );
 			}
 		}
 
 		if ( transforms.reservedProperties && reserved[ this.key.name ] ) {
-			code.insert( this.key.start, `'` );
-			code.insert( this.key.end, `'` );
+			code.insertRight( this.key.start, `'` );
+			code.insertLeft( this.key.end, `'` );
 		}
 
 		super.transpile( code, transforms );

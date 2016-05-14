@@ -72,14 +72,14 @@ export default class BlockStatement extends Node {
 
 		if ( this.argumentsAlias ) {
 			const assignment = `var ${this.argumentsAlias} = arguments;`;
-			code.insert( start, assignment );
+			code.insertLeft( start, assignment );
 			addedStuff = true;
 		}
 
 		if ( this.thisAlias ) {
-			if ( addedStuff ) code.insert( start, `\n${indentation}` );
+			if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
 			const assignment = `var ${this.thisAlias} = this;`;
-			code.insert( start, assignment );
+			code.insertLeft( start, assignment );
 			addedStuff = true;
 		}
 
@@ -89,13 +89,13 @@ export default class BlockStatement extends Node {
 			// default parameters
 			if ( transforms.defaultParameter ) {
 				params.filter( param => param.type === 'AssignmentPattern' ).forEach( param => {
-					if ( addedStuff ) code.insert( start, `\n${indentation}` );
+					if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
 
 					const lhs = `if ( ${param.left.name} === void 0 ) ${param.left.name}`;
 					code
-						.insert( start, `${lhs}` )
+						.insertLeft( start, `${lhs}` )
 						.move( param.left.end, param.right.end, start )
-						.insert( start, `;` );
+						.insertLeft( start, `;` );
 
 					addedStuff = true;
 				});
@@ -105,7 +105,7 @@ export default class BlockStatement extends Node {
 			if ( transforms.parameterDestructuring ) {
 				params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
 					const ref = this.scope.createIdentifier( 'ref' );
-					code.insert( param.start, ref );
+					code.insertRight( param.start, ref );
 
 					param.properties.forEach( prop => {
 						const key = prop.key.name;
@@ -120,8 +120,8 @@ export default class BlockStatement extends Node {
 								const instance = declaration.instances[0];
 								code.overwrite( instance.start, instance.end, `${ref}.${key}` );
 							} else {
-								if ( addedStuff ) code.insert( start, `\n${indentation}` );
-								code.insert( start, `var ${value} = ${ref}.${key};` );
+								if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
+								code.insertLeft( start, `var ${value} = ${ref}.${key};` );
 								addedStuff = true;
 							}
 						}
@@ -129,13 +129,13 @@ export default class BlockStatement extends Node {
 						else if ( prop.value.type === 'AssignmentPattern' ) {
 							code.remove( prop.value.start, prop.value.right.start );
 
-							if ( addedStuff ) code.insert( start, `\n${indentation}` );
+							if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
 
 							const value = prop.value.left.name;
 							code
-								.insert( start, `var ${ref}_${key} = ${ref}.${key}, ${value} = ${ref}_${key} === void 0 ? ` )
+								.insertLeft( start, `var ${ref}_${key} = ${ref}.${key}, ${value} = ${ref}_${key} === void 0 ? ` )
 								.move( prop.value.right.start, prop.value.right.end, start )
-								.insert( start, ` : ${ref}_${key};` );
+								.insertLeft( start, ` : ${ref}_${key};` );
 
 							addedStuff = true;
 						}
@@ -151,23 +151,23 @@ export default class BlockStatement extends Node {
 				// array pattern. TODO dry this out
 				params.filter( param => param.type === 'ArrayPattern' ).forEach( param => {
 					const ref = this.scope.createIdentifier( 'ref' );
-					code.insert( param.start, ref );
+					code.insertRight( param.start, ref );
 
 					param.elements.forEach( ( element, i ) => {
-						if ( addedStuff ) code.insert( start, `\n${indentation}` );
+						if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
 
 						if ( element.type === 'Identifier' ) {
 							code.remove( element.start, element.end );
 
-							code.insert( start, `var ${element.name} = ${ref}[${i}];` );
+							code.insertLeft( start, `var ${element.name} = ${ref}[${i}];` );
 						} else if ( element.type === 'AssignmentPattern' ) {
 							code.remove( element.start, element.right.start );
 
 							const name = element.left.name;
 							code
-								.insert( start, `var ${ref}_${i} = ref[${i}], ${name} = ref_${i} === void 0 ? ` )
+								.insertLeft( start, `var ${ref}_${i} = ref[${i}], ${name} = ref_${i} === void 0 ? ` )
 								.move( element.right.start, element.right.end, start )
-								.insert( start, ` : ref_${i};` );
+								.insertLeft( start, ` : ref_${i};` );
 						}
 
 						else {
@@ -198,16 +198,16 @@ export default class BlockStatement extends Node {
 						code.remove( start, end );
 					}
 
-					if ( addedStuff ) code.insert( start, `\n${indentation}` );
+					if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
 
 					const name = lastParam.argument.name;
 					const len = this.scope.createIdentifier( 'len' );
 					const count = params.length - 1;
 
 					if ( count ) {
-						code.insert( start, `var ${name} = [], ${len} = arguments.length - ${count};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];` );
+						code.insertLeft( start, `var ${name} = [], ${len} = arguments.length - ${count};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];` );
 					} else {
-						code.insert( start, `var ${name} = [], ${len} = arguments.length;\n${indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ];` );
+						code.insertLeft( start, `var ${name} = [], ${len} = arguments.length;\n${indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ];` );
 					}
 
 					addedStuff = true;
@@ -216,7 +216,7 @@ export default class BlockStatement extends Node {
 		}
 
 		if ( addedStuff ) {
-			code.insert( start, `\n\n${indentation}` );
+			code.insertLeft( start, `\n\n${indentation}` );
 		}
 
 		if ( transforms.letConst && this.isFunctionBlock ) {
@@ -273,10 +273,10 @@ export default class BlockStatement extends Node {
 			});
 		}
 
-		if ( this.synthetic && this.parent.type === 'ArrowFunctionExpression' ) {
-			code.insert( this.body[0].start, 'return ' );
-		}
-
 		super.transpile( code, transforms );
+
+		if ( this.synthetic && this.parent.type === 'ArrowFunctionExpression' ) {
+			code.insertRight( this.body[0].start, 'return ' );
+		}
 	}
 }
