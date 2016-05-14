@@ -83,11 +83,12 @@ export default class AssignmentExpression extends Node {
 					}
 
 					else if ( needsPropertyVar ) {
-						code.insertRight( statement.start, `var ${property} = ` );
-						code.move( left.property.start, left.property.end, statement.start );
-						code.insertRight( statement.start, `;\n${i0}` );
+						code.insertRight( left.property.start, `var ${property} = ` );
+						code.insertLeft( left.property.end, `;\n${i0}` );
+						code.move( left.property.start, left.property.end, this.start );
 
-						code.overwrite( left.object.end, left.property.start, `[${property}]` );
+						code.insertLeft( left.object.end, `[${property}]` );
+						code.remove( left.object.end, left.property.start );
 						code.remove( left.property.end, left.end );
 					}
 				}
@@ -98,23 +99,22 @@ export default class AssignmentExpression extends Node {
 					if ( needsPropertyVar ) declarators.push( property );
 					code.insertRight( statement.start, `var ${declarators.join( ', ' )};\n${i0}` );
 
-					code.insertRight( left.start, `( ` );
-
 					if ( needsObjectVar && needsPropertyVar ) {
-						code.insertRight( left.start, `${object} = ` );
+						code.insertRight( left.start, `( ${object} = ` );
 						code.overwrite( left.object.end, left.property.start, `, ${property} = ` );
 						code.overwrite( left.property.end, left.end, `, ${object}[${property}]` );
 					}
 
 					else if ( needsObjectVar ) {
-						code.insertRight( left.start, `${object} = ` );
+						code.insertRight( left.start, `( ${object} = ` );
 						code.insertLeft( left.object.end, `, ${object}` );
 					}
 
 					else if ( needsPropertyVar ) {
-						code.insertRight( left.start, `${property} = ` );
+						code.insertRight( left.property.start, `( ${property} = ` );
+						code.insertLeft( left.property.end, `, ` );
 						code.move( left.property.start, left.property.end, left.start );
-						code.insertRight( left.start, `, ` );
+
 						code.overwrite( left.object.end, left.property.start, `[${property}]` );
 						code.remove( left.property.end, left.end );
 					}
