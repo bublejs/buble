@@ -27,6 +27,7 @@ export default class VariableDeclarator extends Node {
 		if ( transforms.destructuring && this.id.type !== 'Identifier' ) {
 			const simple = this.init.type === 'Identifier';
 			const name = simple ? this.init.name : this.findScope( true ).createIdentifier( 'ref' );
+			const indentation = this.getIndentation();
 
 			const props = this.isObjectPattern ? this.id.properties : this.id.elements;
 
@@ -36,18 +37,19 @@ export default class VariableDeclarator extends Node {
 					const rhs = this.isObjectPattern ? `${name}.${property.key.name}` : `${name}[${i}]`;
 
 					if (!simple || i !== 0) {
-						code.insert( this.end, `, ` );
+						code.insert( this.parent.end, `\n${indentation}` );
 					}
 
-					code.move( id.start, id.end, this.end );
-					code.insert( this.end, ` = ${rhs}` );
+					code.insert( this.parent.end, 'var ' );
+					code.move( id.start, id.end, this.parent.end );
+					code.insert( this.parent.end, ` = ${rhs};` );
 				}
 			});
 
 			if ( !simple ) {
 				code.overwrite( this.id.start, this.id.end, name );
 			} else {
-				code.remove( this.start, this.end );
+				code.remove( this.parent.start, this.parent.end );
 			}
 		}
 

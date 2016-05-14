@@ -1,14 +1,21 @@
 module.exports = [
 	{
 		description: 'destructures an identifier with an object pattern',
-		input: `var { x, y } = point;`,
-		output: `var x = point.x, y = point.y;`
+		input: `
+			var { x, y } = point;`,
+		output: `
+			var x = point.x;
+			var y = point.y;`
 	},
 
 	{
 		description: 'destructures a non-identifier with an object pattern',
-		input: `var { x, y } = getPoint();`,
-		output: `var ref = getPoint(), x = ref.x, y = ref.y;`
+		input: `
+			var { x, y } = getPoint();`,
+		output: `
+			var ref = getPoint();
+			var x = ref.x;
+			var y = ref.y;`
 	},
 
 	{
@@ -36,20 +43,30 @@ module.exports = [
 
 	{
 		description: 'destructures an identifier with an array pattern',
-		input: `var [ x, y ] = point;`,
-		output: `var x = point[0], y = point[1];`
+		input: `
+			var [ x, y ] = point;`,
+		output: `
+			var x = point[0];
+			var y = point[1];`
 	},
 
 	{
 		description: 'destructures an identifier with a sparse array pattern',
-		input: `var [ x, , z ] = point;`,
-		output: `var x = point[0], z = point[2];`
+		input: `
+			var [ x, , z ] = point;`,
+		output: `
+			var x = point[0];
+			var z = point[2];`
 	},
 
 	{
 		description: 'destructures a non-identifier with an array pattern',
-		input: `var [ x, y ] = getPoint();`,
-		output: `var ref = getPoint(), x = ref[0], y = ref[1];`
+		input: `
+			var [ x, y ] = getPoint();`,
+		output: `
+			var ref = getPoint();
+			var x = ref[0];
+			var y = ref[1];`
 	},
 
 	{

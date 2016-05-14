@@ -347,7 +347,8 @@ module.exports = [
 			var x;
 
 			if ( true ) {
-				var x$1 = point.x, y = point.y;
+				var x$1 = point.x;
+				var y = point.y;
 				console.log( x$1 );
 			}`
 	},
@@ -367,7 +368,8 @@ module.exports = [
 			var x;
 
 			if ( true ) {
-				var x$1 = point[0], y = point[1];
+				var x$1 = point[0];
+				var y = point[1];
 				console.log( x$1 );
 			}`
 	},
