@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.7.1
+
+* Prevent omission of closing paren in template string ([#42](https://gitlab.com/Rich-Harris/buble/issues/42))
+* Separate variable declarations for each name in destructured declaration ([#18](https://gitlab.com/Rich-Harris/buble/merge_requests/18))
+
 ## 0.7.0
 
 * Allow arrow functions to be used as default parameter values ([#36](https://gitlab.com/Rich-Harris/buble/issues/36))
