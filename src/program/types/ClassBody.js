@@ -8,7 +8,7 @@ export default class ClassBody extends Node {
 			const name = this.parent.name;
 
 			const indentStr = code.getIndentString();
-			let indentation = this.getIndentation() + ( inFunctionExpression ? indentStr : '' );
+			let i0 = this.getIndentation() + ( inFunctionExpression ? indentStr : '' );
 
 			const constructorIndex = findIndex( this.body, node => node.kind === 'constructor' );
 			const constructor = this.body[ constructorIndex ];
@@ -34,25 +34,25 @@ export default class ClassBody extends Node {
 
 				if ( constructorIndex > 0 ) {
 					if ( nextMethod ) {
-						code.insert( nextMethod.start, `\n\n${indentation}` );
+						code.insert( nextMethod.start, `\n\n${i0}` );
 					} else {
-						code.insert( constructor.end, `\n\n${indentation}` );
+						code.insert( constructor.end, `\n\n${i0}` );
 					}
 				}
 			} else {
 				const fn = `function ${name} () {` + ( superName ?
-					`\n${indentation}${indentStr}${superName}.apply(this, arguments);\n${indentation}}` :
-					`}` ) + ( inFunctionExpression ? '' : ';' ) + ( this.body.length ? `\n\n${indentation}` : '' );
+					`\n${i0}${indentStr}${superName}.apply(this, arguments);\n${i0}}` :
+					`}` ) + ( inFunctionExpression ? '' : ';' ) + ( this.body.length ? `\n\n${i0}` : '' );
 				code.insert( this.start, fn );
 			}
 
 			if ( this.parent.superClass ) {
-				let inheritanceBlock = `${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${indentation}${name}.prototype.constructor = ${name};`;
+				let inheritanceBlock = `if ( ${superName} ) ${name}.__proto__ = ${superName};\n${i0}${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${i0}${name}.prototype.constructor = ${name};`;
 
 				if ( constructor ) {
-					code.insert( constructor.end, `\n\n${indentation}` + inheritanceBlock );
+					code.insert( constructor.end, `\n\n${i0}` + inheritanceBlock );
 				} else {
-					code.insert( this.start, inheritanceBlock + `\n\n${indentation}` );
+					code.insert( this.start, inheritanceBlock + `\n\n${i0}` );
 				}
 			}
 
@@ -120,12 +120,12 @@ export default class ClassBody extends Node {
 				}
 
 				if ( constructor ) {
-					code.insert( constructor.end, `\n\n${indentation}${intro.join( `\n${indentation}` )}` );
+					code.insert( constructor.end, `\n\n${i0}${intro.join( `\n${i0}` )}` );
 				} else {
-					code.insert( this.start, `${intro.join( `\n${indentation}` )}\n\n${indentation}` );
+					code.insert( this.start, `${intro.join( `\n${i0}` )}\n\n${i0}` );
 				}
 
-				code.insert( this.end, `\n\n${indentation}${outro.join( `\n${indentation}` )}` );
+				code.insert( this.end, `\n\n${i0}${outro.join( `\n${i0}` )}` );
 			}
 		}
 
