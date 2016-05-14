@@ -556,6 +556,34 @@ module.exports = [
 				var a = options.a;
 					var b = options.b;
 			};`
+	},
+
+	{
+		description: 'allows super in static methods',
+
+		input: `
+			class Foo extends Bar {
+				static baz () {
+					super.baz();
+				}
+			}`,
+
+		output: `
+			var Foo = (function (Bar) {
+				function Foo () {
+					Bar.apply(this, arguments);
+				}
+
+				if ( Bar ) Foo.__proto__ = Bar;
+				Foo.prototype = Object.create( Bar && Bar.prototype );
+				Foo.prototype.constructor = Foo;
+
+				Foo.baz = function baz () {
+					Bar.baz.call(this);
+				};
+
+				return Foo;
+			}(Bar));`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
