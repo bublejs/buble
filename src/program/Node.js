@@ -16,7 +16,8 @@ export default class Node {
 			parent: { value: parent },
 			program: { value: parent.program || parent },
 			depth: { value: parent.depth + 1 },
-			keys: { value: Object.keys( raw ) }
+			keys: { value: Object.keys( raw ) },
+			indentation: { value: undefined, writable: true }
 		});
 
 		// special case – body-less if/for/while statements. TODO others?
@@ -77,8 +78,24 @@ export default class Node {
 	}
 
 	getIndentation () {
-		const lastLine = /\n(.+)$/.exec( this.program.magicString.original.slice( 0, this.start ) );
-		return lastLine ? /^[ \t]*/.exec( lastLine[1] )[0] : '';
+		if ( this.indentation === undefined ) {
+			const source = this.program.magicString.original;
+			let c = this.start;
+			while ( c && source[c] !== '\n' ) c -= 1;
+
+			this.indentation = '';
+
+			while ( true ) {
+				c += 1;
+				const char = source[c];
+
+				if ( char !== ' ' && char !== '\t' ) break;
+
+				this.indentation += char;
+			}
+		}
+
+		return this.indentation;
 	}
 
 	initialise ( transforms ) {
