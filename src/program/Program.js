@@ -1,5 +1,6 @@
 import MagicString from 'magic-string';
 import BlockStatement from './BlockStatement.js';
+import wrap from './wrap.js';
 
 export default function Program ( source, ast, transforms ) {
 	this.type = 'Root';
@@ -10,7 +11,8 @@ export default function Program ( source, ast, transforms ) {
 	this.ast = ast;
 	this.depth = 0;
 
-	this.body = new BlockStatement( ast, this );
+	this.body = wrap( ast, this );
+	this.body.__proto__ = BlockStatement.prototype;
 
 	this.templateElements = [];
 	this.body.initialise( transforms );

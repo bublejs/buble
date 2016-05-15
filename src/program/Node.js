@@ -1,47 +1,22 @@
 import wrap from './wrap.js';
-
-const statementsWithBlocks = {
-	IfStatement: 'consequent',
-	ForStatement: 'body',
-	ForInStatement: 'body',
-	ForOfStatement: 'body',
-	WhileStatement: 'body',
-	DoWhileStatement: 'body',
-	ArrowFunctionExpression: 'body'
-};
+import keys from './keys.js';
 
 export default class Node {
 	constructor ( raw, parent ) {
-		Object.defineProperties( this, {
+		Object.defineProperties( raw, {
 			parent: { value: parent },
 			program: { value: parent.program || parent },
 			depth: { value: parent.depth + 1 },
-			keys: { value: Object.keys( raw ) },
+			keys: { value: keys[ raw.type ] },
 			indentation: { value: undefined, writable: true }
 		});
 
-		// special case – body-less if/for/while statements. TODO others?
-		const type = statementsWithBlocks[ raw.type ];
-		if ( type && raw[ type ].type !== 'BlockStatement' ) {
-			const nonBlock = raw[ type ];
-
-			// create a synthetic block statement, otherwise all hell
-			// breaks loose when it comes to block scoping
-			raw[ type ] = {
-				start: nonBlock.start,
-				end: nonBlock.end,
-				type: 'BlockStatement',
-				body: [ nonBlock ],
-				synthetic: true
-			};
+		for ( const key of keys[ raw.type ] ) {
+			wrap( raw[ key ], raw );
 		}
 
-		for ( const key of this.keys ) {
-			this[ key ] = wrap( raw[ key ], this );
-		}
-
-		this.program.magicString.addSourcemapLocation( this.start );
-		this.program.magicString.addSourcemapLocation( this.end );
+		raw.program.magicString.addSourcemapLocation( raw.start );
+		raw.program.magicString.addSourcemapLocation( raw.end );
 	}
 
 	ancestor ( level ) {
