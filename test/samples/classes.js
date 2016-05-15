@@ -185,6 +185,33 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles export default subclass',
+		options: { transforms: { moduleExport: false } },
+
+		input: `
+			export default class Foo extends Bar {
+				bar () {}
+			}`,
+
+		output: `
+			var Foo = (function (Bar) {
+				function Foo () {
+					Bar.apply(this, arguments);
+				}
+
+				if ( Bar ) Foo.__proto__ = Bar;
+				Foo.prototype = Object.create( Bar && Bar.prototype );
+				Foo.prototype.constructor = Foo;
+
+				Foo.prototype.bar = function bar () {};
+
+				return Foo;
+			}(Bar));
+
+			export default Foo;`
+	},
+
+	{
 		description: 'transpiles empty class',
 
 		input: `class Foo {}`,
