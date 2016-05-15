@@ -17,8 +17,8 @@
     "build:browser": "rollup -c --environment DEPS -f umd -o dist/buble.deps.js",
     "build:es": "rollup -c -f es6 -o dist/buble.es.js",
     "test": "mocha test/test.js --compilers js:buble/register",
-    "pretest": "npm run build:umd",
-    "prepublish": "npm test && npm run build:es && npm run build:browser"
+    "pretest": "npm run build:umd && npm run build:browser",
+    "prepublish": "npm test && npm run build:es"
   },
   "bin": {
     "buble": "./bin/buble"
