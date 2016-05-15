@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.8.0
+
+* Subclasses inherit static methods ([#33](https://gitlab.com/Rich-Harris/buble/issues/33))
+* Performance enhancements ([!21](https://gitlab.com/Rich-Harris/buble/merge_requests/21))
+
 ## 0.7.1
 
 * Prevent omission of closing paren in template string ([#42](https://gitlab.com/Rich-Harris/buble/issues/42))
