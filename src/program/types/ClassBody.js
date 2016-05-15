@@ -35,7 +35,7 @@ export default class ClassBody extends Node {
 			}
 
 			if ( this.parent.superClass ) {
-				let inheritanceBlock = `${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${i0}${name}.prototype.constructor = ${name};`;
+				let inheritanceBlock = `if ( ${superName} ) ${name}.__proto__ = ${superName};\n${i0}${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${i0}${name}.prototype.constructor = ${name};`;
 
 				if ( constructor ) {
 					code.insertLeft( constructor.end, `\n\n${i0}` + inheritanceBlock );

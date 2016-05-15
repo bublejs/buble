@@ -121,6 +121,7 @@ module.exports = [
 					Bar.apply(this, arguments);
 				}
 
+				if ( Bar ) Foo.__proto__ = Bar;
 				Foo.prototype = Object.create( Bar && Bar.prototype );
 				Foo.prototype.constructor = Foo;
 
@@ -154,6 +155,7 @@ module.exports = [
 					this.y = 'z';
 				}
 
+				if ( Bar ) Foo.__proto__ = Bar;
 				Foo.prototype = Object.create( Bar && Bar.prototype );
 				Foo.prototype.constructor = Foo;
 
@@ -377,6 +379,7 @@ module.exports = [
 					this.radius = radius;
 				}
 
+				if ( Shape ) Circle.__proto__ = Shape;
 				Circle.prototype = Object.create( Shape && Shape.prototype );
 				Circle.prototype.constructor = Circle;
 
@@ -445,6 +448,7 @@ module.exports = [
 					superclass.apply(this, arguments);
 				}
 
+				if ( superclass ) b.__proto__ = superclass;
 				b.prototype = Object.create( superclass && superclass.prototype );
 				b.prototype.constructor = b;
 
@@ -476,6 +480,7 @@ module.exports = [
 					superclass.apply(this, arguments);
 				}
 
+				if ( superclass ) b.__proto__ = superclass;
 				b.prototype = Object.create( superclass && superclass.prototype );
 				b.prototype.constructor = b;
 
@@ -501,6 +506,7 @@ module.exports = [
 					superclass.call(this);
 				}
 
+				if ( superclass ) b.__proto__ = superclass;
 				b.prototype = Object.create( superclass && superclass.prototype );
 				b.prototype.constructor = b;
 
@@ -524,6 +530,7 @@ module.exports = [
 					SuperClass.call(this);
 				}
 
+				if ( SuperClass ) SubClass.__proto__ = SuperClass;
 				SubClass.prototype = Object.create( SuperClass && SuperClass.prototype );
 				SubClass.prototype.constructor = SubClass;
 
@@ -549,6 +556,34 @@ module.exports = [
 				var a = options.a;
 					var b = options.b;
 			};`
+	},
+
+	{
+		description: 'allows super in static methods',
+
+		input: `
+			class Foo extends Bar {
+				static baz () {
+					super.baz();
+				}
+			}`,
+
+		output: `
+			var Foo = (function (Bar) {
+				function Foo () {
+					Bar.apply(this, arguments);
+				}
+
+				if ( Bar ) Foo.__proto__ = Bar;
+				Foo.prototype = Object.create( Bar && Bar.prototype );
+				Foo.prototype.constructor = Foo;
+
+				Foo.baz = function baz () {
+					Bar.baz.call(this);
+				};
+
+				return Foo;
+			}(Bar));`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
