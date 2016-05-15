@@ -112,67 +112,78 @@ export default class BlockStatement extends Node {
 			// object pattern
 			if ( transforms.parameterDestructuring ) {
 				params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
-					introStatementGenerators.push( ( prefix, suffix ) => {
-						const ref = this.scope.createIdentifier( 'ref' );
-						code.insertRight( param.start, ref );
+					const ref = this.scope.createIdentifier( 'ref' );
+					code.insertRight( param.start, ref );
 
-						param.properties.forEach( prop => {
-							const key = prop.key.name;
+					let c = param.start;
 
-							if ( prop.value.type === 'Identifier' ) {
-								code.remove( prop.value.start, prop.value.end );
+					param.properties.forEach( prop => {
+						code.remove( c, prop.value.start );
+						const key = prop.key.name;
 
-								const value = prop.value.name;
-								const declaration = this.scope.findDeclaration( value );
+						if ( prop.value.type === 'Identifier' ) {
+							code.remove( prop.value.start, prop.value.end );
 
-								if ( declaration.instances.length === 1 ) {
-									const instance = declaration.instances[0];
-									code.overwrite( instance.start, instance.end, `${ref}.${key}` );
-								} else {
+							const value = prop.value.name;
+							const declaration = this.scope.findDeclaration( value );
+
+							if ( declaration.instances.length === 1 ) {
+								const instance = declaration.instances[0];
+								code.overwrite( instance.start, instance.end, `${ref}.${key}` );
+							} else {
+								introStatementGenerators.push( ( prefix, suffix ) => {
 									if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
 									code.insertLeft( start, `var ${value} = ${ref}.${key};` );
 									addedStuff = true;
-								}
+								});
 							}
+						}
 
-							else if ( prop.value.type === 'AssignmentPattern' ) {
+						else if ( prop.value.type === 'AssignmentPattern' ) {
+							introStatementGenerators.push( ( prefix, suffix ) => {
 								code.remove( prop.value.start, prop.value.right.start );
 
-								if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
+								//if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
 
 								const value = prop.value.left.name;
 
 								code
-									.insertRight( prop.value.right.start, `var ${ref}_${key} = ${ref}.${key}, ${value} = ${ref}_${key} === void 0 ? ` )
-									.insertLeft( prop.value.right.end, ` : ${ref}_${key};` )
+									.insertRight( prop.value.right.start, `${prefix}var ${ref}_${key} = ${ref}.${key}, ${value} = ${ref}_${key} === void 0 ? ` )
+									.insertLeft( prop.value.right.end, ` : ${ref}_${key};${suffix}` )
 									.move( prop.value.right.start, prop.value.right.end, start );
 
 								addedStuff = true;
-							}
+							});
+						}
 
-							else {
-								throw new CompileError( prop, `Compound destructuring is not supported` );
-							}
-						});
+						else {
+							throw new CompileError( prop, `Compound destructuring is not supported` );
+						}
 
-						code.remove( param.start, param.end );
+						c = prop.value.end;
 					});
+
+					code.remove( c, param.end );
 				});
 
 				// array pattern. TODO dry this out
 				params.filter( param => param.type === 'ArrayPattern' ).forEach( param => {
-					introStatementGenerators.push( ( prefix, suffix ) => {
-						const ref = this.scope.createIdentifier( 'ref' );
-						code.insertRight( param.start, ref );
+					const ref = this.scope.createIdentifier( 'ref' );
+					code.insertRight( param.start, ref );
 
-						param.elements.forEach( ( element, i ) => {
-							if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
+					let c = param.start;
 
-							if ( element.type === 'Identifier' ) {
-								code.remove( element.start, element.end );
+					param.elements.forEach( ( element, i ) => {
+						code.remove( c, element.start );
 
-								code.insertLeft( start, `var ${element.name} = ${ref}[${i}];` );
-							} else if ( element.type === 'AssignmentPattern' ) {
+						if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
+
+						if ( element.type === 'Identifier' ) {
+							code.remove( element.start, element.end );
+
+							code.insertLeft( start, `var ${element.name} = ${ref}[${i}];` );
+						} else if ( element.type === 'AssignmentPattern' ) {
+							introStatementGenerators.push( ( prefix, suffix ) => {
 								code.remove( element.start, element.right.start );
 
 								const name = element.left.name;
@@ -180,17 +191,18 @@ export default class BlockStatement extends Node {
 									.insertRight( element.right.start, `var ${ref}_${i} = ref[${i}], ${name} = ref_${i} === void 0 ? ` )
 									.insertLeft( element.right.end, ` : ref_${i};` )
 									.move( element.right.start, element.right.end, start );
-							}
+							});
+						}
 
-							else {
-								throw new CompileError( element, `Compound destructuring is not supported` );
-							}
+						else {
+							throw new CompileError( element, `Compound destructuring is not supported` );
+						}
 
-							addedStuff = true;
-						});
-
-						code.remove( param.start, param.end );
+						c = element.end;
+						addedStuff = true;
 					});
+
+					code.remove( c, param.end );
 				});
 			}
 
@@ -231,7 +243,7 @@ export default class BlockStatement extends Node {
 		}
 
 		introStatementGenerators.forEach( fn => {
-			fn();
+			fn( `\n${indentation}`, '' );
 		});
 
 		if ( transforms.letConst && this.isFunctionBlock ) {
