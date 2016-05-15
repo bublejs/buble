@@ -8,7 +8,8 @@ export default class ClassBody extends Node {
 			const name = this.parent.name;
 
 			const indentStr = code.getIndentString();
-			let indentation = this.getIndentation() + ( inFunctionExpression ? indentStr : '' );
+			const i0 = this.getIndentation() + ( inFunctionExpression ? indentStr : '' );
+			const i1 = i0 + indentStr;
 
 			const constructorIndex = findIndex( this.body, node => node.kind === 'constructor' );
 			const constructor = this.body[ constructorIndex ];
@@ -34,22 +35,22 @@ export default class ClassBody extends Node {
 			}
 
 			if ( this.parent.superClass ) {
-				let inheritanceBlock = `${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${indentation}${name}.prototype.constructor = ${name};`;
+				let inheritanceBlock = `${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${i0}${name}.prototype.constructor = ${name};`;
 
 				if ( constructor ) {
-					code.insertLeft( constructor.end, `\n\n${indentation}` + inheritanceBlock );
+					code.insertLeft( constructor.end, `\n\n${i0}` + inheritanceBlock );
 				} else {
 					const fn = `function ${name} () {` + ( superName ?
-						`\n${indentation}${indentStr}${superName}.apply(this, arguments);\n${indentation}}` :
-						`}` ) + ( inFunctionExpression ? '' : ';' ) + ( this.body.length ? `\n\n${indentation}` : '' );
+						`\n${i1}${superName}.apply(this, arguments);\n${i0}}` :
+						`}` ) + ( inFunctionExpression ? '' : ';' ) + ( this.body.length ? `\n\n${i0}` : '' );
 
 					inheritanceBlock = fn + inheritanceBlock;
-					code.insertRight( this.start, inheritanceBlock + `\n\n${indentation}` );
+					code.insertRight( this.start, inheritanceBlock + `\n\n${i0}` );
 				}
 			} else if ( !constructor ) {
 				let fn = `function ${name} () {}`;
 				if ( this.parent.type === 'ClassDeclaration' ) fn += ';';
-				if ( this.body.length ) fn += `\n\n${indentation}`;
+				if ( this.body.length ) fn += `\n\n${i0}`;
 
 				code.insertRight( this.start, fn );
 			}
@@ -61,7 +62,7 @@ export default class ClassBody extends Node {
 			let prototypeAccessors;
 			let staticAccessors;
 
-			this.body.forEach( method => {
+			this.body.forEach( ( method, i ) => {
 				if ( method.kind === 'constructor' ) {
 					code.overwrite( method.key.start, method.key.end, `function ${name}` );
 					return;
@@ -92,6 +93,11 @@ export default class ClassBody extends Node {
 						`${name}.prototype.${method.key.name}`;
 				}
 
+				const insertNewlines = ( constructorIndex > 0 && i === constructorIndex + 1 ) ||
+				                       ( i === 0 && constructorIndex === this.body.length - 1 );
+
+				if ( insertNewlines ) lhs = `\n\n${i0}${lhs}`;
+
 				code.insertRight( method.start, `${lhs} = function` + ( method.value.generator ? '*' : '' ) + ( isAccessor ? '' : ' ' ) );
 				code.insertLeft( method.end, ';' );
 
@@ -118,12 +124,12 @@ export default class ClassBody extends Node {
 				}
 
 				if ( constructor ) {
-					code.insertLeft( constructor.end, `\n\n${indentation}${intro.join( `\n${indentation}` )}` );
+					code.insertLeft( constructor.end, `\n\n${i0}${intro.join( `\n${i0}` )}` );
 				} else {
-					code.insertRight( this.start, `${intro.join( `\n${indentation}` )}\n\n${indentation}` );
+					code.insertRight( this.start, `${intro.join( `\n${i0}` )}\n\n${i0}` );
 				}
 
-				code.insertLeft( this.end, `\n\n${indentation}${outro.join( `\n${indentation}` )}` );
+				code.insertLeft( this.end, `\n\n${i0}${outro.join( `\n${i0}` )}` );
 			}
 		}
 

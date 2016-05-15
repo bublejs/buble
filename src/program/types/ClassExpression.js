@@ -32,7 +32,7 @@ export default class ClassExpression extends Node {
 			if ( this.superClass ) {
 				code.insertLeft( this.end, outro );
 				code.move( this.superClass.start, this.superClass.end, this.end );
-				code.insertLeft( this.end, '))' );
+				code.insertRight( this.end, '))' );
 			} else {
 				code.insertLeft( this.end, `\n\n${i1}return ${this.name};\n${i0}}())` );
 			}
