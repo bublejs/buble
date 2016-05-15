@@ -14,46 +14,41 @@ const statementsWithBlocks = {
 };
 
 export default function wrap ( raw, parent ) {
-	if ( Array.isArray( raw ) ) {
-		raw.forEach( raw => wrap( raw, parent ) );
+	if ( !raw ) return;
+
+	if ( 'length' in raw ) {
+		let i = raw.length;
+		while ( i-- ) wrap( raw[i], parent );
 		return;
 	}
 
-	if ( raw && typeof raw === 'object' ) {
-		// with e.g. shorthand properties, key and value are
-		// the same node. We don't want to wrap an object twice
-		if ( raw && raw.__wrapped ) return;
-		raw.__wrapped = true;
+	// with e.g. shorthand properties, key and value are
+	// the same node. We don't want to wrap an object twice
+	if ( raw.__wrapped ) return;
+	raw.__wrapped = true;
 
-		if ( !keys[ raw.type ] ) {
-			keys[ raw.type ] = Object.keys( raw ).filter( key => typeof raw[ key ] === 'object' );
-		}
-
-		// special case – body-less if/for/while statements. TODO others?
-		const bodyType = statementsWithBlocks[ raw.type ];
-		if ( bodyType && raw[ bodyType ].type !== 'BlockStatement' ) {
-			const expression = raw[ bodyType ];
-
-			// create a synthetic block statement, otherwise all hell
-			// breaks loose when it comes to block scoping
-			raw[ bodyType ] = {
-				start: expression.start,
-				end: expression.end,
-				type: 'BlockStatement',
-				body: [ expression ],
-				synthetic: true
-			};
-		}
-
-		if ( raw.type === 'BlockStatement' ) {
-			Node( raw, parent );
-			raw.__proto__ = BlockStatement.prototype;
-		} else {
-			const Constructor = types[ raw.type ] || Node;
-			Node( raw, parent );
-			raw.__proto__ = Constructor.prototype;
-		}
+	if ( !keys[ raw.type ] ) {
+		keys[ raw.type ] = Object.keys( raw ).filter( key => typeof raw[ key ] === 'object' );
 	}
 
-	return raw; // scalar value
+	// special case – body-less if/for/while statements. TODO others?
+	const bodyType = statementsWithBlocks[ raw.type ];
+	if ( bodyType && raw[ bodyType ].type !== 'BlockStatement' ) {
+		const expression = raw[ bodyType ];
+
+		// create a synthetic block statement, otherwise all hell
+		// breaks loose when it comes to block scoping
+		raw[ bodyType ] = {
+			start: expression.start,
+			end: expression.end,
+			type: 'BlockStatement',
+			body: [ expression ],
+			synthetic: true
+		};
+	}
+
+	Node( raw, parent );
+
+	const type = ( raw.type === 'BlockStatement' ? BlockStatement : types[ raw.type ] ) || Node;
+	raw.__proto__ = type.prototype;
 }
