@@ -1,5 +1,4 @@
 import Node from '../Node.js';
-import { find } from '../../utils/array.js';
 
 export default class ArrowFunctionExpression extends Node {
 	initialise ( transforms ) {
@@ -34,23 +33,6 @@ export default class ArrowFunctionExpression extends Node {
 			}
 		}
 
-		// if ( this.body.synthetic ) {
-		// 	if ( find( this.params, param => param.type === 'RestElement' || /Pattern/.test( param.type ) ) ) {
-		// 		const indentation = this.getIndentation();
-		// 		code.insertLeft( this.body.start, `{\n${indentation}${code.getIndentString()}` );
-		// 		super.transpile( code, transforms );
-		// 		code.insertLeft( this.body.end, `;\n${indentation}}` );
-		// 	}
-		//
-		// 	else if ( transforms.arrow ) {
-		// 		code.insertLeft( this.body.start, `{ ` );
-		// 		super.transpile( code, transforms );
-		// 		code.insertLeft( this.body.end, `; }` );
-		// 	}
-		// }
-		//
-		// else {
-			super.transpile( code, transforms );
-		// }
+		super.transpile( code, transforms );
 	}
 }

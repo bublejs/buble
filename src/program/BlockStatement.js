@@ -68,15 +68,12 @@ export default class BlockStatement extends Node {
 			this.getIndentation() + code.getIndentString() :
 			( this.body.length ? this.body[0].getIndentation() : '' );
 
-		let addedStuff;
 		let introStatementGenerators = [];
 
 		if ( this.argumentsAlias ) {
 			introStatementGenerators.push( ( start, prefix, suffix ) => {
 				const assignment = `${prefix}var ${this.argumentsAlias} = arguments;${suffix}`;
 				code.insertLeft( start, assignment );
-
-				addedStuff = true;
 			});
 		}
 
@@ -84,7 +81,6 @@ export default class BlockStatement extends Node {
 			introStatementGenerators.push( ( start, prefix, suffix ) => {
 				const assignment = `${prefix}var ${this.thisAlias} = this;${suffix}`;
 				code.insertLeft( start, assignment );
-				addedStuff = true;
 			});
 		}
 
