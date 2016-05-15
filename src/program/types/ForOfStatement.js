@@ -21,18 +21,18 @@ export default class ForOfStatement extends LoopStatement {
 		const list = scope.createIdentifier( 'list' );
 
 		if ( this.body.synthetic ) {
-			code.insert( this.body.body[0].start, `{\n${i1}` );
-			code.insert( this.body.body[0].end, `\n${i0}}` );
+			code.insertRight( this.left.start, `{\n${i1}` );
+			code.insertLeft( this.body.body[0].end, `\n${i0}}` );
 		}
 
 		const bodyStart = this.body.body[0].start;
 
 		code.remove( this.left.end, this.right.start );
 		code.move( this.left.start, this.left.end, bodyStart );
-		code.insert( bodyStart, ` = ${list}[${key}];\n\n${i1}` );
+		code.insertLeft( this.left.end, ` = ${list}[${key}];\n\n${i1}` );
 
-		code.insert( this.right.start, `var ${key} = 0, ${list} = ` );
-		code.insert( this.right.end, `; ${key} < ${list}.length; ${key} += 1` );
+		code.insertRight( this.right.start, `var ${key} = 0, ${list} = ` );
+		code.insertLeft( this.right.end, `; ${key} < ${list}.length; ${key} += 1` );
 
 		super.transpile( code, transforms );
 	}

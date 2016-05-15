@@ -1,5 +1,4 @@
 import Node from '../Node.js';
-import CompileError from '../../utils/CompileError.js';
 
 export default class CallExpression extends Node {
 	transpile ( code, transforms ) {
@@ -15,23 +14,23 @@ export default class CallExpression extends Node {
 						const statement = this.callee.object;
 						const i0 = statement.getIndentation();
 						context = this.findScope( true ).createIdentifier( 'ref' );
-						code.insert( statement.start, `var ${context} = ` );
-						code.insert( statement.end, `;\n${i0}${context}` );
+						code.insertRight( statement.start, `var ${context} = ` );
+						code.insertLeft( statement.end, `;\n${i0}${context}` );
 					}
 				} else {
 					context = 'void 0';
 				}
 
-				code.insert( this.callee.end, '.apply' );
+				code.insertLeft( this.callee.end, '.apply' );
 
 				const penultimateArgument = this.arguments[ this.arguments.length - 2 ];
 
 				if ( penultimateArgument ) {
-					code.insert( this.arguments[0].start, `${context}, [ ` );
+					code.insertRight( this.arguments[0].start, `${context}, [ ` );
 					code.overwrite( penultimateArgument.end, lastArgument.start, ` ].concat( ` );
-					code.insert( lastArgument.end, ` )` );
+					code.insertLeft( lastArgument.end, ` )` );
 				} else {
-					code.insert( lastArgument.start, `${context}, ` );
+					code.insertRight( lastArgument.start, `${context}, ` );
 				}
 
 				code.remove( lastArgument.start, lastArgument.start + 3 );

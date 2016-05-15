@@ -16,11 +16,11 @@ export default class ReturnStatement extends Node {
 	transpile ( code, transforms ) {
 		if ( this.argument ) {
 			const shouldWrap = this.shouldWrap && this.loop && this.loop.shouldRewriteAsFunction;
-			if ( shouldWrap ) code.insert( this.argument.start, `{ v: ` );
+			if ( shouldWrap ) code.insertRight( this.argument.start, `{ v: ` );
 
 			if ( this.argument ) this.argument.transpile( code, transforms );
 
-			if ( shouldWrap ) code.insert( this.argument.end, ` }` );
+			if ( shouldWrap ) code.insertLeft( this.argument.end, ` }` );
 		}
 	}
 }
