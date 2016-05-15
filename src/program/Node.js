@@ -3,13 +3,11 @@ import keys from './keys.js';
 
 export default class Node {
 	constructor ( raw, parent ) {
-		Object.defineProperties( raw, {
-			parent: { value: parent },
-			program: { value: parent.program || parent },
-			depth: { value: parent.depth + 1 },
-			keys: { value: keys[ raw.type ] },
-			indentation: { value: undefined, writable: true }
-		});
+		raw.parent = parent;
+		raw.program = parent.program || parent;
+		raw.depth = parent.depth + 1;
+		raw.keys = keys[ raw.type ];
+		raw.indentation = undefined;
 
 		for ( const key of keys[ raw.type ] ) {
 			wrap( raw[ key ], raw );
