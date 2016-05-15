@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.8.2
+
+* More robust version of ([!22](https://gitlab.com/Rich-Harris/buble/merge_requests/22)) 
+
 ## 0.8.1
 
 * Fix `export default class A extends B` (broken in 0.8.0) ([!22](https://gitlab.com/Rich-Harris/buble/merge_requests/22))
