@@ -30,9 +30,9 @@ export default class ClassDeclaration extends Node {
 			this.body.transpile( code, transforms, !!this.superClass, superName );
 
 			if ( this.superClass ) {
-				code.insert( this.end, `\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(` );
+				code.insertLeft( this.end, `\n\n${indentation}${indentStr}return ${this.name};\n${indentation}}(` );
 				code.move( this.superClass.start, this.superClass.end, this.end );
-				code.insert( this.end, '));' );
+				code.insertRight( this.end, '));' );
 			}
 		}
 

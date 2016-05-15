@@ -25,10 +25,10 @@ export default class ForStatement extends LoopStatement {
 
 			if ( updates.length ) {
 				if ( this.body.synthetic ) {
-					code.insert( this.body.body[0].end, `; ${updates.join(` `)}` );
+					code.insertLeft( this.body.body[0].end, `; ${updates.join(` `)}` );
 				} else {
 					const lastStatement = this.body.body[ this.body.body.length - 1 ];
-					code.insert( lastStatement.end, `\n\n${i1}${updates.join(`\n${i1}`)}` );
+					code.insertLeft( lastStatement.end, `\n\n${i1}${updates.join(`\n${i1}`)}` );
 				}
 			}
 		}

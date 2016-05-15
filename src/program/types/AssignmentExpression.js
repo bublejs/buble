@@ -71,23 +71,24 @@ export default class AssignmentExpression extends Node {
 
 				if ( left.start === statement.start ) {
 					if ( needsObjectVar && needsPropertyVar ) {
-						code.insert( statement.start, `var ${object} = ` );
+						code.insertRight( statement.start, `var ${object} = ` );
 						code.overwrite( left.object.end, left.property.start, `;\n${i0}var ${property} = ` );
 						code.overwrite( left.property.end, left.end, `;\n${i0}${object}[${property}]` );
 					}
 
 					else if ( needsObjectVar ) {
-						code.insert( statement.start, `var ${object} = ` );
-						code.insert( left.object.end, `;\n${i0}` );
-						code.insert( left.object.end, object );
+						code.insertRight( statement.start, `var ${object} = ` );
+						code.insertLeft( left.object.end, `;\n${i0}` );
+						code.insertLeft( left.object.end, object );
 					}
 
 					else if ( needsPropertyVar ) {
-						code.insert( statement.start, `var ${property} = ` );
-						code.move( left.property.start, left.property.end, statement.start );
-						code.insert( statement.start, `;\n${i0}` );
+						code.insertRight( left.property.start, `var ${property} = ` );
+						code.insertLeft( left.property.end, `;\n${i0}` );
+						code.move( left.property.start, left.property.end, this.start );
 
-						code.overwrite( left.object.end, left.property.start, `[${property}]` );
+						code.insertLeft( left.object.end, `[${property}]` );
+						code.remove( left.object.end, left.property.start );
 						code.remove( left.property.end, left.end );
 					}
 				}
@@ -96,37 +97,36 @@ export default class AssignmentExpression extends Node {
 					let declarators = [];
 					if ( needsObjectVar ) declarators.push( object );
 					if ( needsPropertyVar ) declarators.push( property );
-					code.insert( statement.start, `var ${declarators.join( ', ' )};\n${i0}` );
-
-					code.insert( left.start, `( ` );
+					code.insertRight( statement.start, `var ${declarators.join( ', ' )};\n${i0}` );
 
 					if ( needsObjectVar && needsPropertyVar ) {
-						code.insert( left.start, `${object} = ` );
+						code.insertRight( left.start, `( ${object} = ` );
 						code.overwrite( left.object.end, left.property.start, `, ${property} = ` );
 						code.overwrite( left.property.end, left.end, `, ${object}[${property}]` );
 					}
 
 					else if ( needsObjectVar ) {
-						code.insert( left.start, `${object} = ` );
-						code.insert( left.object.end, `, ${object}` );
+						code.insertRight( left.start, `( ${object} = ` );
+						code.insertLeft( left.object.end, `, ${object}` );
 					}
 
 					else if ( needsPropertyVar ) {
-						code.insert( left.start, `${property} = ` );
+						code.insertRight( left.property.start, `( ${property} = ` );
+						code.insertLeft( left.property.end, `, ` );
 						code.move( left.property.start, left.property.end, left.start );
-						code.insert( left.start, `, ` );
+
 						code.overwrite( left.object.end, left.property.start, `[${property}]` );
 						code.remove( left.property.end, left.end );
 					}
 
-					code.insert( this.end, ` )` );
+					code.insertLeft( this.end, ` )` );
 				}
 
 				base = object + ( left.computed || needsPropertyVar ? `[${property}]` : `.${property}` );
 			}
 
-			code.insert( this.right.start, `Math.pow( ${base}, ` );
-			code.insert( this.right.end, ` )` );
+			code.insertRight( this.right.start, `Math.pow( ${base}, ` );
+			code.insertLeft( this.right.end, ` )` );
 		}
 
 		super.transpile( code, transforms );

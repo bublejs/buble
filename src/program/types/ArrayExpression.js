@@ -10,7 +10,7 @@ export default class ArrayExpression extends Node {
 				if ( penultimateElement ) {
 					code.overwrite( penultimateElement.end, lastElement.start, ` ].concat( ` );
 				} else {
-					code.insert( this.start + 1, `].concat(` );
+					code.insertLeft( this.start + 1, `].concat(` );
 				}
 
 				code.remove( lastElement.start, lastElement.start + 3 );
