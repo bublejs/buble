@@ -89,13 +89,13 @@ export default class BlockStatement extends Node {
 			// default parameters
 			if ( transforms.defaultParameter ) {
 				params.filter( param => param.type === 'AssignmentPattern' ).forEach( param => {
-					if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
+					let lhs = addedStuff ? `\n${indentation}` : '';
 
-					const lhs = `if ( ${param.left.name} === void 0 ) ${param.left.name}`;
+					lhs += `if ( ${param.left.name} === void 0 ) ${param.left.name}`;
 					code
-						.insertLeft( start, `${lhs}` )
+						.insertRight( param.left.end, `${lhs}` )
 						.move( param.left.end, param.right.end, start )
-						.insertLeft( start, `;` );
+						.insertLeft( param.right.end, `;` );
 
 					addedStuff = true;
 				});
@@ -132,10 +132,11 @@ export default class BlockStatement extends Node {
 							if ( addedStuff ) code.insertLeft( start, `\n${indentation}` );
 
 							const value = prop.value.left.name;
+
 							code
-								.insertLeft( start, `var ${ref}_${key} = ${ref}.${key}, ${value} = ${ref}_${key} === void 0 ? ` )
-								.move( prop.value.right.start, prop.value.right.end, start )
-								.insertLeft( start, ` : ${ref}_${key};` );
+								.insertRight( prop.value.right.start, `var ${ref}_${key} = ${ref}.${key}, ${value} = ${ref}_${key} === void 0 ? ` )
+								.insertLeft( prop.value.right.end, ` : ${ref}_${key};` )
+								.move( prop.value.right.start, prop.value.right.end, start );
 
 							addedStuff = true;
 						}
@@ -165,9 +166,9 @@ export default class BlockStatement extends Node {
 
 							const name = element.left.name;
 							code
-								.insertLeft( start, `var ${ref}_${i} = ref[${i}], ${name} = ref_${i} === void 0 ? ` )
-								.move( element.right.start, element.right.end, start )
-								.insertLeft( start, ` : ref_${i};` );
+								.insertRight( element.right.start, `var ${ref}_${i} = ref[${i}], ${name} = ref_${i} === void 0 ? ` )
+								.insertLeft( element.right.end, ` : ref_${i};` )
+								.move( element.right.start, element.right.end, start );
 						}
 
 						else {
@@ -213,10 +214,6 @@ export default class BlockStatement extends Node {
 					addedStuff = true;
 				}
 			}
-		}
-
-		if ( addedStuff ) {
-			code.insertLeft( start, `\n\n${indentation}` );
 		}
 
 		if ( transforms.letConst && this.isFunctionBlock ) {
@@ -265,6 +262,7 @@ export default class BlockStatement extends Node {
 							declaration.name = alias;
 
 							for ( const identifier of declaration.instances ) {
+								identifier.rewritten = true;
 								code.overwrite( identifier.start, identifier.end, alias, true );
 							}
 						}
@@ -277,6 +275,10 @@ export default class BlockStatement extends Node {
 
 		if ( this.synthetic && this.parent.type === 'ArrowFunctionExpression' ) {
 			code.insertRight( this.body[0].start, 'return ' );
+		}
+
+		if ( addedStuff && this.body.length ) {
+			code.insertRight( this.body[0].start, `\n\n${indentation}` );
 		}
 	}
 }

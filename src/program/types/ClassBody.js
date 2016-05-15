@@ -31,14 +31,6 @@ export default class ClassBody extends Node {
 				}
 
 				if ( !inFunctionExpression ) code.insertLeft( constructor.end, ';' );
-
-				if ( constructorIndex > 0 ) {
-					if ( nextMethod ) {
-						code.insertRight( nextMethod.start, `\n\n${indentation}` );
-					} else {
-						code.insertLeft( constructor.end, `\n\n${indentation}` );
-					}
-				}
 			}
 
 			if ( this.parent.superClass ) {
@@ -56,7 +48,7 @@ export default class ClassBody extends Node {
 				}
 			} else if ( !constructor ) {
 				let fn = `function ${name} () {}`;
-				if ( this.parent.type === 'ClassDeclaration' ) fn += ';'
+				if ( this.parent.type === 'ClassDeclaration' ) fn += ';';
 				if ( this.body.length ) fn += `\n\n${indentation}`;
 
 				code.insertRight( this.start, fn );

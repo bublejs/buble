@@ -25,31 +25,42 @@ export default class VariableDeclarator extends Node {
 
 	transpile ( code, transforms ) {
 		if ( transforms.destructuring && this.id.type !== 'Identifier' ) {
-			const simple = this.init.type === 'Identifier';
-			const name = simple ? this.init.name : this.findScope( true ).createIdentifier( 'ref' );
-			const indentation = this.getIndentation();
-
+			const simple = this.init.type === 'Identifier' && !this.init.rewritten;
 			const props = this.isObjectPattern ? this.id.properties : this.id.elements;
+			const i0 = this.getIndentation();
+
+			const name = simple ? this.init.name : this.findScope( true ).createIdentifier( 'ref' );
+
+			let c = this.start;
+			let first = simple;
+
+			if ( simple ) {
+				code.remove( this.id.end, this.end );
+			} else {
+				code.insertRight( this.id.end, `${name}` );
+				code.move( this.id.end, this.end, c );
+			}
 
 			props.forEach( ( property, i ) => {
 				if ( property ) {
 					const id = this.isObjectPattern ? property.value : property;
 					const rhs = this.isObjectPattern ? `${name}.${property.key.name}` : `${name}[${i}]`;
 
-					let start = 'var ';
-					if ( !simple || i > 0 ) start = `\n${indentation}${start}`;
+					let start = first ? '' : 'var ';
+					if ( !first ) start = `;\n${i0}${start}`;
 
-					code.insertRight( property.start, start );
-					code.move( id.start, id.end, this.parent.end );
-					code.insertLeft( property.end, ` = ${rhs};` );
+					code.insertRight( id.start, start );
+					code.move( id.start, id.end, this.start );
+					code.insertLeft( id.end, ` = ${rhs}` );
+
+					code.remove( c, id.start );
+					c = property.end;
+
+					first = false;
 				}
 			});
 
-			if ( !simple ) {
-				code.overwrite( this.id.start, this.id.end, name );
-			} else {
-				code.remove( this.parent.start, this.parent.end );
-			}
+			code.remove( c, this.id.end );
 		}
 
 		super.transpile( code, transforms );
