@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.8.4
+
+* Allow class body to follow ID/superclass without whitespace ([#46](https://gitlab.com/Rich-Harris/buble/issues/46))
+
 ## 0.8.3
 
 * Performance enhancements ([!23](https://gitlab.com/Rich-Harris/buble/merge_requests/23))
