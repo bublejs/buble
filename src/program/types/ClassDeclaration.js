@@ -29,10 +29,19 @@ export default class ClassDeclaration extends Node {
 			code.overwrite( this.start, this.id.start, 'var ' );
 
 			if ( this.superClass ) {
-				code.overwrite( this.id.end, this.superClass.start, ' = ' );
-				code.overwrite( this.superClass.end, this.body.start, `(function (${superName}) {\n${i1}` );
+				if ( this.superClass.end === this.body.start ) {
+					code.remove( this.id.end, this.superClass.start );
+					code.insertLeft( this.id.end, ` = (function (${superName}) {\n${i1}` );
+				} else {
+					code.overwrite( this.id.end, this.superClass.start, ' = ' );
+					code.overwrite( this.superClass.end, this.body.start, `(function (${superName}) {\n${i1}` );
+				}
 			} else {
-				code.overwrite( this.id.end, this.body.start, ' = ' );
+				if ( this.id.end === this.body.start ) {
+					code.insertLeft( this.id.end, ' = ' );
+				} else {
+					code.overwrite( this.id.end, this.body.start, ' = ' );
+				}
 			}
 
 			this.body.transpile( code, transforms, !!this.superClass, superName );

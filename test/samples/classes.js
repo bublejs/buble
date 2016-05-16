@@ -642,6 +642,68 @@ module.exports = [
 
 				return Foo;
 			}(Bar));`
+	},
+
+	{
+		description: 'allows zero space between class id and body (#46)',
+
+		input: `
+			class A{
+				x(){}
+			}
+
+			var B = class B{
+				x(){}
+			};
+
+			class C extends D{
+				x(){}
+			}
+
+			var E = class E extends F{
+				x(){}
+			}`,
+
+		output: `
+			var A = function A () {};
+
+			A.prototype.x = function x(){};
+
+			var B = (function () {
+				function B () {}
+
+				B.prototype.x = function x(){};
+
+				return B;
+			}());
+
+			var C = (function (D) {
+				function C () {
+					D.apply(this, arguments);
+				}
+
+				if ( D ) C.__proto__ = D;
+				C.prototype = Object.create( D && D.prototype );
+				C.prototype.constructor = C;
+
+				C.prototype.x = function x(){};
+
+				return C;
+			}(D));
+
+			var E = (function (F) {
+				function E () {
+					F.apply(this, arguments);
+				}
+
+				if ( F ) E.__proto__ = F;
+				E.prototype = Object.create( F && F.prototype );
+				E.prototype.constructor = E;
+
+				E.prototype.x = function x(){};
+
+				return E;
+			}(F))`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
