@@ -82,15 +82,31 @@ module.exports = [
 		description: 'transpiles default arrow function parameters',
 
 		input: `
-		function a(x, f = () => x) {
-			console.log( f() );
-		}`,
+			function a(x, f = () => x) {
+				console.log( f() );
+			}`,
 
 		output: `
-		function a(x, f) {
-			if ( f === void 0 ) f = function () { return x; };
+			function a(x, f) {
+				if ( f === void 0 ) f = function () { return x; };
 
-			console.log( f() );
-		}`
+				console.log( f() );
+			}`
+	},
+
+	{
+		description: 'transpiles destructured default parameters (#43)',
+
+		input: `
+			function a({ x } = {}) {
+				console.log( x );
+			}`,
+
+		output: `
+			function a(ref) {
+				if ( ref === void 0 ) ref = {};
+
+				console.log( ref.x );
+			}`
 	}
 ];

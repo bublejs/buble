@@ -85,15 +85,15 @@ export default class BlockStatement extends Node {
 		}
 
 		if ( /Function/.test( this.parent.type ) ) {
-			// default parameters
-			if ( transforms.defaultParameter ) {
-				this.transpileDefaultParameters( code, introStatementGenerators );
-			}
-
 			// object pattern
 			if ( transforms.parameterDestructuring ) {
 				this.transpileObjectPattern( code, introStatementGenerators );
 				this.transpileArrayPattern( code, introStatementGenerators );
+			}
+
+			// default parameters
+			if ( transforms.defaultParameter ) {
+				this.transpileDefaultParameters( code, introStatementGenerators );
 			}
 
 			// rest parameter
@@ -204,8 +204,13 @@ export default class BlockStatement extends Node {
 	}
 
 	transpileObjectPattern ( code, introStatementGenerators ) {
-		this.parent.params.filter( param => param.type === 'ObjectPattern' ).forEach( param => {
+		const params = this.parent.params;
+		const objectPatterns = params.filter( param => param.type === 'ObjectPattern' );
+		const assignmentPatterns = params.filter( param => param.type === 'AssignmentPattern' )
+			.map( exp => exp.left ).filter( param => param.type === 'ObjectPattern' );
+		[].concat(objectPatterns, assignmentPatterns).forEach( param => {
 			const ref = this.scope.createIdentifier( 'ref' );
+			param.name = ref;
 			code.insertRight( param.start, ref );
 
 			let c = param.start;
