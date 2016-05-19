@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.8.5
+
+* Allow destructured parameter to have default ([#43](https://gitlab.com/Rich-Harris/buble/issues/43))
+* Allow `continue`/`break` statements inside a for-of loop
+
 ## 0.8.4
 
 * Allow class body to follow ID/superclass without whitespace ([#46](https://gitlab.com/Rich-Harris/buble/issues/46))
