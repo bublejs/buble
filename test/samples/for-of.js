@@ -99,5 +99,23 @@ module.exports = [
 
 				console.log(key);
 			}`
+	},
+
+	{
+		description: 'handles continue in for-of',
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			for ( let item of items ) {
+				if ( item.foo ) continue;
+			}`,
+
+		output: `
+			for ( var i = 0, list = items; i < list.length; i += 1 ) {
+				var item = list[i];
+
+				if ( item.foo ) continue;
+			}`
+
 	}
 ];
