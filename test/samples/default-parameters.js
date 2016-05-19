@@ -98,15 +98,16 @@ module.exports = [
 		description: 'transpiles destructured default parameters (#43)',
 
 		input: `
-			function a({ x } = {}) {
+			function a({ x = 1 } = {}) {
 				console.log( x );
 			}`,
 
 		output: `
 			function a(ref) {
 				if ( ref === void 0 ) ref = {};
+				var ref_x = ref.x, x = ref_x === void 0 ? 1 : ref_x;
 
-				console.log( ref.x );
+				console.log( x );
 			}`
 	}
 ];
