@@ -85,15 +85,15 @@ export default class BlockStatement extends Node {
 		}
 
 		if ( /Function/.test( this.parent.type ) ) {
+			// default parameters
+			if ( transforms.defaultParameter ) {
+				this.transpileDefaultParameters( code, introStatementGenerators );
+			}
+
 			// object pattern
 			if ( transforms.parameterDestructuring ) {
 				this.transpileObjectPattern( code, introStatementGenerators );
 				this.transpileArrayPattern( code, introStatementGenerators );
-			}
-
-			// default parameters
-			if ( transforms.defaultParameter ) {
-				this.transpileDefaultParameters( code, introStatementGenerators );
 			}
 
 			// rest parameter
