@@ -199,5 +199,35 @@ module.exports = [
 				var x = foo.x;
 				var y = foo.y;
 			}`
+	},
+
+	{
+		description: 'default value in destructured variable declaration (#37)',
+
+		input: `
+			var { name: value, description = null } = obj;
+			console.log( value, description );`,
+
+		output: `
+			var obj_description = obj.description, description = obj_description === void 0 ? null : obj_description;
+			console.log( obj.name, description );`
+	},
+
+	{
+		description: 'default values in destructured object parameter with a default value (#37)',
+
+		input: `
+			function foo ({ arg1 = 123, arg2 = 456 } = {}) {
+				console.log( arg1, arg2 );
+			}`,
+
+		output: `
+			function foo (ref) {
+				if ( ref === void 0 ) ref = {};
+				var ref_arg1 = ref.arg1, arg1 = ref_arg1 === void 0 ? 123 : ref_arg1;
+				var ref_arg2 = ref.arg2, arg2 = ref_arg2 === void 0 ? 456 : ref_arg2;
+
+				console.log( arg1, arg2 );
+			}`
 	}
 ];
