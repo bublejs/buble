@@ -25,7 +25,7 @@ export default class Identifier extends Node {
 					this.alias = lexicalBoundary.getArgumentsAlias();
 				}
 
-				if ( loop && loop.depth > lexicalBoundary.depth ) {
+				if ( loop && loop.body.contains( this ) && loop.depth > lexicalBoundary.depth ) {
 					this.alias = lexicalBoundary.getArgumentsAlias();
 				}
 			}

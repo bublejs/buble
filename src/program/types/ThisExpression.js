@@ -11,7 +11,7 @@ export default class ThisExpression extends Node {
 				this.alias = lexicalBoundary.getThisAlias();
 			}
 
-			if ( loop && loop.depth > lexicalBoundary.depth ) {
+			if ( loop && loop.body.contains( this ) && loop.depth > lexicalBoundary.depth ) {
 				this.alias = lexicalBoundary.getThisAlias();
 			}
 		}
