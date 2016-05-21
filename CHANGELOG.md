@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.9.0
+
+* More complete and robust destructuring support ([#37](https://gitlab.com/Rich-Harris/buble/issues/37), [#43](https://gitlab.com/Rich-Harris/buble/issues/43))
+* Correct `this`/`arguments` references inside for-of loop
+
 ## 0.8.5
 
 * Allow destructured parameter to have default ([#43](https://gitlab.com/Rich-Harris/buble/issues/43))
