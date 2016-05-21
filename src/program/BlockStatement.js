@@ -198,6 +198,7 @@ export default class BlockStatement extends Node {
 							name;
 
 						declaration.name = outerAlias;
+						code.overwrite( declaration.node.start, declaration.node.end, outerAlias, true );
 
 						forStatement.aliases[ name ] = {
 							outer: outerAlias,
@@ -223,6 +224,7 @@ export default class BlockStatement extends Node {
 
 					if ( name !== alias ) {
 						declaration.name = alias;
+						code.overwrite( declaration.node.start, declaration.node.end, alias, true );
 
 						for ( const identifier of declaration.instances ) {
 							identifier.rewritten = true;

@@ -120,6 +120,7 @@ module.exports = [
 	},
 
 	{
+		skip: true,
 		description: 'handles this and arguments in for-of',
 		options: { transforms: { dangerousForOf: true } },
 

@@ -11,13 +11,35 @@ export default function destructure ( code, scope, node, ref, statementGenerator
 	handler( code, scope, node, ref, statementGenerators );
 }
 
-function handlePattern ( code, node, tmp, expr, statementGenerators ) {
+function onlyHasOneReference ( declaration ) {
+	if ( !declaration ) return false;
+	if ( declaration.instances.length !== 1 ) return false;
+
+	const instance = declaration.instances[0];
+	if ( instance.parent.type === 'VariableDeclarator' && instance.parent.id.type !== 'Identifier' ) return false;
+
+	return true;
+}
+
+function handlePattern ( code, scope, node, tmp, expr, statementGenerators ) {
 	if ( node.type === 'Identifier' ) {
-		statementGenerators.push( ( start, prefix, suffix ) => {
-			code.insertRight( node.start, `${prefix}var ` );
-			code.insertLeft( node.end, ` = ${expr};${suffix}` );
-			code.move( node.start, node.end, start );
-		});
+		const declaration = scope.findDeclaration( node.name );
+
+		// if the declaration is only referenced once, we rewrite the
+		// reference rather than adding a new declaration
+		if ( onlyHasOneReference( declaration ) ) {
+			const instance = declaration.instances[0];
+			code.remove( node.start, node.end );
+			code.overwrite( instance.start, instance.end, expr );
+		}
+
+		else {
+			statementGenerators.push( ( start, prefix, suffix ) => {
+				code.insertRight( node.start, `${prefix}var ` );
+				code.insertLeft( node.end, ` = ${expr};${suffix}` );
+				code.move( node.start, node.end, start );
+			});
+		}
 	} else if ( node.type === 'AssignmentPattern' ) {
 		statementGenerators.push( ( start, prefix, suffix ) => {
 			code.remove( node.start, node.right.start );
@@ -40,7 +62,7 @@ function destructureArrayPattern ( code, scope, node, ref, statementGenerators )
 		if ( !element ) return;
 
 		code.remove( c, element.start );
-		handlePattern( code, element, scope.createIdentifier( `${ref}_${i}` ), `${ref}[${i}]`, statementGenerators );
+		handlePattern( code, scope, element, scope.createIdentifier( `${ref}_${i}` ), `${ref}[${i}]`, statementGenerators );
 		c = element.end;
 	});
 
@@ -54,7 +76,7 @@ function destructureObjectPattern ( code, scope, node, ref, statementGenerators 
 		const key = prop.key.name;
 
 		code.remove( c, prop.value.start );
-		handlePattern( code, prop.value, scope.createIdentifier( `${ref}_${key}` ), `${ref}.${key}`, statementGenerators );
+		handlePattern( code, scope, prop.value, scope.createIdentifier( `${ref}_${key}` ), `${ref}.${key}`, statementGenerators );
 		c = prop.end;
 	});
 

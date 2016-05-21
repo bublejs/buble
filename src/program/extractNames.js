@@ -5,27 +5,27 @@ export default function extractNames ( node ) {
 }
 
 const extractors = {
-	Identifier ( names, param ) {
-		names.push( param.name );
+	Identifier ( names, node ) {
+		names.push( node );
 	},
 
-	ObjectPattern ( names, param ) {
-		for ( const prop of param.properties ) {
+	ObjectPattern ( names, node ) {
+		for ( const prop of node.properties ) {
 			extractors[ prop.value.type ]( names, prop.value );
 		}
 	},
 
-	ArrayPattern ( names, param ) {
-		for ( const element of param.elements )  {
+	ArrayPattern ( names, node ) {
+		for ( const element of node.elements )  {
 			if ( element ) extractors[ element.type ]( names, element );
 		}
 	},
 
-	RestElement ( names, param ) {
-		extractors[ param.argument.type ]( names, param.argument );
+	RestElement ( names, node ) {
+		extractors[ node.argument.type ]( names, node.argument );
 	},
 
-	AssignmentPattern ( names, param ) {
-		extractors[ param.left.type ]( names, param.left );
+	AssignmentPattern ( names, node ) {
+		extractors[ node.left.type ]( names, node.left );
 	}
 };

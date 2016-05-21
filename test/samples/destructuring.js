@@ -124,6 +124,13 @@ module.exports = [
 		input: `
 			function drawRect ( { ctx, x1, y1, x2, y2 } ) {
 				ctx.fillRect( x1, y1, x2 - x1, y2 - y1 );
+			}
+
+			function scale ([ d0, d1 ], [ r0, r1 ]) {
+				const m = ( r1 - r0 ) / ( d1 - d0 );
+				return function ( num ) {
+					return r0 + ( num - d0 ) * m;
+				}
 			}`,
 
 		output: `
@@ -132,7 +139,48 @@ module.exports = [
 				var y1 = ref.y1;
 
 				ref.ctx.fillRect( x1, y1, ref.x2 - x1, ref.y2 - y1 );
+			}
+
+			function scale (ref, ref$1) {
+				var d0 = ref[0];
+				var r0 = ref$1[0];
+
+				var m = ( ref$1[1] - r0 ) / ( ref[1] - d0 );
+				return function ( num ) {
+					return r0 + ( num - d0 ) * m;
+				}
 			}`
+	},
+
+	{
+		description: 'destructures variable declarations intelligently (#17)',
+
+		input: `
+			var { foo: bar, baz } = obj;
+			console.log( bar );
+			console.log( baz );
+			console.log( baz );`,
+
+		output: `
+			var baz = obj.baz;
+			console.log( obj.foo );
+			console.log( baz );
+			console.log( baz );`
+	},
+
+	{
+		description: 'destructures variables in the middle of a declaration',
+
+		input: `
+			var a, { x, y } = getPoint(), b = x;
+			console.log( x, y );`,
+
+		output: `
+			var a;
+			var ref = getPoint();
+			var x = ref.x;
+			var b = x;
+			console.log( x, ref.y );`
 	},
 
 	{
