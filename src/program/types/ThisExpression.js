@@ -5,7 +5,7 @@ export default class ThisExpression extends Node {
 		if ( transforms.arrow ) {
 			const lexicalBoundary = this.findLexicalBoundary();
 			const arrowFunction = this.findNearest( 'ArrowFunctionExpression' );
-			const loop = this.findNearest( /(?:For|While)Statement/ );
+			const loop = this.findNearest( /(?:For(?:In|Of)?|While)Statement/ );
 
 			if ( arrowFunction && arrowFunction.depth > lexicalBoundary.depth ) {
 				this.alias = lexicalBoundary.getThisAlias();
