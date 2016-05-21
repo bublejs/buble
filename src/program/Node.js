@@ -108,7 +108,7 @@ export default class Node {
 	}
 
 	toString () {
-		return this.program.magicString.slice( this.start, this.end );
+		return this.program.magicString.original.slice( this.start, this.end );
 	}
 
 	transpile ( code, transforms ) {

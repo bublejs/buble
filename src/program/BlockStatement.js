@@ -2,6 +2,7 @@ import wrap from './wrap.js';
 import Node from './Node.js';
 import Scope from './Scope.js';
 import CompileError from '../utils/CompileError.js';
+import destructure from '../utils/destructure.js';
 
 export default class BlockStatement extends Node {
 	createScope () {
@@ -85,21 +86,7 @@ export default class BlockStatement extends Node {
 		}
 
 		if ( /Function/.test( this.parent.type ) ) {
-			// default parameters
-			if ( transforms.defaultParameter ) {
-				this.transpileDefaultParameters( code, introStatementGenerators );
-			}
-
-			// object pattern
-			if ( transforms.parameterDestructuring ) {
-				this.transpileObjectPattern( code, introStatementGenerators );
-				this.transpileArrayPattern( code, introStatementGenerators );
-			}
-
-			// rest parameter
-			if ( transforms.spreadRest ) {
-				this.transpileRestElement( code, introStatementGenerators, indentation );
-			}
+			this.transpileParameters( code, transforms, indentation, introStatementGenerators );
 		}
 
 		if ( transforms.letConst && this.isFunctionBlock ) {
@@ -133,6 +120,62 @@ export default class BlockStatement extends Node {
 		introStatementGenerators.forEach( ( fn, i ) => {
 			if ( i === introStatementGenerators.length - 1 ) suffix = ( this.parent.type === 'Root' ? `\n` : `\n` );
 			fn( start, prefix, suffix );
+		});
+	}
+
+	transpileParameters ( code, transforms, indentation, introStatementGenerators ) {
+		const params = this.parent.params;
+
+		params.forEach( param => {
+			if ( param.type === 'AssignmentPattern' && param.left.type === 'Identifier' ) {
+				if ( transforms.defaultParameter ) {
+					introStatementGenerators.push( ( start, prefix, suffix ) => {
+						const lhs = `${prefix}if ( ${param.left.name} === void 0 ) ${param.left.name}`;
+
+						code
+							.insertRight( param.left.end, `${lhs}` )
+							.move( param.left.end, param.right.end, start )
+							.insertLeft( param.right.end, `;${suffix}` );
+					});
+				}
+			}
+
+			else if ( param.type === 'RestElement' ) {
+				if ( transforms.spreadRest ) {
+					introStatementGenerators.push( ( start, prefix, suffix ) => {
+						const penultimateParam = params[ params.length - 2 ];
+
+						if ( penultimateParam ) {
+							code.remove( penultimateParam ? penultimateParam.end : param.start, param.end );
+						} else {
+							let start = param.start, end = param.end; // TODO https://gitlab.com/Rich-Harris/buble/issues/8
+
+							while ( /\s/.test( code.original[ start - 1 ] ) ) start -= 1;
+							while ( /\s/.test( code.original[ end ] ) ) end += 1;
+
+							code.remove( start, end );
+						}
+
+						const name = param.argument.name;
+						const len = this.scope.createIdentifier( 'len' );
+						const count = params.length - 1;
+
+						if ( count ) {
+							code.insertLeft( start, `${prefix}var ${name} = [], ${len} = arguments.length - ${count};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];${suffix}` );
+						} else {
+							code.insertLeft( start, `${prefix}var ${name} = [], ${len} = arguments.length;\n${indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ];${suffix}` );
+						}
+					});
+				}
+			}
+
+			else if ( param.type !== 'Identifier' ) {
+				if ( transforms.parameterDestructuring ) {
+					const ref = this.scope.createIdentifier( 'ref' );
+					destructure( code, this.scope, param, ref, introStatementGenerators );
+					code.insertLeft( param.start, ref );
+				}
+			}
 		});
 	}
 
@@ -189,145 +232,5 @@ export default class BlockStatement extends Node {
 				}
 			}
 		});
-	}
-
-	transpileDefaultParameters ( code, introStatementGenerators ) {
-		this.parent.params.filter( param => param.type === 'AssignmentPattern' ).forEach( param => {
-			introStatementGenerators.push( ( start, prefix, suffix ) => {
-				const lhs = `${prefix}if ( ${param.left.name} === void 0 ) ${param.left.name}`;
-				code
-					.insertRight( param.left.end, `${lhs}` )
-					.move( param.left.end, param.right.end, start )
-					.insertLeft( param.right.end, `;${suffix}` );
-			});
-		});
-	}
-
-	transpileObjectPattern ( code, introStatementGenerators ) {
-		const params = this.parent.params;
-		const objectPatterns = params.filter( param => param.type === 'ObjectPattern' );
-		const assignmentPatterns = params.filter( param => param.type === 'AssignmentPattern' )
-			.map( exp => exp.left ).filter( param => param.type === 'ObjectPattern' );
-		[].concat(objectPatterns, assignmentPatterns).forEach( param => {
-			const ref = this.scope.createIdentifier( 'ref' );
-			param.name = ref;
-			code.insertRight( param.start, ref );
-
-			let c = param.start;
-
-			param.properties.forEach( prop => {
-				code.remove( c, prop.value.start );
-				const key = prop.key.name;
-
-				if ( prop.value.type === 'Identifier' ) {
-					code.remove( prop.value.start, prop.value.end );
-
-					const value = prop.value.name;
-					const declaration = this.scope.findDeclaration( value );
-
-					if ( declaration.instances.length === 1 ) {
-						const instance = declaration.instances[0];
-						code.overwrite( instance.start, instance.end, `${ref}.${key}` );
-					} else {
-						introStatementGenerators.push( ( start, prefix, suffix ) => {
-							code.insertLeft( start, `${prefix}var ${value} = ${ref}.${key};${suffix}` );
-						});
-					}
-				}
-
-				else if ( prop.value.type === 'AssignmentPattern' ) {
-					introStatementGenerators.push( ( start, prefix, suffix ) => {
-						code.remove( prop.value.start, prop.value.right.start );
-
-						const value = prop.value.left.name;
-
-						code
-							.insertRight( prop.value.right.start, `${prefix}var ${ref}_${key} = ${ref}.${key}, ${value} = ${ref}_${key} === void 0 ? ` )
-							.insertLeft( prop.value.right.end, ` : ${ref}_${key};${suffix}` )
-							.move( prop.value.right.start, prop.value.right.end, start );
-					});
-				}
-
-				else {
-					throw new CompileError( prop, `Compound destructuring is not supported` );
-				}
-
-				c = prop.value.end;
-			});
-
-			code.remove( c, param.end );
-		});
-	}
-
-	transpileArrayPattern ( code, introStatementGenerators ) {
-		// array pattern. TODO dry this out
-		this.parent.params.filter( param => param.type === 'ArrayPattern' ).forEach( param => {
-			const ref = this.scope.createIdentifier( 'ref' );
-			code.insertRight( param.start, ref );
-
-			let c = param.start;
-
-			param.elements.forEach( ( element, i ) => {
-				code.remove( c, element.start );
-
-				if ( element.type === 'Identifier' ) {
-					code.remove( element.start, element.end );
-
-					introStatementGenerators.push( ( start, prefix, suffix ) => {
-						code.insertLeft( start, `${prefix}var ${element.name} = ${ref}[${i}];${suffix}` );
-					});
-				} else if ( element.type === 'AssignmentPattern' ) {
-					introStatementGenerators.push( ( start, prefix, suffix ) => {
-						code.remove( element.start, element.right.start );
-
-						const name = element.left.name;
-						code
-							.insertRight( element.right.start, `${prefix}var ${ref}_${i} = ref[${i}], ${name} = ref_${i} === void 0 ? ` )
-							.insertLeft( element.right.end, ` : ref_${i};${suffix}` )
-							.move( element.right.start, element.right.end, start );
-					});
-				}
-
-				else {
-					throw new CompileError( element, `Compound destructuring is not supported` );
-				}
-
-				c = element.end;
-			});
-
-			code.remove( c, param.end );
-		});
-	}
-
-	transpileRestElement ( code, introStatementGenerators, indentation ) {
-		const params = this.parent.params;
-
-		const lastParam = params[ params.length - 1 ];
-		if ( lastParam && lastParam.type === 'RestElement' ) {
-			introStatementGenerators.push( ( start, prefix, suffix ) => {
-				const penultimateParam = params[ params.length - 2 ];
-
-				if ( penultimateParam ) {
-					code.remove( penultimateParam ? penultimateParam.end : lastParam.start, lastParam.end );
-				} else {
-					let start = lastParam.start, end = lastParam.end; // TODO https://gitlab.com/Rich-Harris/buble/issues/8
-
-					while ( /\s/.test( code.original[ start - 1 ] ) ) start -= 1;
-					while ( /\s/.test( code.original[ end ] ) ) end += 1;
-
-					code.remove( start, end );
-				}
-
-				const name = lastParam.argument.name;
-				const len = this.scope.createIdentifier( 'len' );
-				const count = params.length - 1;
-
-				if ( count ) {
-					code.insertLeft( start, `${prefix}var ${name} = [], ${len} = arguments.length - ${count};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];${suffix}` );
-				} else {
-					code.insertLeft( start, `${prefix}var ${name} = [], ${len} = arguments.length;\n${indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ];${suffix}` );
-				}
-			});
-		}
 	}
 }
