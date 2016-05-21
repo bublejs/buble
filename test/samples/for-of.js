@@ -120,7 +120,6 @@ module.exports = [
 	},
 
 	{
-		skip: true,
 		description: 'handles this and arguments in for-of',
 		options: { transforms: { dangerousForOf: true } },
 
@@ -128,7 +127,7 @@ module.exports = [
 			for ( let item of items ) {
 				console.log( this, arguments, item );
 				setTimeout( () => {
-					console.log( this, arguments, item );
+					console.log( item );
 				});
 			}`,
 
@@ -141,7 +140,7 @@ module.exports = [
 
 				console.log( this$1, arguments$1, item );
 				setTimeout( function () {
-					console.log( this$1, arguments$1, item );
+					console.log( item );
 				});
 			};
 
