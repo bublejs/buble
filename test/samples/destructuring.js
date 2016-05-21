@@ -133,5 +133,23 @@ module.exports = [
 
 				ref.ctx.fillRect( x1, y1, ref.x2 - x1, ref.y2 - y1 );
 			}`
+	},
+
+	{
+		description: 'destructuring a destructured parameter',
+
+		input: `
+			function test ( { foo, bar } ) {
+				const { x, y } = foo;
+			}`,
+
+		output: `
+			function test ( ref ) {
+				var foo = ref.foo;
+				var bar = ref.bar;
+
+				var x = foo.x;
+				var y = foo.y;
+			}`
 	}
 ];
