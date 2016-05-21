@@ -11,36 +11,36 @@ export default function destructure ( code, scope, node, ref, statementGenerator
 	handler( code, scope, node, ref, statementGenerators );
 }
 
+function handlePattern ( code, node, tmp, expr, statementGenerators ) {
+	if ( node.type === 'Identifier' ) {
+		statementGenerators.push( ( start, prefix, suffix ) => {
+			code.insertRight( node.start, `${prefix}var ` );
+			code.insertLeft( node.end, ` = ${expr};${suffix}` );
+			code.move( node.start, node.end, start );
+		});
+	} else if ( node.type === 'AssignmentPattern' ) {
+		statementGenerators.push( ( start, prefix, suffix ) => {
+			code.remove( node.start, node.right.start );
+
+			const name = node.left.name;
+			code
+				.insertRight( node.right.start, `${prefix}var ${tmp} = ${expr}, ${name} = ${tmp} === void 0 ? ` )
+				.insertLeft( node.right.end, ` : ${tmp};${suffix}` )
+				.move( node.right.start, node.right.end, start );
+		});
+	} else {
+		throw new Error( 'Compound destructuring is not supported' );
+	}
+}
+
 function destructureArrayPattern ( code, scope, node, ref, statementGenerators ) {
 	let c = node.start;
 
 	node.elements.forEach( ( element, i ) => {
 		if ( !element ) return;
 
-		if ( element.type === 'Identifier' ) {
-			code.remove( c, element.start );
-
-			statementGenerators.push( ( start, prefix, suffix ) => {
-				code.insertRight( element.start, `${prefix}var ` );
-				code.insertLeft( element.end, ` = ${ref}[${i}];${suffix}` );
-				code.move( element.start, element.end, start );
-			});
-		} else if ( element.type === 'AssignmentPattern' ) {
-			code.remove( c, element.start );
-
-			statementGenerators.push( ( start, prefix, suffix ) => {
-				code.remove( element.start, element.right.start );
-
-				const name = element.left.name;
-				code
-					.insertRight( element.right.start, `${prefix}var ${ref}_${i} = ref[${i}], ${name} = ref_${i} === void 0 ? ` )
-					.insertLeft( element.right.end, ` : ref_${i};${suffix}` )
-					.move( element.right.start, element.right.end, start );
-			});
-		} else {
-			throw new Error( 'Compound destructuring is not supported' );
-		}
-
+		code.remove( c, element.start );
+		handlePattern( code, element, scope.createIdentifier( `${ref}_${i}` ), `${ref}[${i}]`, statementGenerators );
 		c = element.end;
 	});
 
@@ -53,31 +53,8 @@ function destructureObjectPattern ( code, scope, node, ref, statementGenerators 
 	node.properties.forEach( prop => {
 		const key = prop.key.name;
 
-		if ( prop.value.type === 'Identifier' ) {
-			code.remove( c, prop.value.start );
-
-			statementGenerators.push( ( start, prefix, suffix ) => {
-				code.insertRight( prop.value.start, `${prefix}var ` );
-				code.insertLeft( prop.value.end, ` = ${ref}.${key};${suffix}` );
-				code.move( prop.value.start, prop.value.end, start );
-			});
-		} else if ( prop.value.type === 'AssignmentPattern' ) {
-			code.remove( c, prop.value.start );
-
-			statementGenerators.push( ( start, prefix, suffix ) => {
-				code.remove( prop.value.start, prop.value.right.start );
-
-				const value = prop.value.left.name;
-
-				code
-					.insertRight( prop.value.right.start, `${prefix}var ${ref}_${key} = ${ref}.${key}, ${value} = ${ref}_${key} === void 0 ? ` )
-					.insertLeft( prop.value.right.end, ` : ${ref}_${key};${suffix}` )
-					.move( prop.value.right.start, prop.value.right.end, start );
-			});
-		} else {
-			throw new Error( 'Compound destructuring is not supported' );
-		}
-
+		code.remove( c, prop.value.start );
+		handlePattern( code, prop.value, scope.createIdentifier( `${ref}_${key}` ), `${ref}.${key}`, statementGenerators );
 		c = prop.end;
 	});
 
