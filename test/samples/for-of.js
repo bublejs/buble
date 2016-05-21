@@ -117,5 +117,33 @@ module.exports = [
 				if ( item.foo ) continue;
 			}`
 
+	},
+
+	{
+		description: 'handles this and arguments in for-of',
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			for ( let item of items ) {
+				console.log( this, arguments, item );
+				setTimeout( () => {
+					console.log( item );
+				});
+			}`,
+
+		output: `
+			var arguments$1 = arguments;
+			var this$1 = this;
+
+			var loop = function () {
+				var item = list[i];
+
+				console.log( this$1, arguments$1, item );
+				setTimeout( function () {
+					console.log( item );
+				});
+			};
+
+			for ( var i = 0, list = items; i < list.length; i += 1 ) loop();`
 	}
 ];
