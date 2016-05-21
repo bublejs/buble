@@ -15,12 +15,15 @@ function destructureArrayPattern ( code, scope, node, ref, statementGenerators )
 	let c = node.start;
 
 	node.elements.forEach( ( element, i ) => {
+		if ( !element ) return;
+
 		if ( element.type === 'Identifier' ) {
-			code.remove( c, element.end );
+			code.remove( c, element.start );
 
 			statementGenerators.push( ( start, prefix, suffix ) => {
-				const value = element.name;
-				code.insertLeft( start, `${prefix}var ${value} = ${ref}[${i}];${suffix}` );
+				code.insertRight( element.start, `${prefix}var ` );
+				code.insertLeft( element.end, ` = ${ref}[${i}];${suffix}` );
+				code.move( element.start, element.end, start );
 			});
 		} else if ( element.type === 'AssignmentPattern' ) {
 			code.remove( c, element.start );
@@ -34,11 +37,11 @@ function destructureArrayPattern ( code, scope, node, ref, statementGenerators )
 					.insertLeft( element.right.end, ` : ref_${i};${suffix}` )
 					.move( element.right.start, element.right.end, start );
 			});
-
-			c = element.end;
 		} else {
 			throw new Error( 'Compound destructuring is not supported' );
 		}
+
+		c = element.end;
 	});
 
 	code.remove( c, node.end );
@@ -51,11 +54,12 @@ function destructureObjectPattern ( code, scope, node, ref, statementGenerators 
 		const key = prop.key.name;
 
 		if ( prop.value.type === 'Identifier' ) {
-			code.remove( c, prop.end );
+			code.remove( c, prop.value.start );
 
 			statementGenerators.push( ( start, prefix, suffix ) => {
-				const value = prop.value.name;
-				code.insertLeft( start, `${prefix}var ${value} = ${ref}.${key};${suffix}` );
+				code.insertRight( prop.value.start, `${prefix}var ` );
+				code.insertLeft( prop.value.end, ` = ${ref}.${key};${suffix}` );
+				code.move( prop.value.start, prop.value.end, start );
 			});
 		} else if ( prop.value.type === 'AssignmentPattern' ) {
 			code.remove( c, prop.value.start );
@@ -70,11 +74,11 @@ function destructureObjectPattern ( code, scope, node, ref, statementGenerators 
 					.insertLeft( prop.value.right.end, ` : ${ref}_${key};${suffix}` )
 					.move( prop.value.right.start, prop.value.right.end, start );
 			});
-
-			c = prop.end;
 		} else {
 			throw new Error( 'Compound destructuring is not supported' );
 		}
+
+		c = prop.end;
 	});
 
 	code.remove( c, node.end );
