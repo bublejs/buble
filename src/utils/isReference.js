@@ -11,13 +11,20 @@ export default function isReference ( node, parent ) {
 
 		if ( /(Function|Class)Expression/.test( parent.type ) ) return false;
 
+		if ( parent.type === 'VariableDeclarator' ) return node === parent.init;
+
 		// TODO is this right?
 		if ( parent.type === 'MemberExpression' || parent.type === 'MethodDefinition' ) {
 			return parent.computed || node === parent.object;
 		}
 
+		if ( parent.type === 'ArrayPattern' ) return false;
+
 		// disregard the `bar` in `{ bar: foo }`, but keep it in `{ [bar]: foo }`
-		if ( parent.type === 'Property' ) return parent.computed || node === parent.value;
+		if ( parent.type === 'Property' ) {
+			if ( parent.parent.type === 'ObjectPattern' ) return false;
+			return parent.computed || node === parent.value;
+		}
 
 		// disregard the `bar` in `class Foo { bar () {...} }`
 		if ( parent.type === 'MethodDefinition' ) return false;

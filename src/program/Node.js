@@ -1,6 +1,26 @@
 import wrap from './wrap.js';
 import keys from './keys.js';
 
+// used for debugging, without the noise created by
+// circular references
+function toJSON ( node ) {
+	var obj = {};
+
+	Object.keys( node ).forEach( key => {
+		if ( key === 'parent' || key === 'program' || key === 'keys' || key === '__wrapped' ) return;
+
+		if ( Array.isArray( node[ key ] ) ) {
+			obj[ key ] = node[ key ].map( toJSON );
+		} else if ( node[ key ] && node[ key ].toJSON ) {
+			obj[ key ] = node[ key ].toJSON();
+		} else {
+			obj[ key ] = node[ key ];
+		}
+	});
+
+	return obj;
+}
+
 export default class Node {
 	constructor ( raw, parent ) {
 		raw.parent = parent;
@@ -83,8 +103,12 @@ export default class Node {
 		}
 	}
 
+	toJSON () {
+		return toJSON( this );
+	}
+
 	toString () {
-		return this.program.magicString.slice( this.start, this.end );
+		return this.program.magicString.original.slice( this.start, this.end );
 	}
 
 	transpile ( code, transforms ) {
