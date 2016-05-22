@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.9.1
+
+* Prevent confusion over `Literal` node keys
+
 ## 0.9.0
 
 * More complete and robust destructuring support ([#37](https://gitlab.com/Rich-Harris/buble/issues/37), [#43](https://gitlab.com/Rich-Harris/buble/issues/43))
