@@ -40,7 +40,7 @@ module.exports = function handleError ( err ) {
 		}
 	}
 
-	console.error( 'Type ' + chalk.cyan( 'rollup --help' ) + ' for help, or visit https://github.com/rollup/rollup/wiki' );
+	console.error( 'Type ' + chalk.cyan( 'buble --help' ) + ' for help, or visit https://buble.surge.sh/guide/' );
 
 	process.exit( 1 );
 };
