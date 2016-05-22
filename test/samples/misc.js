@@ -73,5 +73,19 @@ module.exports = [
 			}`,
 
 		error: /x is already declared/
+	},
+
+	{
+		description: 'does not get confused about keys of Literal node',
+
+		input: `
+			console.log( null );
+			console.log( 'some string' );
+			console.log( null );`,
+
+		output: `
+			console.log( null );
+			console.log( 'some string' );
+			console.log( null );`
 	}
 ];
