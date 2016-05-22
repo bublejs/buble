@@ -612,7 +612,7 @@ module.exports = [
 		output: `
 			var Foo = function Foo ( options ) {
 				var a = options.a;
-					var b = options.b;
+				var b = options.b;
 			};`
 	},
 
@@ -722,6 +722,49 @@ module.exports = [
 			staticAccessors.bar.get = function() { return 'baz' };
 
 			Object.defineProperties( Foo, staticAccessors );`
+	},
+
+	{
+		description: 'uses correct indentation for inserted statements in constructor (#39)',
+
+		input: `
+			class Foo {
+				constructor ( options, { a2, b2 } ) {
+					const { a, b } = options;
+
+					const render = () => {
+						requestAnimationFrame( render );
+						this.render();
+					};
+
+					render();
+				}
+
+				render () {
+					// code goes here...
+				}
+			}`,
+
+		output: `
+			var Foo = function Foo ( options, ref ) {
+				var this$1 = this;
+				var a2 = ref.a2;
+				var b2 = ref.b2;
+
+				var a = options.a;
+				var b = options.b;
+
+				var render = function () {
+					requestAnimationFrame( render );
+					this$1.render();
+				};
+
+				render();
+			};
+
+			Foo.prototype.render = function render () {
+				// code goes here...
+			};`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
