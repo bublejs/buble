@@ -704,6 +704,24 @@ module.exports = [
 
 				return E;
 			}(F))`
+	},
+
+	{
+		description: 'transpiles a class with an accessor and no constructor (#48)',
+
+		input: `
+			class Foo {
+				static get bar() { return 'baz' }
+			}`,
+
+		output: `
+			var Foo = function Foo () {};
+
+			var staticAccessors = { bar: {} };
+
+			staticAccessors.bar.get = function() { return 'baz' };
+
+			Object.defineProperties( Foo, staticAccessors );`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
