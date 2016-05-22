@@ -91,6 +91,13 @@ export default class Node {
 		return this.indentation;
 	}
 
+	mark () {
+		if ( !this.shouldTransform ) {
+			this.shouldTransform = true;
+			this.parent.mark();
+		}
+	}
+
 	initialise ( transforms ) {
 		for ( var key of this.keys ) {
 			const value = this[ key ];
@@ -116,9 +123,11 @@ export default class Node {
 			const value = this[ key ];
 
 			if ( Array.isArray( value ) ) {
-				value.forEach( node => node && node.transpile( code, transforms ) );
+				value.forEach( node => {
+					if ( node && node.shouldTransform ) node.transpile( code, transforms );
+				});
 			} else if ( value && typeof value === 'object' ) {
-				value.transpile( code, transforms );
+				if ( value.shouldTransform ) value.transpile( code, transforms );
 			}
 		}
 	}

@@ -1,14 +1,26 @@
 import Node from '../Node.js';
 import destructure from '../../utils/destructure.js';
 
+function hasPatterns ( declarators ) {
+	let i = declarators.length;
+	while ( i-- ) {
+		if ( declarators[i].id.type !== 'Identifier' ) return true;
+	}
+}
+
 export default class VariableDeclaration extends Node {
 	initialise ( transforms ) {
 		this.scope = this.findScope( this.kind === 'var' );
 		this.declarations.forEach( declarator => declarator.initialise( transforms ) );
+
+		if ( transforms.letConst && this.kind !== 'var' ) {
+			this.mark();
+		} else if ( hasPatterns( this.declarations ) ) {
+			this.mark();
+		}
 	}
 
 	transpile ( code, transforms ) {
-		const i0 = this.getIndentation();
 		let kind = this.kind;
 
 		if ( transforms.letConst && kind !== 'var' ) {
@@ -26,14 +38,14 @@ export default class VariableDeclaration extends Node {
 						code.overwrite( c, declarator.id.start, `var ` );
 					}
 				} else {
+					const simple = declarator.init.type === 'Identifier' && !declarator.init.rewritten;
+					const i0 = declarator.getIndentation();
+
 					if ( i === 0 ) {
 						code.remove( c, declarator.id.start );
 					} else {
 						code.overwrite( c, declarator.id.start, `;\n${i0}` );
 					}
-
-					const simple = declarator.init.type === 'Identifier' && !declarator.init.rewritten;
-					const i0 = declarator.getIndentation();
 
 					const name = simple ? declarator.init.name : declarator.findScope( true ).createIdentifier( 'ref' );
 
@@ -63,7 +75,7 @@ export default class VariableDeclaration extends Node {
 					});
 				}
 
-				if ( declarator.init ) {
+				if ( declarator.init && declarator.init.shouldTransform ) {
 					declarator.init.transpile( code, transforms );
 				}
 
@@ -78,7 +90,9 @@ export default class VariableDeclaration extends Node {
 
 		else {
 			this.declarations.forEach( declarator => {
-				if ( declarator.init ) declarator.init.transpile( code, transforms );
+				if ( declarator.init && declarator.init.shouldTransform ) {
+					declarator.init.transpile( code, transforms );
+				}
 			});
 		}
 

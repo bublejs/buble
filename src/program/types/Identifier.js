@@ -23,10 +23,12 @@ export default class Identifier extends Node {
 
 				if ( arrowFunction && arrowFunction.depth > lexicalBoundary.depth ) {
 					this.alias = lexicalBoundary.getArgumentsAlias();
+					this.mark();
 				}
 
 				if ( loop && loop.body.contains( this ) && loop.depth > lexicalBoundary.depth ) {
 					this.alias = lexicalBoundary.getArgumentsAlias();
+					this.mark();
 				}
 			}
 

@@ -3,6 +3,11 @@ import { findIndex } from '../../utils/array.js';
 
 // TODO this code is pretty wild, tidy it up
 export default class ClassBody extends Node {
+	initialise ( transforms ) {
+		if ( transforms.classes ) this.mark();
+		super.initialise( transforms );
+	}
+
 	transpile ( code, transforms, inFunctionExpression, superName ) {
 		if ( transforms.classes ) {
 			const name = this.parent.name;
@@ -66,6 +71,8 @@ export default class ClassBody extends Node {
 			let staticAccessors;
 
 			this.body.forEach( ( method, i ) => {
+				if ( method.shouldTransform ) method.transpile( code, transforms );
+
 				if ( method.kind === 'constructor' ) {
 					code.overwrite( method.key.start, method.key.end, `function ${name}` );
 					return;
@@ -141,7 +148,5 @@ export default class ClassBody extends Node {
 
 			code.insertLeft( this.end, outroBlock );
 		}
-
-		super.transpile( code, transforms );
 	}
 }

@@ -1,6 +1,11 @@
 import Node from '../Node.js';
 
 export default class TemplateLiteral extends Node {
+	initialise ( transforms ) {
+		if ( transforms.templateString && this.parent.type !== 'TaggedTemplateExpression' ) this.mark();
+		super.initialise( transforms );
+	}
+
 	transpile ( code, transforms ) {
 		if ( transforms.templateString && this.parent.type !== 'TaggedTemplateExpression' ) {
 			let ordered = this.expressions.concat( this.quasis )

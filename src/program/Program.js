@@ -10,6 +10,7 @@ export default function Program ( source, ast, transforms ) {
 
 	this.ast = ast;
 	this.depth = 0;
+	this.shouldTransform = false;
 
 	wrap( this.body = ast, this );
 	this.body.__proto__ = BlockStatement.prototype;
@@ -45,5 +46,9 @@ Program.prototype = {
 
 	findScope () {
 		return null;
+	},
+
+	mark () {
+		this.shouldTransform = true;
 	}
 };

@@ -4,6 +4,8 @@ export default class ArrowFunctionExpression extends Node {
 	initialise ( transforms ) {
 		this.body.createScope();
 		super.initialise( transforms );
+
+		if ( transforms.arrow ) this.body.mark();
 	}
 
 	transpile ( code, transforms ) {

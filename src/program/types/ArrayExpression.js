@@ -1,6 +1,13 @@
 import Node from '../Node.js';
 
 export default class ArrayExpression extends Node {
+	initialise ( transforms ) {
+		if ( transforms.spreadRest ) {
+			const lastElement = this.elements[ this.elements.length - 1 ];
+			if ( lastElement && lastElement.type === 'SpreadElement' ) this.mark();
+		}
+	}
+
 	transpile ( code, transforms ) {
 		if ( transforms.spreadRest ) {
 			const lastElement = this.elements[ this.elements.length - 1 ];

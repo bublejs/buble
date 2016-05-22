@@ -9,10 +9,12 @@ export default class ThisExpression extends Node {
 
 			if ( arrowFunction && arrowFunction.depth > lexicalBoundary.depth ) {
 				this.alias = lexicalBoundary.getThisAlias();
+				this.mark();
 			}
 
 			if ( loop && loop.body.contains( this ) && loop.depth > lexicalBoundary.depth ) {
 				this.alias = lexicalBoundary.getThisAlias();
+				this.mark();
 			}
 		}
 	}

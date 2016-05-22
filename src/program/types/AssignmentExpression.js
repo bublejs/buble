@@ -20,7 +20,10 @@ export default class AssignmentExpression extends Node {
 			throw new CompileError( this.left, 'Destructuring assignments are not currently supported. Coming soon!' );
 		}
 
-		super.initialise( transforms );
+		if ( this.operator === '**=' && transforms.exponentiation ) this.mark();
+
+		this.left.initialise( transforms );
+		this.right.initialise( transforms );
 	}
 
 	transpile ( code, transforms ) {

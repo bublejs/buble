@@ -32,6 +32,20 @@ export default class BlockStatement extends Node {
 		if ( !this.scope ) this.createScope();
 
 		this.body.forEach( node => node.initialise( transforms ) );
+
+		if ( this.parentIsFunction ) {
+			let i = this.parent.params.length;
+			while ( i-- ) {
+				const param = this.parent.params[i];
+				if ( param.type === 'AssignmentPattern' && transforms.defaultParameters ) {
+					this.mark();
+				} else if ( param.type === 'RestElement' && transforms.spreadRest ) {
+					this.mark();
+				} else if ( param.type !== 'Identifier' && transforms.parameterDestructuring ) {
+					this.mark();
+				}
+			}
+		}
 	}
 
 	findLexicalBoundary () {
@@ -63,6 +77,8 @@ export default class BlockStatement extends Node {
 	}
 
 	transpile ( code, transforms ) {
+		if ( !this.shouldTransform ) return;
+
 		const start = this.parent.type === 'Root' || this.synthetic ? this.start : this.start + 1;
 
 		const indentation = this.synthetic ?
@@ -93,7 +109,9 @@ export default class BlockStatement extends Node {
 			this.transpileBlockScopedIdentifiers( code );
 		}
 
-		super.transpile( code, transforms );
+		for ( let statement of this.body ) {
+			if ( statement.shouldTransform ) statement.transpile( code, transforms );
+		}
 
 		if ( this.synthetic ) {
 			if ( this.parent.type === 'ArrowFunctionExpression' ) {

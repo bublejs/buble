@@ -4,6 +4,8 @@ import CompileError from '../../utils/CompileError.js';
 export default class Super extends Node {
 	initialise ( transforms ) {
 		if ( transforms.classes ) {
+			this.mark();
+
 			this.method = this.findNearest( 'MethodDefinition' );
 			if ( !this.method ) throw new CompileError( this, 'use of super outside class method' );
 

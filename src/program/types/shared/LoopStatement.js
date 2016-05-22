@@ -14,6 +14,10 @@ export default class LoopStatement extends Node {
 		this.reassigned = Object.create( null );
 		this.aliases = Object.create( null );
 
+		this.continueStatements = [];
+		this.breakStatements = [];
+		this.returnStatements = [];
+
 		super.initialise( transforms );
 
 		if ( transforms.letConst ) {
@@ -60,12 +64,12 @@ export default class LoopStatement extends Node {
 			code.insertLeft( this.body.end, after );
 			code.move( this.start, this.body.start, this.body.end );
 
-			if ( this.canBreak || this.canReturn ) {
+			if ( this.breakStatements.length || this.returnStatements.length ) {
 				const returned = functionScope.createIdentifier( 'returned' );
 
 				let insert = `{\n${i1}var ${returned} = ${loop}(${argString});\n`;
-				if ( this.canBreak ) insert += `\n${i1}if ( ${returned} === 'break' ) break;`;
-				if ( this.canReturn ) insert += `\n${i1}if ( ${returned} ) return returned.v;`;
+				if ( this.breakStatements.length ) insert += `\n${i1}if ( ${returned} === 'break' ) break;`;
+				if ( this.returnStatements.length ) insert += `\n${i1}if ( ${returned} ) return returned.v;`;
 				insert += `\n${i0}}`;
 
 				code.insertRight( this.body.end, insert );
@@ -78,6 +82,21 @@ export default class LoopStatement extends Node {
 					code.insertRight( this.body.end, callExpression );
 				}
 			}
+
+			this.breakStatements.forEach( statement => {
+				code.overwrite( statement.start, statement.start + 5, `return 'break'` );
+			});
+
+			this.continueStatements.forEach( statement => {
+				code.overwrite( statement.start, statement.start + 8, `return` );
+			});
+
+			this.returnStatements.forEach( statement => {
+				if ( statement.argument ) {
+					code.insertRight( statement.argument.start, `{ v: ` );
+					code.insertLeft( statement.argument.end, ` }` );
+				}
+			});
 		}
 
 		super.transpile( code, transforms );

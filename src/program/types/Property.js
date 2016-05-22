@@ -8,6 +8,12 @@ export default class Property extends Node {
 			throw new CompileError( this.key, 'Computed properties are not supported' );
 		}
 
+		if ( transforms.conciseMethodProperty && this.parent.type !== 'ObjectPattern' ) {
+			this.mark();
+		} else if ( transforms.reservedProperties && reserved[ this.key.name ] ) {
+			this.mark();
+		}
+
 		super.initialise( transforms );
 	}
 

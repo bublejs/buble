@@ -1,6 +1,15 @@
 import Node from '../Node.js';
 
 export default class CallExpression extends Node {
+	initialise ( transforms ) {
+		if ( transforms.spreadRest ) {
+			const lastArgument = this.arguments[ this.arguments.length - 1 ];
+			if ( lastArgument && lastArgument.type === 'SpreadElement' ) this.mark();
+		}
+
+		super.initialise( transforms );
+	}
+
 	transpile ( code, transforms ) {
 		if ( transforms.spreadRest ) {
 			const lastArgument = this.arguments[ this.arguments.length - 1 ];
