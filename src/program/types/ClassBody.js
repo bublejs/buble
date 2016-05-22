@@ -14,6 +14,9 @@ export default class ClassBody extends Node {
 			const constructorIndex = findIndex( this.body, node => node.kind === 'constructor' );
 			const constructor = this.body[ constructorIndex ];
 
+			let introBlock = '';
+			let outroBlock = '';
+
 			if ( this.body.length ) {
 				code.remove( this.start, this.body[0].start );
 				code.remove( this.body[ this.body.length - 1 ].end, this.end );
@@ -38,21 +41,21 @@ export default class ClassBody extends Node {
 				let inheritanceBlock = `if ( ${superName} ) ${name}.__proto__ = ${superName};\n${i0}${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${i0}${name}.prototype.constructor = ${name};`;
 
 				if ( constructor ) {
-					code.insertLeft( constructor.end, `\n\n${i0}` + inheritanceBlock );
+					introBlock += `\n\n${i0}` + inheritanceBlock;
 				} else {
 					const fn = `function ${name} () {` + ( superName ?
 						`\n${i1}${superName}.apply(this, arguments);\n${i0}}` :
 						`}` ) + ( inFunctionExpression ? '' : ';' ) + ( this.body.length ? `\n\n${i0}` : '' );
 
 					inheritanceBlock = fn + inheritanceBlock;
-					code.insertRight( this.start, inheritanceBlock + `\n\n${i0}` );
+					introBlock += inheritanceBlock + `\n\n${i0}`;
 				}
 			} else if ( !constructor ) {
 				let fn = `function ${name} () {}`;
 				if ( this.parent.type === 'ClassDeclaration' ) fn += ';';
 				if ( this.body.length ) fn += `\n\n${i0}`;
 
-				code.insertRight( this.start, fn );
+				introBlock += fn;
 			}
 
 			const scope = this.findScope( false );
@@ -123,14 +126,20 @@ export default class ClassBody extends Node {
 					outro.push( `Object.defineProperties( ${name}, ${staticAccessors} );` );
 				}
 
-				if ( constructor ) {
-					code.insertLeft( constructor.end, `\n\n${i0}${intro.join( `\n${i0}` )}` );
-				} else {
-					code.insertRight( this.start, `${intro.join( `\n${i0}` )}\n\n${i0}` );
-				}
+				if ( constructor ) introBlock += `\n\n${i0}`;
+				introBlock += intro.join( `\n${i0}` );
+				if ( !constructor ) introBlock += `\n\n${i0}`;
 
-				code.insertLeft( this.end, `\n\n${i0}${outro.join( `\n${i0}` )}` );
+				outroBlock += `\n\n${i0}` + outro.join( `\n${i0}` );
 			}
+
+			if ( constructor ) {
+				code.insertLeft( constructor.end, introBlock );
+			} else {
+				code.insertRight( this.start, introBlock );
+			}
+
+			code.insertLeft( this.end, outroBlock );
 		}
 
 		super.transpile( code, transforms );
