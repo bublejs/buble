@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.9.2
+
+* Allow class to have accessors and no constructor ([#48](https://gitlab.com/Rich-Harris/buble/issues/48))
+* Fix help message in CLI
+
 ## 0.9.1
 
 * Prevent confusion over `Literal` node keys
