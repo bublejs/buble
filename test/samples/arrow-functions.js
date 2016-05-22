@@ -8,7 +8,13 @@ module.exports = [
 	{
 		description: 'transpiles an arrow function with a naked parameter',
 		input: `var double = x => x * 2`,
-		output: `var double = function ( x ) { return x * 2; }`
+		output: `var double = function (x) { return x * 2; }`
+	},
+
+	{
+		description: 'transpiles an arrow function with single wrapped parameter',
+		input: `var double = (x) => x * 2`,
+		output: `var double = function (x) { return x * 2; }`
 	},
 
 	{

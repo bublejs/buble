@@ -8,29 +8,21 @@ export default class ArrowFunctionExpression extends Node {
 
 	transpile ( code, transforms ) {
 		if ( transforms.arrow ) {
-			if ( this.params.length === 0 ) {
-				code.overwrite( this.start, this.body.start, 'function () ' );
-			} else {
-				let parenthesised = false;
-				let charIndex = this.start;
-				while ( charIndex < this.params[0].start ) {
-					if ( code.original[ charIndex ] === '(' ) {
-						parenthesised = true;
-						break;
-					}
-				}
-
-				let start = 'function ';
-				if ( !parenthesised ) start += '( ';
-
-				code.insertRight( this.start, start );
-
-				charIndex = this.params[ this.params.length -1 ].end;
-				while ( code.original[ charIndex ] !== '=' ) charIndex += 1;
-
-				// remove the `=> `
-				code.overwrite( charIndex, this.body.start, parenthesised ? '' : ') ' );
+			// remove arrow
+			let charIndex = this.body.start;
+			while ( code.original[ charIndex ] !== '=' ) {
+				charIndex -= 1;
 			}
+			code.remove( charIndex, this.body.start );
+
+			// wrap naked parameter
+			if ( this.params.length === 1 && this.start === this.params[0].start ) {
+				code.insertRight( this.params[0].start, '(' );
+				code.insertLeft( this.params[0].end, ')' );
+			}
+
+			// add function
+			code.insertRight( this.start, 'function ' );
 		}
 
 		super.transpile( code, transforms );
