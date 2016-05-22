@@ -2,13 +2,13 @@ module.exports = [
 	{
 		description: 'transpiles a lone spread operator',
 		input: `var chars = [ ...string ]`,
-		output: `var chars = [].concat( string )`
+		output: `var chars = [].concat(string)`
 	},
 
 	{
 		description: 'transpiles a spread operator with other values',
 		input: `var list = [ a, b, ...remainder ]`,
-		output: `var list = [ a, b ].concat( remainder )`
+		output: `var list = [ a, b ].concat(remainder)`
 	},
 
 	{

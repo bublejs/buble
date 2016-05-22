@@ -6,19 +6,17 @@ export default class ArrayExpression extends Node {
 			const lastElement = this.elements[ this.elements.length - 1 ];
 			if ( lastElement && lastElement.type === 'SpreadElement' ) {
 				const penultimateElement = this.elements[ this.elements.length - 2 ];
+				const argument = lastElement.argument;
+
+				code.insertLeft( this.end, '.concat(' );
+				code.move( argument.start, argument.end, this.end );
+				code.insertRight( this.end, ')' );
 
 				if ( penultimateElement ) {
-					code.overwrite( penultimateElement.end, lastElement.start, ` ].concat( ` );
+					code.remove( penultimateElement.end, argument.start );
 				} else {
-					code.insertLeft( this.start + 1, `].concat(` );
+					code.remove( this.start + 1, this.end - 1 );
 				}
-
-				code.remove( lastElement.start, lastElement.start + 3 );
-
-				let charIndex = lastElement.end;
-				while ( code.original[ charIndex ] !== ']' ) charIndex += 1;
-
-				code.overwrite( charIndex, charIndex + 1, ')' );
 			}
 		}
 
