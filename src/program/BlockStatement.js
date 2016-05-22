@@ -87,7 +87,10 @@ export default class BlockStatement extends Node {
 			// account for dedented class constructors
 			let parent = this.parent;
 			while ( parent ) {
-				if ( parent.kind === 'constructor' ) this.indentation = this.indentation.replace( indentString, '' );
+				if ( parent.kind === 'constructor' && !parent.parent.parent.superClass ) {
+					this.indentation = this.indentation.replace( indentString, '' );
+				}
+
 				parent = parent.parent;
 			}
 
