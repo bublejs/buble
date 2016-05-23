@@ -1,14 +1,14 @@
 module.exports = [
 	{
 		description: 'transpiles a lone spread operator',
-		input: `var chars = [ ...string ]`,
-		output: `var chars = [].concat(string)`
+		input: `var clone = [ ...arr ]`,
+		output: `var clone = [].concat( arr )`
 	},
 
 	{
 		description: 'transpiles a spread operator with other values',
 		input: `var list = [ a, b, ...remainder ]`,
-		output: `var list = [ a, b].concat(remainder)` // TODO preserve whitespace conventions
+		output: `var list = [ a, b ].concat( remainder )` // TODO preserve whitespace conventions
 	},
 
 	{
@@ -69,13 +69,13 @@ module.exports = [
 	{
 		description: 'transpiles multiple spread operators in an array',
 		input: `var arr = [ ...a, ...b, ...c ];`,
-		output: `var arr = a.concat(b, c);`
+		output: `var arr = a.concat( b, c );`
 	},
 
 	{
 		description: 'transpiles mixture of spread and non-spread elements',
 		input: `var arr = [ ...a, b, ...c, d ];`,
-		output: `var arr = a.concat([b], c, [d]);`
+		output: `var arr = a.concat( [b], c, [d] );`
 	},
 
 	{
@@ -89,7 +89,7 @@ module.exports = [
 
 		output: `
 			function foo () {
-				var args = Array.apply(null, arguments);
+				var args = Array.apply( null, arguments );
 				return args;
 			}`
 	},
@@ -105,7 +105,7 @@ module.exports = [
 
 		output: `
 			function foo () {
-				var arr = [ a].concat(Array.apply(null, arguments), [b]);
+				var arr = [ a ].concat( Array.apply( null, arguments ), [b] );
 				return arr;
 			}`
 	},
@@ -113,13 +113,13 @@ module.exports = [
 	{
 		description: 'transpiles multiple spread operators in function call',
 		input: `var max = Math.max( ...theseValues, ...thoseValues );`,
-		output: `var max = Math.max.apply( Math, theseValues.concat(thoseValues) );`
+		output: `var max = Math.max.apply( Math, theseValues.concat( thoseValues ) );`
 	},
 
 	{
 		description: 'transpiles mixture of spread and non-spread operators in function call',
 		input: `var max = Math.max( ...a, b, ...c, d );`,
-		output: `var max = Math.max.apply( Math, a.concat([b], c, [d]) );`
+		output: `var max = Math.max.apply( Math, a.concat( [b], c, [d] ) );`
 	},
 
 	{
@@ -132,7 +132,7 @@ module.exports = [
 
 		output: `
 			function foo () {
-				return Math.max.apply( null, arguments );
+				return Math.max.apply( Math, arguments );
 			}`
 	},
 
@@ -146,7 +146,7 @@ module.exports = [
 
 		output: `
 			function foo () {
-				return Math.max.apply( null, [a].concat(Array.apply( null, arguments ), [ b ]);
+				return Math.max.apply( Math, [ a ].concat( Array.apply( null, arguments ), [b] ) );
 			}`
 	}
 ];

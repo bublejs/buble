@@ -1,12 +1,25 @@
 import Node from '../Node.js';
+import spread from '../../utils/spread.js';
 
 export default class CallExpression extends Node {
 	transpile ( code, transforms ) {
-		if ( transforms.spreadRest ) {
-			const lastArgument = this.arguments[ this.arguments.length - 1 ];
-			if ( lastArgument && lastArgument.type === 'SpreadElement' ) {
-				let context;
+		if ( transforms.spreadRest && this.arguments.length ) {
+			let hasSpreadElements = false;
+			let context;
 
+			const firstArgument = this.arguments[0];
+
+			if ( this.arguments.length === 1 ) {
+				if ( firstArgument.type === 'SpreadElement' ) {
+					code.remove( firstArgument.start, firstArgument.argument.start );
+					hasSpreadElements = true;
+				}
+			} else {
+				const lastArgument = this.arguments[ this.arguments.length - 1 ];
+				hasSpreadElements = spread( code, this.arguments, firstArgument.start, lastArgument.end );
+			}
+
+			if ( hasSpreadElements ) {
 				if ( this.callee.type === 'MemberExpression' ) {
 					if ( this.callee.object.type === 'Identifier' ) {
 						context = this.callee.object.name;
@@ -21,19 +34,19 @@ export default class CallExpression extends Node {
 					context = 'void 0';
 				}
 
-				code.insertLeft( this.callee.end, '.apply' );
-
-				const penultimateArgument = this.arguments[ this.arguments.length - 2 ];
-
-				if ( penultimateArgument ) {
-					code.insertRight( this.arguments[0].start, `${context}, [ ` );
-					code.overwrite( penultimateArgument.end, lastArgument.start, ` ].concat( ` );
-					code.insertLeft( lastArgument.end, ` )` );
+				if ( this.arguments.length === 1 ) {
+					code.insertRight( firstArgument.start, `${context}, ` );
+					code.insertLeft( this.callee.end, '.apply' );
 				} else {
-					code.insertRight( lastArgument.start, `${context}, ` );
-				}
+					if ( firstArgument.type === 'SpreadElement' ) {
+						code.insertRight( firstArgument.start, `${context}, ` );
+					} else {
+						code.insertRight( firstArgument.start, `${context}, [ ` );
+					}
 
-				code.remove( lastArgument.start, lastArgument.start + 3 );
+					code.insertLeft( this.arguments[ this.arguments.length - 1 ].end, ' )' );
+					code.insertLeft( this.callee.end, '.apply' );
+				}
 			}
 		}
 
