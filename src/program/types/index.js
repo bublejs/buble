@@ -19,6 +19,10 @@ import Identifier from './Identifier.js';
 import ImportDeclaration from './ImportDeclaration.js';
 import ImportDefaultSpecifier from './ImportDefaultSpecifier.js';
 import ImportSpecifier from './ImportSpecifier.js';
+import JSXAttribute from './JSXAttribute.js';
+import JSXClosingElement from './JSXClosingElement.js';
+import JSXElement from './JSXElement.js';
+import JSXOpeningElement from './JSXOpeningElement.js';
 import Literal from './Literal.js';
 import LoopStatement from './shared/LoopStatement.js';
 import MemberExpression from './MemberExpression.js';
@@ -56,6 +60,10 @@ export default {
 	ImportDeclaration,
 	ImportDefaultSpecifier,
 	ImportSpecifier,
+	JSXAttribute,
+	JSXClosingElement,
+	JSXElement,
+	JSXOpeningElement,
 	Literal,
 	MemberExpression,
 	Property,
