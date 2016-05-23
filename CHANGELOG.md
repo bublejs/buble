@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.9.3
+
+* Better spread operator support, including with `arguments` ([#40](https://gitlab.com/Rich-Harris/buble/issues/40))
+* Fix indentation of inserted statements in class constructors ([#39](https://gitlab.com/Rich-Harris/buble/issues/39))
+
 ## 0.9.2
 
 * Allow class to have accessors and no constructor ([#48](https://gitlab.com/Rich-Harris/buble/issues/48))
