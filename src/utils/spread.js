@@ -2,7 +2,7 @@ export function isArguments ( node ) {
 	return node.type === 'Identifier' && node.name === 'arguments';
 }
 
-export default function spread ( code, elements, start ) {
+export default function spread ( code, elements, start, argumentsArrayAlias ) {
 	let i = elements.length;
 	let firstSpreadIndex = -1;
 
@@ -10,8 +10,7 @@ export default function spread ( code, elements, start ) {
 		const element = elements[i];
 		if ( element.type === 'SpreadElement' ) {
 			if ( isArguments( element.argument ) ) {
-				code.insertRight( element.argument.start, '( arguments.length === 1 ? [ arguments[0] ] : Array.apply( null, ' );
-				code.insertLeft( element.argument.end, ' ) )' );
+				code.overwrite( element.argument.start, element.argument.end, argumentsArrayAlias );
 			}
 
 			firstSpreadIndex = i;

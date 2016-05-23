@@ -89,9 +89,12 @@ module.exports = [
 
 		output: `
 			function foo () {
-				var args = ( arguments.length === 1 ? [ arguments[0] ] : Array.apply( null, arguments ) );
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				var args = [].concat( argsArray );
 				return args;
-			}`
+			}` // TODO if this is the only use of argsArray, don't bother concating
 	},
 
 	{
@@ -105,7 +108,10 @@ module.exports = [
 
 		output: `
 			function foo () {
-				var arr = [ a ].concat( ( arguments.length === 1 ? [ arguments[0] ] : Array.apply( null, arguments ) ), [b] );
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				var arr = [ a ].concat( argsArray, [b] );
 				return arr;
 			}`
 	},
@@ -146,7 +152,10 @@ module.exports = [
 
 		output: `
 			function foo () {
-				return Math.max.apply( Math, [ a ].concat( ( arguments.length === 1 ? [ arguments[0] ] : Array.apply( null, arguments ) ), [b] ) );
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				return Math.max.apply( Math, [ a ].concat( argsArray, [b] ) );
 			}`
 	}
 ];

@@ -1,7 +1,23 @@
 import Node from '../Node.js';
-import spread from '../../utils/spread.js';
+import spread, { isArguments } from '../../utils/spread.js';
 
 export default class CallExpression extends Node {
+	initialise ( transforms ) {
+		if ( transforms.spreadRest && this.arguments.length > 1 ) {
+			const lexicalBoundary = this.findLexicalBoundary();
+
+			let i = this.arguments.length;
+			while ( i-- ) {
+				const arg = this.arguments[i];
+				if ( arg.type === 'SpreadElement' && isArguments( arg.argument ) ) {
+					this.argumentsArrayAlias = lexicalBoundary.getArgumentsArrayAlias();
+				}
+			}
+		}
+
+		super.initialise( transforms );
+	}
+
 	transpile ( code, transforms ) {
 		if ( transforms.spreadRest && this.arguments.length ) {
 			let hasSpreadElements = false;
@@ -15,7 +31,7 @@ export default class CallExpression extends Node {
 					hasSpreadElements = true;
 				}
 			} else {
-				hasSpreadElements = spread( code, this.arguments, firstArgument.start );
+				hasSpreadElements = spread( code, this.arguments, firstArgument.start, this.argumentsArrayAlias );
 			}
 
 			if ( hasSpreadElements ) {
