@@ -89,7 +89,7 @@ module.exports = [
 
 		output: `
 			function foo () {
-				var args = Array.apply( null, arguments );
+				var args = ( arguments.length === 1 ? [ arguments[0] ] : Array.apply( null, arguments ) );
 				return args;
 			}`
 	},

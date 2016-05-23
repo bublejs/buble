@@ -10,12 +10,12 @@ export default class ArrayExpression extends Node {
 				if ( element.type === 'SpreadElement' ) {
 					// special case – [ ...arguments ]
 					if ( isArguments( element.argument ) ) {
-						code.overwrite( this.start, element.argument.start, 'Array.apply( null, ' );
+						code.overwrite( this.start, element.argument.start, '( arguments.length === 1 ? [ arguments[0] ] : Array.apply( null, ' );
+						code.overwrite( element.end, this.end, ' ) )' );
 					} else {
 						code.overwrite( this.start, element.argument.start, '[].concat( ' );
+						code.overwrite( element.end, this.end, ' )' );
 					}
-
-					code.overwrite( element.end, this.end, ' )' );
 				}
 			}
 
