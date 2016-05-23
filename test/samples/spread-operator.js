@@ -8,7 +8,7 @@ module.exports = [
 	{
 		description: 'transpiles a spread operator with other values',
 		input: `var list = [ a, b, ...remainder ]`,
-		output: `var list = [ a, b ].concat(remainder)`
+		output: `var list = [ a, b].concat(remainder)` // TODO preserve whitespace conventions
 	},
 
 	{
@@ -64,5 +64,89 @@ module.exports = [
 		options: { transforms: { spreadRest: false } },
 		input: `var max = Math.max( ...values );`,
 		output: `var max = Math.max( ...values );`
+	},
+
+	{
+		description: 'transpiles multiple spread operators in an array',
+		input: `var arr = [ ...a, ...b, ...c ];`,
+		output: `var arr = a.concat(b, c);`
+	},
+
+	{
+		description: 'transpiles mixture of spread and non-spread elements',
+		input: `var arr = [ ...a, b, ...c, d ];`,
+		output: `var arr = a.concat([b], c, [d]);`
+	},
+
+	{
+		description: 'transpiles ...arguments',
+
+		input: `
+			function foo () {
+				var args = [ ...arguments ];
+				return args;
+			}`,
+
+		output: `
+			function foo () {
+				var args = Array.apply(null, arguments);
+				return args;
+			}`
+	},
+
+	{
+		description: 'transpiles ...arguments in middle of array',
+
+		input: `
+			function foo () {
+				var arr = [ a, ...arguments, b ];
+				return arr;
+			}`,
+
+		output: `
+			function foo () {
+				var arr = [ a].concat(Array.apply(null, arguments), [b]);
+				return arr;
+			}`
+	},
+
+	{
+		description: 'transpiles multiple spread operators in function call',
+		input: `var max = Math.max( ...theseValues, ...thoseValues );`,
+		output: `var max = Math.max.apply( Math, theseValues.concat(thoseValues) );`
+	},
+
+	{
+		description: 'transpiles mixture of spread and non-spread operators in function call',
+		input: `var max = Math.max( ...a, b, ...c, d );`,
+		output: `var max = Math.max.apply( Math, a.concat([b], c, [d]) );`
+	},
+
+	{
+		description: 'transpiles ...arguments in function call',
+
+		input: `
+			function foo () {
+				return Math.max( ...arguments );
+			}`,
+
+		output: `
+			function foo () {
+				return Math.max.apply( null, arguments );
+			}`
+	},
+
+	{
+		description: 'transpiles ...arguments in middle of function call',
+
+		input: `
+			function foo () {
+				return Math.max( a, ...arguments, b );
+			}`,
+
+		output: `
+			function foo () {
+				return Math.max.apply( null, [a].concat(Array.apply( null, arguments ), [ b ]);
+			}`
 	}
 ];
