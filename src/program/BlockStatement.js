@@ -54,6 +54,14 @@ export default class BlockStatement extends Node {
 		return this.argumentsAlias;
 	}
 
+	getArgumentsArrayAlias () {
+		if ( !this.argumentsArrayAlias ) {
+			this.argumentsArrayAlias = this.scope.createIdentifier( 'argsArray' );
+		}
+
+		return this.argumentsArrayAlias;
+	}
+
 	getThisAlias () {
 		if ( !this.thisAlias ) {
 			this.thisAlias = this.scope.createIdentifier( 'this' );
@@ -117,6 +125,14 @@ export default class BlockStatement extends Node {
 		if ( this.thisAlias ) {
 			introStatementGenerators.push( ( start, prefix, suffix ) => {
 				const assignment = `${prefix}var ${this.thisAlias} = this;${suffix}`;
+				code.insertLeft( start, assignment );
+			});
+		}
+
+		if ( this.argumentsArrayAlias ) {
+			introStatementGenerators.push( ( start, prefix, suffix ) => {
+				const i = this.scope.createIdentifier( 'i' );
+				const assignment = `${prefix}var ${i} = arguments.length, ${this.argumentsArrayAlias} = Array(${i});\n${indentation}while ( ${i}-- ) ${this.argumentsArrayAlias}[${i}] = arguments[${i}];${suffix}`;
 				code.insertLeft( start, assignment );
 			});
 		}
