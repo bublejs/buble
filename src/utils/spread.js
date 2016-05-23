@@ -2,7 +2,7 @@ export function isArguments ( node ) {
 	return node.type === 'Identifier' && node.name === 'arguments';
 }
 
-export default function spread ( code, elements, start, end ) {
+export default function spread ( code, elements, start ) {
 	let i = elements.length;
 	let firstSpreadIndex = -1;
 
@@ -11,37 +11,22 @@ export default function spread ( code, elements, start, end ) {
 		if ( element.type === 'SpreadElement' ) {
 			if ( isArguments( element.argument ) ) {
 				code.insertRight( element.argument.start, 'Array.apply( null, ' );
-
-				// special case – if this is [ ...arguments ], skip the closing
-				// paren, because we're not opening a new one with .concat
-				if ( i === 0 && elements.length === 1 ) {
-					code.remove( start, element.start );
-				} else {
-					code.insertLeft( element.argument.end, ' )' );
-				}
+				code.insertLeft( element.argument.end, ' )' );
 			}
 
 			firstSpreadIndex = i;
 		}
 	}
 
-	if ( firstSpreadIndex === -1 ) return;
+	if ( firstSpreadIndex === -1 ) return false; // false indicates no spread elements
 
 	let element = elements[ firstSpreadIndex ];
 	const previousElement = elements[ firstSpreadIndex - 1 ];
 
 	if ( !previousElement ) {
-		if ( elements.length === 1 ) {
-			if ( !isArguments( element.argument ) ) {
-				code.insertRight( element.start, '[].concat( ' );
-			}
-		} else {
-			code.remove( start, element.start );
-			code.overwrite( element.end, elements[1].start, '.concat( ' );
-		}
-	}
-
-	else {
+		code.remove( start, element.start );
+		code.overwrite( element.end, elements[1].start, '.concat( ' );
+	} else {
 		code.overwrite( previousElement.end, element.start, ' ].concat( ' );
 	}
 
@@ -58,7 +43,5 @@ export default function spread ( code, elements, start, end ) {
 		}
 	}
 
-	// code.overwrite( element.end, end, ')' );
-
-	return true;
+	return true; // true indicates some spread elements
 }

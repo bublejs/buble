@@ -20,7 +20,7 @@ export default class ArrayExpression extends Node {
 			}
 
 			else {
-				const hasSpreadElements = spread( code, this.elements, this.start, this.end );
+				const hasSpreadElements = spread( code, this.elements, this.start );
 
 				if ( hasSpreadElements ) {
 					code.overwrite( this.elements[ this.elements.length - 1 ].end, this.end, ' )' );

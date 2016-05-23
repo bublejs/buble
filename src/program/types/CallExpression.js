@@ -15,8 +15,7 @@ export default class CallExpression extends Node {
 					hasSpreadElements = true;
 				}
 			} else {
-				const lastArgument = this.arguments[ this.arguments.length - 1 ];
-				hasSpreadElements = spread( code, this.arguments, firstArgument.start, lastArgument.end );
+				hasSpreadElements = spread( code, this.arguments, firstArgument.start );
 			}
 
 			if ( hasSpreadElements ) {
