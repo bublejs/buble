@@ -105,7 +105,7 @@ module.exports = [
 
 		output: `
 			function foo () {
-				var arr = [ a ].concat( Array.apply( null, arguments ), [b] );
+				var arr = [ a ].concat( ( arguments.length === 1 ? [ arguments[0] ] : Array.apply( null, arguments ) ), [b] );
 				return arr;
 			}`
 	},
@@ -146,7 +146,7 @@ module.exports = [
 
 		output: `
 			function foo () {
-				return Math.max.apply( Math, [ a ].concat( Array.apply( null, arguments ), [b] ) );
+				return Math.max.apply( Math, [ a ].concat( ( arguments.length === 1 ? [ arguments[0] ] : Array.apply( null, arguments ) ), [b] ) );
 			}`
 	}
 ];

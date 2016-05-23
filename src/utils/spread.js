@@ -6,31 +6,19 @@ export default function spread ( code, elements, start ) {
 	let i = elements.length;
 	let firstSpreadIndex = -1;
 
-	let hasNonSpreadElements = false;
-	let args = [];
-
 	while ( i-- ) {
 		const element = elements[i];
 		if ( element.type === 'SpreadElement' ) {
-			if ( isArguments( element.argument ) ) args.push( element.argument );
+			if ( isArguments( element.argument ) ) {
+				code.insertRight( element.argument.start, '( arguments.length === 1 ? [ arguments[0] ] : Array.apply( null, ' );
+				code.insertLeft( element.argument.end, ' ) )' );
+			}
+
 			firstSpreadIndex = i;
 		}
 	}
 
 	if ( firstSpreadIndex === -1 ) return false; // false indicates no spread elements
-
-	if ( firstSpreadIndex > 0 ) hasNonSpreadElements = true;
-	if ( hasNonSpreadElements ) {
-		args.forEach( arg => {
-			code.insertRight( arg.start, 'Array.apply( null, ' );
-			code.insertLeft( arg.end, ' )' );
-		});
-	} else {
-		args.forEach( arg => {
-			code.insertRight( arg.start, '( arguments.length === 0 ? [ arguments[0] ] : Array.apply( null, ' );
-			code.insertLeft( arg.end, ' ) )' );
-		});
-	}
 
 	let element = elements[ firstSpreadIndex ];
 	const previousElement = elements[ firstSpreadIndex - 1 ];
