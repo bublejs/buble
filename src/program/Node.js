@@ -71,24 +71,7 @@ export default class Node {
 	}
 
 	getIndentation () {
-		if ( this.indentation === undefined ) {
-			const source = this.program.magicString.original;
-			let c = this.start;
-			while ( c && source[c] !== '\n' ) c -= 1;
-
-			this.indentation = '';
-
-			while ( true ) {
-				c += 1;
-				const char = source[c];
-
-				if ( char !== ' ' && char !== '\t' ) break;
-
-				this.indentation += char;
-			}
-		}
-
-		return this.indentation;
+		return this.parent.getIndentation();
 	}
 
 	initialise ( transforms ) {

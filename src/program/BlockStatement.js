@@ -62,12 +62,48 @@ export default class BlockStatement extends Node {
 		return this.thisAlias;
 	}
 
+	getIndentation () {
+		if ( this.indentation === undefined ) {
+			const source = this.program.magicString.original;
+
+			const useOuter = this.synthetic || !this.body.length;
+			let c = useOuter ? this.start : this.body[0].start;
+
+			while ( c && source[c] !== '\n' ) c -= 1;
+
+			this.indentation = '';
+
+			while ( true ) {
+				c += 1;
+				const char = source[c];
+
+				if ( char !== ' ' && char !== '\t' ) break;
+
+				this.indentation += char;
+			}
+
+			const indentString = this.program.magicString.getIndentString();
+
+			// account for dedented class constructors
+			let parent = this.parent;
+			while ( parent ) {
+				if ( parent.kind === 'constructor' && !parent.parent.parent.superClass ) {
+					this.indentation = this.indentation.replace( indentString, '' );
+				}
+
+				parent = parent.parent;
+			}
+
+			if ( useOuter ) this.indentation += indentString;
+		}
+
+		return this.indentation;
+	}
+
 	transpile ( code, transforms ) {
 		const start = this.parent.type === 'Root' || this.synthetic ? this.start : this.start + 1;
 
-		const indentation = this.synthetic ?
-			this.getIndentation() + code.getIndentString() :
-			( this.body.length ? this.body[0].getIndentation() : '' );
+		const indentation = this.getIndentation();
 
 		let introStatementGenerators = [];
 

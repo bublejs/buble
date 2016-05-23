@@ -33,7 +33,6 @@ export default class VariableDeclaration extends Node {
 					}
 
 					const simple = declarator.init.type === 'Identifier' && !declarator.init.rewritten;
-					const i0 = declarator.getIndentation();
 
 					const name = simple ? declarator.init.name : declarator.findScope( true ).createIdentifier( 'ref' );
 

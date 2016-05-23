@@ -25,6 +25,8 @@ export default class ClassBody extends Node {
 			}
 
 			if ( constructor ) {
+				constructor.value.body.isConstructorBody = true;
+
 				const previousMethod = this.body[ constructorIndex - 1 ];
 				const nextMethod = this.body[ constructorIndex + 1 ];
 
