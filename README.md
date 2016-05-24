@@ -1,6 +1,6 @@
 # Bublé
 
-The blazing fast, batteries-included ES2015 compiler. [Try it out at buble.surge.sh](http://buble.surge.sh)
+The blazing fast, batteries-included ES2015 compiler. [Try it out at buble.surge.sh](https://buble.surge.sh)
 
 ![derp](bublé.gif)
 
