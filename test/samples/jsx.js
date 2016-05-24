@@ -59,5 +59,11 @@ module.exports = [
 		description: 'transpiles JSX component',
 		input: `var element = <Hello name={name}/>;`,
 		output: `var element = React.createElement( Hello, { name: name });`
+	},
+
+	{
+		description: 'transpiles namespaced JSX component',
+		input: `var element = <Foo.Bar name={name}/>;`,
+		output: `var element = React.createElement( Foo.Bar, { name: name });`
 	}
 ];

@@ -4,7 +4,7 @@ export default class JSXOpeningElement extends Node {
 	transpile ( code, transforms ) {
 		code.overwrite( this.start, this.name.start, `React.createElement( ` );
 
-		const html = this.name.name[0] === this.name.name[0].toLowerCase();
+		const html = this.name.type === 'JSXIdentifier' && this.name.name[0] === this.name.name[0].toLowerCase();
 		if ( html ) code.insertRight( this.name.start, `'` );
 
 		const len = this.attributes.length;
