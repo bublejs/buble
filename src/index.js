@@ -1,4 +1,4 @@
-import { parse } from 'acorn-jsx';
+import acorn from 'acorn-jsx';
 import Program from './program/Program.js';
 import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';
@@ -41,7 +41,7 @@ export function transform ( source, options = {} ) {
 	let ast;
 
 	try {
-		ast = parse( source, {
+		ast = acorn.parse( source, {
 			ecmaVersion: 7,
 			preserveParens: true,
 			sourceType: 'module',
