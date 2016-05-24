@@ -22,6 +22,7 @@ import ImportSpecifier from './ImportSpecifier.js';
 import JSXAttribute from './JSXAttribute.js';
 import JSXClosingElement from './JSXClosingElement.js';
 import JSXElement from './JSXElement.js';
+import JSXExpressionContainer from './JSXExpressionContainer.js';
 import JSXOpeningElement from './JSXOpeningElement.js';
 import Literal from './Literal.js';
 import LoopStatement from './shared/LoopStatement.js';
@@ -63,6 +64,7 @@ export default {
 	JSXAttribute,
 	JSXClosingElement,
 	JSXElement,
+	JSXExpressionContainer,
 	JSXOpeningElement,
 	Literal,
 	MemberExpression,

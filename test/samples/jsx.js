@@ -29,5 +29,29 @@ module.exports = [
 					React.createElement('img', { src: 'bar.gif' })
 				)
 			);`
+	},
+
+	{
+		description: 'transpiles JSX tag with expression attributes',
+		input: `var img = <img src={src}/>;`,
+		output: `var img = React.createElement('img', { src: src });`
+	},
+
+	{
+		description: 'transpiles JSX tag with expression children',
+
+		input: `
+			var div = (
+				<div>
+					{ images.map( src => <img src={src}/> ) }
+				</div>
+			);`,
+
+		output: `
+			var div = (
+				React.createElement('div', null,
+					images.map( function (src) { return React.createElement('img', { src: src }); } )
+				)
+			);`
 	}
 ];
