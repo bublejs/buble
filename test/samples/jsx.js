@@ -2,13 +2,13 @@ module.exports = [
 	{
 		description: 'transpiles self-closing JSX tag',
 		input: `var img = <img src='foo.gif'/>;`,
-		output: `var img = React.createElement('img', { src: 'foo.gif' });`
+		output: `var img = React.createElement( 'img', { src: 'foo.gif' });`
 	},
 
 	{
 		description: 'transpiles non-self-closing JSX tag',
 		input: `var div = <div className='foo'></div>;`,
-		output: `var div = React.createElement('div', { className: 'foo' });`
+		output: `var div = React.createElement( 'div', { className: 'foo' });`
 	},
 
 	{
@@ -24,9 +24,9 @@ module.exports = [
 
 		output: `
 			var div = (
-				React.createElement('div', { className: 'foo' },
-					React.createElement('img', { src: 'foo.gif' }),
-					React.createElement('img', { src: 'bar.gif' })
+				React.createElement( 'div', { className: 'foo' },
+					React.createElement( 'img', { src: 'foo.gif' }),
+					React.createElement( 'img', { src: 'bar.gif' })
 				)
 			);`
 	},
@@ -34,7 +34,7 @@ module.exports = [
 	{
 		description: 'transpiles JSX tag with expression attributes',
 		input: `var img = <img src={src}/>;`,
-		output: `var img = React.createElement('img', { src: src });`
+		output: `var img = React.createElement( 'img', { src: src });`
 	},
 
 	{
@@ -49,9 +49,15 @@ module.exports = [
 
 		output: `
 			var div = (
-				React.createElement('div', null,
-					images.map( function (src) { return React.createElement('img', { src: src }); } )
+				React.createElement( 'div', null,
+					images.map( function (src) { return React.createElement( 'img', { src: src }); } )
 				)
 			);`
+	},
+
+	{
+		description: 'transpiles JSX component',
+		input: `var element = <Hello name={name}/>;`,
+		output: `var element = React.createElement( Hello, { name: name });`
 	}
 ];

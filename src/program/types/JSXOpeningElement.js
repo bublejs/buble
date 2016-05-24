@@ -2,7 +2,7 @@ import Node from '../Node.js';
 
 export default class JSXOpeningElement extends Node {
 	transpile ( code, transforms ) {
-		code.overwrite( this.start, this.name.start, `React.createElement(` );
+		code.overwrite( this.start, this.name.start, `React.createElement( ` );
 
 		const html = this.name.name[0] === this.name.name[0].toLowerCase();
 		if ( html ) code.insertRight( this.name.start, `'` );
