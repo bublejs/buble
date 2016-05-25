@@ -12,6 +12,12 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles non-self-closing JSX tag without attributes',
+		input: `var div = <div></div>;`,
+		output: `var div = React.createElement( 'div', null );`
+	},
+
+	{
 		description: 'transpiles nested JSX tags',
 
 		input: `
@@ -64,7 +70,13 @@ module.exports = [
 	{
 		description: 'transpiles JSX component without attributes',
 		input: `var element = <Hello />;`,
-		output: `var element = React.createElement( Hello, null);`
+		output: `var element = React.createElement( Hello, null );`
+	},
+
+	{
+		description: 'transpiles JSX component without attributes with children',
+		input: `var element = <Hello>hello</Hello>;`,
+		output: `var element = React.createElement( Hello, null, "hello" );`
 	},
 
 	{

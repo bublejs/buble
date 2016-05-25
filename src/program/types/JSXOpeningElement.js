@@ -26,7 +26,12 @@ export default class JSXOpeningElement extends Node {
 			c = this.name.end;
 		}
 
-		code.remove( c, this.end );
 		super.transpile( code, transforms );
+
+		if ( this.selfClosing ) {
+			code.overwrite( c, this.end, this.attributes.length ? `)` : ` )` );
+		} else {
+			code.remove( c, this.end );
+		}
 	}
 }

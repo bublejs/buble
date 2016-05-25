@@ -39,10 +39,5 @@ export default class JSXElement extends Node {
 				c = child.end;
 			}
 		}
-
-		const hasChildren = this.children.length;
-		const followedByNewline = code.original[ this.end ] !== '\n';
-
-		code.insertLeft( this.end, hasChildren && followedByNewline ? ` )` : `)` );
 	}
 }
