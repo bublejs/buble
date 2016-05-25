@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.10.2
+
+* Don't add closing quote to JSX component without attributes ([#58](https://gitlab.com/Rich-Harris/buble/issues/58))
+
 ## 0.10.1
 
 * Fix handling of literals inside JSX
