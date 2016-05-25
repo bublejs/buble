@@ -22,7 +22,7 @@ export default class JSXOpeningElement extends Node {
 				c = this.attributes[i].end;
 			}
 		} else {
-			code.insertLeft( this.name.end, `', null` );
+			code.insertLeft( this.name.end, html ? `', null` : `, null` );
 			c = this.name.end;
 		}
 
