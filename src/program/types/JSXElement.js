@@ -3,7 +3,7 @@ import Node from '../Node.js';
 function normalise ( str, removeTrailingWhitespace ) {
 	str = str
 		.replace( /^\s+/gm, '' )    // remove leading whitespace
-		.replace( /\n\r?/gm, ' ' ); // replace newlines with spaces
+		.replace( /\s+\n\r?/gm, ' ' ); // replace newlines with spaces
 
 	if ( removeTrailingWhitespace ) {
 		str = str.replace( /\s+$/, '' );

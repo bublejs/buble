@@ -96,7 +96,7 @@ module.exports = [
 		input: `
 			<h1>
 				Hello {name}
-				!
+				!${"      "}
 				It's  nice to meet you
 			</h1>`,
 		output: `
