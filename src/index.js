@@ -1,4 +1,4 @@
-import { parse } from 'acorn';
+import acorn from 'acorn-jsx';
 import Program from './program/Program.js';
 import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';
@@ -41,10 +41,11 @@ export function transform ( source, options = {} ) {
 	let ast;
 
 	try {
-		ast = parse( source, {
+		ast = acorn.parse( source, {
 			ecmaVersion: 7,
 			preserveParens: true,
-			sourceType: 'module'
+			sourceType: 'module',
+			plugins: { jsx: true }
 		});
 	} catch ( err ) {
 		err.snippet = getSnippet( source, err.loc );
@@ -63,7 +64,7 @@ export function transform ( source, options = {} ) {
 		transforms[ name ] = options.transforms[ name ];
 	});
 
-	return new Program( source, ast, transforms ).export( options );
+	return new Program( source, ast, transforms, options ).export( options );
 }
 
 export { version as VERSION } from '../package.json';

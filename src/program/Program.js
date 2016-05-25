@@ -2,8 +2,11 @@ import MagicString from 'magic-string';
 import BlockStatement from './BlockStatement.js';
 import wrap from './wrap.js';
 
-export default function Program ( source, ast, transforms ) {
+export default function Program ( source, ast, transforms, options ) {
 	this.type = 'Root';
+
+	// options
+	this.jsx = options.jsx || 'React.createElement';
 
 	this.source = source;
 	this.magicString = new MagicString( source );

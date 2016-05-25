@@ -1,24 +1,16 @@
 import buble from 'rollup-plugin-buble';
 import json from 'rollup-plugin-json';
 import nodeResolve from 'rollup-plugin-node-resolve';
-import { resolve } from 'path';
+import commonjs from 'rollup-plugin-commonjs';
 
-var external = process.env.DEPS ? null : [ 'acorn', 'magic-string' ];
+var external = process.env.DEPS ? [] : [ 'acorn-jsx', 'magic-string' ];
 
 export default {
 	entry: 'src/index.js',
 	moduleName: 'buble',
 	plugins: [
-		{
-			resolveId: function ( id ) {
-				// for the browser build, we want to bundle Acorn, but not
-				// from the dist file
-				if ( process.env.DEPS && id === 'acorn' ) {
-					return resolve( __dirname, 'node_modules/acorn/src/index.js' );
-				}
-			}
-		},
 		json(),
+		commonjs(),
 		buble({
 			include: [ 'src/**', 'node_modules/acorn/**' ],
 			transforms: {
@@ -32,7 +24,7 @@ export default {
 	],
 	external: external,
 	globals: {
-		'acorn': 'acorn',
+		'acorn-jsx': 'acorn',
 		'magic-string': 'MagicString'
 	},
 	sourceMap: true
