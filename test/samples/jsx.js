@@ -65,5 +65,12 @@ module.exports = [
 		description: 'transpiles namespaced JSX component',
 		input: `var element = <Foo.Bar name={name}/>;`,
 		output: `var element = React.createElement( Foo.Bar, { name: name });`
+	},
+
+	{
+		description: 'supports pragmas',
+		options: { jsx: 'NotReact.createElement' },
+		input: `var img = <img src='foo.gif'/>;`,
+		output: `var img = NotReact.createElement( 'img', { src: 'foo.gif' });`
 	}
 ];

@@ -64,7 +64,7 @@ export function transform ( source, options = {} ) {
 		transforms[ name ] = options.transforms[ name ];
 	});
 
-	return new Program( source, ast, transforms ).export( options );
+	return new Program( source, ast, transforms, options ).export( options );
 }
 
 export { version as VERSION } from '../package.json';
