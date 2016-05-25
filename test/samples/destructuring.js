@@ -119,7 +119,7 @@ module.exports = [
 	},
 
 	{
-		description: 'destructures parameters intelligently (#17)',
+		description: 'does not destructure parameters intelligently (#53)',
 
 		input: `
 			function drawRect ( { ctx, x1, y1, x2, y2 } ) {
@@ -135,17 +135,22 @@ module.exports = [
 
 		output: `
 			function drawRect ( ref ) {
+				var ctx = ref.ctx;
 				var x1 = ref.x1;
 				var y1 = ref.y1;
+				var x2 = ref.x2;
+				var y2 = ref.y2;
 
-				ref.ctx.fillRect( x1, y1, ref.x2 - x1, ref.y2 - y1 );
+				ctx.fillRect( x1, y1, x2 - x1, y2 - y1 );
 			}
 
 			function scale (ref, ref$1) {
 				var d0 = ref[0];
+				var d1 = ref[1];
 				var r0 = ref$1[0];
+				var r1 = ref$1[1];
 
-				var m = ( ref$1[1] - r0 ) / ( ref[1] - d0 );
+				var m = ( r1 - r0 ) / ( d1 - d0 );
 				return function ( num ) {
 					return r0 + ( num - d0 ) * m;
 				}
@@ -153,7 +158,7 @@ module.exports = [
 	},
 
 	{
-		description: 'destructures variable declarations intelligently (#17)',
+		description: 'does not destructure variable declarations intelligently (#53)',
 
 		input: `
 			var { foo: bar, baz } = obj;
@@ -162,8 +167,9 @@ module.exports = [
 			console.log( baz );`,
 
 		output: `
+			var bar = obj.foo;
 			var baz = obj.baz;
-			console.log( obj.foo );
+			console.log( bar );
 			console.log( baz );
 			console.log( baz );`
 	},
@@ -179,8 +185,9 @@ module.exports = [
 			var a;
 			var ref = getPoint();
 			var x = ref.x;
+			var y = ref.y;
 			var b = x;
-			console.log( x, ref.y );`
+			console.log( x, y );`
 	},
 
 	{
@@ -209,8 +216,9 @@ module.exports = [
 			console.log( value, description );`,
 
 		output: `
+			var value = obj.name;
 			var obj_description = obj.description, description = obj_description === void 0 ? null : obj_description;
-			console.log( obj.name, description );`
+			console.log( value, description );`
 	},
 
 	{
@@ -229,5 +237,28 @@ module.exports = [
 
 				console.log( arg1, arg2 );
 			}`
+	},
+
+	{
+		description: 'destructures not replacing reference from parent scope',
+
+		input: `
+			function controller([element]) {
+				const mapState = function ({ filter }) {
+					console.log(element);
+				};
+			}`,
+
+		output: `
+			function controller(ref) {
+				var element = ref[0];
+
+				var mapState = function (ref) {
+					var filter = ref.filter;
+
+					console.log(element);
+				};
+			}`
 	}
+
 ];
