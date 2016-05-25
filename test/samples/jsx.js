@@ -72,5 +72,34 @@ module.exports = [
 		options: { jsx: 'NotReact.createElement' },
 		input: `var img = <img src='foo.gif'/>;`,
 		output: `var img = NotReact.createElement( 'img', { src: 'foo.gif' });`
+	},
+
+	{
+		description: 'stringifies text children',
+		input: `<h1>Hello {name}!</h1>`,
+		output: `React.createElement( 'h1', null, "Hello ", name, "!" )`
+	},
+
+	{
+		description: 'handles whitespace and quotes appropriately',
+		input: `
+			<h1>
+				Hello {name}
+				!
+			</h1>`,
+		output: `
+			React.createElement( 'h1', null, "Hello ", name, "!" )`
+	},
+
+	{
+		description: 'handles single quotes in text children',
+		input: `
+			<h1>
+				Hello {name}
+				!
+				It's  nice to meet you
+			</h1>`,
+		output: `
+			React.createElement( 'h1', null, "Hello ", name, "! It's  nice to meet you" )`
 	}
 ];
