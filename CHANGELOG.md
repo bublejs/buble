@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.10.1
+
+* Fix handling of literals inside JSX
+
 ## 0.10.0
 
 * Basic JSX support
