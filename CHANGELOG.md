@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.10.0
+
+* Basic JSX support
+
 ## 0.9.3
 
 * Better spread operator support, including with `arguments` ([#40](https://gitlab.com/Rich-Harris/buble/issues/40))
