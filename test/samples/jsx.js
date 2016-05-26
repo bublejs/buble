@@ -110,6 +110,16 @@ module.exports = [
 	},
 
 	{
+		description: 'handles single-line whitespace and quotes appropriately',
+		input: `
+			<h1>
+				Hello {name} – and goodbye!
+			</h1>`,
+		output: `
+			React.createElement( 'h1', null, "Hello ", name, " – and goodbye!" )`
+	},
+
+	{
 		description: 'handles single quotes in text children',
 		input: `
 			<h1>
