@@ -11,7 +11,15 @@ export default class JSXOpeningElement extends Node {
 		let c = this.name.end;
 
 		if ( len ) {
-			const hasSpread = !!this.attributes.find( attr => attr.type === 'JSXSpreadAttribute' );
+			let i;
+
+      let hasSpread = false;
+      for ( i = 0; i < len; i += 1 ) {
+        if ( this.attributes[i].type === 'JSXSpreadAttribute' ) {
+          hasSpread = true;
+          break;
+        }
+      }
 
 			let after;
 			let before;
@@ -33,7 +41,6 @@ export default class JSXOpeningElement extends Node {
 				code.insertLeft( this.attributes[ len - 1 ].end, after );
 			}
 
-			let i;
 			c = this.attributes[0].end;
 
 			for ( i = 0; i < len; i += 1 ) {
