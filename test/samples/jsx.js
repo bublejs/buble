@@ -119,5 +119,11 @@ module.exports = [
 			</h1>`,
 		output: `
 			React.createElement( 'h1', null, "Hello ", name, "! It's  nice to meet you" )`
+	},
+
+	{
+		description: 'transpiles JSX tag without value',
+		input: `var div = <div contentEditable />;`,
+		output: `var div = React.createElement( 'div', { contentEditable: true });`
 	}
 ];
