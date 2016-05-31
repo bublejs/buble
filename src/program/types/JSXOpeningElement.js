@@ -13,13 +13,13 @@ export default class JSXOpeningElement extends Node {
 		if ( len ) {
 			let i;
 
-      let hasSpread = false;
-      for ( i = 0; i < len; i += 1 ) {
-        if ( this.attributes[i].type === 'JSXSpreadAttribute' ) {
-          hasSpread = true;
-          break;
-        }
-      }
+			let hasSpread = false;
+			for ( i = 0; i < len; i += 1 ) {
+				if ( this.attributes[i].type === 'JSXSpreadAttribute' ) {
+					hasSpread = true;
+					break;
+				}
+			}
 
 			let after;
 			let before;
