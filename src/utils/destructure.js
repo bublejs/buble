@@ -25,21 +25,11 @@ function handlePattern ( code, scope, node, tmp, expr, statementGenerators ) {
 	if ( node.type === 'Identifier' ) {
 		const declaration = scope.findDeclaration( node.name );
 
-		// if the declaration is only referenced once, we rewrite the
-		// reference rather than adding a new declaration
-		if ( onlyHasOneReference( declaration ) ) {
-			const instance = declaration.instances[0];
-			code.remove( node.start, node.end );
-			code.overwrite( instance.start, instance.end, expr );
-		}
-
-		else {
-			statementGenerators.push( ( start, prefix, suffix ) => {
-				code.insertRight( node.start, `${prefix}var ` );
-				code.insertLeft( node.end, ` = ${expr};${suffix}` );
-				code.move( node.start, node.end, start );
-			});
-		}
+		statementGenerators.push( ( start, prefix, suffix ) => {
+			code.insertRight( node.start, `${prefix}var ` );
+			code.insertLeft( node.end, ` = ${expr};${suffix}` );
+			code.move( node.start, node.end, start );
+		});
 	} else if ( node.type === 'AssignmentPattern' ) {
 		statementGenerators.push( ( start, prefix, suffix ) => {
 			code.remove( node.start, node.right.start );
