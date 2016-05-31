@@ -119,5 +119,11 @@ module.exports = [
 			</h1>`,
 		output: `
 			React.createElement( 'h1', null, "Hello ", name, "! It's  nice to meet you" )`
+  },
+
+	{
+		description: 'transpiles tag with data attribute',
+		input: `var element = <div data-name={name}/>;`,
+		output: `var element = React.createElement( 'div', { 'data-name': name });`
 	}
 ];
