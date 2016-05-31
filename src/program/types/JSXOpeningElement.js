@@ -11,15 +11,44 @@ export default class JSXOpeningElement extends Node {
 		let c = this.name.end;
 
 		if ( len ) {
-			code.insertLeft( this.name.end, html ? `', {` : `, {` );
-			code.insertLeft( this.attributes[ len - 1 ].end, ' }' );
+			const hasSpread = !!this.attributes.find( attr => attr.type === 'JSXSpreadAttribute' );
+
+			let after;
+			let before;
+			if ( hasSpread ) {
+				if ( len === 1 ) {
+					before = html ? `',` : ',';
+				} else {
+					before = html ? `', Object.assign({},` : ', Object.assign({},';
+					after = ')';
+				}
+			} else {
+				before = html ? `', {` : ', {';
+				after = ' }';
+			}
+
+			code.insertLeft( this.name.end, before );
+
+			if ( after ) {
+				code.insertLeft( this.attributes[ len - 1 ].end, after );
+			}
 
 			let i;
 			c = this.attributes[0].end;
 
-			for ( i = 1; i < len; i += 1 ) {
-				code.overwrite( c, this.attributes[i].start, ', ' );
-				c = this.attributes[i].end;
+			for ( i = 0; i < len; i += 1 ) {
+				const attr = this.attributes[i];
+
+				if ( i > 0 ) {
+					code.overwrite( c, attr.start, ', ' );
+				}
+
+				if ( hasSpread && attr.type !== 'JSXSpreadAttribute' ) {
+					code.insertLeft( attr.start, `{ ` );
+					code.insertLeft( i === len - 1 ? attr.end - 1 : attr.end, ' }' );
+				}
+
+				c = attr.end;
 			}
 		} else {
 			code.insertLeft( this.name.end, html ? `', null` : `, null` );

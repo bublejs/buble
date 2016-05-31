@@ -24,6 +24,7 @@ import JSXClosingElement from './JSXClosingElement.js';
 import JSXElement from './JSXElement.js';
 import JSXExpressionContainer from './JSXExpressionContainer.js';
 import JSXOpeningElement from './JSXOpeningElement.js';
+import JSXSpreadAttribute from './JSXSpreadAttribute.js';
 import Literal from './Literal.js';
 import LoopStatement from './shared/LoopStatement.js';
 import MemberExpression from './MemberExpression.js';
@@ -66,6 +67,7 @@ export default {
 	JSXElement,
 	JSXExpressionContainer,
 	JSXOpeningElement,
+  JSXSpreadAttribute,
 	Literal,
 	MemberExpression,
 	Property,
