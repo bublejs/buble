@@ -27,6 +27,12 @@ export default class Property extends Node {
 			code.insertLeft( this.key.end, `'` );
 		}
 
+		// if we're part of an object spread, surround ourselves with {}
+		if ( this.parent.hasSpread ) {
+			code.insertLeft( this.start, '{' );
+			code.insertLeft( this.end, '}' );
+		}
+
 		super.transpile( code, transforms );
 	}
 }
