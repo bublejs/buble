@@ -48,10 +48,10 @@ export function transform ( source, options = {} ) {
 			ecmaVersion: 7,
 			preserveParens: true,
 			sourceType: 'module',
-      plugins: {
-        jsx: true,
-        objectSpread: true
-      }
+			plugins: {
+				jsx: true,
+				objectSpread: true
+			}
 		});
 	} catch ( err ) {
 		err.snippet = getSnippet( source, err.loc );

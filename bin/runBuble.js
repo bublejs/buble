@@ -37,7 +37,8 @@ function compileFile ( from, to, command, options ) {
 		target: options.target,
 		transforms: options.transforms,
 		source: from,
-		file: to
+		file: to,
+		jsx: options.jsx
 	});
 
 	write( result, to, command );
@@ -77,7 +78,8 @@ module.exports = function ( command ) {
 
 	var options = {
 		target: {},
-		transforms: {}
+		transforms: {},
+		jsx: command.jsx
 	};
 
 	if ( command.target ) {
