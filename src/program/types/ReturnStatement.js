@@ -16,6 +16,7 @@ export default class ReturnStatement extends Node {
 	transpile ( code, transforms ) {
 		if ( this.argument ) {
 			const shouldWrap = this.shouldWrap && this.loop && this.loop.shouldRewriteAsFunction;
+
 			if ( shouldWrap ) code.insertRight( this.argument.start, `{ v: ` );
 
 			if ( this.argument ) this.argument.transpile( code, transforms );

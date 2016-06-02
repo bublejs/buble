@@ -1,7 +1,10 @@
-import acorn from 'acorn-jsx';
+import acornJsx from 'acorn-jsx';
+import acornObjectSpread from 'acorn-object-spread/inject';
 import Program from './program/Program.js';
 import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';
+
+const acorn = acornObjectSpread(acornJsx);
 
 const dangerousTransforms = [
 	'dangerousTaggedTemplateString',
@@ -45,7 +48,10 @@ export function transform ( source, options = {} ) {
 			ecmaVersion: 7,
 			preserveParens: true,
 			sourceType: 'module',
-			plugins: { jsx: true }
+      plugins: {
+        jsx: true,
+        objectSpread: true
+      }
 		});
 	} catch ( err ) {
 		err.snippet = getSnippet( source, err.loc );
