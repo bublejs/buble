@@ -1,6 +1,7 @@
 import ArrayExpression from './ArrayExpression.js';
 import ArrowFunctionExpression from './ArrowFunctionExpression.js';
 import AssignmentExpression from './AssignmentExpression.js';
+import AwaitExpression from './AwaitExpression.js';
 import BinaryExpression from './BinaryExpression.js';
 import BreakStatement from './BreakStatement.js';
 import CallExpression from './CallExpression.js';
@@ -45,6 +46,7 @@ export default {
 	ArrayExpression,
 	ArrowFunctionExpression,
 	AssignmentExpression,
+	AwaitExpression,
 	BinaryExpression,
 	BreakStatement,
 	CallExpression,
@@ -69,7 +71,7 @@ export default {
 	JSXElement,
 	JSXExpressionContainer,
 	JSXOpeningElement,
-  JSXSpreadAttribute,
+	JSXSpreadAttribute,
 	Literal,
 	MemberExpression,
 	ObjectExpression,

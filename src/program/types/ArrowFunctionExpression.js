@@ -25,6 +25,11 @@ export default class ArrowFunctionExpression extends Node {
 			code.insertRight( this.start, 'function ' );
 		}
 
+		if ( transforms.asyncAwait && this.async ) {
+			// remove async keyword
+			code.remove( this.start, this.start + 6 );
+		}
+
 		super.transpile( code, transforms );
 	}
 }

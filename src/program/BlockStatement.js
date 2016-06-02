@@ -147,6 +147,24 @@ export default class BlockStatement extends Node {
 
 		super.transpile( code, transforms );
 
+		if ( transforms.asyncAwait && this.isFunctionBlock && this.parent.async ) {
+			const expr = this.body[0];
+
+			if ( this.parent.type === 'FunctionDeclaration' ) {
+				if ( expr.type === 'ReturnStatement' ) {
+					code.insertLeft( expr.argument.start, 'Promise.resolve().then(function() { ' );
+					code.insertRight( expr.end, ' })' );
+				} else {
+					code.insertLeft( expr.start, 'return Promise.resolve().then(function() { ' );
+					code.insertRight( expr.end, ' }).then(function() {})' );
+				}
+			} else if ( this.parent.type === 'ArrowFunctionExpression' ) {
+				// wrap the function's body in a promise
+				code.insertLeft( expr.start + 1, 'Promise.resolve().then(function() { ' );
+				code.insertLeft( expr.end, ' })' );
+			}
+		}
+
 		if ( this.synthetic ) {
 			if ( this.parent.type === 'ArrowFunctionExpression' ) {
 				const expr = this.body[0];

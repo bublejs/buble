@@ -10,6 +10,16 @@ export default class FunctionDeclaration extends Node {
 		this.body.createScope();
 
 		this.findScope( true ).addDeclaration( this.id, 'function' );
+
 		super.initialise( transforms );
+	}
+
+	transpile( code, transforms ) {
+		if ( transforms.asyncAwait && this.async ) {
+			// remove async keyword
+			code.remove( this.start, this.start + 6 );
+		}
+
+		super.transpile( code, transforms );
 	}
 }

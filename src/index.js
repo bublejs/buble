@@ -1,10 +1,15 @@
+import acornAsyncAwait from 'acorn-es7-plugin';
 import acornJsx from 'acorn-jsx';
 import acornObjectSpread from 'acorn-object-spread/inject';
 import Program from './program/Program.js';
 import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';
 
-const acorn = acornObjectSpread(acornJsx);
+const acorn = acornAsyncAwait(
+	acornObjectSpread(
+		acornJsx
+	)
+);
 
 const dangerousTransforms = [
 	'dangerousTaggedTemplateString',
@@ -14,8 +19,8 @@ const dangerousTransforms = [
 export function target ( target ) {
 	const targets = Object.keys( target );
 	let bitmask = targets.length ?
-		0b1111111111111111111111111111111 :
-		0b1000000000000000000000000000000;
+		0b11111111111111111111111111111111 :
+		0b10000000000000000000000000000000;
 
 	Object.keys( target ).forEach( environment => {
 		const versions = matrix[ environment ];
@@ -48,10 +53,11 @@ export function transform ( source, options = {} ) {
 			ecmaVersion: 7,
 			preserveParens: true,
 			sourceType: 'module',
-      plugins: {
-        jsx: true,
-        objectSpread: true
-      }
+			plugins: {
+				asyncawait: true,
+				jsx: true,
+				objectSpread: true
+			}
 		});
 	} catch ( err ) {
 		err.snippet = getSnippet( source, err.loc );
