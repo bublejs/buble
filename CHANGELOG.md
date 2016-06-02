@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.10.4
+
+* Support spread operator in object literals ([!45](https://gitlab.com/Rich-Harris/buble/merge_requests/45)) and JSX elements ([!46](https://gitlab.com/Rich-Harris/buble/merge_requests/46))
+
 ## 0.10.3
 
 * Disable intelligent destructuring, temporarily ([#53](https://gitlab.com/Rich-Harris/buble/issues/53))
