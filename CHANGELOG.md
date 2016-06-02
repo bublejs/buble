@@ -1,5 +1,12 @@
 # buble changelog
 
+## 0.10.3
+
+* Disable intelligent destructuring, temporarily ([#53](https://gitlab.com/Rich-Harris/buble/issues/53))
+* Fix whitespace in JSX literals ([!39](https://gitlab.com/Rich-Harris/buble/merge_requests/39))
+* Add `: true` to value-less JSX attributes ([!40](https://gitlab.com/Rich-Harris/buble/merge_requests/40))
+* Quote invalid attribute names ([!41](https://gitlab.com/Rich-Harris/buble/merge_requests/41))
+
 ## 0.10.2
 
 * Don't add closing quote to JSX component without attributes ([#58](https://gitlab.com/Rich-Harris/buble/issues/58))
