@@ -1,27 +1,27 @@
 module.exports = [
 	{
 		description: 'transpiles object spread with one object',
-		input: `var a = {...b};`,
-		output: `var a = Object.assign({}, b);`
+		input: `var obj = {...a};`,
+		output: `var obj = Object.assign({}, a);`
 	},
 	{
 		description: 'transpiles object spread with two objects',
-		input: `var a = {...b, ...c};`,
-		output: `var a = Object.assign({}, b, c);`
+		input: `var obj = {...a, ...b};`,
+		output: `var obj = Object.assign({}, a, b);`
 	},
 	{
 		description: 'transpiles object rest spread with regular keys in between',
-		input: `const c = { ...a, b: 1};`,
-		output: `var c = Object.assign({}, a, {b: 1});`
-  },
+		input: `var obj = { ...a, b: 1, c: 2 };`,
+		output: `var obj = Object.assign({}, a, {b: 1, c: 2});`
+	},
 	{
 		description: 'transpiles object rest spread mixed',
-		input: `const c = { ...a, b: 1, ...d, e};`,
-		output: `var c = Object.assign({}, a, {b: 1}, d, {e: e});`
-  },
+		input: `var obj = { ...a, b: 1, ...d, e};`,
+		output: `var obj = Object.assign({}, a, {b: 1}, d, {e: e});`
+	},
 	{
 		description: 'transpiles object rest spread nested',
-		input: `const c = { ...a, b: 1, dd: {...d, f: 1}, e};`,
-		output: `var c = Object.assign({}, a, {b: 1}, {dd: Object.assign({}, d, {f: 1})}, {e: e});`
+		input: `var obj = { ...a, b: 1, dd: {...d, f: 1}, e};`,
+		output: `var obj = Object.assign({}, a, {b: 1, dd: Object.assign({}, d, {f: 1}), e: e});`
 	}
-]
+];
