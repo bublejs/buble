@@ -12,7 +12,7 @@ export default {
 		json(),
 		commonjs(),
 		buble({
-			include: [ 'src/**', 'node_modules/acorn/**' ],
+			include: [ 'src/**', 'node_modules/acorn/**', 'node_modules/acorn-object-spread/**' ],
 			transforms: {
 				dangerousForOf: true
 			}
