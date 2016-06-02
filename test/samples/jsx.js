@@ -147,7 +147,7 @@ module.exports = [
 		description: 'transpiles one JSX spread attributes',
 		input: `var element = <div {...props} />;`,
 		output: `var element = React.createElement( 'div', props);`
-  },
+	},
 
 	{
 		description: 'transpiles mixed JSX spread attributes ending in spread',
@@ -157,7 +157,7 @@ module.exports = [
 
 	{
 		description: 'transpiles mixed JSX spread attributes ending in other values',
-		input: `var element = <div a={1} {...props} {...stuff} more={things} />;`,
-		output: `var element = React.createElement( 'div', Object.assign({}, { a: 1 }, props, stuff, { more: things }));`
+		input: `var element = <div a={1} {...props} b={2} c={3} {...stuff} more={things} />;`,
+		output: `var element = React.createElement( 'div', Object.assign({}, { a: 1 }, props, { b: 2, c: 3 }, stuff, { more: things }));`
 	}
 ];

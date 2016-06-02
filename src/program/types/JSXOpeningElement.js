@@ -21,6 +21,31 @@ export default class JSXOpeningElement extends Node {
 				}
 			}
 
+			c = this.attributes[0].end;
+
+			for ( i = 0; i < len; i += 1 ) {
+				const attr = this.attributes[i];
+
+				if ( i > 0 ) {
+					code.overwrite( c, attr.start, ', ' );
+				}
+
+				if ( hasSpread && attr.type !== 'JSXSpreadAttribute' ) {
+					const lastAttr = this.attributes[ i - 1 ];
+					const nextAttr = this.attributes[ i + 1 ];
+
+					if ( !lastAttr || lastAttr.type === 'JSXSpreadAttribute' ) {
+						code.insertRight( attr.start, '{ ' );
+					}
+
+					if ( !nextAttr || nextAttr.type === 'JSXSpreadAttribute' ) {
+						code.insertLeft( attr.end, ' }' );
+					}
+				}
+
+				c = attr.end;
+			}
+
 			let after;
 			let before;
 			if ( hasSpread ) {
@@ -35,27 +60,10 @@ export default class JSXOpeningElement extends Node {
 				after = ' }';
 			}
 
-			code.insertLeft( this.name.end, before );
+			code.insertRight( this.name.end, before );
 
 			if ( after ) {
 				code.insertLeft( this.attributes[ len - 1 ].end, after );
-			}
-
-			c = this.attributes[0].end;
-
-			for ( i = 0; i < len; i += 1 ) {
-				const attr = this.attributes[i];
-
-				if ( i > 0 ) {
-					code.overwrite( c, attr.start, ', ' );
-				}
-
-				if ( hasSpread && attr.type !== 'JSXSpreadAttribute' ) {
-					code.insertLeft( attr.start, `{ ` );
-					code.insertLeft( i === len - 1 ? attr.end - 1 : attr.end, ' }' );
-				}
-
-				c = attr.end;
 			}
 		} else {
 			code.insertLeft( this.name.end, html ? `', null` : `, null` );
