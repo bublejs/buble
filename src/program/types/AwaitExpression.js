@@ -6,8 +6,8 @@ export default class AwaitExpression extends Node {
 		if ( transforms.asyncAwait ) {
 			// remove await keyword
 			code.remove( this.start, this.start + 6 );
-      // return the awaited expression
-      code.insertLeft( this.argument.start, 'return ' );
+			// return the awaited expression
+			code.insertLeft( this.argument.start, 'return ' );
 		}
 
 		super.transpile( code, transforms );
