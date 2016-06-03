@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.10.5
+
+* Create intermediate directories when transforming via CLI ([#63](https://gitlab.com/Rich-Harris/buble/issues/63))
+* Update README ([#57](https://gitlab.com/Rich-Harris/buble/issues/57))
+
 ## 0.10.4
 
 * Support spread operator in object literals ([!45](https://gitlab.com/Rich-Harris/buble/merge_requests/45)) and JSX elements ([!46](https://gitlab.com/Rich-Harris/buble/merge_requests/46))
