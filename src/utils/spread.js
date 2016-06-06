@@ -8,7 +8,7 @@ export default function spread ( code, elements, start, argumentsArrayAlias ) {
 
 	while ( i-- ) {
 		const element = elements[i];
-		if ( element.type === 'SpreadElement' ) {
+		if ( element && element.type === 'SpreadElement' ) {
 			if ( isArguments( element.argument ) ) {
 				code.overwrite( element.argument.start, element.argument.end, argumentsArrayAlias );
 			}

@@ -9,7 +9,7 @@ export default class ArrayExpression extends Node {
 			let i = this.elements.length;
 			while ( i-- ) {
 				const element = this.elements[i];
-				if ( element.type === 'SpreadElement' && isArguments( element.argument ) ) {
+				if ( element && element.type === 'SpreadElement' && isArguments( element.argument ) ) {
 					this.argumentsArrayAlias = lexicalBoundary.getArgumentsArrayAlias();
 				}
 			}
@@ -23,7 +23,7 @@ export default class ArrayExpression extends Node {
 			if ( this.elements.length === 1 ) {
 				const element = this.elements[0];
 
-				if ( element.type === 'SpreadElement' ) {
+				if ( element && element.type === 'SpreadElement' ) {
 					// special case – [ ...arguments ]
 					if ( isArguments( element.argument ) ) {
 						code.overwrite( this.start, this.end, `[].concat( ${this.argumentsArrayAlias} )` ); // TODO if this is the only use of argsArray, don't bother concating
@@ -38,7 +38,7 @@ export default class ArrayExpression extends Node {
 				const hasSpreadElements = spread( code, this.elements, this.start, this.argumentsArrayAlias );
 
 				if ( hasSpreadElements ) {
-					code.overwrite( this.elements[ this.elements.length - 1 ].end, this.end, ' )' );
+					code.overwrite( this.end - 1, this.end, ')' );
 				}
 			}
 		}

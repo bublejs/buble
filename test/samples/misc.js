@@ -87,5 +87,11 @@ module.exports = [
 			console.log( null );
 			console.log( 'some string' );
 			console.log( null );`
+	},
+
+	{
+		description: 'handles sparse arrays (#62)',
+		input: `var a = [ , 1 ], b = [ 1, ], c = [ 1, , 2 ];`,
+		output: `var a = [ , 1 ], b = [ 1, ], c = [ 1, , 2 ];`
 	}
 ];
