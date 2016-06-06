@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.10.6
+
+* Handle sparse arrays ([#62](https://gitlab.com/Rich-Harris/buble/issues/62))
+* Handle spread expressions in JSX ([#64](https://gitlab.com/Rich-Harris/buble/issues/64))
+
 ## 0.10.5
 
 * Create intermediate directories when transforming via CLI ([#63](https://gitlab.com/Rich-Harris/buble/issues/63))
