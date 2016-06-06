@@ -24,11 +24,14 @@ import JSXClosingElement from './JSXClosingElement.js';
 import JSXElement from './JSXElement.js';
 import JSXExpressionContainer from './JSXExpressionContainer.js';
 import JSXOpeningElement from './JSXOpeningElement.js';
+import JSXSpreadAttribute from './JSXSpreadAttribute.js';
 import Literal from './Literal.js';
 import LoopStatement from './shared/LoopStatement.js';
 import MemberExpression from './MemberExpression.js';
+import ObjectExpression from './ObjectExpression.js';
 import Property from './Property.js';
 import ReturnStatement from './ReturnStatement.js';
+import SpreadProperty from './SpreadProperty.js';
 import Super from './Super.js';
 import TaggedTemplateExpression from './TaggedTemplateExpression.js';
 import TemplateElement from './TemplateElement.js';
@@ -66,10 +69,13 @@ export default {
 	JSXElement,
 	JSXExpressionContainer,
 	JSXOpeningElement,
+  JSXSpreadAttribute,
 	Literal,
 	MemberExpression,
+	ObjectExpression,
 	Property,
 	ReturnStatement,
+	SpreadProperty,
 	Super,
 	TaggedTemplateExpression,
 	TemplateElement,

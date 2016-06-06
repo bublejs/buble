@@ -1,5 +1,21 @@
 # buble changelog
 
+## 0.10.5
+
+* Create intermediate directories when transforming via CLI ([#63](https://gitlab.com/Rich-Harris/buble/issues/63))
+* Update README ([#57](https://gitlab.com/Rich-Harris/buble/issues/57))
+
+## 0.10.4
+
+* Support spread operator in object literals ([!45](https://gitlab.com/Rich-Harris/buble/merge_requests/45)) and JSX elements ([!46](https://gitlab.com/Rich-Harris/buble/merge_requests/46))
+
+## 0.10.3
+
+* Disable intelligent destructuring, temporarily ([#53](https://gitlab.com/Rich-Harris/buble/issues/53))
+* Fix whitespace in JSX literals ([!39](https://gitlab.com/Rich-Harris/buble/merge_requests/39))
+* Add `: true` to value-less JSX attributes ([!40](https://gitlab.com/Rich-Harris/buble/merge_requests/40))
+* Quote invalid attribute names ([!41](https://gitlab.com/Rich-Harris/buble/merge_requests/41))
+
 ## 0.10.2
 
 * Don't add closing quote to JSX component without attributes ([#58](https://gitlab.com/Rich-Harris/buble/issues/58))

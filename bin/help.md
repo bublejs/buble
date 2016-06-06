@@ -13,6 +13,7 @@ Basic options:
 -t, --target             Select compilation targets
 -y, --yes                Transforms to always apply (overrides --target)
 -n, --no                 Transforms to always skip (overrides --target)
+--jsx                    Custom JSX pragma
 
 Examples:
 

@@ -110,6 +110,16 @@ module.exports = [
 	},
 
 	{
+		description: 'handles single-line whitespace and quotes appropriately',
+		input: `
+			<h1>
+				Hello {name} – and goodbye!
+			</h1>`,
+		output: `
+			React.createElement( 'h1', null, "Hello ", name, " – and goodbye!" )`
+	},
+
+	{
 		description: 'handles single quotes in text children',
 		input: `
 			<h1>
@@ -119,5 +129,35 @@ module.exports = [
 			</h1>`,
 		output: `
 			React.createElement( 'h1', null, "Hello ", name, "! It's  nice to meet you" )`
+	},
+
+	{
+		description: 'transpiles tag with data attribute',
+		input: `var element = <div data-name={name}/>;`,
+		output: `var element = React.createElement( 'div', { 'data-name': name });`
+	},
+
+	{
+		description: 'transpiles JSX tag without value',
+		input: `var div = <div contentEditable />;`,
+		output: `var div = React.createElement( 'div', { contentEditable: true });`
+	},
+
+	{
+		description: 'transpiles one JSX spread attributes',
+		input: `var element = <div {...props} />;`,
+		output: `var element = React.createElement( 'div', props);`
+	},
+
+	{
+		description: 'transpiles mixed JSX spread attributes ending in spread',
+		input: `var element = <div a={1} {...props} {...stuff} />;`,
+		output: `var element = React.createElement( 'div', Object.assign({}, { a: 1 }, props, stuff));`
+	},
+
+	{
+		description: 'transpiles mixed JSX spread attributes ending in other values',
+		input: `var element = <div a={1} {...props} b={2} c={3} {...stuff} more={things} />;`,
+		output: `var element = React.createElement( 'div', Object.assign({}, { a: 1 }, props, { b: 2, c: 3 }, stuff, { more: things }));`
 	}
 ];

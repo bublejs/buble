@@ -2,8 +2,8 @@ import Node from '../Node.js';
 
 function normalise ( str, removeTrailingWhitespace ) {
 	str = str
-		.replace( /^\s+/gm, '' )    // remove leading whitespace
-		.replace( /\s+\n\r?/gm, ' ' ); // replace newlines with spaces
+		.replace( /^\n\r?\s+/, '' )       // remove leading newline + space
+		.replace( /\s*\n\r?\s*/gm, ' ' ); // replace newlines with spaces
 
 	if ( removeTrailingWhitespace ) {
 		str = str.replace( /\s+$/, '' );
