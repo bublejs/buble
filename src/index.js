@@ -1,10 +1,14 @@
-import acornJsx from 'acorn-jsx';
+import acorn from 'acorn';
+import acornJsx from 'acorn-jsx/inject';
 import acornObjectSpread from 'acorn-object-spread/inject';
 import Program from './program/Program.js';
 import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';
 
-const acorn = acornObjectSpread(acornJsx);
+const { parse } = [
+	acornObjectSpread,
+	acornJsx
+].reduce( ( final, plugin ) => plugin( final ), acorn );
 
 const dangerousTransforms = [
 	'dangerousTaggedTemplateString',
@@ -44,7 +48,7 @@ export function transform ( source, options = {} ) {
 	let ast;
 
 	try {
-		ast = acorn.parse( source, {
+		ast = parse( source, {
 			ecmaVersion: 7,
 			preserveParens: true,
 			sourceType: 'module',
