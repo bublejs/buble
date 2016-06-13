@@ -32,7 +32,7 @@ module.exports = [
 	{
 		description: 'transpiles object reset spread with custom Object.assign',
 		options: {
-			objectSpreadRest: 'angular.extend'
+			objectAssign: 'angular.extend'
 		},
 		input: `var obj = { ...a, b: 1, dd: {...d, f: 1}, e};`,
 		output: `var obj = angular.extend({}, a, {b: 1, dd: angular.extend({}, d, {f: 1}), e: e});`

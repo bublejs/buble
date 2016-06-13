@@ -35,7 +35,7 @@ export default class ObjectExpression extends Node {
 			}
 
 			// wrap the whole thing in Object.assign
-			code.overwrite( this.start, this.properties[0].start, `${this.program.objectSpreadRest}({}, `);
+			code.overwrite( this.start, this.properties[0].start, `${this.program.objectAssign}({}, `);
 			code.overwrite( this.properties[ this.properties.length - 1 ].end, this.end, ')' );
 		}
 	}

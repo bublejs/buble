@@ -52,7 +52,7 @@ export default class JSXOpeningElement extends Node {
 				if ( len === 1 ) {
 					before = html ? `',` : ',';
 				} else {
-					before = html ? `', ${this.program.objectSpreadRest}({},` : `, ${this.program.objectSpreadRest}({},`;
+					before = html ? `', ${this.program.objectAssign}({},` : `, ${this.program.objectAssign}({},`;
 					after = ')';
 				}
 			} else {

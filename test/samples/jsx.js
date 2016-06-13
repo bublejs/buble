@@ -158,7 +158,7 @@ module.exports = [
 	{
 		description: 'transpiles mixed JSX spread attributes ending in spread with custom Object.assign',
 		options: {
-			objectSpreadRest: 'angular.extend'
+			objectAssign: 'angular.extend'
 		},
 		input: `var element = <div a={1} {...props} {...stuff} />;`,
 		output: `var element = React.createElement( 'div', angular.extend({}, { a: 1 }, props, stuff));`
