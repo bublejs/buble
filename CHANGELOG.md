@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.11.1
+
+* Fix computed property followed by non-computed property in inline expression
+
 ## 0.11.0
 
 * Computed properties ([#67](https://gitlab.com/Rich-Harris/buble/issues/67))
