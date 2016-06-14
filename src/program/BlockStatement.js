@@ -235,8 +235,7 @@ export default class BlockStatement extends Node {
 		Object.keys( this.scope.blockScopedDeclarations ).forEach( name => {
 			const declarations = this.scope.blockScopedDeclarations[ name ];
 
-			for ( let i = 0; i < declarations.length; i += 1 ) {
-				const declaration = declarations[i];
+			for ( let declaration of declarations ) {
 				let cont = false; // TODO implement proper continue...
 
 				if ( declaration.kind === 'for.let' ) {
