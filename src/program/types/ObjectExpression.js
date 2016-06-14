@@ -54,6 +54,10 @@ export default class ObjectExpression extends Node {
 				name = this.parent.left.alias || this.parent.left.name; // TODO is this right?
 			}
 
+			// handle block scoping
+			const declaration = this.findScope( false ).findDeclaration( name );
+			if ( declaration ) name = declaration.name;
+
 			start = this.start + 1;
 			end = this.parent.end;
 

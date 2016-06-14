@@ -95,5 +95,26 @@ module.exports = [
 		output: `
 			var obj$1;
 			var a = 'foo', obj = ( obj$1 = {}, obj$1[a] = 'bar', obj$1 ), bar = obj.foo;`
+	},
+
+	{
+		description: 'creates computed property in block with conflicts',
+
+		input: `
+			var x;
+
+			if ( true ) {
+				let x = {
+					[a]: 1
+				};
+			}`,
+
+		output: `
+			var x;
+
+			if ( true ) {
+				var x$1 = {};
+				x$1[a] = 1;
+			}`
 	}
 ];
