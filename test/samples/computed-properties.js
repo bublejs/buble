@@ -84,5 +84,16 @@ module.exports = [
 			obj[c] = 3;
 			obj[d] = 4;
 			obj[f] = 6;`
+	},
+
+	{
+		description: 'creates computed property in complex expression',
+
+		input: `
+			var a = 'foo', obj = { [a]: 'bar' }, bar = obj.foo;`,
+
+		output: `
+			var obj$1;
+			var a = 'foo', obj = ( obj$1 = {}, obj$1[a] = 'bar', obj$1 ), bar = obj.foo;`
 	}
 ];

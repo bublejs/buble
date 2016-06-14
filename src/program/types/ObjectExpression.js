@@ -54,22 +54,30 @@ export default class ObjectExpression extends Node {
 				name = this.parent.left.alias || this.parent.left.name; // TODO is this right?
 			}
 
+			start = this.start + 1;
+			end = this.parent.end;
+
 			if ( isSimpleAssignment ) {
-				start = this.start + 1;
-				end = this.parent.end;
+				// ???
 			} else {
 				name = this.findScope( true ).createIdentifier( 'obj' );
-				throw new Error( 'TODO' );
+
+				const statement = this.findNearest( /(?:Statement|Declaration)$/ );
+				code.insertRight( statement.start, `var ${name};\n${i0}` );
+
+				code.insertRight( this.start, `( ${name} = ` );
 			}
 
 			const len = this.properties.length;
+			let prop;
+
 			for ( let i = 0; i < len; i += 1 ) {
-				const prop = this.properties[i];
+				prop = this.properties[i];
 
 				if ( prop.computed ) {
 					let moveStart = i > 0 ? this.properties[ i - 1 ].end : start;
 
-					code.overwrite( moveStart, prop.start, `;\n${i0}${name}` );
+					code.overwrite( moveStart, prop.start, isSimpleAssignment ? `;\n${i0}${name}` : `, ${name}` );
 					let c = prop.key.end;
 					while ( code.original[c] !== ']' ) c += 1;
 
@@ -89,6 +97,10 @@ export default class ObjectExpression extends Node {
 			// special case
 			if ( computedPropertyCount === len ) {
 				code.remove( this.properties[ len - 1 ].end, this.end - 1 );
+			}
+
+			if ( !isSimpleAssignment ) {
+				code.insertLeft( prop.end, `, ${name} )` );
 			}
 		}
 	}
