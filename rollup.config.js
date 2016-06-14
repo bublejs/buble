@@ -3,7 +3,7 @@ import json from 'rollup-plugin-json';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 
-var external = process.env.DEPS ? [] : [ 'acorn-jsx', 'magic-string' ];
+var external = process.env.DEPS ? [] : [ 'acorn', 'magic-string' ];
 
 export default {
 	entry: 'src/index.js',
@@ -12,7 +12,7 @@ export default {
 		json(),
 		commonjs(),
 		buble({
-			include: [ 'src/**', 'node_modules/acorn/**', 'node_modules/acorn-object-spread/**' ],
+			include: [ 'src/**', 'node_modules/acorn-object-spread/**' ],
 			transforms: {
 				dangerousForOf: true
 			}
@@ -24,7 +24,7 @@ export default {
 	],
 	external: external,
 	globals: {
-		'acorn-jsx': 'acorn',
+		'acorn': 'acorn',
 		'magic-string': 'MagicString'
 	},
 	sourceMap: true
