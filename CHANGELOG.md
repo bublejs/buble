@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.11.0
+
+* Computed properties ([#67](https://gitlab.com/Rich-Harris/buble/issues/67))
+* Allow `super(...)` to use rest arguments ([#69](https://gitlab.com/Rich-Harris/buble/issues/69))
+
 ## 0.10.7
 
 * Allow customisation of `Object.assign` (used in object spread) ([!51](https://gitlab.com/Rich-Harris/buble/merge_requests/51))
