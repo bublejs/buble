@@ -37,7 +37,9 @@ export default class Super extends Node {
 			const callExpression = this.isCalled ? this.parent : this.parent.parent;
 
 			if ( callExpression && callExpression.type === 'CallExpression' ) {
-				code.insertLeft( callExpression.callee.end, '.call' );
+				if ( !this.noCall ) { // special case – `super( ...args )`
+					code.insertLeft( callExpression.callee.end, '.call' );
+				}
 
 				if ( callExpression.arguments.length ) {
 					code.insertLeft( callExpression.arguments[0].start, `this, ` );

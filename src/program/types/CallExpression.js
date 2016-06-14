@@ -49,9 +49,26 @@ export default class CallExpression extends Node {
 					context = 'void 0';
 				}
 
-				if ( this.arguments.length === 1 ) {
+				code.insertLeft( this.callee.end, '.apply' );
+
+				// we need to handle `super()` different, because `SuperClass.call.apply`
+				// isn't very helpful
+				const isSuper = this.callee.type === 'Super';
+
+				if ( isSuper ) {
+					this.callee.noCall = true; // bit hacky...
+
+					if ( this.arguments.length > 1 ) {
+						if ( firstArgument.type !== 'SpreadElement' ) {
+							code.insertRight( firstArgument.start, `[ ` );
+						}
+
+						code.insertLeft( this.arguments[ this.arguments.length - 1 ].end, ' )' );
+					}
+				}
+
+				else if ( this.arguments.length === 1 ) {
 					code.insertRight( firstArgument.start, `${context}, ` );
-					code.insertLeft( this.callee.end, '.apply' );
 				} else {
 					if ( firstArgument.type === 'SpreadElement' ) {
 						code.insertRight( firstArgument.start, `${context}, ` );
@@ -60,7 +77,6 @@ export default class CallExpression extends Node {
 					}
 
 					code.insertLeft( this.arguments[ this.arguments.length - 1 ].end, ' )' );
-					code.insertLeft( this.callee.end, '.apply' );
 				}
 			}
 		}

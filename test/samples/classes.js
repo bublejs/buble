@@ -820,6 +820,60 @@ module.exports = [
 
 				return Foo;
 			}(Bar));`
+	},
+
+	{
+		description: 'allows subclass to use rest parameters',
+
+		input: `
+			class SubClass extends SuperClass {
+				constructor( ...args ) {
+					super( ...args );
+				}
+			}`,
+
+		output: `
+			var SubClass = (function (SuperClass) {
+				function SubClass() {
+					var args = [], len = arguments.length;
+					while ( len-- ) args[ len ] = arguments[ len ];
+
+					SuperClass.apply( this, args );
+				}
+
+				if ( SuperClass ) SubClass.__proto__ = SuperClass;
+				SubClass.prototype = Object.create( SuperClass && SuperClass.prototype );
+				SubClass.prototype.constructor = SubClass;
+
+				return SubClass;
+			}(SuperClass));`
+	},
+
+	{
+		description: 'allows subclass to use rest parameters with other arguments',
+
+		input: `
+			class SubClass extends SuperClass {
+				constructor( ...args ) {
+					super( 1, ...args, 2 );
+				}
+			}`,
+
+		output: `
+			var SubClass = (function (SuperClass) {
+				function SubClass() {
+					var args = [], len = arguments.length;
+					while ( len-- ) args[ len ] = arguments[ len ];
+
+					SuperClass.apply( this, [ 1 ].concat( args, [2] ) );
+				}
+
+				if ( SuperClass ) SubClass.__proto__ = SuperClass;
+				SubClass.prototype = Object.create( SuperClass && SuperClass.prototype );
+				SubClass.prototype.constructor = SubClass;
+
+				return SubClass;
+			}(SuperClass));`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
