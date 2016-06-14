@@ -73,12 +73,13 @@ export default class ObjectExpression extends Node {
 			}
 
 			const len = this.properties.length;
-			let prop;
+			let lastComputedProp;
 
 			for ( let i = 0; i < len; i += 1 ) {
-				prop = this.properties[i];
+				const prop = this.properties[i];
 
 				if ( prop.computed ) {
+					lastComputedProp = prop;
 					let moveStart = i > 0 ? this.properties[ i - 1 ].end : start;
 
 					code.overwrite( moveStart, prop.start, isSimpleAssignment ? `;\n${i0}${name}` : `, ${name}` );
@@ -104,7 +105,7 @@ export default class ObjectExpression extends Node {
 			}
 
 			if ( !isSimpleAssignment ) {
-				code.insertLeft( prop.end, `, ${name} )` );
+				code.insertLeft( lastComputedProp.end, `, ${name} )` );
 			}
 		}
 	}

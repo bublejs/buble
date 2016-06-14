@@ -90,11 +90,11 @@ module.exports = [
 		description: 'creates computed property in complex expression',
 
 		input: `
-			var a = 'foo', obj = { [a]: 'bar' }, bar = obj.foo;`,
+			var a = 'foo', obj = { [a]: 'bar', x: 42 }, bar = obj.foo;`,
 
 		output: `
 			var obj$1;
-			var a = 'foo', obj = ( obj$1 = {}, obj$1[a] = 'bar', obj$1 ), bar = obj.foo;`
+			var a = 'foo', obj = ( obj$1 = { x: 42 }, obj$1[a] = 'bar', obj$1 ), bar = obj.foo;`
 	},
 
 	{
