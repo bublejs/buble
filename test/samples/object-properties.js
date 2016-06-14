@@ -20,16 +20,6 @@ module.exports = [
 	},
 
 	{
-		description: 'does not transpile computed properties',
-		input: `
-			obj = {
-				[x]: 'x'
-			}`,
-
-		error: /Computed properties are not supported/
-	},
-
-	{
 		description: 'shorthand properties can be disabled with `transforms.conciseMethodProperty === false`',
 		options: { transforms: { conciseMethodProperty: false } },
 		input: `var obj = { x, y, z () {} }`,

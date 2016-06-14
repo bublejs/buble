@@ -1,16 +1,7 @@
 import Node from '../Node.js';
 import reserved from '../../utils/reserved.js';
-import CompileError from '../../utils/CompileError.js';
 
 export default class Property extends Node {
-	initialise ( transforms ) {
-		if ( this.computed && transforms.computedProperty ) {
-			throw new CompileError( this.key, 'Computed properties are not supported' );
-		}
-
-		super.initialise( transforms );
-	}
-
 	transpile ( code, transforms ) {
 		if ( transforms.conciseMethodProperty && this.parent.type !== 'ObjectPattern' ) {
 			if ( this.shorthand ) {

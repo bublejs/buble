@@ -4,21 +4,19 @@ export default class ObjectExpression extends Node {
 	transpile ( code, transforms ) {
 		super.transpile( code, transforms );
 
-		let hasSpread = false;
+		let spreadPropertyCount = 0;
+		let computedPropertyCount = 0;
 
 		for ( let prop of this.properties ) {
-			if ( prop.type === 'SpreadProperty' ) {
-				hasSpread = true;
-				break;
-			}
+			if ( prop.type === 'SpreadProperty' ) spreadPropertyCount += 1;
+			if ( prop.computed ) computedPropertyCount += 1;
 		}
 
-		if ( hasSpread ) {
+		if ( spreadPropertyCount ) {
 			// enclose run of non-spread properties in curlies
 			let i = this.properties.length;
 			while ( i-- ) {
 				const prop = this.properties[i];
-
 
 				if ( prop.type === 'Property' ) {
 					const lastProp = this.properties[ i - 1 ];
@@ -37,6 +35,61 @@ export default class ObjectExpression extends Node {
 			// wrap the whole thing in Object.assign
 			code.overwrite( this.start, this.properties[0].start, `${this.program.objectAssign}({}, `);
 			code.overwrite( this.properties[ this.properties.length - 1 ].end, this.end, ')' );
+		}
+
+		if ( computedPropertyCount && transforms.computedProperty ) {
+			const i0 = this.getIndentation();
+
+			let isSimpleAssignment;
+			let name;
+
+			let start;
+			let end;
+
+			if ( this.parent.type === 'VariableDeclarator' && this.parent.parent.declarations.length === 1 ) {
+				isSimpleAssignment = true;
+				name = this.parent.id.alias || this.parent.id.name; // TODO is this right?
+			} else if ( this.parent.type === 'AssignmentExpression' && this.parent.parent.type === 'ExpressionStatement' && this.parent.left.type === 'Identifier' ) {
+				isSimpleAssignment = true;
+				name = this.parent.left.alias || this.parent.left.name; // TODO is this right?
+			}
+
+			if ( isSimpleAssignment ) {
+				start = this.start + 1;
+				end = this.parent.end;
+			} else {
+				name = this.findScope( true ).createIdentifier( 'obj' );
+				throw new Error( 'TODO' );
+			}
+
+			const len = this.properties.length;
+			for ( let i = 0; i < len; i += 1 ) {
+				const prop = this.properties[i];
+
+				if ( prop.computed ) {
+					let moveStart = i > 0 ? this.properties[ i - 1 ].end : start;
+
+					code.overwrite( moveStart, prop.start, `;\n${i0}${name}` );
+					let c = prop.key.end;
+					while ( code.original[c] !== ']' ) c += 1;
+
+					code.overwrite( c + 1, prop.value.start, ' = ' );
+					code.move( moveStart, prop.end, end );
+
+					if ( i === 0 && len > 1 ) {
+						// remove trailing comma
+						c = prop.end;
+						while ( code.original[c] !== ',' ) c += 1;
+
+						code.remove( prop.end, c + 1 );
+					}
+				}
+			}
+
+			// special case
+			if ( computedPropertyCount === len ) {
+				code.remove( this.properties[ len - 1 ].end, this.end - 1 );
+			}
 		}
 	}
 }
