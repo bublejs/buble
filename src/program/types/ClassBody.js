@@ -85,25 +85,28 @@ export default class ClassBody extends Node {
 						if ( !~staticGettersAndSetters.indexOf( method.key.name ) ) staticGettersAndSetters.push( method.key.name );
 						if ( !staticAccessors ) staticAccessors = scope.createIdentifier( 'staticAccessors' );
 
-						lhs = `${staticAccessors}.${method.key.name}.${method.kind}`;
+						lhs = `${staticAccessors}`;
 					} else {
 						if ( !~prototypeGettersAndSetters.indexOf( method.key.name ) ) prototypeGettersAndSetters.push( method.key.name );
 						if ( !prototypeAccessors ) prototypeAccessors = scope.createIdentifier( 'prototypeAccessors' );
 
-						lhs = `${prototypeAccessors}.${method.key.name}.${method.kind}`;
+						lhs = `${prototypeAccessors}`;
 					}
 				} else {
 					lhs = method.static ?
-						`${name}.${method.key.name}` :
-						`${name}.prototype.${method.key.name}`;
+						`${name}` :
+						`${name}.prototype`;
 				}
+
+				if ( !method.computed ) lhs += '.';
 
 				const insertNewlines = ( constructorIndex > 0 && i === constructorIndex + 1 ) ||
 				                       ( i === 0 && constructorIndex === this.body.length - 1 );
 
 				if ( insertNewlines ) lhs = `\n\n${i0}${lhs}`;
 
-				code.insertRight( method.start, `${lhs} = function` + ( method.value.generator ? '*' : '' ) + ( isAccessor ? '' : ' ' ) );
+				code.insertRight( method.start, lhs );
+				code.insertRight( method.value.start, `= function` + ( method.value.generator ? '*' : '' ) + ( isAccessor ? '' : ' ' ) + ( method.computed ? '' : `${method.key.name} ` ) );
 				code.insertLeft( method.end, ';' );
 
 				if ( method.value.generator ) code.remove( method.start, method.key.start );
