@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.10.7
+
+* Allow customisation of `Object.assign` (used in object spread) ([!51](https://gitlab.com/Rich-Harris/buble/merge_requests/51))
+
 ## 0.10.6
 
 * Handle sparse arrays ([#62](https://gitlab.com/Rich-Harris/buble/issues/62))
