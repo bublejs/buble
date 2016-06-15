@@ -667,12 +667,12 @@ module.exports = [
 		output: `
 			var A = function A () {};
 
-			A.prototype.x = function x(){};
+			A.prototype.x = function x (){};
 
 			var B = (function () {
 				function B () {}
 
-				B.prototype.x = function x(){};
+				B.prototype.x = function x (){};
 
 				return B;
 			}());
@@ -686,7 +686,7 @@ module.exports = [
 				C.prototype = Object.create( D && D.prototype );
 				C.prototype.constructor = C;
 
-				C.prototype.x = function x(){};
+				C.prototype.x = function x (){};
 
 				return C;
 			}(D));
@@ -700,7 +700,7 @@ module.exports = [
 				E.prototype = Object.create( F && F.prototype );
 				E.prototype.constructor = E;
 
-				E.prototype.x = function x(){};
+				E.prototype.x = function x (){};
 
 				return E;
 			}(F))`
@@ -719,7 +719,7 @@ module.exports = [
 
 			var staticAccessors = { bar: {} };
 
-			staticAccessors.bar.get = function() { return 'baz' };
+			staticAccessors.bar.get = function () { return 'baz' };
 
 			Object.defineProperties( Foo, staticAccessors );`
 	},
