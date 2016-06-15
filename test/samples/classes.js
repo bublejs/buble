@@ -892,6 +892,43 @@ module.exports = [
 			Foo.prototype[a.b.c] = function () {
 				// code goes here
 			};`
+	},
+
+	{
+		description: 'transpiles static computed class properties',
+
+		input: `
+			class Foo {
+				static [a.b.c] () {
+					// code goes here
+				}
+			}`,
+
+		output: `
+			var Foo = function Foo () {};
+
+			Foo[a.b.c] = function () {
+				// code goes here
+			};`
+	},
+
+	{
+		skip: true, // TODO
+		description: 'transpiles computed class accessors',
+
+		input: `
+			class Foo {
+				get [a.b.c] () {
+					// code goes here
+				}
+			}`,
+
+		output: `
+			var Foo = function Foo () {};
+
+			Foo.prototype[a.b.c] = function () {
+				// code goes here
+			};`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
