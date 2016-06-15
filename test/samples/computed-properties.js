@@ -116,5 +116,16 @@ module.exports = [
 				var x$1 = {};
 				x$1[a] = 1;
 			}`
+	},
+
+	{
+		description: 'closing parenthesis put in correct place (#73)',
+
+		input: `
+			call({ [a]: 5 });`,
+
+		output: `
+			var obj;
+			call(( obj = {}, obj[a] = 5, obj ));`
 	}
 ];

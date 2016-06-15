@@ -59,7 +59,7 @@ export default class ObjectExpression extends Node {
 			if ( declaration ) name = declaration.name;
 
 			start = this.start + 1;
-			end = this.parent.end;
+			end = this.end;
 
 			if ( isSimpleAssignment ) {
 				// ???
