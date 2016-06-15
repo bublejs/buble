@@ -4,6 +4,13 @@ import Scope from './Scope.js';
 import CompileError from '../utils/CompileError.js';
 import destructure from '../utils/destructure.js';
 
+function isUseStrict ( node ) {
+	if ( !node ) return false;
+	if ( node.type !== 'ExpressionStatement' ) return false;
+	if ( node.expression.type !== 'Literal' ) return false;
+	return node.expression.value === 'use strict';
+}
+
 export default class BlockStatement extends Node {
 	createScope () {
 		this.parentIsFunction = /Function/.test( this.parent.type );
@@ -109,8 +116,6 @@ export default class BlockStatement extends Node {
 	}
 
 	transpile ( code, transforms ) {
-		const start = this.parent.type === 'Root' || this.synthetic ? this.start : this.start + 1;
-
 		const indentation = this.getIndentation();
 
 		let introStatementGenerators = [];
@@ -165,6 +170,15 @@ export default class BlockStatement extends Node {
 			else if ( introStatementGenerators.length ) {
 				code.insertLeft( this.start, `{` ).insertRight( this.end, `}` );
 			}
+		}
+
+		let start;
+		if ( isUseStrict( this.body[0] ) ) {
+			start = this.body[0].end;
+		} else if ( this.synthetic || this.parent.type === 'Root' ) {
+			start = this.start;
+		} else {
+			start = this.start + 1;
 		}
 
 		let prefix = `\n${indentation}`;

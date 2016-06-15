@@ -136,5 +136,31 @@ module.exports = [
 				console.log( 'this, arguments', this, arguments )
 				a = b;
 			}`
+	},
+
+	{
+		description: 'inserts statements after use strict pragma (#72)',
+
+		input: `
+			'use strict';
+			setTimeout( () => console.log( this ) );
+
+			function foo () {
+				'use strict';
+				setTimeout( () => console.log( this ) );
+			}`,
+
+		output: `
+			'use strict';
+			var this$1 = this;
+
+			setTimeout( function () { return console.log( this$1 ); } );
+
+			function foo () {
+				'use strict';
+				var this$1 = this;
+
+				setTimeout( function () { return console.log( this$1 ); } );
+			}`
 	}
 ];
