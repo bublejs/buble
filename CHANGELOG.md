@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.11.2
+
+* Ensure closing parenthesis is in correct place when transpiling inline computed property object expressions ([#73](https://gitlab.com/Rich-Harris/buble/issues/73))
+
 ## 0.11.1
 
 * Fix computed property followed by non-computed property in inline expression
