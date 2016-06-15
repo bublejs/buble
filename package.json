@@ -45,6 +45,7 @@
   "homepage": "https://gitlab.com/Rich-Harris/buble#README",
   "devDependencies": {
     "buble": "0.8.2",
+    "console-group": "^0.2.1",
     "eslint": "^2.10.1",
     "glob": "^7.0.3",
     "mocha": "^2.4.5",

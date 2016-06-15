@@ -29,7 +29,7 @@ module.exports = [
 		output: `
 			function pythag ( ref ) {
 				var x = ref.x;
-				var ref_y = ref.y, z = ref_y === void 0 ? 1 : ref_y;
+				var z = ref.y; if ( z === void 0 ) z = 1;
 
 				return Math.sqrt( x * x + z * z );
 			}`
@@ -80,7 +80,7 @@ module.exports = [
 		output: `
 			function pythag ( ref ) {
 				var x = ref[0];
-				var ref_1 = ref[1], z = ref_1 === void 0 ? 1 : ref_1;
+				var z = ref[1]; if ( z === void 0 ) x = 1;
 
 				return Math.sqrt( x * x + z * z );
 			}`
@@ -217,7 +217,8 @@ module.exports = [
 
 		output: `
 			var value = obj.name;
-			var obj_description = obj.description, description = obj_description === void 0 ? null : obj_description;
+			var description = obj.description;
+			if ( description === void 0 ) description = null;
 			console.log( value, description );`
 	},
 
@@ -232,8 +233,8 @@ module.exports = [
 		output: `
 			function foo (ref) {
 				if ( ref === void 0 ) ref = {};
-				var ref_arg1 = ref.arg1, arg1 = ref_arg1 === void 0 ? 123 : ref_arg1;
-				var ref_arg2 = ref.arg2, arg2 = ref_arg2 === void 0 ? 456 : ref_arg2;
+				var arg1 = ref.arg1; if ( arg1 === void 0 ) arg1 = 123;
+				var arg2 = ref.arg2; if ( arg2 === void 0 ) arg2 = 456;
 
 				console.log( arg1, arg2 );
 			}`
@@ -259,6 +260,18 @@ module.exports = [
 					console.log(element);
 				};
 			}`
+	},
+
+	{
+		// solo: true,
+		description: 'deep matching',
+
+		input: `
+			var { a: { b: c }, d: { e: f } } = x;`,
+
+		output: `
+			var c = x.a.b;
+			var f = x.d.e;`
 	}
 
 ];
