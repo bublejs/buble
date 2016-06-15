@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.11.3
+
+* Ensure inserted statements follow use strict pragma ([#72](https://gitlab.com/Rich-Harris/buble/issues/72))
+
 ## 0.11.2
 
 * Ensure closing parenthesis is in correct place when transpiling inline computed property object expressions ([#73](https://gitlab.com/Rich-Harris/buble/issues/73))
