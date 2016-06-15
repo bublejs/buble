@@ -82,6 +82,10 @@ export default class ClassBody extends Node {
 				if ( scope.contains( methodName ) ) methodName = scope.createIdentifier( methodName );
 
 				if ( isAccessor ) {
+					if ( method.computed ) {
+						throw new Error( 'Computed accessor properties are not currently supported' );
+					}
+
 					code.remove( method.start, method.key.start );
 
 					if ( method.static ) {

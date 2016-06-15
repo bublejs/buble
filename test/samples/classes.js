@@ -913,7 +913,7 @@ module.exports = [
 	},
 
 	{
-		skip: true, // TODO
+		skip: true,
 		description: 'transpiles computed class accessors',
 
 		input: `
@@ -926,9 +926,15 @@ module.exports = [
 		output: `
 			var Foo = function Foo () {};
 
-			Foo.prototype[a.b.c] = function () {
+			var prototypeAccessors = {};
+			var ref = a.b.c;
+			prototypeAccessors[ref] = {};
+
+			prototypeAccessors[ref].get = function () {
 				// code goes here
-			};`
+			};
+
+			Object.defineProperties( Foo.prototype, prototypeAccessors );`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
