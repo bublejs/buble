@@ -24,14 +24,43 @@ function destructureIdentifier ( code, scope, node, ref, expr, statementGenerato
 	});
 }
 
+function handleProperty ( code, scope, c, node, value, statementGenerators ) {
+	switch ( node.type ) {
+		case 'Identifier':
+			code.remove( c, node.start );
+			statementGenerators.push( ( start, prefix, suffix ) => {
+				code.insertRight( node.start, `${prefix}var ` );
+				code.insertLeft( node.end, ` = ${value};${suffix}` );
+				code.move( node.start, node.end, start );
+			});
+			break;
+
+		case 'AssignmentPattern':
+			let name = node.left.name;
+			const declaration = scope.findDeclaration( name );
+			if ( declaration ) name = declaration.name;
+
+			code.remove( c, node.right.start );
+			statementGenerators.push( ( start, prefix, suffix ) => {
+				code.insertRight( node.right.start, `${prefix}var ${name} = ${value}; if ( ${name} === void 0 ) ${name} = ` );
+				code.move( node.right.start, node.right.end, start );
+				code.insertLeft( node.right.end, `;${suffix}` );
+			});
+			break;
+
+		default:
+			console.log( 'node.type', node.type )
+			_destructure( code, scope, node, scope.createIdentifier( `${ref}_${i}` ), `${ref}[${i}]`, statementGenerators );
+	}
+}
+
 function destructureArrayPattern ( code, scope, node, ref, expr, statementGenerators ) {
 	let c = node.start;
 
 	node.elements.forEach( ( element, i ) => {
 		if ( !element ) return;
 
-		code.remove( c, element.start );
-		_destructure( code, scope, element, scope.createIdentifier( `${ref}_${i}` ), `${ref}[${i}]`, statementGenerators );
+		handleProperty( code, scope, c, element, `${ref}[${i}]`, statementGenerators );
 		c = element.end;
 	});
 
@@ -42,42 +71,8 @@ function destructureObjectPattern ( code, scope, node, ref, expr, statementGener
 	let c = node.start;
 
 	node.properties.forEach( prop => {
-		let key = prop.key.name;
-		let name;
-		let declaration;
-
-		switch ( prop.value.type ) {
-			case 'Identifier':
-				name = prop.value.name;
-				declaration = scope.findDeclaration( name );
-				if ( declaration ) name = declaration.name;
-
-				code.remove( c, prop.value.start );
-				c = prop.end;
-				statementGenerators.push( ( start, prefix, suffix ) => {
-					code.insertRight( prop.value.start, `${prefix}var ` );
-					code.insertLeft( prop.value.end, ` = ${ref}.${key};${suffix}` );
-					code.move( prop.value.start, prop.value.end, start );
-				});
-				break;
-
-			case 'AssignmentPattern':
-				name = prop.value.left.name;
-				declaration = scope.findDeclaration( name );
-				if ( declaration ) name = declaration.name;
-
-				code.remove( c, prop.value.right.start );
-				c = prop.end;
-				statementGenerators.push( ( start, prefix, suffix ) => {
-					code.insertRight( prop.value.right.start, `${prefix}var ${name} = ${ref}.${key}; if ( ${name} === void 0 ) ${name} = ` );
-					code.move( prop.value.right.start, prop.value.right.end, start );
-					code.insertLeft( prop.value.right.end, `;${suffix}` );
-				});
-				break;
-
-			default:
-				_destructure( code, scope, prop.value, scope.createIdentifier( `${ref}_${key}` ), `${ref}.${key}`, statementGenerators );
-		}
+		handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, statementGenerators );
+		c = prop.end;
 	});
 
 	code.remove( c, node.end );
