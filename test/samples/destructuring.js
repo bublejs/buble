@@ -80,7 +80,7 @@ module.exports = [
 		output: `
 			function pythag ( ref ) {
 				var x = ref[0];
-				var z = ref[1]; if ( z === void 0 ) x = 1;
+				var z = ref[1]; if ( z === void 0 ) z = 1;
 
 				return Math.sqrt( x * x + z * z );
 			}`
@@ -217,8 +217,7 @@ module.exports = [
 
 		output: `
 			var value = obj.name;
-			var description = obj.description;
-			if ( description === void 0 ) description = null;
+			var description = obj.description; if ( description === void 0 ) description = null;
 			console.log( value, description );`
 	},
 
@@ -267,11 +266,13 @@ module.exports = [
 		description: 'deep matching',
 
 		input: `
-			var { a: { b: c }, d: { e: f } } = x;`,
+			var { a: { b: c }, d: { e: f, g: h } } = x;`,
 
 		output: `
 			var c = x.a.b;
-			var f = x.d.e;`
+			var x_d = x.d;
+			var f = x_d.e;
+			var h = x_d.g`
 	}
 
 ];
