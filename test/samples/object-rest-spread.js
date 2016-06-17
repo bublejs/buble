@@ -83,7 +83,7 @@ module.exports = [
 				var obj = Object.assign({}, a);
 				obj['b'] = 1;
 				Object.assign(obj, c);
-				return ( obj = Object.assign({}, a), obj{['b'] = 1}, obj );
+				return obj;
 			}
 		`
 	}
