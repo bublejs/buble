@@ -48,9 +48,33 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 			});
 			break;
 
+		case 'ObjectPattern':
+			code.remove( c, c = node.start );
+
+			if ( node.properties.length > 1 ) {
+				const ref = scope.createIdentifier( value );
+
+				statementGenerators.push( ( start, prefix, suffix ) => {
+					code.insertRight( node.start, `${prefix}var ${ref} = ` );
+					code.overwrite( node.start, node.start + 1, value );
+					code.move( node.start, node.start + 1, start );
+					code.insertLeft( node.start + 1, `;${suffix}` );
+				});
+
+				node.properties.forEach( prop => {
+					handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, statementGenerators );
+					c = prop.end;
+				});
+			} else {
+				const prop = node.properties[0];
+				handleProperty( code, scope, c, prop.value, `${value}.${prop.key.name}`, statementGenerators );
+			}
+
+			code.remove( c, node.end );
+			break;
+
 		default:
-			console.log( 'node.type', node.type )
-			_destructure( code, scope, node, scope.createIdentifier( `${ref}_${i}` ), `${ref}[${i}]`, statementGenerators );
+			throw new Error( `TODO ${node.type}` );
 	}
 }
 
