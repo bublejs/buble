@@ -30,11 +30,61 @@ module.exports = [
 		output: `var c = Object.assign({}, a, {b: 1, dd: Object.assign({}, d, {f: 1, gg: Object.assign({}, {h: h}, g, {ii: Object.assign({}, i)})}), e: e});`
 	},
 	{
-		description: 'transpiles object reset spread with custom Object.assign',
+		description: 'transpiles object rest spread with custom Object.assign',
 		options: {
 			objectAssign: 'angular.extend'
 		},
 		input: `var obj = { ...a, b: 1, dd: {...d, f: 1}, e};`,
 		output: `var obj = angular.extend({}, a, {b: 1, dd: angular.extend({}, d, {f: 1}), e: e});`
+	},
+	{
+		description: 'transpiles object with rest spread and computed property',
+		input: `
+			var obj = { ...a, ['b']: 1 };
+		`,
+		output: `
+			var obj = Object.assign({}, a);
+			obj['b'] = 1;
+		`
+	},
+	{
+		description: 'transpiles object with rest spread, computed property and regular key',
+		input: `
+			var obj = { ...a, ['b']: 1, c: 2 };
+		`,
+		output: `
+			var obj = Object.assign({}, a);
+			obj['b'] = 1;
+			Object.assign(obj, {c: 2});
+
+		`
+	},
+	{
+		description: 'transpiles object with mixed rest spread and computed property',
+		input: `
+			var obj = { ...a, ['b']: 1, ...c };
+		`,
+		output: `
+			var obj = Object.assign({}, a);
+			obj['b'] = 1;
+			Object.assign(obj, c);
+
+		`
+	},
+	{
+		description: 'transpiles object with rest spread and computed property in return statement',
+		input: `
+			function fn() {
+				return { ...a, ['b']: 1, ...c };
+			}
+		`,
+		output: `
+			function fn() {
+				var obj = Object.assign({}, a);
+				obj['b'] = 1;
+				Object.assign(obj, c);
+				return ( obj = Object.assign({}, a), obj{['b'] = 1}, obj );
+			}
+		`
 	}
 ];
