@@ -56,6 +56,12 @@ Scope.prototype = {
 	},
 
 	createIdentifier ( base ) {
+		base = base
+			.replace( /\s/g, '' )
+			.replace( /\[([^\]]+)\]/g, '_$1' )
+			.replace( /[^a-z0-9_$]/g, '_' )
+			.replace( /_{2,}/, '_' );
+
 		let name = base;
 		let counter = 1;
 
