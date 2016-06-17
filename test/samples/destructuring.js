@@ -262,7 +262,6 @@ module.exports = [
 	},
 
 	{
-		// solo: true,
 		description: 'deep matching',
 
 		input: `
@@ -272,7 +271,7 @@ module.exports = [
 			var c = x.a.b;
 			var x_d = x.d;
 			var f = x_d.e;
-			var h = x_d.g`
+			var h = x_d.g;`
 	}
 
 ];
