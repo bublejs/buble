@@ -87,18 +87,6 @@ module.exports = [
 	},
 
 	{
-		description: 'disallows compound destructuring in declarations',
-		input: `var { a: { b: c } } = d;`,
-		error: /Compound destructuring is not supported/
-	},
-
-	{
-		description: 'disallows compound destructuring in parameters',
-		input: `function foo ( { a: { b: c } } ) {}`,
-		error: /Compound destructuring is not supported/
-	},
-
-	{
 		description: 'disallows array pattern in assignment (temporary)',
 		input: `[ a, b ] = [ b, a ]`,
 		error: /Destructuring assignments are not currently supported. Coming soon!/
@@ -262,16 +250,62 @@ module.exports = [
 	},
 
 	{
-		description: 'deep matching',
+		description: 'deep matching with object patterns',
 
 		input: `
-			var { a: { b: c }, d: { e: f, g: h } } = x;`,
+			var { a: { b: c }, d: { e: f, g: h = 1 } } = x;`,
 
 		output: `
 			var c = x.a.b;
 			var x_d = x.d;
 			var f = x_d.e;
-			var h = x_d.g;`
+			var h = x_d.g; if ( h === void 0 ) h = 1;`
+	},
+
+	{
+		description: 'deep matching with object patterns and reference',
+
+		input: `
+			var { a: { b: c }, d: { e: f, g: h } } = x();`,
+
+		output: `
+			var ref = x();
+			var c = ref.a.b;
+			var ref_d = ref.d;
+			var f = ref_d.e;
+			var h = ref_d.g;`
+	},
+
+	{
+		description: 'deep matching with array patterns',
+
+		input: `
+			var [[[a]], [[b, c = 1]]] = x;`,
+
+		output: `
+			var a = x[0][0][0];
+			var x_1_0 = x[1][0];
+			var b = x_1_0[0];
+			var c = x_1_0[1]; if ( c === void 0 ) c = 1;`
+	},
+
+	{
+		description: 'deep matching in parameters',
+
+		input: `
+			function foo ({ a: { b: c }, d: { e: f, g: h } }) {
+				console.log( c, f, h );
+			}`,
+
+		output: `
+			function foo (ref) {
+				var c = ref.a.b;
+				var ref_d = ref.d;
+				var f = ref_d.e;
+				var h = ref_d.g;
+
+				console.log( c, f, h );
+			}`
 	}
 
 ];

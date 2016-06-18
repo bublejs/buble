@@ -55,10 +55,13 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 				const ref = scope.createIdentifier( value );
 
 				statementGenerators.push( ( start, prefix, suffix ) => {
+					// this feels a tiny bit hacky, but we can't do a
+					// straightforward insertLeft and keep correct order...
 					code.insertRight( node.start, `${prefix}var ${ref} = ` );
-					code.overwrite( node.start, node.start + 1, value );
-					code.move( node.start, node.start + 1, start );
-					code.insertLeft( node.start + 1, `;${suffix}` );
+					code.overwrite( node.start, c = node.start + 1, value );
+					code.insertLeft( c, `;${suffix}` );
+
+					code.move( node.start, c, start );
 				});
 
 				node.properties.forEach( prop => {
@@ -68,6 +71,34 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 			} else {
 				const prop = node.properties[0];
 				handleProperty( code, scope, c, prop.value, `${value}.${prop.key.name}`, statementGenerators );
+				c = prop.end;
+			}
+
+			code.remove( c, node.end );
+			break;
+
+		case 'ArrayPattern':
+			code.remove( c, c = node.start );
+
+			if ( node.elements.length > 1 ) {
+				const ref = scope.createIdentifier( value );
+
+				statementGenerators.push( ( start, prefix, suffix ) => {
+					code.insertRight( node.start, `${prefix}var ${ref} = ` );
+					code.overwrite( node.start, c = node.start + 1, value );
+					code.insertLeft( c, `;${suffix}` );
+
+					code.move( node.start, c, start );
+				});
+
+				node.elements.forEach( ( element, i ) => {
+					handleProperty( code, scope, c, element, `${ref}[${i}]`, statementGenerators );
+					c = element.end;
+				});
+			} else {
+				const element = node.elements[0];
+				handleProperty( code, scope, c, element, `${value}[0]`, statementGenerators );
+				c = element.end;
 			}
 
 			code.remove( c, node.end );
