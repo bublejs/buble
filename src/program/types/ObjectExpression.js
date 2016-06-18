@@ -18,7 +18,7 @@ export default class ObjectExpression extends Node {
 			while ( i-- ) {
 				const prop = this.properties[i];
 
-				if ( prop.type === 'Property' ) {
+				if ( prop.type === 'Property' && ( !transforms.computedProperty || !prop.computed ) ) {
 					const lastProp = this.properties[ i - 1 ];
 					const nextProp = this.properties[ i + 1 ];
 
