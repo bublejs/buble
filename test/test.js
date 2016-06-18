@@ -9,6 +9,7 @@ var getLocation = require( './utils/getLocation.js' );
 var buble = require( '../dist/buble.umd.js' );
 
 require( 'source-map-support' ).install();
+require( 'console-group' ).install();
 
 function equal ( a, b ) {
 	assert.equal( showInvisibles( a ), showInvisibles( b ) );

@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.11.4
+
+* Allow computed class methods, except accessors ([!56](https://gitlab.com/Rich-Harris/buble/merge_requests/56))
+* Compound destructuring ([!58](https://gitlab.com/Rich-Harris/buble/merge_requests/58))
+
 ## 0.11.3
 
 * Ensure inserted statements follow use strict pragma ([#72](https://gitlab.com/Rich-Harris/buble/issues/72))

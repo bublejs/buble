@@ -50,7 +50,7 @@ export default class VariableDeclaration extends Node {
 						});
 					}
 
-					destructure( code, declarator.findScope( true ), declarator.id, name, statementGenerators );
+					destructure( code, declarator.findScope( false ), declarator.id, name, statementGenerators );
 
 					let suffix = `\n${i0}`;
 					statementGenerators.forEach( ( fn, j ) => {
@@ -58,7 +58,7 @@ export default class VariableDeclaration extends Node {
 							suffix = '';
 						}
 
-						fn( declarator.start, ``, suffix );
+						fn( declarator.start, '', suffix );
 					});
 				}
 
