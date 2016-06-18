@@ -59,7 +59,7 @@ Scope.prototype = {
 		base = base
 			.replace( /\s/g, '' )
 			.replace( /\[([^\]]+)\]/g, '_$1' )
-			.replace( /[^a-z0-9_$]/g, '_' )
+			.replace( /[^a-zA-Z0-9_$]/g, '_' )
 			.replace( /_{2,}/, '_' );
 
 		let name = base;
