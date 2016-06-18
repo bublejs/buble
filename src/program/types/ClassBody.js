@@ -78,40 +78,54 @@ export default class ClassBody extends Node {
 				const isAccessor = method.kind !== 'method';
 				let lhs;
 
+				let methodName = method.key.name;
+				if ( scope.contains( methodName ) ) methodName = scope.createIdentifier( methodName );
+
 				if ( isAccessor ) {
-					code.remove( method.start, method.key.end );
+					if ( method.computed ) {
+						throw new Error( 'Computed accessor properties are not currently supported' );
+					}
+
+					code.remove( method.start, method.key.start );
 
 					if ( method.static ) {
 						if ( !~staticGettersAndSetters.indexOf( method.key.name ) ) staticGettersAndSetters.push( method.key.name );
 						if ( !staticAccessors ) staticAccessors = scope.createIdentifier( 'staticAccessors' );
 
-						lhs = `${staticAccessors}.${method.key.name}.${method.kind}`;
+						lhs = `${staticAccessors}`;
 					} else {
 						if ( !~prototypeGettersAndSetters.indexOf( method.key.name ) ) prototypeGettersAndSetters.push( method.key.name );
 						if ( !prototypeAccessors ) prototypeAccessors = scope.createIdentifier( 'prototypeAccessors' );
 
-						lhs = `${prototypeAccessors}.${method.key.name}.${method.kind}`;
+						lhs = `${prototypeAccessors}`;
 					}
 				} else {
 					lhs = method.static ?
-						`${name}.${method.key.name}` :
-						`${name}.prototype.${method.key.name}`;
+						`${name}` :
+						`${name}.prototype`;
 				}
+
+				if ( !method.computed ) lhs += '.';
 
 				const insertNewlines = ( constructorIndex > 0 && i === constructorIndex + 1 ) ||
 				                       ( i === 0 && constructorIndex === this.body.length - 1 );
 
 				if ( insertNewlines ) lhs = `\n\n${i0}${lhs}`;
 
-				code.insertRight( method.start, `${lhs} = function` + ( method.value.generator ? '*' : '' ) + ( isAccessor ? '' : ' ' ) );
+				let c = method.key.end;
+				if ( method.computed ) {
+					while ( code.original[c] !== ']' ) c += 1;
+					c += 1;
+				}
+
+				code.insertRight( method.start, lhs );
+
+				const rhs = ( isAccessor ? `.${method.kind}` : '' ) + ` = function` + ( method.value.generator ? '* ' : ' ' ) + ( method.computed || isAccessor ? '' : `${methodName} ` );
+				code.remove( c, method.value.start );
+				code.insertRight( method.value.start, rhs );
 				code.insertLeft( method.end, ';' );
 
 				if ( method.value.generator ) code.remove( method.start, method.key.start );
-
-				// prevent function name shadowing an existing declaration
-				if ( scope.contains( method.key.name ) ) {
-					code.overwrite( method.key.start, method.key.end, scope.createIdentifier( method.key.name ), true );
-				}
 			});
 
 			if ( prototypeGettersAndSetters.length || staticGettersAndSetters.length ) {

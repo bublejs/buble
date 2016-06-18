@@ -667,12 +667,12 @@ module.exports = [
 		output: `
 			var A = function A () {};
 
-			A.prototype.x = function x(){};
+			A.prototype.x = function x (){};
 
 			var B = (function () {
 				function B () {}
 
-				B.prototype.x = function x(){};
+				B.prototype.x = function x (){};
 
 				return B;
 			}());
@@ -686,7 +686,7 @@ module.exports = [
 				C.prototype = Object.create( D && D.prototype );
 				C.prototype.constructor = C;
 
-				C.prototype.x = function x(){};
+				C.prototype.x = function x (){};
 
 				return C;
 			}(D));
@@ -700,7 +700,7 @@ module.exports = [
 				E.prototype = Object.create( F && F.prototype );
 				E.prototype.constructor = E;
 
-				E.prototype.x = function x(){};
+				E.prototype.x = function x (){};
 
 				return E;
 			}(F))`
@@ -719,7 +719,7 @@ module.exports = [
 
 			var staticAccessors = { bar: {} };
 
-			staticAccessors.bar.get = function() { return 'baz' };
+			staticAccessors.bar.get = function () { return 'baz' };
 
 			Object.defineProperties( Foo, staticAccessors );`
 	},
@@ -874,6 +874,67 @@ module.exports = [
 
 				return SubClass;
 			}(SuperClass));`
+	},
+
+	{
+		description: 'transpiles computed class properties',
+
+		input: `
+			class Foo {
+				[a.b.c] () {
+					// code goes here
+				}
+			}`,
+
+		output: `
+			var Foo = function Foo () {};
+
+			Foo.prototype[a.b.c] = function () {
+				// code goes here
+			};`
+	},
+
+	{
+		description: 'transpiles static computed class properties',
+
+		input: `
+			class Foo {
+				static [a.b.c] () {
+					// code goes here
+				}
+			}`,
+
+		output: `
+			var Foo = function Foo () {};
+
+			Foo[a.b.c] = function () {
+				// code goes here
+			};`
+	},
+
+	{
+		skip: true,
+		description: 'transpiles computed class accessors',
+
+		input: `
+			class Foo {
+				get [a.b.c] () {
+					// code goes here
+				}
+			}`,
+
+		output: `
+			var Foo = function Foo () {};
+
+			var prototypeAccessors = {};
+			var ref = a.b.c;
+			prototypeAccessors[ref] = {};
+
+			prototypeAccessors[ref].get = function () {
+				// code goes here
+			};
+
+			Object.defineProperties( Foo.prototype, prototypeAccessors );`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
