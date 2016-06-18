@@ -36,16 +36,32 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 			break;
 
 		case 'AssignmentPattern':
-			let name = node.left.name;
-			const declaration = scope.findDeclaration( name );
-			if ( declaration ) name = declaration.name;
+			let name;
 
-			code.remove( c, node.right.start );
+			const isIdentifier = node.left.type === 'Identifier';
+
+			if ( isIdentifier ) {
+				name = node.left.name;
+				const declaration = scope.findDeclaration( name );
+				if ( declaration ) name = declaration.name;
+			} else {
+				name = scope.createIdentifier( value );
+			}
+
 			statementGenerators.push( ( start, prefix, suffix ) => {
 				code.insertRight( node.right.start, `${prefix}var ${name} = ${value}; if ( ${name} === void 0 ) ${name} = ` );
 				code.move( node.right.start, node.right.end, start );
 				code.insertLeft( node.right.end, `;${suffix}` );
 			});
+
+			if ( isIdentifier ) {
+				code.remove( c, node.right.start );
+			} else {
+				code.remove( c, node.left.start );
+				code.remove( node.left.end, node.right.start );
+				handleProperty( code, scope, c, node.left, name, statementGenerators );
+			}
+
 			break;
 
 		case 'ObjectPattern':
@@ -80,7 +96,7 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 		case 'ArrayPattern':
 			code.remove( c, c = node.start );
 
-			if ( node.elements.length > 1 ) {
+			if ( node.elements.filter( Boolean ).length > 1 ) {
 				const ref = scope.createIdentifier( value );
 
 				statementGenerators.push( ( start, prefix, suffix ) => {
@@ -92,12 +108,15 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 				});
 
 				node.elements.forEach( ( element, i ) => {
+					if ( !element ) return;
+
 					handleProperty( code, scope, c, element, `${ref}[${i}]`, statementGenerators );
 					c = element.end;
 				});
 			} else {
-				const element = node.elements[0];
-				handleProperty( code, scope, c, element, `${value}[0]`, statementGenerators );
+				const index = node.elements.findIndex( Boolean );
+				const element = node.elements[ index ];
+				handleProperty( code, scope, c, element, `${value}[${index}]`, statementGenerators );
 				c = element.end;
 			}
 
@@ -105,7 +124,7 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 			break;
 
 		default:
-			throw new Error( `TODO ${node.type}` );
+			throw new Error( `Unexpected node type in destructuring (${node.type})` );
 	}
 }
 

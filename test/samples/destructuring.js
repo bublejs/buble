@@ -290,6 +290,25 @@ module.exports = [
 	},
 
 	{
+		description: 'deep matching with sparse array',
+
+		input: `
+			function foo ( [[[,x = 3] = []] = []] = [] ) {
+				console.log( x );
+			}`,
+
+		output: `
+			function foo ( ref ) {
+				if ( ref === void 0 ) ref = [];
+				var ref_0 = ref[0]; if ( ref_0 === void 0 ) ref_0 = [];
+				var ref_0_0 = ref_0[0]; if ( ref_0_0 === void 0 ) ref_0_0 = [];
+				var x = ref_0_0[1]; if ( x === void 0 ) x = 3;
+
+				console.log( x );
+			}`
+	},
+
+	{
 		description: 'deep matching in parameters',
 
 		input: `
