@@ -184,7 +184,7 @@ export default class BlockStatement extends Node {
 		let prefix = `\n${indentation}`;
 		let suffix = '';
 		introStatementGenerators.forEach( ( fn, i ) => {
-			if ( i === introStatementGenerators.length - 1 ) suffix = ( this.parent.type === 'Root' ? `\n` : `\n` );
+			if ( i === introStatementGenerators.length - 1 ) suffix = `\n`;
 			fn( start, prefix, suffix );
 		});
 	}

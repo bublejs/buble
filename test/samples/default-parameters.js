@@ -28,7 +28,23 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles destructured default parameters (#23)',
+		description: 'transpiles default parameters in object pattern (#23)',
+
+		input: `
+			function foo ({ a = 1 }) {
+				console.log( a );
+			}`,
+
+		output: `
+			function foo (ref) {
+				var a = ref.a; if ( a === void 0 ) a = 1;
+
+				console.log( a );
+			}`
+	},
+
+	{
+		description: 'transpiles multiple default parameters in object pattern',
 
 		input: `
 			function foo ({ a = 1 }, { b = 2 }) {
@@ -41,15 +57,15 @@ module.exports = [
 
 		output: `
 			function foo (ref, ref$1) {
-				var ref_a = ref.a, a = ref_a === void 0 ? 1 : ref_a;
-				var ref$1_b = ref$1.b, b = ref$1_b === void 0 ? 2 : ref$1_b;
+				var a = ref.a; if ( a === void 0 ) a = 1;
+				var b = ref$1.b; if ( b === void 0 ) b = 2;
 
 				console.log( a, b );
 			}
 
 			var bar = function (ref, ref$1) {
-				var ref_a = ref.a, a = ref_a === void 0 ? 1 : ref_a;
-				var ref$1_b = ref$1.b, b = ref$1_b === void 0 ? 2 : ref$1_b;
+				var a = ref.a; if ( a === void 0 ) a = 1;
+				var b = ref$1.b; if ( b === void 0 ) b = 2;
 
 				console.log( a, b );
 			};`
@@ -105,7 +121,7 @@ module.exports = [
 		output: `
 			function a(ref) {
 				if ( ref === void 0 ) ref = {};
-				var ref_x = ref.x, x = ref_x === void 0 ? 1 : ref_x;
+				var x = ref.x; if ( x === void 0 ) x = 1;
 
 				console.log( x );
 			}`
