@@ -116,7 +116,7 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 					c = element.end;
 				});
 			} else {
-				const index = findIndex( node.elements( Boolean ) );
+				const index = findIndex( node.elements, Boolean );
 				const element = node.elements[ index ];
 				handleProperty( code, scope, c, element, `${value}[${index}]`, statementGenerators );
 				c = element.end;
