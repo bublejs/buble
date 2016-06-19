@@ -174,5 +174,15 @@ module.exports = [
 		description: 'transpiles spread expressions (#64)',
 		input: `<div {...this.props}/>`,
 		output: `React.createElement( 'div', this.props)`
+	},
+
+	{
+		description: 'handles whitespace between elements on same line (#65)',
+
+		input: `
+			<Foo> <h1>Hello {name}!</h1>   </Foo>`,
+
+		output: `
+			React.createElement( Foo, null, " ", React.createElement( 'h1', null, "Hello ", name, "!" ), "   " )`
 	}
 ];

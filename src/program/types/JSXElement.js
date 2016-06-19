@@ -1,13 +1,13 @@
 import Node from '../Node.js';
 
 function normalise ( str, removeTrailingWhitespace ) {
+	if ( removeTrailingWhitespace && /\n/.test( str ) ) {
+		str = str.replace( /\s+$/, '' );
+	}
+
 	str = str
 		.replace( /^\n\r?\s+/, '' )       // remove leading newline + space
 		.replace( /\s*\n\r?\s*/gm, ' ' ); // replace newlines with spaces
-
-	if ( removeTrailingWhitespace ) {
-		str = str.replace( /\s+$/, '' );
-	}
 
 	// TODO prefer single quotes?
 	return JSON.stringify( str );
@@ -18,7 +18,10 @@ export default class JSXElement extends Node {
 		super.transpile( code, transforms );
 
 		const children = this.children.filter( child => {
-			return child.type === 'JSXElement' || /\S/.test( child.value );
+			if ( child.type !== 'Literal' ) return true;
+
+			// remove whitespace-only literals, unless on a single line
+			return /\S/.test( child.value ) || !/\n/.test( child.value );
 		});
 
 		if ( children.length ) {
