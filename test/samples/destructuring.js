@@ -757,4 +757,19 @@ module.exports = [
 		`
 	},
 
+	{
+		description: 'destructures with computed property',
+
+		input: `
+			const { a, b } = { ['a']: 1 };
+		`,
+
+		output: `
+			var ref = {};
+			ref['a'] = 1;
+			var a = ref.a;
+			var b = ref.b;
+		`
+	}
+
 ];
