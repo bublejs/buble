@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.11.5
+
+* Preserve whitespace between JSX tags on single line ([#65](https://gitlab.com/Rich-Harris/buble/issues/65))
+
 ## 0.11.4
 
 * Allow computed class methods, except accessors ([!56](https://gitlab.com/Rich-Harris/buble/merge_requests/56))
