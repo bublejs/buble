@@ -116,6 +116,7 @@ describe( 'buble', () => {
 				assert.deepEqual( err.loc, { line: 1, column: 4 });
 				assert.equal( err.message, 'Unexpected token (1:4)' );
 				assert.equal( err.snippet, `1 : var 42 = nope;\n        ^` );
+				assert.equal( err.toString(), `SyntaxError: Unexpected token (1:4)\n1 : var 42 = nope;\n        ^` );
 			}
 		});
 
@@ -130,6 +131,7 @@ describe( 'buble', () => {
 				assert.equal( err.loc.column, 13 );
 				assert.equal( err.message, 'x is read-only (1:13)' );
 				assert.equal( err.snippet, `1 : const x = 1; x++;\n                 ^^^` );
+				assert.equal( err.toString(), `CompileError: x is read-only (1:13)\n1 : const x = 1; x++;\n                 ^^^` );
 			}
 		});
 	});

@@ -16,4 +16,8 @@ export default class CompileError extends Error {
 		this.loc = loc;
 		this.snippet = getSnippet( source, loc, node.end - node.start );
 	}
+
+	toString () {
+		return `${this.name}: ${this.message}\n${this.snippet}`;
+	}
 }
