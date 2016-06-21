@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.11.6
+
+* Allow shorthand methods with computed names ([#78](https://gitlab.com/Rich-Harris/buble/issues/78))
+* Include code snippet in `error.toString()` ([#79](https://gitlab.com/Rich-Harris/buble/issues/79))
+
 ## 0.11.5
 
 * Preserve whitespace between JSX tags on single line ([#65](https://gitlab.com/Rich-Harris/buble/issues/65))
