@@ -49,6 +49,7 @@
     "eslint": "^2.10.1",
     "glob": "^7.0.3",
     "mocha": "^2.4.5",
+    "regexpu-core": "^3.0.2",
     "rimraf": "^2.5.2",
     "rollup": "^0.26.3",
     "rollup-plugin-buble": "^0.8.0",
