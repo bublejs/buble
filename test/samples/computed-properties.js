@@ -13,6 +13,19 @@ module.exports = [
 	},
 
 	{
+		description: 'creates a computed property with a non-identifier expression',
+
+		input: `
+			var obj = {
+				[a()]: 1
+			};`,
+
+		output: `
+			var obj = {};
+			obj[a()] = 1;`
+	},
+
+	{
 		description: 'creates a computed property at start of literal',
 
 		input: `
@@ -127,5 +140,39 @@ module.exports = [
 		output: `
 			var obj;
 			call(( obj = {}, obj[a] = 5, obj ));`
+	},
+
+	{
+		description: 'creates a computed method (#78)',
+
+		input: `
+			var obj = {
+				[a] () {
+					// code goes here
+				}
+			};`,
+
+		output: `
+			var obj = {};
+			obj[a] = function () {
+				// code goes here
+			};`
+	},
+
+	{
+		description: 'creates a computed method with a non-identifier expression (#78)',
+
+		input: `
+			var obj = {
+				[a()] () {
+					// code goes here
+				}
+			};`,
+
+		output: `
+			var obj = {};
+			obj[a()] = function () {
+				// code goes here
+			};`
 	}
 ];

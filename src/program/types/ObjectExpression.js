@@ -1,4 +1,5 @@
 import Node from '../Node.js';
+import deindent from '../../utils/deindent.js';
 
 export default class ObjectExpression extends Node {
 	transpile ( code, transforms ) {
@@ -96,6 +97,12 @@ export default class ObjectExpression extends Node {
 
 						code.remove( prop.end, c + 1 );
 					}
+
+					if ( prop.method && transforms.conciseMethodProperty ) {
+						code.insertRight( prop.value.start, 'function ' );
+					}
+
+					deindent( prop.value, code );
 				}
 			}
 
