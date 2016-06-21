@@ -3,7 +3,7 @@ import reserved from '../../utils/reserved.js';
 
 export default class Property extends Node {
 	transpile ( code, transforms ) {
-		if ( transforms.conciseMethodProperty && this.parent.type !== 'ObjectPattern' ) {
+		if ( transforms.conciseMethodProperty && !this.computed && this.parent.type !== 'ObjectPattern' ) {
 			if ( this.shorthand ) {
 				code.insertRight( this.start, `${this.key.name}: ` );
 			} else if ( this.method ) {
