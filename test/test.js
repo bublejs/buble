@@ -29,8 +29,12 @@ function repeat ( str, times ) {
 	return result;
 }
 
+const subsetIndex = process.argv.indexOf( '--subset' );
+const subset = ~subsetIndex ? process.argv[ subsetIndex + 1 ].split( ',' ).map( file => `${file}.js` ) : null;
+const subsetFilter = subset ? file => ~subset.indexOf( file ) : () => true;
+
 describe( 'buble', () => {
-	fs.readdirSync( 'test/samples' ).forEach( file => {
+	fs.readdirSync( 'test/samples' ).filter( subsetFilter ).forEach( file => {
 		var samples = require( './samples/' + file );
 
 		describe( path.basename( file ), () => {
@@ -49,6 +53,8 @@ describe( 'buble', () => {
 			});
 		});
 	});
+
+	if ( subset ) return;
 
 	describe( 'cli', () => {
 		fs.readdirSync( 'test/cli' ).forEach( dir => {
