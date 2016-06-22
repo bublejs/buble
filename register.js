@@ -1,5 +1,7 @@
 var fs = require( 'fs' );
 var path = require( 'path' );
+var crypto = require( 'crypto' );
+var homedir = require( 'os-homedir' );
 var buble = require( './' );
 
 var original = require.extensions[ '.js' ];
@@ -22,23 +24,61 @@ var options = {
 	}
 };
 
+function mkdirp ( dir ) {
+	var parent = path.dirname( dir );
+	if ( dir === parent ) return;
+	mkdirp( parent );
+
+	try {
+		fs.mkdirSync( dir );
+	} catch ( err ) {
+		if ( err.code !== 'EEXIST' ) throw err;
+	}
+}
+
+var home = homedir();
+if ( home ) {
+	var cachedir = path.join( home, '.buble-cache', nodeVersion );
+	mkdirp( cachedir );
+}
+
 require.extensions[ '.js' ] = function ( m, filename ) {
 	if ( nodeModulesPattern.test( filename ) ) return original( m, filename );
 
 	var source = fs.readFileSync( filename, 'utf-8' );
+	var hash = crypto.createHash( 'sha256' );
+	hash.update( source );
+	var key = hash.digest( 'hex' ) + '.json';
+	var cachepath = path.join( cachedir, key );
 
-	try {
-		var compiled = buble.transform( source, options );
-	} catch ( err ) {
-		if ( err.snippet ) {
-			console.log( 'Error compiling ' + filename + ':\n---' );
-			console.log( err.snippet );
-			console.log( err.message );
-			console.log( '' )
-			process.exit( 1 );
+	var compiled;
+
+	if ( cachedir ) {
+		try {
+			compiled = JSON.parse( fs.readFileSync( cachepath, 'utf-8' ) );
+		} catch ( err ) {
+			// noop
 		}
+	}
 
-		throw err;
+	if ( !compiled ) {
+		try {
+			compiled = buble.transform( source, options );
+
+			if ( cachedir ) {
+				fs.writeFileSync( cachepath, JSON.stringify( compiled ) );
+			}
+		} catch ( err ) {
+			if ( err.snippet ) {
+				console.log( 'Error compiling ' + filename + ':\n---' );
+				console.log( err.snippet );
+				console.log( err.message );
+				console.log( '' )
+				process.exit( 1 );
+			}
+
+			throw err;
+		}
 	}
 
 	m._compile( '"use strict";\n' + compiled.code, filename );
