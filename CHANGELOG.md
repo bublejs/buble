@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.12.1
+
+* Don't require space before parens of shorthand computed method ([#82](https://gitlab.com/Rich-Harris/buble/issues/82))
+* Allow string keys for shorthand methods ([#82](https://gitlab.com/Rich-Harris/buble/issues/82))
+
 ## 0.12.0
 
 * Support `u` flag in regular expression literals ([!62](https://gitlab.com/Rich-Harris/buble/merge_requests/62))
