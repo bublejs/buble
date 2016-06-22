@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.12.0
+
+* Support `u` flag in regular expression literals ([!62](https://gitlab.com/Rich-Harris/buble/merge_requests/62))
+* Save `buble/register` transformations to `$HOME/.buble-cache` ([!63](https://gitlab.com/Rich-Harris/buble/merge_requests/63))
+
 ## 0.11.6
 
 * Allow shorthand methods with computed names ([#78](https://gitlab.com/Rich-Harris/buble/issues/78))
