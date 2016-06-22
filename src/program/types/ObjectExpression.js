@@ -86,8 +86,10 @@ export default class ObjectExpression extends Node {
 					code.overwrite( moveStart, prop.start, isSimpleAssignment ? `;\n${i0}${name}` : `, ${name}` );
 					let c = prop.key.end;
 					while ( code.original[c] !== ']' ) c += 1;
+					c += 1;
 
-					code.overwrite( c + 1, prop.value.start, ' = ' );
+					if ( prop.value.start > c ) code.remove( c, prop.value.start );
+					code.insertLeft( c, ' = ' );
 					code.move( moveStart, prop.end, end );
 
 					if ( i === 0 && len > 1 ) {
