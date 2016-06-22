@@ -1,5 +1,6 @@
 import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
+import rewritePattern from 'regexpu-core';
 
 export default class Literal extends Node {
 	transpile ( code, transforms ) {
@@ -11,8 +12,12 @@ export default class Literal extends Node {
 		}
 
 		if ( this.regex ) {
-			if ( transforms.unicodeRegExp && /u/.test( this.regex.flags ) ) throw new CompileError( this, 'Regular expression unicode flag is not supported' );
-			if ( transforms.stickyRegExp && /y/.test( this.regex.flags ) ) throw new CompileError( this, 'Regular expression sticky flag is not supported' );
+			const { pattern, flags } = this.regex;
+
+			if ( transforms.stickyRegExp && /y/.test( flags ) ) throw new CompileError( this, 'Regular expression sticky flag is not supported' );
+			if ( transforms.unicodeRegExp && /u/.test( flags ) ) {
+				code.overwrite( this.start, this.end, `/${rewritePattern( pattern, flags )}/${flags.replace( 'u', '' )}` );
+			}
 		}
 	}
 }

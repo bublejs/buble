@@ -1,8 +1,8 @@
 module.exports = [
 	{
-		description: 'disallows unicode flag in regex literals',
-		input: `var regex = /x/u;`,
-		error: /Regular expression unicode flag is not supported/
+		description: 'transpiles regex with unicode flag',
+		input: `var regex = /foo.bar/u;`,
+		output: `var regex = /foo(?:[\\0-\\t\\x0B\\f\\x0E-\\u2027\\u202A-\\uD7FF\\uE000-\\uFFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF]|[\\uD800-\\uDBFF](?![\\uDC00-\\uDFFF])|(?:[^\\uD800-\\uDBFF]|^)[\\uDC00-\\uDFFF])bar/;`
 	},
 
 	{
