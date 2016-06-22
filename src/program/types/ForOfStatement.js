@@ -13,6 +13,19 @@ export default class ForOfStatement extends LoopStatement {
 			return;
 		}
 
+		// edge case (#80)
+		if ( !this.body.body[0] ) {
+			if ( this.left.type === 'VariableDeclaration' && this.left.kind === 'var' ) {
+				code.remove( this.start, this.left.start );
+				code.insertLeft( this.left.end, ';' );
+				code.remove( this.left.end, this.end );
+			} else {
+				code.remove( this.start, this.end );
+			}
+
+			return;
+		}
+
 		const scope = this.findScope( true );
 		const i0 = this.getIndentation();
 		const i1 = i0 + code.getIndentString();
