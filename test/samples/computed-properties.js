@@ -174,5 +174,22 @@ module.exports = [
 			obj[a()] = function () {
 				// code goes here
 			};`
+	},
+
+	{
+		description: 'does not require space before parens of computed method (#82)',
+
+		input: `
+			var obj = {
+				[a]() {
+					// code goes here
+				}
+			};`,
+
+		output: `
+			var obj = {};
+			obj[a] = function () {
+				// code goes here
+			};`
 	}
 ];
