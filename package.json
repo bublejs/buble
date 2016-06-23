@@ -5,11 +5,11 @@
   "main": "dist/buble.umd.js",
   "jsnext:main": "dist/buble.es.js",
   "files": [
-    "bin",
-    "src",
-    "dist",
-    "register.js",
-    "README.md"
+    "./bin",
+    "./src",
+    "./dist",
+    "./register.js",
+    "./README.md"
   ],
   "scripts": {
     "build": "npm run build:umd && npm run build:es && npm run build:browser",

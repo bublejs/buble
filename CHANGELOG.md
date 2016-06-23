@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.12.2
+
+* Files missing in 0.12.1 (???)
+
 ## 0.12.1
 
 * Don't require space before parens of shorthand computed method ([#82](https://gitlab.com/Rich-Harris/buble/issues/82))
