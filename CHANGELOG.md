@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.12.3
+
+* Argh, npm
+
 ## 0.12.2
 
 * Files missing in 0.12.1 (???)
