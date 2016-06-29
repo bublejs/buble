@@ -124,7 +124,6 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 
 			code.remove( c, node.end );
 			break;
-
 		default:
 			throw new Error( `Unexpected node type in destructuring (${node.type})` );
 	}
@@ -147,8 +146,10 @@ function destructureObjectPattern ( code, scope, node, ref, expr, statementGener
 	let c = node.start;
 
 	node.properties.forEach( prop => {
-		handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, statementGenerators );
-		c = prop.end;
+    if (prop.type !== 'RestProperty') {
+      handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, statementGenerators );
+      c = prop.end;
+    }
 	});
 
 	code.remove( c, node.end );

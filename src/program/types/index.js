@@ -31,6 +31,7 @@ import MemberExpression from './MemberExpression.js';
 import ObjectExpression from './ObjectExpression.js';
 import Property from './Property.js';
 import ReturnStatement from './ReturnStatement.js';
+import RestProperty from './RestProperty.js';
 import SpreadProperty from './SpreadProperty.js';
 import Super from './Super.js';
 import TaggedTemplateExpression from './TaggedTemplateExpression.js';
@@ -75,6 +76,7 @@ export default {
 	ObjectExpression,
 	Property,
 	ReturnStatement,
+  RestProperty,
 	SpreadProperty,
 	Super,
 	TaggedTemplateExpression,

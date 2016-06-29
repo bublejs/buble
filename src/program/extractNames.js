@@ -11,7 +11,9 @@ const extractors = {
 
 	ObjectPattern ( names, node ) {
 		for ( const prop of node.properties ) {
-			extractors[ prop.value.type ]( names, prop.value );
+      if ( prop.type !== 'RestProperty' ) {
+        extractors[ prop.value.type ]( names, prop.value );
+      }
 		}
 	},
 
