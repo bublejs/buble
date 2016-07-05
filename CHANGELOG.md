@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.12.4
+
+* Allow references to precede declaration (inside function) in block scoping ([#87](https://gitlab.com/Rich-Harris/buble/issues/87))
+
 ## 0.12.3
 
 * Argh, npm
