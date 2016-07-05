@@ -39,6 +39,8 @@ export default class BlockStatement extends Node {
 		if ( !this.scope ) this.createScope();
 
 		this.body.forEach( node => node.initialise( transforms ) );
+
+		this.scope.consolidate();
 	}
 
 	findLexicalBoundary () {
