@@ -418,5 +418,27 @@ module.exports = [
 			}
 
 			console.log( a );`
+	},
+
+	{
+		description: 'reference preceding declaration (#87)',
+
+		input: `
+			if ( x ) {
+				let a = function () { b(); };
+				let b = function () { alert( 'hello' ); };
+
+				a();
+				b();
+			}`,
+
+		output: `
+			if ( x ) {
+				var a = function () { b(); };
+				var b = function () { alert( 'hello' ); };
+
+				a();
+				b();
+			}`
 	}
 ];
