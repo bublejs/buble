@@ -24,6 +24,20 @@ export default class Super extends Node {
 				throw new CompileError( this, 'Unexpected use of `super` (expected `super(...)` or `super.*`)' );
 			}
 		}
+
+		if ( transforms.arrow ) {
+			const lexicalBoundary = this.findLexicalBoundary();
+			const arrowFunction = this.findNearest( 'ArrowFunctionExpression' );
+			const loop = this.findNearest( /(?:For(?:In|Of)?|While)Statement/ );
+
+			if ( arrowFunction && arrowFunction.depth > lexicalBoundary.depth ) {
+				this.thisAlias = lexicalBoundary.getThisAlias();
+			}
+
+			if ( loop && loop.body.contains( this ) && loop.depth > lexicalBoundary.depth ) {
+				this.thisAlias = lexicalBoundary.getThisAlias();
+			}
+		}
 	}
 
 	transpile ( code, transforms ) {
@@ -41,10 +55,12 @@ export default class Super extends Node {
 					code.insertLeft( callExpression.callee.end, '.call' );
 				}
 
+				const thisAlias = this.thisAlias || 'this';
+
 				if ( callExpression.arguments.length ) {
-					code.insertLeft( callExpression.arguments[0].start, `this, ` );
+					code.insertLeft( callExpression.arguments[0].start, `${thisAlias}, ` );
 				} else {
-					code.insertLeft( callExpression.end - 1, `this` );
+					code.insertLeft( callExpression.end - 1, `${thisAlias}` );
 				}
 			}
 		}
