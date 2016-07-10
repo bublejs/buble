@@ -20,6 +20,20 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles shorthand methods with quoted names (#82)',
+
+		input: `
+			obj = {
+				'foo-bar' () { return 42; }
+			}`,
+
+		output: `
+			obj = {
+				'foo-bar': function foo_bar () { return 42; }
+			}`
+	},
+
+	{
 		description: 'shorthand properties can be disabled with `transforms.conciseMethodProperty === false`',
 		options: { transforms: { conciseMethodProperty: false } },
 		input: `var obj = { x, y, z () {} }`,
@@ -27,7 +41,7 @@ module.exports = [
 	},
 
 	{
-		description: 'computed properties can be allowed with `transforms.computedProperty === false`',
+		description: 'computed properties can be disabled with `transforms.computedProperty === false`',
 		options: { transforms: { computedProperty: false } },
 		input: `var obj = { [x]: 'x' }`,
 		output: `var obj = { [x]: 'x' }`

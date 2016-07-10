@@ -1,4 +1,5 @@
 import Node from '../Node.js';
+import deindent from '../../utils/deindent.js';
 
 export default class ObjectExpression extends Node {
 	transpile ( code, transforms ) {
@@ -85,8 +86,10 @@ export default class ObjectExpression extends Node {
 					code.overwrite( moveStart, prop.start, isSimpleAssignment ? `;\n${i0}${name}` : `, ${name}` );
 					let c = prop.key.end;
 					while ( code.original[c] !== ']' ) c += 1;
+					c += 1;
 
-					code.overwrite( c + 1, prop.value.start, ' = ' );
+					if ( prop.value.start > c ) code.remove( c, prop.value.start );
+					code.insertLeft( c, ' = ' );
 					code.move( moveStart, prop.end, end );
 
 					if ( i === 0 && len > 1 ) {
@@ -96,6 +99,12 @@ export default class ObjectExpression extends Node {
 
 						code.remove( prop.end, c + 1 );
 					}
+
+					if ( prop.method && transforms.conciseMethodProperty ) {
+						code.insertRight( prop.value.start, 'function ' );
+					}
+
+					deindent( prop.value, code );
 				}
 			}
 

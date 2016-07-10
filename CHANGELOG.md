@@ -1,5 +1,32 @@
 # buble changelog
 
+## 0.12.4
+
+* Allow references to precede declaration (inside function) in block scoping ([#87](https://gitlab.com/Rich-Harris/buble/issues/87))
+
+## 0.12.3
+
+* Argh, npm
+
+## 0.12.2
+
+* Files missing in 0.12.1 (???)
+
+## 0.12.1
+
+* Don't require space before parens of shorthand computed method ([#82](https://gitlab.com/Rich-Harris/buble/issues/82))
+* Allow string keys for shorthand methods ([#82](https://gitlab.com/Rich-Harris/buble/issues/82))
+
+## 0.12.0
+
+* Support `u` flag in regular expression literals ([!62](https://gitlab.com/Rich-Harris/buble/merge_requests/62))
+* Save `buble/register` transformations to `$HOME/.buble-cache` ([!63](https://gitlab.com/Rich-Harris/buble/merge_requests/63))
+
+## 0.11.6
+
+* Allow shorthand methods with computed names ([#78](https://gitlab.com/Rich-Harris/buble/issues/78))
+* Include code snippet in `error.toString()` ([#79](https://gitlab.com/Rich-Harris/buble/issues/79))
+
 ## 0.11.5
 
 * Preserve whitespace between JSX tags on single line ([#65](https://gitlab.com/Rich-Harris/buble/issues/65))

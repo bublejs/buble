@@ -59,6 +59,7 @@ export function transform ( source, options = {} ) {
 		});
 	} catch ( err ) {
 		err.snippet = getSnippet( source, err.loc );
+		err.toString = () => `${err.name}: ${err.message}\n${err.snippet}`;
 		throw err;
 	}
 
