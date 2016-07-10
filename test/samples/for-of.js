@@ -145,5 +145,27 @@ module.exports = [
 			};
 
 			for ( var i = 0, list = items; i < list.length; i += 1 ) loop();`
+	},
+
+	{
+		description: 'for-of with empty block (#80)',
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			for ( let x of y ) {}`,
+
+		output: `
+			`
+	},
+
+	{
+		description: 'for-of with empty block and var (#80)',
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			for ( var x of y ) {}`,
+
+		output: `
+			var x;`
 	}
 ];
