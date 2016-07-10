@@ -1,5 +1,6 @@
 import Node from '../Node.js';
 import { findIndex } from '../../utils/array.js';
+import reserved from '../../utils/reserved.js';
 
 // TODO this code is pretty wild, tidy it up
 export default class ClassBody extends Node {
@@ -79,7 +80,7 @@ export default class ClassBody extends Node {
 				let lhs;
 
 				let methodName = method.key.name;
-				if ( scope.contains( methodName ) ) methodName = scope.createIdentifier( methodName );
+				if ( scope.contains( methodName ) || reserved[ methodName ] ) methodName = scope.createIdentifier( methodName );
 
 				if ( isAccessor ) {
 					if ( method.computed ) {

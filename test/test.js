@@ -69,7 +69,7 @@ describe( 'buble', () => {
 				var commandFile = path.resolve( dir, 'command.sh' );
 
 				var command = fs.readFileSync( commandFile, 'utf-8' )
-					.replace( 'buble', 'node ' + binFile );
+					.replace( 'buble', 'node "' + binFile + '"' );
 				child_process.exec( command, {
 					cwd: dir
 				}, ( err, stdout, stderr ) => {
