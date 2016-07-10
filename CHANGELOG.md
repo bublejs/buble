@@ -1,5 +1,11 @@
 # buble changelog
 
+## 0.12.5
+
+* Prevent reserved words being used as identifiers ([#86](https://gitlab.com/Rich-Harris/buble/issues/86))
+* Use correct `this` when transpiling `super` inside arrow function ([#89](https://gitlab.com/Rich-Harris/buble/issues/89))
+* Handle body-less `for-of` loops ([#80](https://gitlab.com/Rich-Harris/buble/issues/80))
+
 ## 0.12.4
 
 * Allow references to precede declaration (inside function) in block scoping ([#87](https://gitlab.com/Rich-Harris/buble/issues/87))
