@@ -952,7 +952,7 @@ module.exports = [
 
 			Foo.prototype.catch = function catch$1 () {
 				// code goes here
-			};`
+			};`,
 	},
 
 	{
@@ -971,6 +971,38 @@ module.exports = [
 			Foo.catch = function catch$1 () {
 				// code goes here
 			};`
+	},
+
+	{
+		description: 'uses correct `this` when transpiling `super` (#89)',
+
+		input: `
+			class A extends B {
+				constructor () {
+					super();
+					this.doSomething(() => {
+						super.doSomething();
+					});
+				}
+			}`,
+
+		output: `
+			var A = (function (B) {
+				function A () {
+					var this$1 = this;
+
+					B.call(this);
+					this.doSomething(function () {
+						B.prototype.doSomething.call(this$1);
+					});
+				}
+
+				if ( B ) A.__proto__ = B;
+				A.prototype = Object.create( B && B.prototype );
+				A.prototype.constructor = A;
+
+				return A;
+			}(B));`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
