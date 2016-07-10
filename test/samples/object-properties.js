@@ -34,6 +34,20 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles shorthand methods with reserved names (!68)',
+
+		input: `
+			obj = {
+				catch () { return 42; }
+			}`,
+
+		output: `
+			obj = {
+				catch: function catch$1 () { return 42; }
+			}`
+	},
+
+	{
 		description: 'shorthand properties can be disabled with `transforms.conciseMethodProperty === false`',
 		options: { transforms: { conciseMethodProperty: false } },
 		input: `var obj = { x, y, z () {} }`,

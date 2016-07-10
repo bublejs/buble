@@ -935,6 +935,42 @@ module.exports = [
 			};
 
 			Object.defineProperties( Foo.prototype, prototypeAccessors );`
+	},
+
+	{
+		description: 'transpiles reserved class properties (!68)',
+
+		input: `
+			class Foo {
+				catch () {
+					// code goes here
+				}
+			}`,
+
+		output: `
+			var Foo = function Foo () {};
+
+			Foo.prototype.catch = function catch$1 () {
+				// code goes here
+			};`
+	},
+
+	{
+		description: 'transpiles static reserved class properties (!68)',
+
+		input: `
+			class Foo {
+				static catch () {
+					// code goes here
+				}
+			}`,
+
+		output: `
+			var Foo = function Foo () {};
+
+			Foo.catch = function catch$1 () {
+				// code goes here
+			};`
 	}
 
 	// TODO more tests. e.g. getters and setters. computed method names
