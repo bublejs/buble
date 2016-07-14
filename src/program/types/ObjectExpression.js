@@ -1,5 +1,6 @@
 import Node from '../Node.js';
 import deindent from '../../utils/deindent.js';
+import CompileError from '../../utils/CompileError.js';
 
 export default class ObjectExpression extends Node {
 	transpile ( code, transforms ) {
@@ -14,6 +15,9 @@ export default class ObjectExpression extends Node {
 		}
 
 		if ( spreadPropertyCount ) {
+			if ( !this.program.objectAssign ) {
+				throw new CompileError( this, 'Object spread operator requires specified objectAssign option with \'Object.assign\' or polyfill helper.' );
+			}
 			// enclose run of non-spread properties in curlies
 			let i = this.properties.length;
 			while ( i-- ) {

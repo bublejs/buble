@@ -1,4 +1,5 @@
 import Node from '../Node.js';
+import CompileError from '../../utils/CompileError.js';
 
 export default class JSXOpeningElement extends Node {
 	transpile ( code, transforms ) {
@@ -52,6 +53,9 @@ export default class JSXOpeningElement extends Node {
 				if ( len === 1 ) {
 					before = html ? `',` : ',';
 				} else {
+					if (!this.program.objectAssign) {
+						throw new CompileError( this, 'Mixed JSX attributes ending in spread requires specified objectAssign option with \'Object.assign\' or polyfill helper.' );
+					}
 					before = html ? `', ${this.program.objectAssign}({},` : `, ${this.program.objectAssign}({},`;
 					after = ')';
 				}
