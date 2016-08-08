@@ -36,7 +36,7 @@ export default function spread ( code, elements, start, argumentsArrayAlias ) {
 			if ( element.type === 'SpreadElement' ) {
 				code.remove( element.start, element.argument.start );
 			} else {
-				code.insertRight( element.start, '[' );
+				code.insertLeft( element.start, '[' );
 				code.insertLeft( element.end, ']' );
 			}
 		}

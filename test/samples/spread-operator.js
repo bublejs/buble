@@ -30,8 +30,107 @@ module.exports = [
 			( foo || bar ).baz( ...values );`,
 
 		output: `
-			var ref = ( foo || bar );
-			ref.baz.apply( ref, values );`
+			(ref = ( foo || bar )).baz.apply( ref, values );
+			var ref;`
+	},
+
+	{
+		description: 'transpiles a spread operator in a method call of this (issue #100)',
+
+		input: `
+			this.baz( ...values );`,
+
+		output: `
+			this.baz.apply( this, values );`
+	},
+
+	{
+		description: 'transpiles a spread operator in an expression method call within an if',
+
+		input: `
+			var result;
+			if ( ref )
+				result = expr().baz( ...values );
+			process( result );`,
+
+		output: `
+			var result;
+			if ( ref )
+				result = (ref$1 = expr()).baz.apply( ref$1, values );
+			process( result );
+			var ref$1;`
+	},
+
+	{
+		description: 'transpiles spread operators in expression method calls within a function',
+
+		input: `
+			function foo() {
+				stuff();
+				if ( ref )
+					return expr().baz( ...values );
+				return (up || down).bar( ...values );
+			}`,
+		output: `
+			function foo() {
+				stuff();
+				if ( ref )
+					return (ref$1 = expr()).baz.apply( ref$1, values );
+				return (ref$2 = (up || down)).bar.apply( ref$2, values );
+				var ref$2;
+				var ref$1;
+			}`
+	},
+
+	{
+		description: 'transpiles spread operators in a complex nested scenario',
+
+		input: `
+			function ref() {
+				stuff();
+				if ( ref$1 )
+					return expr().baz( a, ...values, (up || down).bar( c, ...values, d ) );
+				return other();
+			}`,
+		output: `
+			function ref() {
+				stuff();
+				if ( ref$1 )
+					return (ref = expr()).baz.apply( ref, [ a ].concat( values, [(ref$2 = (up || down)).bar.apply( ref$2, [ c ].concat( values, [d] ) )] ) );
+				return other();
+				var ref$2;
+				var ref;
+			}`
+	},
+
+	{
+		description: 'transpiles spread operators in issue #92',
+
+		input: `
+			var adder = {
+				add(...numbers) {
+					return numbers.reduce((a, b) => a + b, 0)
+				},
+				prepare() {
+					return this.add.bind(this, ...arguments)
+				}
+			}`,
+		output: `
+			var adder = {
+				add: function add() {
+					var numbers = [], len = arguments.length;
+					while ( len-- ) numbers[ len ] = arguments[ len ];
+
+					return numbers.reduce(function (a, b) { return a + b; }, 0)
+				},
+				prepare: function prepare() {
+					var i = arguments.length, argsArray = Array(i);
+					while ( i-- ) argsArray[i] = arguments[i];
+
+					return (ref = this.add).bind.apply(ref, [ this ].concat( argsArray ))
+					var ref;
+				}
+			}`
 	},
 
 	{
