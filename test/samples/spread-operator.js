@@ -134,6 +134,12 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles spread operators with template literals (issue #99)',
+		input: 'console.log( `%s ${label}:`, `${color}`, ...args );',
+		output: 'console.log.apply( console, [ ("%s " + label + ":"), ("" + color) ].concat( args ) );'
+	},
+
+	{
 		description: 'transpiles a lone spread operator in a function call',
 		input: `log( ...values );`,
 		output: `log.apply( void 0, values );`

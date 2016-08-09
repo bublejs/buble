@@ -78,9 +78,9 @@ export default class CallExpression extends Node {
 					code.insertRight( firstArgument.start, `${context}, ` );
 				} else {
 					if ( firstArgument.type === 'SpreadElement' ) {
-						code.insertRight( firstArgument.start, `${context}, ` );
+						code.insertLeft( firstArgument.start, `${context}, ` );
 					} else {
-						code.insertRight( firstArgument.start, `${context}, [ ` );
+						code.insertLeft( firstArgument.start, `${context}, [ ` );
 					}
 
 					code.insertLeft( this.arguments[ this.arguments.length - 1 ].end, ' )' );
