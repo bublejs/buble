@@ -14,14 +14,14 @@ export default class ReturnStatement extends Node {
 	}
 
 	transpile ( code, transforms ) {
+		const shouldWrap = this.shouldWrap && this.loop && this.loop.shouldRewriteAsFunction;
+
 		if ( this.argument ) {
-			const shouldWrap = this.shouldWrap && this.loop && this.loop.shouldRewriteAsFunction;
-
 			if ( shouldWrap ) code.insertRight( this.argument.start, `{ v: ` );
-
-			if ( this.argument ) this.argument.transpile( code, transforms );
-
+			this.argument.transpile( code, transforms );
 			if ( shouldWrap ) code.insertLeft( this.argument.end, ` }` );
+		} else if ( shouldWrap ) {
+			code.insertLeft( this.start + 6, ' {}' );
 		}
 	}
 }
