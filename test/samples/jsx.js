@@ -150,7 +150,16 @@ module.exports = [
 	},
 
 	{
+		description: 'disallow mixed JSX spread attributes ending in spread',
+		input: `var element = <div a={1} {...props} {...stuff} />;`,
+		error: /Mixed JSX attributes ending in spread requires specified objectAssign option with 'Object\.assign' or polyfill helper\./
+	},
+
+	{
 		description: 'transpiles mixed JSX spread attributes ending in spread',
+		options: {
+			objectAssign: 'Object.assign'
+		},
 		input: `var element = <div a={1} {...props} {...stuff} />;`,
 		output: `var element = React.createElement( 'div', Object.assign({}, { a: 1 }, props, stuff));`
 	},
@@ -166,6 +175,9 @@ module.exports = [
 
 	{
 		description: 'transpiles mixed JSX spread attributes ending in other values',
+		options: {
+			objectAssign: 'Object.assign'
+		},
 		input: `var element = <div a={1} {...props} b={2} c={3} {...stuff} more={things} />;`,
 		output: `var element = React.createElement( 'div', Object.assign({}, { a: 1 }, props, { b: 2, c: 3 }, stuff, { more: things }));`
 	},
