@@ -1,4 +1,4 @@
-import acorn from 'acorn';
+import acorn from 'acorn/dist/acorn.js';
 import acornJsx from 'acorn-jsx/inject';
 import acornObjectSpread from 'acorn-object-spread/inject';
 import Program from './program/Program.js';

@@ -62,7 +62,7 @@
     "source-map-support": "^0.4.0"
   },
   "dependencies": {
-    "acorn": "3.2.x",
+    "acorn": "^3.3.0",
     "acorn-jsx": "^3.0.1",
     "acorn-object-spread": "^1.0.0",
     "chalk": "^1.1.3",
