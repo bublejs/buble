@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.13.0
+
+* Require an `objectAssign` option to be specified if using object spread operator ([#93](https://gitlab.com/Rich-Harris/buble/issues/93))
+* Fix spread operator with expression method calls and template strings ([!74](https://gitlab.com/Rich-Harris/buble/merge_requests/74))
+
 ## 0.12.5
 
 * Prevent reserved words being used as identifiers ([#86](https://gitlab.com/Rich-Harris/buble/issues/86))
