@@ -38,12 +38,19 @@ export default class CallExpression extends Node {
 				if ( this.callee.type === 'MemberExpression' ) {
 					if ( this.callee.object.type === 'Identifier' ) {
 						context = this.callee.object.name;
+					} else if ( this.callee.object.type === 'ThisExpression' ) {
+						context = 'this';
 					} else {
-						const statement = this.callee.object;
-						const i0 = statement.getIndentation();
 						context = this.findScope( true ).createIdentifier( 'ref' );
-						code.insertRight( statement.start, `var ${context} = ` );
-						code.insertLeft( statement.end, `;\n${i0}${context}` );
+						const callExpression = this.callee.object;
+						const enclosure = callExpression.findNearest( /Function/ );
+						const block = enclosure ? enclosure.body.body
+							: callExpression.findNearest( /^Program$/ ).body;
+						const lastStatementInBlock = block[ block.length - 1 ];
+						const i0 = lastStatementInBlock.getIndentation();
+						code.insertLeft( callExpression.start, `(${context} = ` );
+						code.insertRight( callExpression.end, `)` );
+						code.insertRight( lastStatementInBlock.end, `\n${i0}var ${context};` );
 					}
 				} else {
 					context = 'void 0';
@@ -71,9 +78,9 @@ export default class CallExpression extends Node {
 					code.insertRight( firstArgument.start, `${context}, ` );
 				} else {
 					if ( firstArgument.type === 'SpreadElement' ) {
-						code.insertRight( firstArgument.start, `${context}, ` );
+						code.insertLeft( firstArgument.start, `${context}, ` );
 					} else {
-						code.insertRight( firstArgument.start, `${context}, [ ` );
+						code.insertLeft( firstArgument.start, `${context}, [ ` );
 					}
 
 					code.insertLeft( this.arguments[ this.arguments.length - 1 ].end, ' )' );

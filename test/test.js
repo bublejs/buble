@@ -35,6 +35,7 @@ const subsetFilter = subset ? file => ~subset.indexOf( file ) : () => true;
 
 describe( 'buble', () => {
 	fs.readdirSync( 'test/samples' ).filter( subsetFilter ).forEach( file => {
+		if ( !/\.js$/.test( file ) ) return; // avoid vim .js.swp files
 		var samples = require( './samples/' + file );
 
 		describe( path.basename( file ), () => {
