@@ -354,5 +354,37 @@ module.exports = [
 		description: 'handles body-less do-while loops (#27)',
 		input: `do foo(); while (bar)`,
 		output: `do foo(); while (bar)`
+	},
+
+	{
+		description: 'returns without a value from loop',
+
+		input: `
+			function foo ( x ) {
+				for ( let i = 0; i < x; i += 1 ) {
+					setTimeout( () => {
+						console.log( i );
+					});
+
+					if ( x > 5 ) return;
+				}
+			}`,
+
+		output: `
+			function foo ( x ) {
+				var loop = function ( i ) {
+					setTimeout( function () {
+						console.log( i );
+					});
+
+					if ( x > 5 ) return {};
+				};
+
+				for ( var i = 0; i < x; i += 1 ) {
+					var returned = loop( i );
+
+					if ( returned ) return returned.v;
+				}
+			}`
 	}
 ];
