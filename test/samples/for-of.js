@@ -167,5 +167,40 @@ module.exports = [
 
 		output: `
 			var x;`
+	},
+
+	{
+		description: 'return from for-of loop rewritten as function',
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			function foo () {
+				for ( let x of y ) {
+					setTimeout( function () {
+						console.log( x );
+					});
+
+					if ( x > 10 ) return;
+				}
+			}`,
+
+		output: `
+			function foo () {
+				var loop = function () {
+					var x = list[i];
+
+					setTimeout( function () {
+						console.log( x );
+					});
+
+					if ( x > 10 ) return {};
+				};
+
+				for ( var i = 0, list = y; i < list.length; i += 1 ) {
+					var returned = loop();
+
+					if ( returned ) return returned.v;
+				}
+			}`
 	}
 ];
