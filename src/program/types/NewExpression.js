@@ -11,6 +11,7 @@ export default class NewExpression extends Node {
 				const arg = this.arguments[i];
 				if ( arg.type === 'SpreadElement' && isArguments( arg.argument ) ) {
 					this.argumentsArrayAlias = lexicalBoundary.getArgumentsArrayAlias();
+					break;
 				}
 			}
 		}
