@@ -1,8 +1,9 @@
 import Node from '../Node.js';
+import { loopStatement } from '../../utils/patterns.js';
 
 export default class ReturnStatement extends Node {
 	initialise ( transforms ) {
-		this.loop = this.findNearest( /(?:For(?:In)?|While)Statement/ );
+		this.loop = this.findNearest( loopStatement );
 		this.nearestFunction = this.findNearest( /Function/ );
 
 		if ( this.loop && ( !this.nearestFunction || this.loop.depth > this.nearestFunction.depth ) ) {

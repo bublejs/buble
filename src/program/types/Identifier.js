@@ -1,5 +1,6 @@
 import Node from '../Node.js';
 import isReference from '../../utils/isReference.js';
+import { loopStatement } from '../../utils/patterns.js';
 
 export default class Identifier extends Node {
 	findScope ( functionScope ) {
@@ -19,7 +20,7 @@ export default class Identifier extends Node {
 			if ( this.name === 'arguments' && !this.findScope( false ).contains( this.name ) ) {
 				const lexicalBoundary = this.findLexicalBoundary();
 				const arrowFunction = this.findNearest( 'ArrowFunctionExpression' );
-				const loop = this.findNearest( /(?:For(?:In|Of)?|While)Statement/ );
+				const loop = this.findNearest( loopStatement );
 
 				if ( arrowFunction && arrowFunction.depth > lexicalBoundary.depth ) {
 					this.alias = lexicalBoundary.getArgumentsAlias();

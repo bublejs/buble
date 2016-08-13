@@ -1,5 +1,6 @@
 import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
+import { loopStatement } from '../../utils/patterns.js';
 
 export default class Super extends Node {
 	initialise ( transforms ) {
@@ -28,7 +29,7 @@ export default class Super extends Node {
 		if ( transforms.arrow ) {
 			const lexicalBoundary = this.findLexicalBoundary();
 			const arrowFunction = this.findNearest( 'ArrowFunctionExpression' );
-			const loop = this.findNearest( /(?:For(?:In|Of)?|While)Statement/ );
+			const loop = this.findNearest( loopStatement );
 
 			if ( arrowFunction && arrowFunction.depth > lexicalBoundary.depth ) {
 				this.thisAlias = lexicalBoundary.getThisAlias();
