@@ -3,7 +3,7 @@ import json from 'rollup-plugin-json';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 
-var external = process.env.DEPS ? [] : [ 'acorn', 'magic-string' ];
+var external = process.env.DEPS ? [] : [ 'acorn/dist/acorn.js', 'magic-string' ];
 
 export default {
 	entry: 'src/index.js',
@@ -29,7 +29,7 @@ export default {
 	],
 	external: external,
 	globals: {
-		'acorn': 'acorn',
+		'acorn/dist/acorn.js': 'acorn',
 		'magic-string': 'MagicString'
 	},
 	sourceMap: true

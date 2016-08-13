@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.13.1
+
+* Handle destructuring in for/for-of loop heads ([#95](https://gitlab.com/Rich-Harris/buble/issues/95))
+* Allow early return (without value) from loops ([#103](https://gitlab.com/Rich-Harris/buble/issues/103), [#105](https://gitlab.com/Rich-Harris/buble/issues/105))
+
 ## 0.13.0
 
 * Require an `objectAssign` option to be specified if using object spread operator ([#93](https://gitlab.com/Rich-Harris/buble/issues/93))
