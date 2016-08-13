@@ -310,33 +310,33 @@ module.exports = [
 			}
 			var obj = { Test: Test };
 
-			new(Function.prototype.bind.apply( Test, [ null ].concat( [1, 2]) ));
-			new(Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2]) ));
-			new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2]) ));
+			new (Function.prototype.bind.apply( Test, [ null ].concat( [1, 2]) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2]) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2]) ));
 
-			new(Function.prototype.bind.apply( Test, [ null ].concat( [0], [1, 2]) ));
-			new(Function.prototype.bind.apply( obj.Test, [ null ].concat( [0], [1, 2]) ));
-			new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [0], [1, 2]) ));
+			new (Function.prototype.bind.apply( Test, [ null ].concat( [0], [1, 2]) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [0], [1, 2]) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [0], [1, 2]) ));
 
-			new(Function.prototype.bind.apply( Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
-			new(Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
-			new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
 
-			new(Function.prototype.bind.apply( Test, [ null ].concat( [1, 2], [new(Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
-			new(Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2], [new(Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
-			new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2], [new(Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( Test, [ null ].concat( [1, 2], [new (Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2], [new (Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2], [new (Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
 
 			(function () {
 				var i = arguments.length, argsArray = Array(i);
 				while ( i-- ) argsArray[i] = arguments[i];
 
-				new(Function.prototype.bind.apply( Test, [ null ].concat( argsArray) ));
-				new(Function.prototype.bind.apply( obj.Test, [ null ].concat( argsArray) ));
-				new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( argsArray) ));
+				new (Function.prototype.bind.apply( Test, [ null ].concat( argsArray) ));
+				new (Function.prototype.bind.apply( obj.Test, [ null ].concat( argsArray) ));
+				new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( argsArray) ));
 
-				new(Function.prototype.bind.apply( Test, [ null ].concat( [1], argsArray) ));
-				new(Function.prototype.bind.apply( obj.Test, [ null ].concat( [1], argsArray) ));
-				new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1], argsArray) ));
+				new (Function.prototype.bind.apply( Test, [ null ].concat( [1], argsArray) ));
+				new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [1], argsArray) ));
+				new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1], argsArray) ));
 			})(7, 8, 9);
 		`
 	},
