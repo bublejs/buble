@@ -28,6 +28,7 @@ import JSXSpreadAttribute from './JSXSpreadAttribute.js';
 import Literal from './Literal.js';
 import LoopStatement from './shared/LoopStatement.js';
 import MemberExpression from './MemberExpression.js';
+import NewExpression from './NewExpression.js';
 import ObjectExpression from './ObjectExpression.js';
 import Property from './Property.js';
 import ReturnStatement from './ReturnStatement.js';
@@ -69,9 +70,10 @@ export default {
 	JSXElement,
 	JSXExpressionContainer,
 	JSXOpeningElement,
-  JSXSpreadAttribute,
+	JSXSpreadAttribute,
 	Literal,
 	MemberExpression,
+	NewExpression,
 	ObjectExpression,
 	Property,
 	ReturnStatement,

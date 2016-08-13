@@ -262,5 +262,82 @@ module.exports = [
 
 				return Math.max.apply( Math, [ a ].concat( argsArray, [b] ) );
 			}`
-	}
+	},
+
+	{
+		description: 'transpiles new with spread args',
+
+		input: `
+			function Test() {
+				this.a = [...arguments];
+				console.log(JSON.stringify(this.a));
+			}
+			var obj = { Test };
+
+			new Test(...[1, 2]);
+			new obj.Test(...[1, 2]);
+			new (null || obj).Test(...[1, 2]);
+
+			new Test(0, ...[1, 2]);
+			new obj.Test(0, ...[1, 2]);
+			new (null || obj).Test(0, ...[1, 2]);
+
+			new Test(...[1, 2], ...[3, 4], 5);
+			new obj.Test(...[1, 2], ...[3, 4], 5);
+			new (null || obj).Test(...[1, 2], ...[3, 4], 5);
+
+			new Test(...[1, 2], new Test(...[7, 8]), ...[3, 4], 5);
+			new obj.Test(...[1, 2], new Test(...[7, 8]), ...[3, 4], 5);
+			new (null || obj).Test(...[1, 2], new Test(...[7, 8]), ...[3, 4], 5);
+
+			(function () {
+				new Test(...arguments);
+				new obj.Test(...arguments);
+				new (null || obj).Test(...arguments);
+
+				new Test(1, ...arguments);
+				new obj.Test(1, ...arguments);
+				new (null || obj).Test(1, ...arguments);
+			})(7, 8, 9);
+		`,
+		output: `
+			function Test() {
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				this.a = [].concat( argsArray );
+				console.log(JSON.stringify(this.a));
+			}
+			var obj = { Test: Test };
+
+			new(Function.prototype.bind.apply( Test, [ null ].concat( [1, 2]) ));
+			new(Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2]) ));
+			new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2]) ));
+
+			new(Function.prototype.bind.apply( Test, [ null ].concat( [0], [1, 2]) ));
+			new(Function.prototype.bind.apply( obj.Test, [ null ].concat( [0], [1, 2]) ));
+			new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [0], [1, 2]) ));
+
+			new(Function.prototype.bind.apply( Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
+			new(Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
+			new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
+
+			new(Function.prototype.bind.apply( Test, [ null ].concat( [1, 2], [new(Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
+			new(Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2], [new(Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
+			new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2], [new(Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
+
+			(function () {
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				new(Function.prototype.bind.apply( Test, [ null ].concat( argsArray) ));
+				new(Function.prototype.bind.apply( obj.Test, [ null ].concat( argsArray) ));
+				new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( argsArray) ));
+
+				new(Function.prototype.bind.apply( Test, [ null ].concat( [1], argsArray) ));
+				new(Function.prototype.bind.apply( obj.Test, [ null ].concat( [1], argsArray) ));
+				new(Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1], argsArray) ));
+			})(7, 8, 9);
+		`
+	},
 ];
