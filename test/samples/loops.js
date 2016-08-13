@@ -386,5 +386,45 @@ module.exports = [
 					if ( returned ) return returned.v;
 				}
 			}`
+	},
+
+	{
+		description: 'destructures variable declaration in for loop head',
+
+		input: `
+			var range = { start: 10, end: 20 };
+
+			for ( var { start: i, end } = range; i < end; i += 1 ) {
+				console.log( i );
+			}`,
+
+		output: `
+			var range = { start: 10, end: 20 };
+
+			for ( var i = range.start, end = range.end; i < end; i += 1 ) {
+				console.log( i );
+			}`
+	},
+
+	{
+		description: 'complex destructuring in variable declaration in for loop head',
+
+		input: `
+			var range = function () {
+				return { start: 10, end: 20 };
+			}
+
+			for ( var { start: i, end } = range(); i < end; i += 1 ) {
+				console.log( i );
+			}`,
+
+		output: `
+			var range = function () {
+				return { start: 10, end: 20 };
+			}
+
+			for ( var ref = range(), i = ref.start, end = ref.end; i < end; i += 1 ) {
+				console.log( i );
+			}`
 	}
 ];

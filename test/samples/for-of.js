@@ -202,5 +202,24 @@ module.exports = [
 					if ( returned ) return returned.v;
 				}
 			}`
+	},
+
+	{
+		description: 'allows destructured variable declaration (#95)',
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			for (var {x, y} of [{x: 1, y: 2}]) {
+				console.log(x, y);
+			}`,
+
+		output: `
+			for (var i = 0, list = [{x: 1, y: 2}]; i < list.length; i += 1) {
+				var ref = list[i];
+				var x = ref.x;
+				var y = ref.y;
+
+				console.log(x, y);
+			}`
 	}
 ];
