@@ -17,7 +17,7 @@ export default class VariableDeclaration extends Node {
 			code.overwrite( this.start, this.start + this.kind.length, kind, true );
 		}
 
-		if ( transforms.destructuring ) {
+		if ( transforms.destructuring && this.parent.type !== 'ForOfStatement' ) {
 			let c = this.start;
 			let lastDeclaratorIsPattern;
 

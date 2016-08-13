@@ -1,5 +1,6 @@
 import LoopStatement from './shared/LoopStatement.js';
 import CompileError from '../../utils/CompileError.js';
+import destructure from '../../utils/destructure.js';
 
 export default class ForOfStatement extends LoopStatement {
 	initialise ( transforms ) {
@@ -42,10 +43,32 @@ export default class ForOfStatement extends LoopStatement {
 
 		code.remove( this.left.end, this.right.start );
 		code.move( this.left.start, this.left.end, bodyStart );
-		code.insertLeft( this.left.end, ` = ${list}[${key}];\n\n${i1}` );
+
 
 		code.insertRight( this.right.start, `var ${key} = 0, ${list} = ` );
 		code.insertLeft( this.right.end, `; ${key} < ${list}.length; ${key} += 1` );
+
+		// destructuring. TODO non declaration destructuring
+		const declarator = this.left.type === 'VariableDeclaration' && this.left.declarations[0];
+		if ( declarator && declarator.id.type !== 'Identifier' ) {
+			let statementGenerators = [];
+			const ref = scope.createIdentifier( 'ref' );
+			destructure( code, scope, declarator.id, ref, false, statementGenerators );
+
+			let suffix = `;\n${i1}`;
+			statementGenerators.forEach( ( fn, i ) => {
+				if ( i === statementGenerators.length - 1 ) {
+					suffix = `;\n\n${i1}`;
+				}
+
+				fn( bodyStart, '', suffix );
+			});
+
+			code.insertLeft( this.left.start + this.left.kind.length + 1, ref );
+			code.insertLeft( this.left.end, ` = ${list}[${key}];\n${i1}` );
+		} else {
+			code.insertLeft( this.left.end, ` = ${list}[${key}];\n\n${i1}` );
+		}
 
 		super.transpile( code, transforms );
 	}
