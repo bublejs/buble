@@ -1,43 +1,75 @@
 import { findIndex } from './array.js';
 
 const handlers = {
-	ArrayPattern: destructureArrayPattern,
-	ObjectPattern: destructureObjectPattern,
+	Identifier: destructureIdentifier,
 	AssignmentPattern: destructureAssignmentPattern,
-	Identifier: destructureIdentifier
+	ArrayPattern: destructureArrayPattern,
+	ObjectPattern: destructureObjectPattern
 };
 
 export default function destructure ( code, scope, node, ref, statementGenerators ) {
-	_destructure( code, scope, node, ref, ref, statementGenerators );
-}
-
-function _destructure ( code, scope, node, ref, expr, statementGenerators ) {
 	const handler = handlers[ node.type ];
 	if ( !handler ) throw new Error( `not implemented: ${node.type}` );
 
-	handler( code, scope, node, ref, expr, statementGenerators );
+	handler( code, scope, node, ref, statementGenerators );
 }
 
-function destructureIdentifier ( code, scope, node, ref, expr, statementGenerators ) {
+function destructureIdentifier ( code, scope, node, ref, statementGenerators ) {
 	statementGenerators.push( ( start, prefix, suffix ) => {
 		code.insertRight( node.start, `${prefix}var ` );
-		code.insertLeft( node.end, ` = ${expr};${suffix}` );
+		code.insertLeft( node.end, ` = ${ref};${suffix}` );
 		code.move( node.start, node.end, start );
 	});
 }
 
+function destructureAssignmentPattern ( code, scope, node, ref, statementGenerators ) {
+	const isIdentifier = node.left.type === 'Identifier';
+	const name = isIdentifier ? node.left.name : ref;
+
+	statementGenerators.push( ( start, prefix, suffix ) => {
+		code.insertRight( node.left.end, `${prefix}if ( ${name} === void 0 ) ${name}` );
+		code.move( node.left.end, node.right.end, start );
+		code.insertLeft( node.right.end, `;${suffix}` );
+	});
+
+	if ( !isIdentifier ) {
+		destructure( code, scope, node.left, ref, statementGenerators );
+	}
+}
+
+function destructureArrayPattern ( code, scope, node, ref, statementGenerators ) {
+	let c = node.start;
+
+	node.elements.forEach( ( element, i ) => {
+		if ( !element ) return;
+
+		handleProperty( code, scope, c, element, `${ref}[${i}]`, statementGenerators );
+		c = element.end;
+	});
+
+	code.remove( c, node.end );
+}
+
+function destructureObjectPattern ( code, scope, node, ref, statementGenerators ) {
+	let c = node.start;
+
+	node.properties.forEach( prop => {
+		handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, statementGenerators );
+		c = prop.end;
+	});
+
+	code.remove( c, node.end );
+}
+
 function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 	switch ( node.type ) {
-		case 'Identifier':
+		case 'Identifier': {
 			code.remove( c, node.start );
-			statementGenerators.push( ( start, prefix, suffix ) => {
-				code.insertRight( node.start, `${prefix}var ` );
-				code.insertLeft( node.end, ` = ${value};${suffix}` );
-				code.move( node.start, node.end, start );
-			});
+			destructureIdentifier( code, scope, node, value, statementGenerators );
 			break;
+		}
 
-		case 'AssignmentPattern':
+		case 'AssignmentPattern': {
 			let name;
 
 			const isIdentifier = node.left.type === 'Identifier';
@@ -65,8 +97,9 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 			}
 
 			break;
+		}
 
-		case 'ObjectPattern':
+		case 'ObjectPattern': {
 			code.remove( c, c = node.start );
 
 			if ( node.properties.length > 1 ) {
@@ -94,8 +127,9 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 
 			code.remove( c, node.end );
 			break;
+		}
 
-		case 'ArrayPattern':
+		case 'ArrayPattern': {
 			code.remove( c, c = node.start );
 
 			if ( node.elements.filter( Boolean ).length > 1 ) {
@@ -124,47 +158,10 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 
 			code.remove( c, node.end );
 			break;
+		}
 
-		default:
+		default: {
 			throw new Error( `Unexpected node type in destructuring (${node.type})` );
-	}
-}
-
-function destructureArrayPattern ( code, scope, node, ref, expr, statementGenerators ) {
-	let c = node.start;
-
-	node.elements.forEach( ( element, i ) => {
-		if ( !element ) return;
-
-		handleProperty( code, scope, c, element, `${ref}[${i}]`, statementGenerators );
-		c = element.end;
-	});
-
-	code.remove( c, node.end );
-}
-
-function destructureObjectPattern ( code, scope, node, ref, expr, statementGenerators ) {
-	let c = node.start;
-
-	node.properties.forEach( prop => {
-		handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, statementGenerators );
-		c = prop.end;
-	});
-
-	code.remove( c, node.end );
-}
-
-function destructureAssignmentPattern ( code, scope, node, ref, expr, statementGenerators ) {
-	const isIdentifier = node.left.type === 'Identifier';
-	const name = isIdentifier ? node.left.name : ref;
-
-	statementGenerators.push( ( start, prefix, suffix ) => {
-		code.insertRight( node.left.end, `${prefix}if ( ${name} === void 0 ) ${name}` );
-		code.move( node.left.end, node.right.end, start );
-		code.insertLeft( node.right.end, `;${suffix}` );
-	});
-
-	if ( !isIdentifier ) {
-		_destructure( code, scope, node.left, ref, expr, statementGenerators );
+		}
 	}
 }
