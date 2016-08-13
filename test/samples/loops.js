@@ -414,7 +414,7 @@ module.exports = [
 				return { start: 10, end: 20 };
 			}
 
-			for ( var { start: i, end } = range(); i < end; i += 1 ) {
+			for ( var { start: i, end = 100 } = range(); i < end; i += 1 ) {
 				console.log( i );
 			}`,
 
@@ -423,7 +423,7 @@ module.exports = [
 				return { start: 10, end: 20 };
 			}
 
-			for ( var ref = range(), i = ref.start, end = ref.end; i < end; i += 1 ) {
+			for ( var ref = range(), i = ref.start, end = ref.end === undefined ? 100 : ref.end; i < end; i += 1 ) {
 				console.log( i );
 			}`
 	}

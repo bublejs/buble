@@ -7,65 +7,64 @@ const handlers = {
 	ObjectPattern: destructureObjectPattern
 };
 
-export default function destructure ( code, scope, node, ref, statementGenerators ) {
-	const handler = handlers[ node.type ];
-	if ( !handler ) throw new Error( `not implemented: ${node.type}` );
-
-	handler( code, scope, node, ref, statementGenerators );
+export default function destructure ( code, scope, node, ref, inline, statementGenerators ) {
+	handlers[ node.type ]( code, scope, node, ref, inline, statementGenerators );
 }
 
-function destructureIdentifier ( code, scope, node, ref, statementGenerators ) {
+function destructureIdentifier ( code, scope, node, ref, inline, statementGenerators ) {
 	statementGenerators.push( ( start, prefix, suffix ) => {
-		code.insertRight( node.start, `${prefix}var ` );
-		code.insertLeft( node.end, ` = ${ref};${suffix}` );
+		code.insertRight( node.start, inline ? prefix : `${prefix}var ` );
+		code.insertLeft( node.end, ` = ${ref}${suffix}` );
 		code.move( node.start, node.end, start );
 	});
 }
 
-function destructureAssignmentPattern ( code, scope, node, ref, statementGenerators ) {
+function destructureAssignmentPattern ( code, scope, node, ref, inline, statementGenerators ) {
 	const isIdentifier = node.left.type === 'Identifier';
 	const name = isIdentifier ? node.left.name : ref;
 
-	statementGenerators.push( ( start, prefix, suffix ) => {
-		code.insertRight( node.left.end, `${prefix}if ( ${name} === void 0 ) ${name}` );
-		code.move( node.left.end, node.right.end, start );
-		code.insertLeft( node.right.end, `;${suffix}` );
-	});
+	if ( !inline ) {
+		statementGenerators.push( ( start, prefix, suffix ) => {
+			code.insertRight( node.left.end, `${prefix}if ( ${name} === void 0 ) ${name}` );
+			code.move( node.left.end, node.right.end, start );
+			code.insertLeft( node.right.end, suffix );
+		});
+	}
 
 	if ( !isIdentifier ) {
-		destructure( code, scope, node.left, ref, statementGenerators );
+		destructure( code, scope, node.left, ref, inline, statementGenerators );
 	}
 }
 
-function destructureArrayPattern ( code, scope, node, ref, statementGenerators ) {
+function destructureArrayPattern ( code, scope, node, ref, inline, statementGenerators ) {
 	let c = node.start;
 
 	node.elements.forEach( ( element, i ) => {
 		if ( !element ) return;
 
-		handleProperty( code, scope, c, element, `${ref}[${i}]`, statementGenerators );
+		handleProperty( code, scope, c, element, `${ref}[${i}]`, inline, statementGenerators );
 		c = element.end;
 	});
 
 	code.remove( c, node.end );
 }
 
-function destructureObjectPattern ( code, scope, node, ref, statementGenerators ) {
+function destructureObjectPattern ( code, scope, node, ref, inline, statementGenerators ) {
 	let c = node.start;
 
 	node.properties.forEach( prop => {
-		handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, statementGenerators );
+		handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, inline, statementGenerators );
 		c = prop.end;
 	});
 
 	code.remove( c, node.end );
 }
 
-function handleProperty ( code, scope, c, node, value, statementGenerators ) {
+function handleProperty ( code, scope, c, node, value, inline, statementGenerators ) {
 	switch ( node.type ) {
 		case 'Identifier': {
 			code.remove( c, node.start );
-			destructureIdentifier( code, scope, node, value, statementGenerators );
+			destructureIdentifier( code, scope, node, value, inline, statementGenerators );
 			break;
 		}
 
@@ -83,9 +82,15 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 			}
 
 			statementGenerators.push( ( start, prefix, suffix ) => {
-				code.insertRight( node.right.start, `${prefix}var ${name} = ${value}; if ( ${name} === void 0 ) ${name} = ` );
+				if ( inline ) {
+					code.insertRight( node.right.start, `${name} = ${value} === undefined ? ` );
+					code.insertLeft( node.right.end, ` : ${value}` );
+				} else {
+					code.insertRight( node.right.start, `${prefix}var ${name} = ${value}; if ( ${name} === void 0 ) ${name} = ` );
+					code.insertLeft( node.right.end, suffix );
+				}
+
 				code.move( node.right.start, node.right.end, start );
-				code.insertLeft( node.right.end, `;${suffix}` );
 			});
 
 			if ( isIdentifier ) {
@@ -93,7 +98,7 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 			} else {
 				code.remove( c, node.left.start );
 				code.remove( node.left.end, node.right.start );
-				handleProperty( code, scope, c, node.left, name, statementGenerators );
+				handleProperty( code, scope, c, node.left, name, inline, statementGenerators );
 			}
 
 			break;
@@ -110,18 +115,18 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 					// straightforward insertLeft and keep correct order...
 					code.insertRight( node.start, `${prefix}var ${ref} = ` );
 					code.overwrite( node.start, c = node.start + 1, value );
-					code.insertLeft( c, `;${suffix}` );
+					code.insertLeft( c, suffix );
 
 					code.move( node.start, c, start );
 				});
 
 				node.properties.forEach( prop => {
-					handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, statementGenerators );
+					handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, inline, statementGenerators );
 					c = prop.end;
 				});
 			} else {
 				const prop = node.properties[0];
-				handleProperty( code, scope, c, prop.value, `${value}.${prop.key.name}`, statementGenerators );
+				handleProperty( code, scope, c, prop.value, `${value}.${prop.key.name}`, inline, statementGenerators );
 				c = prop.end;
 			}
 
@@ -138,7 +143,7 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 				statementGenerators.push( ( start, prefix, suffix ) => {
 					code.insertRight( node.start, `${prefix}var ${ref} = ` );
 					code.overwrite( node.start, c = node.start + 1, value );
-					code.insertLeft( c, `;${suffix}` );
+					code.insertLeft( c, suffix );
 
 					code.move( node.start, c, start );
 				});
@@ -146,13 +151,13 @@ function handleProperty ( code, scope, c, node, value, statementGenerators ) {
 				node.elements.forEach( ( element, i ) => {
 					if ( !element ) return;
 
-					handleProperty( code, scope, c, element, `${ref}[${i}]`, statementGenerators );
+					handleProperty( code, scope, c, element, `${ref}[${i}]`, inline, statementGenerators );
 					c = element.end;
 				});
 			} else {
 				const index = findIndex( node.elements, Boolean );
 				const element = node.elements[ index ];
-				handleProperty( code, scope, c, element, `${value}[${index}]`, statementGenerators );
+				handleProperty( code, scope, c, element, `${value}[${index}]`, inline, statementGenerators );
 				c = element.end;
 			}
 
