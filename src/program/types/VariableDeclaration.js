@@ -1,5 +1,6 @@
 import Node from '../Node.js';
 import destructure from '../../utils/destructure.js';
+import { loopStatement } from '../../utils/patterns.js';
 
 export default class VariableDeclaration extends Node {
 	initialise ( transforms ) {
@@ -16,7 +17,7 @@ export default class VariableDeclaration extends Node {
 			code.overwrite( this.start, this.start + this.kind.length, kind, true );
 		}
 
-		if ( transforms.destructuring ) {
+		if ( transforms.destructuring && this.parent.type !== 'ForOfStatement' ) {
 			let c = this.start;
 			let lastDeclaratorIsPattern;
 
@@ -26,6 +27,8 @@ export default class VariableDeclaration extends Node {
 						code.overwrite( c, declarator.id.start, `var ` );
 					}
 				} else {
+					const inline = loopStatement.test( this.parent.type );
+
 					if ( i === 0 ) {
 						code.remove( c, declarator.id.start );
 					} else {
@@ -45,20 +48,21 @@ export default class VariableDeclaration extends Node {
 					} else {
 						statementGenerators.push( ( start, prefix, suffix ) => {
 							code.insertRight( declarator.id.end, `var ${name}` );
-							code.insertLeft( declarator.init.end, `;${suffix}` );
+							code.insertLeft( declarator.init.end, `${suffix}` );
 							code.move( declarator.id.end, declarator.end, start );
 						});
 					}
 
-					destructure( code, declarator.findScope( false ), declarator.id, name, statementGenerators );
+					destructure( code, declarator.findScope( false ), declarator.id, name, inline, statementGenerators );
 
-					let suffix = `\n${i0}`;
+					let prefix = inline ? 'var ' : '';
+					let suffix = inline ? `, ` : `;\n${i0}`;
 					statementGenerators.forEach( ( fn, j ) => {
 						if ( i === this.declarations.length - 1 && j === statementGenerators.length - 1 ) {
-							suffix = '';
+							suffix = inline ? '' : ';';
 						}
 
-						fn( declarator.start, '', suffix );
+						fn( declarator.start, j === 0 ? prefix : '', suffix );
 					});
 				}
 

@@ -124,14 +124,14 @@ export default class BlockStatement extends Node {
 
 		if ( this.argumentsAlias ) {
 			introStatementGenerators.push( ( start, prefix, suffix ) => {
-				const assignment = `${prefix}var ${this.argumentsAlias} = arguments;${suffix}`;
+				const assignment = `${prefix}var ${this.argumentsAlias} = arguments${suffix}`;
 				code.insertLeft( start, assignment );
 			});
 		}
 
 		if ( this.thisAlias ) {
 			introStatementGenerators.push( ( start, prefix, suffix ) => {
-				const assignment = `${prefix}var ${this.thisAlias} = this;${suffix}`;
+				const assignment = `${prefix}var ${this.thisAlias} = this${suffix}`;
 				code.insertLeft( start, assignment );
 			});
 		}
@@ -139,7 +139,7 @@ export default class BlockStatement extends Node {
 		if ( this.argumentsArrayAlias ) {
 			introStatementGenerators.push( ( start, prefix, suffix ) => {
 				const i = this.scope.createIdentifier( 'i' );
-				const assignment = `${prefix}var ${i} = arguments.length, ${this.argumentsArrayAlias} = Array(${i});\n${indentation}while ( ${i}-- ) ${this.argumentsArrayAlias}[${i}] = arguments[${i}];${suffix}`;
+				const assignment = `${prefix}var ${i} = arguments.length, ${this.argumentsArrayAlias} = Array(${i});\n${indentation}while ( ${i}-- ) ${this.argumentsArrayAlias}[${i}] = arguments[${i}]${suffix}`;
 				code.insertLeft( start, assignment );
 			});
 		}
@@ -184,9 +184,9 @@ export default class BlockStatement extends Node {
 		}
 
 		let prefix = `\n${indentation}`;
-		let suffix = '';
+		let suffix = ';';
 		introStatementGenerators.forEach( ( fn, i ) => {
-			if ( i === introStatementGenerators.length - 1 ) suffix = `\n`;
+			if ( i === introStatementGenerators.length - 1 ) suffix = `;\n`;
 			fn( start, prefix, suffix );
 		});
 	}
@@ -201,9 +201,9 @@ export default class BlockStatement extends Node {
 						const lhs = `${prefix}if ( ${param.left.name} === void 0 ) ${param.left.name}`;
 
 						code
-							.insertRight( param.left.end, `${lhs}` )
+							.insertRight( param.left.end, lhs )
 							.move( param.left.end, param.right.end, start )
-							.insertLeft( param.right.end, `;${suffix}` );
+							.insertLeft( param.right.end, suffix );
 					});
 				}
 			}
@@ -229,9 +229,9 @@ export default class BlockStatement extends Node {
 						const count = params.length - 1;
 
 						if ( count ) {
-							code.insertLeft( start, `${prefix}var ${name} = [], ${len} = arguments.length - ${count};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ];${suffix}` );
+							code.insertLeft( start, `${prefix}var ${name} = [], ${len} = arguments.length - ${count};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ]${suffix}` );
 						} else {
-							code.insertLeft( start, `${prefix}var ${name} = [], ${len} = arguments.length;\n${indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ];${suffix}` );
+							code.insertLeft( start, `${prefix}var ${name} = [], ${len} = arguments.length;\n${indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ]${suffix}` );
 						}
 					});
 				}
@@ -240,7 +240,7 @@ export default class BlockStatement extends Node {
 			else if ( param.type !== 'Identifier' ) {
 				if ( transforms.parameterDestructuring ) {
 					const ref = this.scope.createIdentifier( 'ref' );
-					destructure( code, this.scope, param, ref, introStatementGenerators );
+					destructure( code, this.scope, param, ref, false, introStatementGenerators );
 					code.insertLeft( param.start, ref );
 				}
 			}
