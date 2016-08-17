@@ -27,8 +27,7 @@ export default class NewExpression extends Node {
 
 			if ( hasSpreadElements ) {
 				code.insertLeft( this.start + 'new'.length, ' (Function.prototype.bind.apply(' );
-				code.overwrite( this.callee.end, firstArgument.start, ', ' );
-				code.insertLeft( firstArgument.start, "[ null ].concat( " );
+				code.overwrite( this.callee.end, firstArgument.start, ', [ null ].concat( ' );
 				code.insertRight( this.end, ' ))' );
 			}
 		}
