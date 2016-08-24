@@ -48,9 +48,9 @@ export default class CallExpression extends Node {
 							: callExpression.findNearest( /^Program$/ ).body;
 						const lastStatementInBlock = block[ block.length - 1 ];
 						const i0 = lastStatementInBlock.getIndentation();
-						code.insertLeft( callExpression.start, `(${context} = ` );
-						code.insertRight( callExpression.end, `)` );
-						code.insertRight( lastStatementInBlock.end, `\n${i0}var ${context};` );
+						code.insertRight( callExpression.start, `(${context} = ` );
+						code.insertLeft( callExpression.end, `)` );
+						code.insertLeft( lastStatementInBlock.end, `\n${i0}var ${context};` );
 					}
 				} else {
 					context = 'void 0';

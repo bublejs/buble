@@ -164,7 +164,7 @@ export default class BlockStatement extends Node {
 					code.insertRight( expr.start, `\n${indentation}return ` );
 					code.insertLeft( expr.end, `;\n` );
 				} else if ( transforms.arrow ) {
-					code.insertRight( expr.start, `{ return ` );
+					code.insertLeft( expr.start, `{ return ` );
 					code.insertLeft( expr.end, `; }` );
 				}
 			}

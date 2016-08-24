@@ -26,9 +26,9 @@ export default class NewExpression extends Node {
 			let hasSpreadElements = spread( code, this.arguments, firstArgument.start, this.argumentsArrayAlias, isNew );
 
 			if ( hasSpreadElements ) {
-				code.insertLeft( this.start + 'new'.length, ' (Function.prototype.bind.apply(' );
+				code.insertRight( this.start + 'new'.length, ' (Function.prototype.bind.apply(' );
 				code.overwrite( this.callee.end, firstArgument.start, ', [ null ].concat( ' );
-				code.insertRight( this.end, ' ))' );
+				code.insertLeft( this.end, ' ))' );
 			}
 		}
 
