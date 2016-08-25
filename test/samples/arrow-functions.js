@@ -162,5 +162,29 @@ module.exports = [
 
 				setTimeout( function () { return console.log( this$1 ); } );
 			}`
+	},
+
+	{
+		description: 'handles standalone arrow function expression statement',
+
+		input: `
+			() => console.log( 'not printed' );`,
+
+		output: `
+			(function() { return console.log( 'not printed' ); });`
+	},
+
+	{
+		description: 'handles standalone arrow function expression statement within a function',
+
+		input: `
+			function no_op () {
+				() => console.log( 'not printed' );
+			}`,
+
+		output: `
+			function no_op () {
+				(function() { return console.log( 'not printed' ); });
+			}`
 	}
 ];

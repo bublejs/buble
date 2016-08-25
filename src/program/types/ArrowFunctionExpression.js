@@ -22,7 +22,13 @@ export default class ArrowFunctionExpression extends Node {
 			}
 
 			// add function
-			code.insertRight( this.start, 'function ' );
+			if ( this.parent && this.parent.type === 'ExpressionStatement' ) {
+				// standalone expression statement
+				code.insertRight( this.start, '(function' );
+				code.insertRight( this.end, ')' );
+			} else {
+				code.insertRight( this.start, 'function ' );
+			}
 		}
 
 		super.transpile( code, transforms );
