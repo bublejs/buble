@@ -49,7 +49,7 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles a spread operator in an arrow function call using this (#115)',
+		description: 'transpiles a spread operator in a call in an arrow function using this (#115)',
 
 		input: `
 			function foo(...args) {
@@ -94,6 +94,56 @@ module.exports = [
 				return Domain.run(function () {
 					return (ref = this$1).go.apply(ref, arguments$1);
 					var ref;
+				});
+			}
+		`
+	},
+
+	{
+		description: 'transpiles a spread operator in a new call in an arrow function using this',
+
+		input: `
+			function foo(...args) {
+				return Domain.run(() => {
+					return new this.Test(...args);
+				});
+			}
+			function bar(args) {
+				return Domain.run(() => {
+					return new this.Test(...args);
+				});
+			}
+			function baz() {
+				return Domain.run(() => {
+					return new this.Test(...arguments);
+				});
+			}
+		`,
+		output: `
+			function foo() {
+				var this$1 = this;
+				var args = [], len = arguments.length;
+				while ( len-- ) args[ len ] = arguments[ len ];
+
+				return Domain.run(function () {
+					return new (Function.prototype.bind.apply( this$1.Test, [ null ].concat( args) ));
+				});
+			}
+			function bar(args) {
+				var this$1 = this;
+
+				return Domain.run(function () {
+					return new (Function.prototype.bind.apply( this$1.Test, [ null ].concat( args) ));
+				});
+			}
+			function baz() {
+				var arguments$1 = arguments;
+				var this$1 = this;
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				return Domain.run(function () {
+					return new (Function.prototype.bind.apply( this$1.Test, [ null ].concat( arguments$1) ));
 				});
 			}
 		`
