@@ -38,8 +38,6 @@ export default class CallExpression extends Node {
 				if ( this.callee.type === 'MemberExpression' ) {
 					if ( this.callee.object.type === 'Identifier' ) {
 						context = this.callee.object.name;
-					} else if ( this.callee.object.type === 'ThisExpression' ) {
-						context = 'this';
 					} else {
 						context = this.findScope( true ).createIdentifier( 'ref' );
 						const callExpression = this.callee.object;

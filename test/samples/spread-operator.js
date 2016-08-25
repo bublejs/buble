@@ -35,13 +35,68 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles a spread operator in a method call of this (issue #100)',
+		description: 'transpiles a spread operator in a method call of this (#100)',
 
 		input: `
-			this.baz( ...values );`,
-
+			function a( args ) {
+				return this.go( ...args );
+			}`,
 		output: `
-			this.baz.apply( this, values );`
+			function a( args ) {
+				return (ref = this).go.apply( ref, args );
+				var ref;
+			}`
+	},
+
+	{
+		description: 'transpiles a spread operator in an arrow function call using this (#115)',
+
+		input: `
+			function foo(...args) {
+				return Domain.run(() => {
+					return this.go(...args);
+				});
+			}
+			function bar(args) {
+				return Domain.run(() => {
+					return this.go(...args);
+				});
+			}
+			function baz() {
+				return Domain.run(() => {
+					return this.go(...arguments);
+				});
+			}
+		`,
+		output: `
+			function foo() {
+				var this$1 = this;
+				var args = [], len = arguments.length;
+				while ( len-- ) args[ len ] = arguments[ len ];
+
+				return Domain.run(function () {
+					return (ref = this$1).go.apply(ref, args);
+					var ref;
+				});
+			}
+			function bar(args) {
+				var this$1 = this;
+
+				return Domain.run(function () {
+					return (ref = this$1).go.apply(ref, args);
+					var ref;
+				});
+			}
+			function baz() {
+				var arguments$1 = arguments;
+				var this$1 = this;
+
+				return Domain.run(function () {
+					return (ref = this$1).go.apply(ref, arguments$1);
+					var ref;
+				});
+			}
+		`
 	},
 
 	{
