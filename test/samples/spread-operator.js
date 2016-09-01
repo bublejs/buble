@@ -35,13 +35,118 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles a spread operator in a method call of this (issue #100)',
+		description: 'transpiles a spread operator in a method call of this (#100)',
 
 		input: `
-			this.baz( ...values );`,
-
+			function a( args ) {
+				return this.go( ...args );
+			}`,
 		output: `
-			this.baz.apply( this, values );`
+			function a( args ) {
+				return (ref = this).go.apply( ref, args );
+				var ref;
+			}`
+	},
+
+	{
+		description: 'transpiles a spread operator in a call in an arrow function using this (#115)',
+
+		input: `
+			function foo(...args) {
+				return Domain.run(() => {
+					return this.go(...args);
+				});
+			}
+			function bar(args) {
+				return Domain.run(() => {
+					return this.go(...args);
+				});
+			}
+			function baz() {
+				return Domain.run(() => {
+					return this.go(...arguments);
+				});
+			}
+		`,
+		output: `
+			function foo() {
+				var this$1 = this;
+				var args = [], len = arguments.length;
+				while ( len-- ) args[ len ] = arguments[ len ];
+
+				return Domain.run(function () {
+					return (ref = this$1).go.apply(ref, args);
+					var ref;
+				});
+			}
+			function bar(args) {
+				var this$1 = this;
+
+				return Domain.run(function () {
+					return (ref = this$1).go.apply(ref, args);
+					var ref;
+				});
+			}
+			function baz() {
+				var arguments$1 = arguments;
+				var this$1 = this;
+
+				return Domain.run(function () {
+					return (ref = this$1).go.apply(ref, arguments$1);
+					var ref;
+				});
+			}
+		`
+	},
+
+	{
+		description: 'transpiles a spread operator in a new call in an arrow function using this',
+
+		input: `
+			function foo(...args) {
+				return Domain.run(() => {
+					return new this.Test(...args);
+				});
+			}
+			function bar(args) {
+				return Domain.run(() => {
+					return new this.Test(...args);
+				});
+			}
+			function baz() {
+				return Domain.run(() => {
+					return new this.Test(...arguments);
+				});
+			}
+		`,
+		output: `
+			function foo() {
+				var this$1 = this;
+				var args = [], len = arguments.length;
+				while ( len-- ) args[ len ] = arguments[ len ];
+
+				return Domain.run(function () {
+					return new (Function.prototype.bind.apply( this$1.Test, [ null ].concat( args) ));
+				});
+			}
+			function bar(args) {
+				var this$1 = this;
+
+				return Domain.run(function () {
+					return new (Function.prototype.bind.apply( this$1.Test, [ null ].concat( args) ));
+				});
+			}
+			function baz() {
+				var arguments$1 = arguments;
+				var this$1 = this;
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				return Domain.run(function () {
+					return new (Function.prototype.bind.apply( this$1.Test, [ null ].concat( arguments$1) ));
+				});
+			}
+		`
 	},
 
 	{
@@ -77,8 +182,8 @@ module.exports = [
 				if ( ref )
 					return (ref$1 = expr()).baz.apply( ref$1, values );
 				return (ref$2 = (up || down)).bar.apply( ref$2, values );
-				var ref$2;
 				var ref$1;
+				var ref$2;
 			}`
 	},
 
@@ -98,8 +203,8 @@ module.exports = [
 				if ( ref$1 )
 					return (ref = expr()).baz.apply( ref, [ a ].concat( values, [(ref$2 = (up || down)).bar.apply( ref$2, [ c ].concat( values, [d] ) )] ) );
 				return other();
-				var ref$2;
 				var ref;
+				var ref$2;
 			}`
 	},
 
@@ -262,5 +367,161 @@ module.exports = [
 
 				return Math.max.apply( Math, [ a ].concat( argsArray, [b] ) );
 			}`
-	}
+	},
+
+	{
+		description: 'transpiles new with spread args',
+
+		input: `
+			function Test() {
+				this.a = [...arguments];
+				console.log(JSON.stringify(this.a));
+			}
+			var obj = { Test };
+
+			new Test(...[1, 2]);
+			new obj.Test(...[1, 2]);
+			new (null || obj).Test(...[1, 2]);
+
+			new Test(0, ...[1, 2]);
+			new obj.Test(0, ...[1, 2]);
+			new (null || obj).Test(0, ...[1, 2]);
+
+			new Test(...[1, 2], ...[3, 4], 5);
+			new obj.Test(...[1, 2], ...[3, 4], 5);
+			new (null || obj).Test(...[1, 2], ...[3, 4], 5);
+
+			new Test(...[1, 2], new Test(...[7, 8]), ...[3, 4], 5);
+			new obj.Test(...[1, 2], new Test(...[7, 8]), ...[3, 4], 5);
+			new (null || obj).Test(...[1, 2], new Test(...[7, 8]), ...[3, 4], 5);
+
+			(function () {
+				new Test(...arguments);
+				new obj.Test(...arguments);
+				new (null || obj).Test(...arguments);
+
+				new Test(1, ...arguments);
+				new obj.Test(1, ...arguments);
+				new (null || obj).Test(1, ...arguments);
+			})(7, 8, 9);
+		`,
+		output: `
+			function Test() {
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				this.a = [].concat( argsArray );
+				console.log(JSON.stringify(this.a));
+			}
+			var obj = { Test: Test };
+
+			new (Function.prototype.bind.apply( Test, [ null ].concat( [1, 2]) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2]) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2]) ));
+
+			new (Function.prototype.bind.apply( Test, [ null ].concat( [0], [1, 2]) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [0], [1, 2]) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [0], [1, 2]) ));
+
+			new (Function.prototype.bind.apply( Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
+
+			new (Function.prototype.bind.apply( Test, [ null ].concat( [1, 2], [new (Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2], [new (Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2], [new (Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
+
+			(function () {
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				new (Function.prototype.bind.apply( Test, [ null ].concat( argsArray) ));
+				new (Function.prototype.bind.apply( obj.Test, [ null ].concat( argsArray) ));
+				new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( argsArray) ));
+
+				new (Function.prototype.bind.apply( Test, [ null ].concat( [1], argsArray) ));
+				new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [1], argsArray) ));
+				new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1], argsArray) ));
+			})(7, 8, 9);
+		`
+	},
+
+	{
+		description: 'transpiles `new` with spread parameter in an arrow function',
+
+		input: `
+			function foo (x) {
+				if ( x )
+					return ref => new (bar || baz).Test( ref, ...x );
+			}
+		`,
+		output: `
+			function foo (x) {
+				if ( x )
+					return function (ref) { return new (Function.prototype.bind.apply( (bar || baz).Test, [ null ].concat( [ref], x ) )); };
+			}
+		`
+	},
+
+	{
+		description: 'transpiles a call with spread parameter in an arrow function',
+
+		input: `
+			function foo (x) {
+				if ( x )
+					return ref => (bar || baz).Test( ref, ...x );
+			}
+		`,
+		output: `
+			function foo (x) {
+				if ( x )
+					return function (ref) { return (ref$1 = (bar || baz)).Test.apply( ref$1, [ ref ].concat( x ) )
+						var ref$1;; };
+			}
+		`
+	},
+
+	{
+		description: 'transpiles `new` with ...arguments in an arrow function',
+
+		input: `
+			function foo (x) {
+				if ( x )
+					return ref => new (bar || baz).Test( ref, ...arguments );
+			}
+		`,
+		output: `
+			function foo (x) {
+				var arguments$1 = arguments;
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				if ( x )
+					return function (ref) { return new (Function.prototype.bind.apply( (bar || baz).Test, [ null ].concat( [ref], arguments$1 ) )); };
+			}
+		`
+	},
+
+	{
+		description: 'transpiles a call with ...arguments in an arrow function',
+
+		input: `
+			function foo (x) {
+				if ( x )
+					return ref => (bar || baz).Test( ref, ...arguments );
+			}
+		`,
+		output: `
+			function foo (x) {
+				var arguments$1 = arguments;
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				if ( x )
+					return function (ref) { return (ref$1 = (bar || baz)).Test.apply( ref$1, [ ref ].concat( arguments$1 ) )
+						var ref$1;; };
+			}
+		`
+	},
+
 ];

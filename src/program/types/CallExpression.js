@@ -38,8 +38,6 @@ export default class CallExpression extends Node {
 				if ( this.callee.type === 'MemberExpression' ) {
 					if ( this.callee.object.type === 'Identifier' ) {
 						context = this.callee.object.name;
-					} else if ( this.callee.object.type === 'ThisExpression' ) {
-						context = 'this';
 					} else {
 						context = this.findScope( true ).createIdentifier( 'ref' );
 						const callExpression = this.callee.object;
@@ -48,9 +46,9 @@ export default class CallExpression extends Node {
 							: callExpression.findNearest( /^Program$/ ).body;
 						const lastStatementInBlock = block[ block.length - 1 ];
 						const i0 = lastStatementInBlock.getIndentation();
-						code.insertLeft( callExpression.start, `(${context} = ` );
-						code.insertRight( callExpression.end, `)` );
-						code.insertRight( lastStatementInBlock.end, `\n${i0}var ${context};` );
+						code.insertRight( callExpression.start, `(${context} = ` );
+						code.insertLeft( callExpression.end, `)` );
+						code.insertLeft( lastStatementInBlock.end, `\n${i0}var ${context};` );
 					}
 				} else {
 					context = 'void 0';

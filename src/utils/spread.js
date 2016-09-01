@@ -2,7 +2,7 @@ export function isArguments ( node ) {
 	return node.type === 'Identifier' && node.name === 'arguments';
 }
 
-export default function spread ( code, elements, start, argumentsArrayAlias ) {
+export default function spread ( code, elements, start, argumentsArrayAlias, isNew ) {
 	let i = elements.length;
 	let firstSpreadIndex = -1;
 
@@ -18,6 +18,20 @@ export default function spread ( code, elements, start, argumentsArrayAlias ) {
 	}
 
 	if ( firstSpreadIndex === -1 ) return false; // false indicates no spread elements
+
+	if (isNew) {
+		for ( i = 0; i < elements.length; i += 1 ) {
+			let element = elements[i];
+			if ( element.type === 'SpreadElement' ) {
+				code.remove( element.start, element.argument.start );
+			} else {
+				code.insertRight( element.start, '[' );
+				code.insertRight( element.end, ']' );
+			}
+		}
+
+		return true; // true indicates some spread elements
+	}
 
 	let element = elements[ firstSpreadIndex ];
 	const previousElement = elements[ firstSpreadIndex - 1 ];
