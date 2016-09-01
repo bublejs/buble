@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.13.2
+
+* Fix spread operator when used with `new` and `this` ([#104](https://gitlab.com/Rich-Harris/buble/issues/104), [#115](https://gitlab.com/Rich-Harris/buble/issues/115))
+
 ## 0.13.1
 
 * Handle destructuring in for/for-of loop heads ([#95](https://gitlab.com/Rich-Harris/buble/issues/95))
