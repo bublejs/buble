@@ -48,6 +48,18 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles computed properties without spacing (#117)',
+
+		input: `
+			console.log(JSON.stringify({['com'+'puted']:1,['foo']:2}));
+		`,
+		output: `
+			var obj;
+			console.log(JSON.stringify(( obj = {}, obj['com'+'puted'] = 1, obj['foo'] = 2, obj )));
+		`
+	},
+
+	{
 		description: 'shorthand properties can be disabled with `transforms.conciseMethodProperty === false`',
 		options: { transforms: { conciseMethodProperty: false } },
 		input: `var obj = { x, y, z () {} }`,
