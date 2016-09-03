@@ -161,7 +161,7 @@ module.exports = [
 		output: `
 			var result;
 			if ( ref )
-				result = (ref$1 = expr()).baz.apply( ref$1, values );
+				{ result = (ref$1 = expr()).baz.apply( ref$1, values ); }
 			process( result );
 			var ref$1;`
 	},
@@ -180,7 +180,7 @@ module.exports = [
 			function foo() {
 				stuff();
 				if ( ref )
-					return (ref$1 = expr()).baz.apply( ref$1, values );
+					{ return (ref$1 = expr()).baz.apply( ref$1, values ); }
 				return (ref$2 = (up || down)).bar.apply( ref$2, values );
 				var ref$1;
 				var ref$2;
@@ -201,7 +201,7 @@ module.exports = [
 			function ref() {
 				stuff();
 				if ( ref$1 )
-					return (ref = expr()).baz.apply( ref, [ a ].concat( values, [(ref$2 = (up || down)).bar.apply( ref$2, [ c ].concat( values, [d] ) )] ) );
+					{ return (ref = expr()).baz.apply( ref, [ a ].concat( values, [(ref$2 = (up || down)).bar.apply( ref$2, [ c ].concat( values, [d] ) )] ) ); }
 				return other();
 				var ref;
 				var ref$2;
@@ -458,7 +458,7 @@ module.exports = [
 		output: `
 			function foo (x) {
 				if ( x )
-					return function (ref) { return new (Function.prototype.bind.apply( (bar || baz).Test, [ null ].concat( [ref], x ) )); };
+					{ return function (ref) { return new (Function.prototype.bind.apply( (bar || baz).Test, [ null ].concat( [ref], x ) )); }; }
 			}
 		`
 	},
@@ -475,8 +475,8 @@ module.exports = [
 		output: `
 			function foo (x) {
 				if ( x )
-					return function (ref) { return (ref$1 = (bar || baz)).Test.apply( ref$1, [ ref ].concat( x ) )
-						var ref$1;; };
+					{ return function (ref) { return (ref$1 = (bar || baz)).Test.apply( ref$1, [ ref ].concat( x ) )
+						var ref$1;; }; }
 			}
 		`
 	},
@@ -497,7 +497,7 @@ module.exports = [
 				while ( i-- ) argsArray[i] = arguments[i];
 
 				if ( x )
-					return function (ref) { return new (Function.prototype.bind.apply( (bar || baz).Test, [ null ].concat( [ref], arguments$1 ) )); };
+					{ return function (ref) { return new (Function.prototype.bind.apply( (bar || baz).Test, [ null ].concat( [ref], arguments$1 ) )); }; }
 			}
 		`
 	},
@@ -518,8 +518,8 @@ module.exports = [
 				while ( i-- ) argsArray[i] = arguments[i];
 
 				if ( x )
-					return function (ref) { return (ref$1 = (bar || baz)).Test.apply( ref$1, [ ref ].concat( arguments$1 ) )
-						var ref$1;; };
+					{ return function (ref) { return (ref$1 = (bar || baz)).Test.apply( ref$1, [ ref ].concat( arguments$1 ) )
+						var ref$1;; }; }
 			}
 		`
 	},

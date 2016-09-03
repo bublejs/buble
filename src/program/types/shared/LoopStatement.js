@@ -43,6 +43,10 @@ export default class LoopStatement extends Node {
 	}
 
 	transpile ( code, transforms ) {
+		const needsBlock = this.type != 'ForOfStatement' && (
+			this.body.type !== 'BlockStatement'
+			|| this.body.type === 'BlockStatement' && this.body.synthetic );
+
 		if ( this.shouldRewriteAsFunction ) {
 			const i0 = this.getIndentation();
 			const i1 = i0 + code.getIndentString();
@@ -78,6 +82,9 @@ export default class LoopStatement extends Node {
 					code.insertRight( this.body.end, callExpression );
 				}
 			}
+		} else if ( needsBlock ) {
+			code.insertLeft( this.body.start, '{ ' );
+			code.insertRight( this.body.end, ' }' );
 		}
 
 		super.transpile( code, transforms );
