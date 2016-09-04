@@ -53,7 +53,8 @@ function destructureObjectPattern ( code, scope, node, ref, inline, statementGen
 	let c = node.start;
 
 	node.properties.forEach( prop => {
-		handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, inline, statementGenerators );
+		let value = prop.key.type === 'Literal' ? `${ref}[${prop.key.raw}]` : `${ref}.${prop.key.name}`;
+		handleProperty( code, scope, c, prop.value, value, inline, statementGenerators );
 		c = prop.end;
 	});
 
