@@ -16,10 +16,6 @@ export default class AssignmentExpression extends Node {
 			}
 		}
 
-		if ( /Pattern/.test( this.left.type ) ) {
-			throw new CompileError( this.left, 'Destructuring assignments are not currently supported. Coming soon!' );
-		}
-
 		super.initialise( transforms );
 	}
 
@@ -28,7 +24,121 @@ export default class AssignmentExpression extends Node {
 			this.transpileExponentiation( code, transforms );
 		}
 
+		else if ( /Pattern/.test( this.left.type ) && transforms.destructuring ) {
+			this.transpileDestructuring( code, transforms );
+		}
+
 		super.transpile( code, transforms );
+	}
+
+	transpileDestructuring ( code, transforms ) {
+		const scope = this.findScope( true );
+		const value = scope.createIdentifier( 'assign' );
+		const temporaries = [value];
+
+		const start = this.start;
+
+		// We need to pick out some elements from the original code,
+		// interleaved with generated code. These helpers are used to
+		// easily do that while keeping the order of the output
+		// predictable.
+		let text = '';
+		function use ( node ) {
+			code.insertRight( node.start, text );
+			code.move( node.start, node.end, start );
+			text = '';
+		}
+		function write ( string ) {
+			text += string;
+		}
+
+		write( `(${value} = ` );
+		use( this.right );
+
+		// Walk `pattern`, generating code that assigns the value in
+		// `ref` to it. When `mayDuplicate` is false, the function
+		// must take care to only output `ref` once.
+		function destructure ( pattern, ref, mayDuplicate ) {
+			if ( pattern.type === 'Identifier' || pattern.type === 'MemberExpression' ) {
+				write( ', ' );
+				use( pattern );
+				write( ` = ${ref}` );
+			}
+
+			else if ( pattern.type === 'AssignmentPattern' ) {
+				if ( pattern.left.type === 'Identifier' ) {
+					const target = pattern.left.name;
+					let source = ref;
+					if ( !mayDuplicate ) {
+						write( `, ${target} = ${ref}` );
+						source = target;
+					}
+					write( `, ${target} = ${source} === void 0 ? ` );
+					use( pattern.right );
+					write( ` : ${source}` );
+				}
+				else {
+					const target = scope.createIdentifier( 'temp' );
+					let source = ref;
+					temporaries.push( target );
+					if ( !mayDuplicate ) {
+						write( `, ${target} = ${ref}` );
+						source = target;
+					}
+					write( `, ${target} = ${source} === void 0 ? ` );
+					use( pattern.right );
+					write( ` : ${source}` );
+					destructure( pattern.left, target, true );
+				}
+			}
+
+			else if ( pattern.type === 'ArrayPattern' ) {
+				const elements = pattern.elements;
+				if ( elements.length === 1 ) {
+					destructure( elements[0], `${ref}[0]`, false );
+				}
+				else {
+					if ( !mayDuplicate ) {
+						const temp = scope.createIdentifier( 'array' );
+						temporaries.push( temp );
+						write( `, ${temp} = ${ref}` );
+						ref = temp;
+					}
+					elements.forEach( ( element, i ) => {
+						if ( element ) destructure( element, `${ref}[${i}]`, false );
+					} );
+				}
+			}
+
+			else if ( pattern.type === 'ObjectPattern' ) {
+				const props = pattern.properties;
+				if ( props.length == 1 ) {
+					destructure ( props[0].value, `${ref}.${props[0].key.name}`, false );
+				}
+				else {
+					if ( !mayDuplicate ) {
+						const temp = scope.createIdentifier( 'obj' );
+						temporaries.push( temp );
+						write( `, ${temp} = ${ref}` );
+						ref = temp;
+					}
+					props.forEach( prop => {
+						destructure( prop.value, `${ref}.${prop.key.name}`, false );
+					} );
+				}
+			}
+
+			else {
+				throw new Error( `Unexpected node type in destructuring assignment (${pattern.type})` );
+			}
+		}
+		destructure( this.left, value, true );
+
+		code.insertRight( start, text + ')' );
+		code.remove( start, this.right.start );
+
+		const statement = this.findNearest( /(?:Statement|Declaration)$/ );
+		code.insertLeft( statement.start, `var ${temporaries.join( ', ' )};\n${statement.getIndentation()}` );
 	}
 
 	transpileExponentiation( code, transforms ) {

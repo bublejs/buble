@@ -87,12 +87,6 @@ module.exports = [
 	},
 
 	{
-		description: 'disallows array pattern in assignment (temporary)',
-		input: `[ a, b ] = [ b, a ]`,
-		error: /Destructuring assignments are not currently supported. Coming soon!/
-	},
-
-	{
 		description: 'can be disabled in declarations with `transforms.destructuring === false`',
 		options: { transforms: { destructuring: false } },
 		input: `var { x, y } = point;`,
@@ -325,6 +319,150 @@ module.exports = [
 
 				console.log( c, f, h );
 			}`
-	}
+	},
 
+	{
+		description: 'transpiles destructuring assignment of an array',
+		input: `
+			[x, y] = [1, 2];`,
+		output: `
+			var assign;
+			(assign = [1, 2], x = assign[0], y = assign[1]);`
+	},
+
+	{
+		description: 'transpiles destructuring assignment of an array with a default value',
+		input: `
+			[x = 4, y] = [1, 2];`,
+		output: `
+			var assign;
+			(assign = [1, 2], x = assign[0], x = x === void 0 ? 4 : x, y = assign[1]);`
+	},
+
+	{
+		description: 'transpiles nested destructuring assignment of an array',
+		input: `
+			[[x], y] = [1, 2];`,
+		output: `
+			var assign;
+			(assign = [1, 2], x = assign[0][0], y = assign[1]);`
+	},
+
+	{
+		description: 'transpiles nested destructuring assignment of an array without evaluating a memberexpr twice',
+		input: `
+			[[x, z], y] = [1, 2];`,
+		output: `
+			var assign, array;
+			(assign = [1, 2], array = assign[0], x = array[0], z = array[1], y = assign[1]);`
+	},
+
+	{
+		description: 'transpiles nested destructuring assignment of an array with a default',
+		input: `
+			[[x] = [], y] = [1, 2];`,
+		output: `
+			var assign, temp;
+			(assign = [1, 2], temp = assign[0], temp = temp === void 0 ? [] : temp, x = temp[0], y = assign[1]);`
+	},
+
+	{
+		description: 'leaves member expression patterns intact',
+		input: `
+			[x, y.z] = [1, 2];`,
+		output: `
+			var assign;
+			(assign = [1, 2], x = assign[0], y.z = assign[1]);`
+	},
+
+	{
+		description: 'only assigns to member expressions once',
+		input: `
+			[x, y.z = 3] = [1, 2];`,
+		output: `
+			var assign, temp;
+			(assign = [1, 2], x = assign[0], temp = assign[1], temp = temp === void 0 ? 3 : temp, y.z = temp);`
+	},
+
+	{
+		description: 'transpiles destructuring assignment of an object',
+		input: `
+			({x, y} = {x: 1});`,
+		output: `
+			var assign;
+			((assign = {x: 1}, x = assign.x, y = assign.y));`
+	},
+
+	{
+		description: 'transpiles destructuring assignment of an object where key and pattern names differ',
+		input: `
+			({x, y: z} = {x: 1});`,
+		output: `
+			var assign;
+			((assign = {x: 1}, x = assign.x, z = assign.y));`
+	},
+
+	{
+		description: 'transpiles nested destructuring assignment of an object',
+		input: `
+			({x, y: {z}} = {x: 1});`,
+		output: `
+			var assign;
+			((assign = {x: 1}, x = assign.x, z = assign.y.z));`
+	},
+
+	{
+		description: 'transpiles destructuring assignment of an object with a default value',
+		input: `
+			({x, y = 4} = {x: 1});`,
+		output: `
+			var assign;
+			((assign = {x: 1}, x = assign.x, y = assign.y, y = y === void 0 ? 4 : y));`
+	},
+
+	{
+		description: 'only evaluates a sub-object once',
+		input: `
+			({x, y: {z, q}} = {x: 1});`,
+		output: `
+			var assign, obj;
+			((assign = {x: 1}, x = assign.x, obj = assign.y, z = obj.z, q = obj.q));`
+	},
+
+	{
+		description: 'doesn\'t create an object temporary unless necessary',
+		input: `
+			({x, y: {z}} = {x: 1});`,
+		output: `
+			var assign;
+			((assign = {x: 1}, x = assign.x, z = assign.y.z));`
+	},
+
+	{
+		description: 'lifts its variable declarations out of the expression',
+		input: `
+			foo();
+			if ( bar([x, y] = [1, 2]) ) {
+				baz();
+			}`,
+		output: `
+			foo();
+			var assign;
+			if ( bar((assign = [1, 2], x = assign[0], y = assign[1])) ) {
+				baz();
+			}`
+	},
+
+	{
+		description: 'puts its scratch variables in the parent scope',
+		input: `
+			function foo() {
+				[x, y] = [1, 2];
+			}`,
+		output: `
+			function foo() {
+				var assign;
+				(assign = [1, 2], x = assign[0], y = assign[1]);
+			}`
+	}
 ];
