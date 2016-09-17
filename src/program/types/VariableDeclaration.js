@@ -66,9 +66,7 @@ export default class VariableDeclaration extends Node {
 					});
 				}
 
-				if ( declarator.init ) {
-					declarator.init.transpile( code, transforms );
-				}
+				declarator.transpile( code, transforms );
 
 				c = declarator.end;
 				lastDeclaratorIsPattern = declarator.id.type !== 'Identifier';
@@ -81,9 +79,8 @@ export default class VariableDeclaration extends Node {
 
 		else {
 			this.declarations.forEach( declarator => {
-				if ( declarator.init ) declarator.init.transpile( code, transforms );
+				declarator.transpile( code, transforms );
 			});
 		}
-
 	}
 }
