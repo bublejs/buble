@@ -114,7 +114,7 @@ module.exports = [
 			for ( var i = 0, list = items; i < list.length; i += 1 ) {
 				var item = list[i];
 
-				if ( item.foo ) continue;
+				if ( item.foo ) { continue; }
 			}`
 
 	},
@@ -193,7 +193,7 @@ module.exports = [
 						console.log( x );
 					});
 
-					if ( x > 10 ) return {};
+					if ( x > 10 ) { return {}; }
 				};
 
 				for ( var i = 0, list = y; i < list.length; i += 1 ) {

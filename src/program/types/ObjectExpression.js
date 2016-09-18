@@ -87,7 +87,14 @@ export default class ObjectExpression extends Node {
 					lastComputedProp = prop;
 					let moveStart = i > 0 ? this.properties[ i - 1 ].end : start;
 
-					code.overwrite( moveStart, prop.start, isSimpleAssignment ? `;\n${i0}${name}` : `, ${name}` );
+					const propId = isSimpleAssignment ? `;\n${i0}${name}` : `, ${name}`;
+
+					if (moveStart < prop.start) {
+						code.overwrite( moveStart, prop.start, propId );
+					} else {
+						code.insertRight( prop.start, propId );
+					}
+
 					let c = prop.key.end;
 					while ( code.original[c] !== ']' ) c += 1;
 					c += 1;

@@ -59,5 +59,24 @@ module.exports = [
 		options: { transforms: { computedProperty: false } },
 		input: `var obj = { [x]: 'x' }`,
 		output: `var obj = { [x]: 'x' }`
-	}
+	},
+
+	{
+		description: 'transpiles computed properties without spacing (#117)',
+
+		input: `
+			if (1)
+				console.log(JSON.stringify({['com'+'puted']:1,['foo']:2}));
+			else
+				console.log(JSON.stringify({['bar']:3}));
+		`,
+		output: `
+			if (1)
+				{ var obj;
+					console.log(JSON.stringify(( obj = {}, obj['com'+'puted'] = 1, obj['foo'] = 2, obj ))); }
+			else
+				{ var obj$1;
+			console.log(JSON.stringify(( obj$1 = {}, obj$1['bar'] = 3, obj$1 ))); }
+		`
+	},
 ];

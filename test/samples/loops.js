@@ -128,7 +128,7 @@ module.exports = [
 			for ( let i = 0; i < 10; i += 1 ) console.log( i );`,
 
 		output: `
-			for ( var i = 0; i < 10; i += 1 ) console.log( i );`
+			for ( var i = 0; i < 10; i += 1 ) { console.log( i ); }`
 	},
 
 	{
@@ -222,9 +222,9 @@ module.exports = [
 		output: `
 			function foo () {
 				var loop = function ( i ) {
-					if ( i % 2 ) return;
-					if ( i > 5 ) return 'break';
-					if ( i === 'potato' ) return { v: 'huh?' };
+					if ( i % 2 ) { return; }
+					if ( i > 5 ) { return 'break'; }
+					if ( i === 'potato' ) { return { v: 'huh?' }; }
 					setTimeout( function () { return console.log( i ); } );
 				};
 
@@ -264,7 +264,7 @@ module.exports = [
 
 		output: `
 			var loop = function ( foo ) {
-				if ( foo === 'baz' ) return 'break';
+				if ( foo === 'baz' ) { return 'break'; }
 				setTimeout( function () { console.log( bar[ foo ] ) } );
 			};
 
@@ -278,7 +278,7 @@ module.exports = [
 	{
 		description: 'transpiles block-less for-in statements',
 		input: `for ( let foo in bar ) baz( foo );`,
-		output: `for ( var foo in bar ) baz( foo );`
+		output: `for ( var foo in bar ) { baz( foo ); }`
 	},
 
 	{
@@ -353,7 +353,7 @@ module.exports = [
 	{
 		description: 'handles body-less do-while loops (#27)',
 		input: `do foo(); while (bar)`,
-		output: `do foo(); while (bar)`
+		output: `do { foo(); } while (bar)`
 	},
 
 	{
@@ -377,7 +377,7 @@ module.exports = [
 						console.log( i );
 					});
 
-					if ( x > 5 ) return {};
+					if ( x > 5 ) { return {}; }
 				};
 
 				for ( var i = 0; i < x; i += 1 ) {
@@ -426,5 +426,47 @@ module.exports = [
 			for ( var ref = range(), i = ref.start, end = ref.end === undefined ? 100 : ref.end; i < end; i += 1 ) {
 				console.log( i );
 			}`
-	}
+	},
+
+	{
+		description: 'arrow functions in block-less for loops in a block-less if/else chain (#110)',
+
+		input: `
+			if (x)
+				for (let i = 0; i < a.length; ++i)
+					(() => { console.log(a[i]); })();
+			else if (y)
+				for (let i = 0; i < b.length; ++i)
+					(() => { console.log(b[i]); })();
+			else
+				for (let i = 0; i < c.length; ++i)
+					(() => { console.log(c[i]); })();
+		`,
+
+		// the indentation is not ideal, but the code is correct...
+		output: `
+			if (x)
+				{ var loop = function ( i ) {
+						(function () { console.log(a[i]); })();
+					};
+
+					for (var i = 0; i < a.length; ++i)
+					loop( i ); }
+			else if (y)
+				{ var loop$1 = function ( i ) {
+						(function () { console.log(b[i]); })();
+					};
+
+					for (var i$1 = 0; i$1 < b.length; ++i$1)
+					loop$1( i$1 ); }
+			else
+				{ var loop$2 = function ( i ) {
+				(function () { console.log(c[i]); })();
+			};
+
+			for (var i$2 = 0; i$2 < c.length; ++i$2)
+					loop$2( i$2 ); }
+		`
+	},
+
 ];
