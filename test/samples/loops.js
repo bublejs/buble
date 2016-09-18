@@ -533,5 +533,26 @@ module.exports = [
 				f(b, x++, y++, z++)
 			}
 		`,
+	},
+
+	{
+		description: 'always initialises block-scoped variable in for-in loop',
+
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			for (let k in obj) {
+				var r = 1, s, t;
+				let x, y = 2, z;
+				f(k, r++, s++, t++, x++, y++, z++)
+			}
+		`,
+		output: `
+			for (var k in obj) {
+				var r = 1, s, t;
+				var x = (void 0), y = 2, z = (void 0);
+				f(k, r++, s++, t++, x++, y++, z++)
+			}
+		`,
 	}
 ];
