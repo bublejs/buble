@@ -223,7 +223,10 @@ export default class AssignmentExpression extends Node {
 				let declarators = [];
 				if ( needsObjectVar ) declarators.push( object );
 				if ( needsPropertyVar ) declarators.push( property );
-				code.insertRight( statement.start, `var ${declarators.join( ', ' )};\n${i0}` );
+
+				if ( declarators.length ) {
+					code.insertRight( statement.start, `var ${declarators.join( ', ' )};\n${i0}` );
+				}
 
 				if ( needsObjectVar && needsPropertyVar ) {
 					code.insertRight( left.start, `( ${object} = ` );
@@ -245,7 +248,9 @@ export default class AssignmentExpression extends Node {
 					code.remove( left.property.end, left.end );
 				}
 
-				code.insertLeft( this.end, ` )` );
+				if ( needsPropertyVar ) {
+					code.insertLeft( this.end, ` )` );
+				}
 			}
 
 			base = object + ( left.computed || needsPropertyVar ? `[${property}]` : `.${property}` );

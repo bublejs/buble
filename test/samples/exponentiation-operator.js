@@ -139,5 +139,40 @@ module.exports = [
 
 				for ( var i$1 = 1.1; i$1 < 1e6; i$1 = Math.pow( i$1, i$1 ) ) loop( i$1 );
 			}`
-	}
+	},
+
+	{
+		description: 'handles assignment of exponentiation assignment to property',
+
+		input: `
+			x=a.b**=2;
+		`,
+		output: `
+			x=a.b=Math.pow( a.b, 2 );
+		`
+	},
+
+	{
+		description: 'handles assignment of exponentiation assignment to property with side effect',
+
+		input: `
+			x=a[bar()]**=2;
+		`,
+		output: `
+			var property;
+			x=( property = bar(), a[property]=Math.pow( a[property], 2 ) );
+		`
+	},
+
+	/* TODO: Test currently errors out with: TypeError: Cannot read property 'property' of null
+	{
+		description: 'handles assignment of exponentiation assignment to property with side effect within a block-less if',
+
+		input: `
+			if(y)x=a[foo()]**=2;
+		`,
+		output: `
+		`
+	},
+	*/
 ];
