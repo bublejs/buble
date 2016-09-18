@@ -8,7 +8,7 @@ export default class JSXAttribute extends Node {
 			code.overwrite( this.name.end, this.value.start, ': ' );
 		} else {
 			// tag without value
-			code.overwrite( this.name.start, this.name.end, `${this.name.name}: true`)
+			code.overwrite( this.name.start, this.name.end, `${this.name.name}: true` );
 		}
 
 		if ( IS_DATA_ATTRIBUTE.test( this.name.name ) ) {

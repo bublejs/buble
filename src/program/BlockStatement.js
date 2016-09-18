@@ -1,7 +1,6 @@
-import wrap from './wrap.js';
+import './wrap.js'; // TODO necessary for ordering. sort it out
 import Node from './Node.js';
 import Scope from './Scope.js';
-import CompileError from '../utils/CompileError.js';
 import destructure from '../utils/destructure.js';
 
 function isUseStrict ( node ) {
@@ -90,7 +89,7 @@ export default class BlockStatement extends Node {
 
 			this.indentation = '';
 
-			while ( true ) {
+			while ( true ) { // eslint-disable-line no-constant-condition
 				c += 1;
 				const char = source[c];
 

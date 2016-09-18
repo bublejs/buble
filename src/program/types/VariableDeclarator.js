@@ -1,5 +1,4 @@
 import Node from '../Node.js';
-import CompileError from '../../utils/CompileError.js';
 
 export default class VariableDeclarator extends Node {
 	initialise ( transforms ) {

@@ -31,7 +31,7 @@ export default class AssignmentExpression extends Node {
 		super.transpile( code, transforms );
 	}
 
-	transpileDestructuring ( code, transforms ) {
+	transpileDestructuring ( code ) {
 		const scope = this.findScope( true );
 		const value = scope.createIdentifier( 'assign' );
 		const temporaries = [value];
@@ -141,7 +141,7 @@ export default class AssignmentExpression extends Node {
 		code.insertLeft( statement.start, `var ${temporaries.join( ', ' )};\n${statement.getIndentation()}` );
 	}
 
-	transpileExponentiation( code, transforms ) {
+	transpileExponentiation ( code ) {
 		const scope = this.findScope( false );
 		const getAlias = name => {
 			const declaration = scope.findDeclaration( name );

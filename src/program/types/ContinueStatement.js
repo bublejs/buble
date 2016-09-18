@@ -3,7 +3,7 @@ import CompileError from '../../utils/CompileError.js';
 import { loopStatement } from '../../utils/patterns.js';
 
 export default class ContinueStatement extends Node {
-	transpile ( code, transforms ) {
+	transpile ( code ) {
 		const loop = this.findNearest( loopStatement );
 		if ( loop.shouldRewriteAsFunction ) {
 			if ( this.label ) throw new CompileError( this, 'Labels are not currently supported in a loop with locally-scoped variables' );

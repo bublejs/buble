@@ -5,7 +5,7 @@ function containsNewLine ( node ) {
 }
 
 export default class JSXClosingElement extends Node {
-	transpile ( code, transforms ) {
+	transpile ( code ) {
 		let spaceBeforeParen = true;
 
 		const lastChild = this.parent.children[ this.parent.children.length - 1 ];

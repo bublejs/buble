@@ -3,7 +3,7 @@ import CompileError from '../../utils/CompileError.js';
 import { loopStatement } from '../../utils/patterns.js';
 
 export default class BreakStatement extends Node {
-	initialise ( transforms ) {
+	initialise () {
 		const loop = this.findNearest( loopStatement );
 		const switchCase = this.findNearest( 'SwitchCase' );
 
@@ -13,7 +13,7 @@ export default class BreakStatement extends Node {
 		}
 	}
 
-	transpile ( code, transforms ) {
+	transpile ( code ) {
 		if ( this.loop && this.loop.shouldRewriteAsFunction ) {
 			if ( this.label ) throw new CompileError( this, 'Labels are not currently supported in a loop with locally-scoped variables' );
 			code.overwrite( this.start, this.start + 5, `return 'break'` );

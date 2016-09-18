@@ -35,7 +35,7 @@ export default class Identifier extends Node {
 		}
 	}
 
-	transpile ( code, transforms ) {
+	transpile ( code ) {
 		if ( this.alias ) {
 			code.overwrite( this.start, this.end, this.alias, true );
 		}

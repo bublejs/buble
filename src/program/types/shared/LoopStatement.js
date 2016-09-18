@@ -1,5 +1,4 @@
 import Node from '../../Node.js';
-import extractNames from '../../extractNames.js';
 
 export default class LoopStatement extends Node {
 	findScope ( functionScope ) {
