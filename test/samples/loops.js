@@ -469,4 +469,21 @@ module.exports = [
 		`
 	},
 
+	{
+		description: 'always initialises block-scoped variable in loop (#124)',
+
+		input: `
+			for (let i = 0; i < 10; i++) {
+				let something;
+				if (i % 2) something = true;
+				console.log(something);
+			}`,
+
+		output: `
+			for (var i = 0; i < 10; i++) {
+				var something = void 0;
+				if (i % 2) { something = true; }
+				console.log(something);
+			}`
+	}
 ];
