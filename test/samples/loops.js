@@ -512,5 +512,26 @@ module.exports = [
 				}
 			}
 		`,
+	},
+
+	{
+		description: 'always initialises block-scoped variable in simple for-of loop (#125)',
+
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			for (let b of c) {
+				let x, y = 2, z;
+				f(b, x++, y++, z++)
+			}
+		`,
+		output: `
+			for (var i = 0, list = c; i < list.length; i += 1) {
+				var b = list[i];
+
+				var x = (void 0), y = 2, z = (void 0);
+				f(b, x++, y++, z++)
+			}
+		`,
 	}
 ];
