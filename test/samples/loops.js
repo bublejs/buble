@@ -481,9 +481,36 @@ module.exports = [
 
 		output: `
 			for (var i = 0; i < 10; i++) {
-				var something = void 0;
+				var something = (void 0);
 				if (i % 2) { something = true; }
 				console.log(something);
 			}`
+	},
+
+	{
+		description: 'always initialises block-scoped variable in for-of loop (#125)',
+
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			for (let a = 0; a < 10; a++) {
+				let j = 1, k;
+				for (let b of c) {
+					let x, y = 2
+					f(b, j, k, x, y)
+				}
+			}
+		`,
+		output: `
+			for (var a = 0; a < 10; a++) {
+				var j = 1, k = (void 0);
+				for (var i = 0, list = c; i < list.length; i += 1) {
+					var b = list[i];
+
+					var x = (void 0), y = 2
+					f(b, j, k, x, y)
+				}
+			}
+		`,
 	}
 ];
