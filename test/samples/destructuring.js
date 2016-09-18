@@ -263,6 +263,17 @@ module.exports = [
 	},
 
 	{
+		description: 'deep matching with string literals in object patterns',
+
+		input: `
+			var { a, 'b-1': c } = x;`,
+
+		output: `
+			var a = x.a;
+			var c = x['b-1'];`
+	},
+
+	{
 		description: 'deep matching with object patterns and reference',
 
 		input: `
