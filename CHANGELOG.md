@@ -1,5 +1,13 @@
 # buble changelog
 
+## 0.14.0
+
+* Always wrap block-less bodies in curlies ([#110](https://gitlab.com/Rich-Harris/buble/issues/110), [#117](https://gitlab.com/Rich-Harris/buble/issues/117), [!80](https://gitlab.com/Rich-Harris/buble/merge_requests/80))
+* Make sure block-scoped variables in loops have an initializer ([#124](https://gitlab.com/Rich-Harris/buble/issues/124))
+* Destructuring assignments ([!82](https://gitlab.com/Rich-Harris/buble/merge_requests/82))
+* Support string literals in object destructuring ([!81](https://gitlab.com/Rich-Harris/buble/merge_requests/81))
+* Standalone arrow function expression statements ([!79](https://gitlab.com/Rich-Harris/buble/merge_requests/79))
+
 ## 0.13.2
 
 * Fix spread operator when used with `new` and `this` ([#104](https://gitlab.com/Rich-Harris/buble/issues/104), [#115](https://gitlab.com/Rich-Harris/buble/issues/115))

@@ -1,6 +1,6 @@
 {
   "name": "buble",
-  "version": "0.13.2",
+  "version": "0.14.0",
   "description": "The blazing fast, batteries-included ES2015 compiler",
   "main": "dist/buble.umd.js",
   "jsnext:main": "dist/buble.es.js",
@@ -20,7 +20,8 @@
     "pretest": "npm run build:umd && npm run build:browser",
     "test:node": "mocha test/test.js --compilers js:buble/register",
     "pretest:node": "npm run build:umd",
-    "prepublish": "npm test && npm run build:es"
+    "prepublish": "npm test && npm run build:es",
+    "lint": "eslint src"
   },
   "bin": {
     "buble": "./bin/buble"
