@@ -538,8 +538,6 @@ module.exports = [
 	{
 		description: 'always initialises block-scoped variable in for-in loop',
 
-		options: { transforms: { dangerousForOf: true } },
-
 		input: `
 			for (let k in obj) {
 				var r = 1, s, t;
