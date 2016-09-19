@@ -106,8 +106,8 @@ module.exports = [
 			var a = 'foo', obj = { [a]: 'bar', x: 42 }, bar = obj.foo;`,
 
 		output: `
-			var obj$1;
-			var a = 'foo', obj = ( obj$1 = { x: 42 }, obj$1[a] = 'bar', obj$1 ), bar = obj.foo;`
+			var a = 'foo', obj = ( obj$1 = { x: 42 }, obj$1[a] = 'bar', obj$1 ), bar = obj.foo;
+			var obj$1;`
 	},
 
 	{
@@ -138,8 +138,8 @@ module.exports = [
 			call({ [a]: 5 });`,
 
 		output: `
-			var obj;
-			call(( obj = {}, obj[a] = 5, obj ));`
+			call(( obj = {}, obj[a] = 5, obj ));
+			var obj;`
 	},
 
 	{
@@ -215,4 +215,17 @@ module.exports = [
 				};
 		`
 	},
+
+	{
+		description: 'object literal with computed property within arrow expression (#126)',
+
+		input: `
+			foo => bar({[x - y]: obj});
+		`,
+		output: `
+			(function(foo) { return bar(( obj$1 = {}, obj$1[x - y] = obj, obj$1 ))
+				var obj$1;; });
+		`
+	},
+
 ];
