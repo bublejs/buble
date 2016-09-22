@@ -47,7 +47,7 @@ export default function wrap ( raw, parent ) {
 		};
 	}
 
-	Node( raw, parent );
+	new Node( raw, parent );
 
 	const type = ( raw.type === 'BlockStatement' ? BlockStatement : types[ raw.type ] ) || Node;
 	raw.__proto__ = type.prototype;
