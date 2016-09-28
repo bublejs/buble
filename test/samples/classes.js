@@ -168,6 +168,65 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles a subclass with super calls with spread arguments',
+
+		input: `
+			class Foo extends Bar {
+				baz ( ...args ) {
+					super.baz(...args);
+				}
+				boz ( x, y, ...z ) {
+					super.boz(x, y, ...z);
+				}
+				fab ( x, ...y ) {
+					super.qux(...x, ...y);
+				}
+				fob ( x, y, ...z ) {
+					((x, y, z) => super.qux(x, ...y, ...z))(x, y, z);
+				}
+			}`,
+
+		output: `
+			var Foo = (function (Bar) {
+				function Foo () {
+					Bar.apply(this, arguments);
+				}
+
+				if ( Bar ) Foo.__proto__ = Bar;
+				Foo.prototype = Object.create( Bar && Bar.prototype );
+				Foo.prototype.constructor = Foo;
+
+				Foo.prototype.baz = function baz () {
+					var args = [], len = arguments.length;
+					while ( len-- ) args[ len ] = arguments[ len ];
+
+					Bar.prototype.baz.apply(this, args);
+				};
+				Foo.prototype.boz = function boz ( x, y ) {
+					var z = [], len = arguments.length - 2;
+					while ( len-- > 0 ) z[ len ] = arguments[ len + 2 ];
+
+					Bar.prototype.boz.apply(this, [ x, y ].concat( z ));
+				};
+				Foo.prototype.fab = function fab ( x ) {
+					var y = [], len = arguments.length - 1;
+					while ( len-- > 0 ) y[ len ] = arguments[ len + 1 ];
+
+					Bar.prototype.qux.apply(this, x.concat( y ));
+				};
+				Foo.prototype.fob = function fob ( x, y ) {
+					var this$1 = this;
+					var z = [], len = arguments.length - 2;
+					while ( len-- > 0 ) z[ len ] = arguments[ len + 2 ];
+
+					(function (x, y, z) { return Bar.prototype.qux.apply(this$1, [ x ].concat( y, z )); })(x, y, z);
+				};
+
+				return Foo;
+			}(Bar));`
+	},
+
+	{
 		description: 'transpiles export default class',
 		options: { transforms: { moduleExport: false } },
 
