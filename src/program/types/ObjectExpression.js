@@ -21,7 +21,7 @@ export default class ObjectExpression extends Node {
 		}
 
 		if ( spreadPropertyCount ) {
-			if ( !this.program.objectAssign ) {
+			if ( !this.program.options.objectAssign ) {
 				throw new CompileError( this, 'Object spread operator requires specified objectAssign option with \'Object.assign\' or polyfill helper.' );
 			}
 			// enclose run of non-spread properties in curlies
@@ -47,7 +47,7 @@ export default class ObjectExpression extends Node {
 
 			// wrap the whole thing in Object.assign
 			firstPropertyStart = this.properties[0].start;
-			code.overwrite( this.start, firstPropertyStart, `${this.program.objectAssign}({}, `);
+			code.overwrite( this.start, firstPropertyStart, `${this.program.options.objectAssign}({}, `);
 			code.overwrite( this.properties[ this.properties.length - 1 ].end, this.end, ')' );
 		}
 
