@@ -49,6 +49,7 @@ function compileFile ( from, to, command, options ) {
 		file: to,
 		jsx: options.jsx,
 		objectAssign: options.objectAssign,
+		namedFunctionExpressions: options.namedFunctionExpressions
 	});
 
 	write( result, to, command );
@@ -91,6 +92,7 @@ module.exports = function ( command ) {
 		transforms: {},
 		jsx: command.jsx,
 		objectAssign: command.objectAssign === true ? "Object.assign" : command.objectAssign,
+		namedFunctionExpressions: command["named-function-expr"] !== false
 	};
 
 	if ( command.target ) {

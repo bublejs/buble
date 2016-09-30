@@ -67,6 +67,7 @@ export default class ClassBody extends Node {
 			let staticGettersAndSetters = [];
 			let prototypeAccessors;
 			let staticAccessors;
+			let namedFunctions = this.program.options.namedFunctionExpressions !== false
 
 			this.body.forEach( ( method, i ) => {
 				if ( method.kind === 'constructor' ) {
@@ -137,7 +138,7 @@ export default class ClassBody extends Node {
 
 				code.insertRight( method.start, lhs );
 
-				const rhs = ( isAccessor ? `.${method.kind}` : '' ) + ` = function` + ( method.value.generator ? '* ' : ' ' ) + ( method.computed || isAccessor ? '' : `${methodName} ` );
+				const rhs = ( isAccessor ? `.${method.kind}` : '' ) + ` = function` + ( method.value.generator ? '* ' : ' ' ) + ( method.computed || isAccessor || !namedFunctions ? '' : `${methodName} ` );
 				code.remove( c, method.value.start );
 				code.insertRight( method.value.start, rhs );
 				code.insertLeft( method.end, ';' );
