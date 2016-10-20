@@ -44,7 +44,8 @@ function compileFile ( from, to, command, options ) {
 		transforms: options.transforms,
 		source: from,
 		file: to,
-		jsx: options.jsx
+		jsx: options.jsx,
+		objectAssign: options.objectAssign,
 	});
 
 	write( result, to, command );
@@ -85,7 +86,8 @@ module.exports = function ( command ) {
 	var options = {
 		target: {},
 		transforms: {},
-		jsx: command.jsx
+		jsx: command.jsx,
+		objectAssign: command.objectAssign === true ? "Object.assign" : command.objectAssign,
 	};
 
 	if ( command.target ) {
