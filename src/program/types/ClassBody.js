@@ -74,13 +74,24 @@ export default class ClassBody extends Node {
 					return;
 				}
 
-				if ( method.static ) code.remove( method.start, method.start + 7 );
+				if ( method.static ) {
+					const len = code.original[ method.start + 6 ] == ' ' ? 7 : 6;
+					code.remove( method.start, method.start + len );
+				}
 
 				const isAccessor = method.kind !== 'method';
 				let lhs;
 
 				let methodName = method.key.name;
 				if ( scope.contains( methodName ) || reserved[ methodName ] ) methodName = scope.createIdentifier( methodName );
+
+				// when method name is a string or a number let's pretend it's a computed method
+
+				let fake_computed = false;
+				if ( ! method.computed && method.key.type === 'Literal' ) {
+					fake_computed = true;
+					method.computed = true;
+				}
 
 				if ( isAccessor ) {
 					if ( method.computed ) {
@@ -115,8 +126,13 @@ export default class ClassBody extends Node {
 
 				let c = method.key.end;
 				if ( method.computed ) {
-					while ( code.original[c] !== ']' ) c += 1;
-					c += 1;
+					if ( fake_computed ) {
+						code.insertRight( method.key.start, '[' );
+						code.insertLeft( method.key.end, ']' );
+					} else {
+						while ( code.original[c] !== ']' ) c += 1;
+						c += 1;
+					}
 				}
 
 				code.insertRight( method.start, lhs );

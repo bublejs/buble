@@ -48,7 +48,7 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles shorthand methods with numeric names (#139)',
+		description: 'transpiles shorthand methods with numeric or string names (#139)',
 
 		input: `
 			obj = {
@@ -59,6 +59,8 @@ module.exports = [
 				0o753() {},
 				12e34() {},
 				0xFFFF() {},
+				"a string"() {},
+				"var"() {},
 			}`,
 
 		output: `
@@ -70,6 +72,8 @@ module.exports = [
 				491: function () {},
 				12e34: function () {},
 				0xFFFF: function () {},
+				"a string": function astring() {},
+				"var": function var$1() {},
 			}`
 	},
 
