@@ -7,7 +7,13 @@ export default class Property extends Node {
 			if ( this.shorthand ) {
 				code.insertRight( this.start, `${this.key.name}: ` );
 			} else if ( this.method ) {
-				const name = this.findScope( true ).createIdentifier( this.key.type === 'Identifier' ? this.key.name : this.key.value );
+				let name;
+				if ( this.key.type === 'Literal' && typeof this.key.value === 'number' ) {
+					name = "";
+				} else {
+					name = this.findScope( true ).createIdentifier( this.key.type === 'Identifier' ? this.key.name : this.key.value );
+				}
+
 				if ( this.value.generator ) code.remove( this.start, this.key.start );
 				code.insertLeft( this.key.end, `: function${this.value.generator ? '*' : ''} ${name}` );
 			}

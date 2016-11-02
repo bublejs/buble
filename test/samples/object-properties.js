@@ -48,6 +48,36 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles shorthand methods with numeric or string names (#139)',
+
+		input: `
+			obj = {
+				0() {},
+				0b101() {},
+				80() {},
+				.12e3() {},
+				0o753() {},
+				12e34() {},
+				0xFFFF() {},
+				"a string"() {},
+				"var"() {},
+			}`,
+
+		output: `
+			obj = {
+				0: function () {},
+				5: function () {},
+				80: function () {},
+				.12e3: function () {},
+				491: function () {},
+				12e34: function () {},
+				0xFFFF: function () {},
+				"a string": function astring() {},
+				"var": function var$1() {},
+			}`
+	},
+
+	{
 		description: 'shorthand properties can be disabled with `transforms.conciseMethodProperty === false`',
 		options: { transforms: { conciseMethodProperty: false } },
 		input: `var obj = { x, y, z () {} }`,

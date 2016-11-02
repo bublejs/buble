@@ -74,6 +74,8 @@ Scope.prototype = {
 	},
 
 	createIdentifier ( base ) {
+		if ( typeof base === 'number' ) base = base.toString();
+
 		base = base
 			.replace( /\s/g, '' )
 			.replace( /\[([^\]]+)\]/g, '_$1' )
