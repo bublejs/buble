@@ -13,12 +13,22 @@ export default class VariableDeclarator extends Node {
 
 	transpile ( code, transforms ) {
 		if ( !this.init && transforms.letConst && this.parent.kind !== 'var' ) {
-			let inLoop = this.findNearest( /Function|^ForStatement|^(?:Do)?WhileStatement/ );
-			if ( inLoop && ! /Function/.test( inLoop.type ) ) {
-				code.insertLeft( this.id.end, ' = void 0' );
+			let inLoop = this.findNearest( /Function|^For(In|Of)?Statement|^(?:Do)?WhileStatement/ );
+			if ( inLoop && ! /Function/.test( inLoop.type ) && ! this.isLeftDeclaratorOfLoop() ) {
+				code.insertLeft( this.id.end, ' = (void 0)' );
 			}
 		}
 
 		if ( this.init ) this.init.transpile( code, transforms );
+	}
+
+	isLeftDeclaratorOfLoop () {
+		return this.parent
+			&& this.parent.type === 'VariableDeclaration'
+			&& this.parent.parent
+			&& (this.parent.parent.type === 'ForInStatement'
+				|| this.parent.parent.type === 'ForOfStatement')
+			&& this.parent.parent.left
+			&& this.parent.parent.left.declarations[0] === this;
 	}
 }

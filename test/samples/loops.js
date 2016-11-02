@@ -481,9 +481,76 @@ module.exports = [
 
 		output: `
 			for (var i = 0; i < 10; i++) {
-				var something = void 0;
+				var something = (void 0);
 				if (i % 2) { something = true; }
 				console.log(something);
 			}`
+	},
+
+	{
+		description: 'always initialises block-scoped variable in for-of loop (#125)',
+
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			for (let a = 0; a < 10; a++) {
+				let j = 1, k;
+				for (let b of c) {
+					let x, y = 2
+					f(b, j, k, x, y)
+				}
+			}
+		`,
+		output: `
+			for (var a = 0; a < 10; a++) {
+				var j = 1, k = (void 0);
+				for (var i = 0, list = c; i < list.length; i += 1) {
+					var b = list[i];
+
+					var x = (void 0), y = 2
+					f(b, j, k, x, y)
+				}
+			}
+		`,
+	},
+
+	{
+		description: 'always initialises block-scoped variable in simple for-of loop (#125)',
+
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			for (let b of c) {
+				let x, y = 2, z;
+				f(b, x++, y++, z++)
+			}
+		`,
+		output: `
+			for (var i = 0, list = c; i < list.length; i += 1) {
+				var b = list[i];
+
+				var x = (void 0), y = 2, z = (void 0);
+				f(b, x++, y++, z++)
+			}
+		`,
+	},
+
+	{
+		description: 'always initialises block-scoped variable in for-in loop',
+
+		input: `
+			for (let k in obj) {
+				var r = 1, s, t;
+				let x, y = 2, z;
+				f(k, r++, s++, t++, x++, y++, z++)
+			}
+		`,
+		output: `
+			for (var k in obj) {
+				var r = 1, s, t;
+				var x = (void 0), y = 2, z = (void 0);
+				f(k, r++, s++, t++, x++, y++, z++)
+			}
+		`,
 	}
 ];
