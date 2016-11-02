@@ -68,6 +68,18 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles empty JSX expression block',
+		input: `var element = <Foo>{}</Foo>;`,
+		output: `var element = React.createElement( Foo, null );`
+	},
+
+	{
+		description: 'transpiles empty JSX expression block with comment',
+		input: `var element = <Foo>{/* comment */}</Foo>;`,
+		output: `var element = React.createElement( Foo, null/* comment */ );`
+	},
+
+	{
 		description: 'transpiles JSX component without attributes',
 		input: `var element = <Hello />;`,
 		output: `var element = React.createElement( Hello, null );`

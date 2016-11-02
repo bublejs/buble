@@ -31,8 +31,12 @@ export default class JSXElement extends Node {
 			for ( i = 0; i < children.length; i += 1 ) {
 				const child = children[i];
 
-				const tail = code.original[ c ] === '\n' && child.type !== 'Literal' ? '' : ' ';
-				code.insertLeft( c, `,${tail}` );
+				if ( child.type === 'JSXExpressionContainer' && child.expression.type === 'JSXEmptyExpression' ) {
+					// empty block is a no op
+				} else {
+					const tail = code.original[ c ] === '\n' && child.type !== 'Literal' ? '' : ' ';
+					code.insertLeft( c, `,${tail}` );
+				}
 
 				if ( child.type === 'Literal' ) {
 					const str = normalise( child.value, i === children.length - 1 );
