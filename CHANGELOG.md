@@ -1,5 +1,14 @@
 # buble changelog
 
+## 0.14.2
+
+* Allow `.jsx` file extension ([#127](https://gitlab.com/Rich-Harris/buble/issues/127))
+* Handle trailing comma in spread operator ([#133](https://gitlab.com/Rich-Harris/buble/issues/133))
+* Allow empty code blocks in JSX ([#131](https://gitlab.com/Rich-Harris/buble/issues/131))
+* Allow computed shorthand function name with spread in body ([#135](https://gitlab.com/Rich-Harris/buble/issues/135))
+* Add `--objectAssign` CLI option ([#113](https://gitlab.com/Rich-Harris/buble/issues/113))
+* Allow numeric literals as shorthand method keys ([#139](https://gitlab.com/Rich-Harris/buble/issues/139))
+
 ## 0.14.1
 
 * fix initialization of block-scoped variables in for-of and for-in loops ([#124](https://gitlab.com/Rich-Harris/buble/issues/124))
