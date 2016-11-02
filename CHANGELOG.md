@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.14.1
+
+* fix initialization of block-scoped variables in for-of and for-in loops ([#124](https://gitlab.com/Rich-Harris/buble/issues/124))
+
 ## 0.14.0
 
 * Always wrap block-less bodies in curlies ([#110](https://gitlab.com/Rich-Harris/buble/issues/110), [#117](https://gitlab.com/Rich-Harris/buble/issues/117), [!80](https://gitlab.com/Rich-Harris/buble/merge_requests/80))
