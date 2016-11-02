@@ -155,8 +155,8 @@ module.exports = [
 		output: `
 			var obj = {};
 			obj[a] = function () {
-				// code goes here
-			};`
+					// code goes here
+				};`
 	},
 
 	{
@@ -165,15 +165,15 @@ module.exports = [
 		input: `
 			var obj = {
 				[a()] () {
-					// code goes here
-				}
+						// code goes here
+					}
 			};`,
 
 		output: `
 			var obj = {};
 			obj[a()] = function () {
-				// code goes here
-			};`
+						// code goes here
+					};`
 	},
 
 	{
@@ -189,7 +189,30 @@ module.exports = [
 		output: `
 			var obj = {};
 			obj[a] = function () {
-				// code goes here
-			};`
-	}
+					// code goes here
+				};`
+	},
+
+	{
+		description: 'supports computed shorthand function with object spread in body (#135)',
+
+		options: {
+			objectAssign: 'Object.assign'
+		},
+		input: `
+			let a = {
+				[foo] (x, y) {
+					return {
+						...{abc: '123'}
+					};
+				},
+			};
+		`,
+		output: `
+			var a = {};
+			a[foo] = function (x, y) {
+					return Object.assign({}, {abc: '123'});
+				};
+		`
+	},
 ];

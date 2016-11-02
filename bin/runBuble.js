@@ -34,7 +34,7 @@ function compileDir ( from, to, command, options ) {
 function compileFile ( from, to, command, options ) {
 	var ext = path.extname( from );
 
-	if ( ext !== '.js' && ext !== '.jsm' && ext !== '.es6' ) return;
+	if ( ext !== '.js' && ext !== '.jsm' && ext !== '.es6' && ext !== '.jsx') return;
 
 	if ( to ) to = to.slice( 0, -ext.length ) + '.js';
 
@@ -44,7 +44,8 @@ function compileFile ( from, to, command, options ) {
 		transforms: options.transforms,
 		source: from,
 		file: to,
-		jsx: options.jsx
+		jsx: options.jsx,
+		objectAssign: options.objectAssign,
 	});
 
 	write( result, to, command );
@@ -85,7 +86,8 @@ module.exports = function ( command ) {
 	var options = {
 		target: {},
 		transforms: {},
-		jsx: command.jsx
+		jsx: command.jsx,
+		objectAssign: command.objectAssign === true ? "Object.assign" : command.objectAssign,
 	};
 
 	if ( command.target ) {

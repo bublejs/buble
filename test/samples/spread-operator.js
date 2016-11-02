@@ -6,6 +6,12 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles a spread element in array with trailing comma',
+		input: `var clone = [ ...arr, ];`,
+		output: `var clone = [].concat( arr );`
+	},
+
+	{
 		description: 'transpiles a spread operator with other values',
 		input: `var list = [ a, b, ...remainder ]`,
 		output: `var list = [ a, b ].concat( remainder )` // TODO preserve whitespace conventions
@@ -283,8 +289,20 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles multiple spread operators in an array with trailing comma',
+		input: `var arr = [ ...a, ...b, ...c, ];`,
+		output: `var arr = a.concat( b, c );`
+	},
+
+	{
 		description: 'transpiles mixture of spread and non-spread elements',
 		input: `var arr = [ ...a, b, ...c, d ];`,
+		output: `var arr = a.concat( [b], c, [d] );`
+	},
+
+	{
+		description: 'transpiles mixture of spread and non-spread elements in array with trailing comma',
+		input: `var arr = [ ...a, b, ...c, d, ];`,
 		output: `var arr = a.concat( [b], c, [d] );`
 	},
 
@@ -294,6 +312,25 @@ module.exports = [
 		input: `
 			function foo () {
 				var args = [ ...arguments ];
+				return args;
+			}`,
+
+		output: `
+			function foo () {
+				var i = arguments.length, argsArray = Array(i);
+				while ( i-- ) argsArray[i] = arguments[i];
+
+				var args = [].concat( argsArray );
+				return args;
+			}` // TODO if this is the only use of argsArray, don't bother concating
+	},
+
+	{
+		description: 'transpiles ...arguments in array with trailing comma',
+
+		input: `
+			function foo () {
+				var args = [ ...arguments, ];
 				return args;
 			}`,
 

@@ -14,6 +14,7 @@ Basic options:
 -y, --yes                Transforms to always apply (overrides --target)
 -n, --no                 Transforms to always skip (overrides --target)
 --jsx                    Custom JSX pragma
+--objectAssign           Specify Object.assign or equivalent polyfill
 
 Examples:
 

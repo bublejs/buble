@@ -1003,8 +1003,98 @@ module.exports = [
 
 				return A;
 			}(B));`
-	}
+	},
 
-	// TODO more tests. e.g. getters and setters. computed method names
+	{
+		description: 'methods with computed names',
+
+		input: `
+			class A {
+				[x](){}
+				[0](){}
+				[1 + 2](){}
+				[normal + " Method"](){}
+			}
+		`,
+		output: `
+			var A = function A () {};
+
+			A.prototype[x] = function (){};
+			A.prototype[0] = function (){};
+			A.prototype[1 + 2] = function (){};
+			A.prototype[normal + " Method"] = function (){};
+		`
+	},
+
+	{
+		description: 'static methods with computed names with varied spacing (#139)',
+
+		input: `
+			class B {
+				static[.000004](){}
+				static [x](){}
+				static  [x-y](){}
+				static[\`Static computed \${name}\`](){}
+			}
+		`,
+		output: `
+			var B = function B () {};
+
+			B[.000004] = function (){};
+			B[x] = function (){};
+			B [x-y] = function (){};
+			B[("Static computed " + name)] = function (){};
+		`
+	},
+
+	{
+		description: 'methods with numeric or string names (#139)',
+
+		input: `
+			class C {
+				0(){}
+				0b101(){}
+				80(){}
+				.12e3(){}
+				0o753(){}
+				12e34(){}
+				0xFFFF(){}
+				"var"(){}
+			}
+		`,
+		output: `
+			var C = function C () {};
+
+			C.prototype[0] = function (){};
+			C.prototype[5] = function (){};
+			C.prototype[80] = function (){};
+			C.prototype[.12e3] = function (){};
+			C.prototype[491] = function (){};
+			C.prototype[12e34] = function (){};
+			C.prototype[0xFFFF] = function (){};
+			C.prototype["var"] = function (){};
+		`
+	},
+
+	{
+		description: 'static methods with numeric or string names with varied spacing (#139)',
+
+		input: `
+			class D {
+				static .75(){}
+				static"Static Method"(){}
+				static "foo"(){}
+			}
+		`,
+		output: `
+			var D = function D () {};
+
+			D[.75] = function (){};
+			D["Static Method"] = function (){};
+			D["foo"] = function (){};
+		`
+	},
+
+	// TODO more tests. e.g. getters and setters.
 	// 'super.*' is not allowed before super()
 ];
