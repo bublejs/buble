@@ -34,7 +34,7 @@ function compileDir ( from, to, command, options ) {
 function compileFile ( from, to, command, options ) {
 	var ext = path.extname( from );
 
-	if ( ext !== '.js' && ext !== '.jsm' && ext !== '.es6' ) return;
+	if ( ext !== '.js' && ext !== '.jsm' && ext !== '.es6' && ext !== '.jsx') return;
 
 	if ( to ) to = to.slice( 0, -ext.length ) + '.js';
 
