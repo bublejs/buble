@@ -20,6 +20,14 @@ export default class ArrayExpression extends Node {
 
 	transpile ( code, transforms ) {
 		if ( transforms.spreadRest ) {
+			// erase trailing comma after last array element if not an array hole
+			if ( this.elements.length ) {
+				let lastElement = this.elements[ this.elements.length - 1 ];
+				if ( lastElement && /\s*,/.test( code.original.slice( lastElement.end, this.end ) ) ) {
+					code.overwrite( lastElement.end, this.end - 1, ' ' );
+				}
+			}
+
 			if ( this.elements.length === 1 ) {
 				const element = this.elements[0];
 
@@ -33,7 +41,6 @@ export default class ArrayExpression extends Node {
 					}
 				}
 			}
-
 			else {
 				const hasSpreadElements = spread( code, this.elements, this.start, this.argumentsArrayAlias );
 
