@@ -659,5 +659,98 @@ module.exports = [
 				f(k, r++, s++, t++, x++, y++, z++)
 			}
 		`,
-	}
+	},
+
+	{
+		description: 'use alias for this in right side of nested for-in loop declaration (#142)',
+
+		input: `
+			let arr = [];
+			class Foo {
+				constructor () {
+					this.foo = { a: 1, b: 2 };
+				}
+				do() {
+					for ( let move = 0; move < 5; ++move ) {
+						for ( let id in this.foo )
+							arr.push( id );
+
+						( () => { arr.push( move ); } )( move );
+					}
+					console.log( arr.join( ' ' ) );
+				}
+			}
+			new Foo().do();
+		`,
+		output: `
+			var arr = [];
+			var Foo = function Foo () {
+				this.foo = { a: 1, b: 2 };
+			};
+			Foo.prototype.do = function do$1 () {
+					var this$1 = this;
+
+				var loop = function ( move ) {
+					for ( var id in this$1.foo )
+						{ arr.push( id ); }
+
+					( function () { arr.push( move ); } )( move );
+				};
+
+					for ( var move = 0; move < 5; ++move ) loop( move );
+				console.log( arr.join( ' ' ) );
+			};
+			new Foo().do();
+		`,
+	},
+
+	{
+		description: 'use alias for this in right side of nested for-of loop declaration (#142)',
+
+		options: { transforms: { dangerousForOf: true } },
+
+		input: `
+			let arr = [];
+			class Foo {
+				constructor () {
+					this.foo = [ 9, 7 ];
+				}
+				do() {
+					for ( let move = 0; move < 5; ++move ) {
+						for ( let id of this.foo )
+							arr.push( id );
+
+						( () => { arr.push( move ); } )( move );
+					}
+					console.log( arr.join( ' ' ) );
+				}
+			}
+			new Foo().do();
+		`,
+		output: `
+			var arr = [];
+			var Foo = function Foo () {
+				this.foo = [ 9, 7 ];
+			};
+			Foo.prototype.do = function do$1 () {
+					var this$1 = this;
+
+				var loop = function ( move ) {
+					for ( var i = 0, list = this$1.foo; i < list.length; i += 1 )
+						{
+							var id = list[i];
+
+							arr.push( id );
+						}
+
+					( function () { arr.push( move ); } )( move );
+				};
+
+					for ( var move = 0; move < 5; ++move ) loop( move );
+				console.log( arr.join( ' ' ) );
+			};
+			new Foo().do();
+		`,
+	},
+
 ];

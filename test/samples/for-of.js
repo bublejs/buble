@@ -94,7 +94,9 @@ module.exports = [
 			}`,
 
 		output: `
-			for (var i = 0, list = this.keys; i < list.length; i += 1) {
+			var this$1 = this;
+
+			for (var i = 0, list = this$1.keys; i < list.length; i += 1) {
 				var key = list[i];
 
 				console.log(key);
