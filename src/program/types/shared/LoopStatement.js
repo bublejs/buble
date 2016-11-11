@@ -68,7 +68,7 @@ export default class LoopStatement extends Node {
 
 				let insert = `{\n${i1}var ${returned} = ${loop}(${argString});\n`;
 				if ( this.canBreak ) insert += `\n${i1}if ( ${returned} === 'break' ) break;`;
-				if ( this.canReturn ) insert += `\n${i1}if ( ${returned} ) return returned.v;`;
+				if ( this.canReturn ) insert += `\n${i1}if ( ${returned} ) return ${returned}.v;`;
 				insert += `\n${i0}}`;
 
 				code.insertRight( this.body.end, insert );

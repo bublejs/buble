@@ -389,6 +389,60 @@ module.exports = [
 	},
 
 	{
+		description: 'supports two compiled loops in one function',
+
+		input: `
+			function foo ( x ) {
+				for ( let i = 0; i < x; i += 1 ) {
+					setTimeout( () => {
+						console.log( i );
+					});
+
+					if ( x > 5 ) return;
+				}
+
+				for ( let i = 0; i < x; i += 1 ) {
+					setTimeout( () => {
+						console.log( i );
+					});
+
+					if ( x > 5 ) return;
+				}
+			}`,
+
+		output: `
+			function foo ( x ) {
+				var loop = function ( i ) {
+					setTimeout( function () {
+						console.log( i );
+					});
+
+					if ( x > 5 ) { return {}; }
+				};
+
+				for ( var i = 0; i < x; i += 1 ) {
+					var returned = loop( i );
+
+					if ( returned ) return returned.v;
+				}
+
+				var loop$1 = function ( i ) {
+					setTimeout( function () {
+						console.log( i );
+					});
+
+					if ( x > 5 ) { return {}; }
+				};
+
+				for ( var i$1 = 0; i$1 < x; i$1 += 1 ) {
+					var returned$1 = loop$1( i$1 );
+
+					if ( returned$1 ) return returned$1.v;
+				}
+			}`
+	},
+
+	{
 		description: 'destructures variable declaration in for loop head',
 
 		input: `
