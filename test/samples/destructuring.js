@@ -644,5 +644,54 @@ module.exports = [
 				var assign;
 				(assign = [1, 2], x = assign[0], y = assign[1], assign);
 			}`
-	}
+	},
+
+	{
+		description: 'array destructuring default with template string (#145)',
+
+		input: 'const [ foo = `${a}` ] = bar;',
+
+		output: `var foo = bar[0]; if ( foo === void 0 ) foo = "" + a;`
+	},
+
+	{
+		description: 'object destructuring default with template string (#145)',
+
+		input: 'const { foo = `${a}` } = bar;',
+
+		output: `var foo = bar.foo; if ( foo === void 0 ) foo = "" + a;`
+	},
+
+	{
+		description: 'array destructuring with multiple defaults with hole',
+
+		// FIXME: unnecessary parens sometimes needed around defaults to work around buble bugs
+		input: `
+			let [ a = \`A${1+2}\`, , c = (x => -x), d = { [1+1]: 2 } ] = [ "ok" ];
+		`,
+		output: `
+			var ref = [ "ok" ];
+			var a = ref[0]; if ( a === void 0 ) a = "A3";
+			var c = ref[2]; if ( c === void 0 ) c = (function (x) { return -x; });
+			var d = ref[3]; if ( d === void 0 ) d = {};;
+			d[1+1] = 2
+		`
+	},
+
+	{
+		description: 'object destructuring with multiple defaults',
+
+		// FIXME: unnecessary parens sometimes needed around defaults to work around buble bugs
+		input: `
+			let { a = \`A${1+2}\`, c = (x => -x), d = { [1+1]: 2 } } = { b: 3 };
+		`,
+		output: `
+			var ref = { b: 3 };
+			var a = ref.a; if ( a === void 0 ) a = "A3";
+			var c = ref.c; if ( c === void 0 ) c = (function (x) { return -x; });
+			var d = ref.d; if ( d === void 0 ) d = {};;
+			d[1+1] = 2
+		`
+	},
+
 ];

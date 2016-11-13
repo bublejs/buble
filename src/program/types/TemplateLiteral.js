@@ -29,6 +29,7 @@ export default class TemplateLiteral extends Node {
 
 			const parenthesise = ( this.quasis.length !== 1 || this.expressions.length !== 0 ) &&
 			                     this.parent.type !== 'AssignmentExpression' &&
+			                     this.parent.type !== 'AssignmentPattern' &&
 			                     this.parent.type !== 'VariableDeclarator' &&
 			                     ( this.parent.type !== 'BinaryExpression' || this.parent.operator !== '+' );
 

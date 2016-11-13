@@ -19,6 +19,7 @@ export default class VariableDeclarator extends Node {
 			}
 		}
 
+		if ( this.id ) this.id.transpile( code, transforms );
 		if ( this.init ) this.init.transpile( code, transforms );
 	}
 
