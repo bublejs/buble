@@ -5,12 +5,19 @@ export default class ObjectExpression extends Node {
 	transpile ( code, transforms ) {
 		super.transpile( code, transforms );
 
+		let firstPropertyStart = this.start + 1;
+		let regularPropertyCount = 0;
 		let spreadPropertyCount = 0;
 		let computedPropertyCount = 0;
 
 		for ( let prop of this.properties ) {
-			if ( prop.type === 'SpreadProperty' ) spreadPropertyCount += 1;
-			if ( prop.computed ) computedPropertyCount += 1;
+			if ( prop.type === 'SpreadProperty' ) {
+				spreadPropertyCount += 1;
+			} else if ( prop.computed ) {
+				computedPropertyCount += 1;
+			} else if ( prop.type === 'Property' ) {
+				regularPropertyCount += 1;
+			}
 		}
 
 		if ( spreadPropertyCount ) {
@@ -19,25 +26,28 @@ export default class ObjectExpression extends Node {
 			}
 			// enclose run of non-spread properties in curlies
 			let i = this.properties.length;
-			while ( i-- ) {
-				const prop = this.properties[i];
+			if ( regularPropertyCount ) {
+				while ( i-- ) {
+					const prop = this.properties[i];
 
-				if ( prop.type === 'Property' ) {
-					const lastProp = this.properties[ i - 1 ];
-					const nextProp = this.properties[ i + 1 ];
+					if ( prop.type === 'Property' && !prop.computed ) {
+						const lastProp = this.properties[ i - 1 ];
+						const nextProp = this.properties[ i + 1 ];
 
-					if ( !lastProp || lastProp.type !== 'Property' ) {
-						code.insertRight( prop.start, '{' );
-					}
+						if ( !lastProp || lastProp.type !== 'Property' || lastProp.computed ) {
+							code.insertRight( prop.start, '{' );
+						}
 
-					if ( !nextProp || nextProp.type !== 'Property' ) {
-						code.insertLeft( prop.end, '}' );
+						if ( !nextProp || nextProp.type !== 'Property' || nextProp.computed ) {
+							code.insertLeft( prop.end, '}' );
+						}
 					}
 				}
 			}
 
 			// wrap the whole thing in Object.assign
-			code.overwrite( this.start, this.properties[0].start, `${this.program.objectAssign}({}, `);
+			firstPropertyStart = this.properties[0].start;
+			code.overwrite( this.start, firstPropertyStart, `${this.program.objectAssign}({}, `);
 			code.overwrite( this.properties[ this.properties.length - 1 ].end, this.end, ')' );
 		}
 
@@ -46,9 +56,6 @@ export default class ObjectExpression extends Node {
 
 			let isSimpleAssignment;
 			let name;
-
-			let start;
-			let end;
 
 			if ( this.parent.type === 'VariableDeclarator' && this.parent.parent.declarations.length === 1 ) {
 				isSimpleAssignment = true;
@@ -65,8 +72,8 @@ export default class ObjectExpression extends Node {
 			const declaration = this.findScope( false ).findDeclaration( name );
 			if ( declaration ) name = declaration.name;
 
-			start = this.start + 1;
-			end = this.end;
+			const start = firstPropertyStart;
+			const end = this.end;
 
 			if ( isSimpleAssignment ) {
 				// ???
@@ -81,6 +88,7 @@ export default class ObjectExpression extends Node {
 
 			const len = this.properties.length;
 			let lastComputedProp;
+			let sawNonComputedProperty = false;
 
 			for ( let i = 0; i < len; i += 1 ) {
 				const prop = this.properties[i];
@@ -105,7 +113,7 @@ export default class ObjectExpression extends Node {
 					code.insertLeft( c, ' = ' );
 					code.move( moveStart, prop.end, end );
 
-					if ( i === 0 && len > 1 ) {
+					if ( i < len - 1 && ! sawNonComputedProperty ) {
 						// remove trailing comma
 						c = prop.end;
 						while ( code.original[c] !== ',' ) c += 1;
@@ -116,6 +124,8 @@ export default class ObjectExpression extends Node {
 					if ( prop.method && transforms.conciseMethodProperty ) {
 						code.insertRight( prop.value.start, 'function ' );
 					}
+				} else {
+					sawNonComputedProperty = true;
 				}
 			}
 
