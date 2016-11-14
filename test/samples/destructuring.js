@@ -649,48 +649,58 @@ module.exports = [
 	{
 		description: 'array destructuring default with template string (#145)',
 
-		input: 'const [ foo = `${a}` ] = bar;',
+		input: 'const [ foo = `${baz() - 4}` ] = bar;',
 
-		output: `var foo = bar[0]; if ( foo === void 0 ) foo = "" + a;`
+		output: `var foo = bar[0]; if ( foo === void 0 ) foo = "" + (baz() - 4);`
 	},
 
 	{
 		description: 'object destructuring default with template string (#145)',
 
-		input: 'const { foo = `${a}` } = bar;',
+		input: 'const { foo = `${baz() - 4}` } = bar;',
 
-		output: `var foo = bar.foo; if ( foo === void 0 ) foo = "" + a;`
+		output: `var foo = bar.foo; if ( foo === void 0 ) foo = "" + (baz() - 4);`
 	},
 
 	{
 		description: 'array destructuring with multiple defaults with hole',
 
-		// FIXME: unnecessary parens sometimes needed around defaults to work around buble bugs
+		// FIXME: unnecessary parens sometimes needed around defaults due to buble bugs
 		input: `
-			let [ a = \`A${1+2}\`, , c = (x => -x), d = { [1+1]: 2 } ] = [ "ok" ];
+			let [
+				a = \`A\${baz() - 4}\`,
+				, /* hole */
+				c = (x => -x),
+				d = { r: 5, [h()]: i },
+			] = [ "ok" ];
 		`,
 		output: `
 			var ref = [ "ok" ];
-			var a = ref[0]; if ( a === void 0 ) a = "A3";
+			var a = ref[0]; if ( a === void 0 ) a = "A" + (baz() - 4);
 			var c = ref[2]; if ( c === void 0 ) c = (function (x) { return -x; });
-			var d = ref[3]; if ( d === void 0 ) d = {};;
-			d[1+1] = 2
+			var d = ref[3]; if ( d === void 0 ) d = { r: 5 };;
+			d[h()] = i
 		`
 	},
 
 	{
 		description: 'object destructuring with multiple defaults',
 
-		// FIXME: unnecessary parens sometimes needed around defaults to work around buble bugs
+		// FIXME: unnecessary parens sometimes needed around defaults due to buble bugs
 		input: `
-			let { a = \`A${1+2}\`, c = (x => -x), d = { [1+1]: 2 } } = { b: 3 };
+			let {
+				a = \`A\${baz() - 4}\`,
+				c = (x => -x),
+				d = { r: 5, [1 + 1]: 2, [h()]: i }
+			} = { b: 3 };
 		`,
 		output: `
 			var ref = { b: 3 };
-			var a = ref.a; if ( a === void 0 ) a = "A3";
+			var a = ref.a; if ( a === void 0 ) a = "A" + (baz() - 4);
 			var c = ref.c; if ( c === void 0 ) c = (function (x) { return -x; });
-			var d = ref.d; if ( d === void 0 ) d = {};;
-			d[1+1] = 2
+			var d = ref.d; if ( d === void 0 ) d = { r: 5 };;
+			d[1 + 1] = 2;
+			d[h()] = i
 		`
 	},
 
