@@ -113,7 +113,9 @@ export default class AssignmentExpression extends Node {
 			else if ( pattern.type === 'ObjectPattern' ) {
 				const props = pattern.properties;
 				if ( props.length == 1 ) {
-					destructure ( props[0].value, `${ref}.${props[0].key.name}`, false );
+					const prop = props[0];
+					const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.original.substring(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
+					destructure( prop.value, value, false );
 				}
 				else {
 					if ( !mayDuplicate ) {
@@ -123,7 +125,8 @@ export default class AssignmentExpression extends Node {
 						ref = temp;
 					}
 					props.forEach( prop => {
-						destructure( prop.value, `${ref}.${prop.key.name}`, false );
+						const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.original.substring(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
+						destructure( prop.value, value, false );
 					} );
 				}
 			}

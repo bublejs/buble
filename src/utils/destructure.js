@@ -53,7 +53,7 @@ function destructureObjectPattern ( code, scope, node, ref, inline, statementGen
 	let c = node.start;
 
 	node.properties.forEach( prop => {
-		let value = prop.key.type === 'Literal' ? `${ref}[${prop.key.raw}]` : `${ref}.${prop.key.name}`;
+		let value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.original.substring(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
 		handleProperty( code, scope, c, prop.value, value, inline, statementGenerators );
 		c = prop.end;
 	});
@@ -122,12 +122,14 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 				});
 
 				node.properties.forEach( prop => {
-					handleProperty( code, scope, c, prop.value, `${ref}.${prop.key.name}`, inline, statementGenerators );
+					const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.original.substring(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
+					handleProperty( code, scope, c, prop.value, value, inline, statementGenerators );
 					c = prop.end;
 				});
 			} else {
 				const prop = node.properties[0];
-				handleProperty( code, scope, c, prop.value, `${value}.${prop.key.name}`, inline, statementGenerators );
+				const value_suffix = prop.computed || prop.key.type !== 'Identifier' ? `[${code.original.substring(prop.key.start, prop.key.end)}]` : `.${prop.key.name}`;
+				handleProperty( code, scope, c, prop.value, `${value}${value_suffix}`, inline, statementGenerators );
 				c = prop.end;
 			}
 

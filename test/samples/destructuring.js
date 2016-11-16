@@ -333,6 +333,74 @@ module.exports = [
 	},
 
 	{
+		description: 'destructured object assignment with computed properties',
+		input: `
+			let one, two, three, four;
+			({ [FirstProp]: one, [SecondProp]: two = 'Too', 3: three, Fore: four } = x);
+		`,
+		output: `
+			var one, two, three, four;
+			var assign;
+			((assign = x, one = assign[FirstProp], two = assign[SecondProp], two = two === void 0 ? 'Too' : two, three = assign[3], four = assign.Fore));
+		`
+	},
+
+	{
+		description: 'destructured object declaration with computed properties',
+		input: `
+			var { [FirstProp]: one, [SecondProp]: two = 'Too', 3: three, Fore: four } = x;
+		`,
+		output: `
+			var one = x[FirstProp];
+			var two = x[SecondProp]; if ( two === void 0 ) two = 'Too';
+			var three = x[3];
+			var four = x.Fore;
+		`
+	},
+
+	{
+		description: 'destructured object with computed properties in parameters',
+		input: `
+			function foo({ [FirstProp]: one, [SecondProp]: two = 'Too', 3: three, Fore: four } = x) {
+				console.log(one, two, three, four);
+			}
+		`,
+		output: `
+			function foo(ref) {
+				if ( ref === void 0 ) ref = x;
+				var one = ref[FirstProp];
+				var two = ref[SecondProp]; if ( two === void 0 ) two = 'Too';
+				var three = ref[3];
+				var four = ref.Fore;
+
+				console.log(one, two, three, four);
+			}
+		`
+	},
+
+	{
+		description: 'deep matching in parameters with computed properties',
+
+		input: `
+			function foo ({ [a]: { [b]: c }, d: { 'e': f, [g]: h }, [i + j]: { [k + l]: m, n: o } }) {
+				console.log( c, f, h, m, o );
+			}`,
+
+		output: `
+			function foo (ref) {
+				var c = ref[a][b];
+				var ref_d = ref.d;
+				var f = ref_d['e'];
+				var h = ref_d[g];
+				var ref_i_j = ref[i + j];
+				var m = ref_i_j[k + l];
+				var o = ref_i_j.n;
+
+				console.log( c, f, h, m, o );
+			}`
+	},
+
+	{
 		description: 'transpiles destructuring assignment of an array',
 		input: `
 			[x, y] = [1, 2];`,
