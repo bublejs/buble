@@ -401,6 +401,107 @@ module.exports = [
 	},
 
 	{
+		description: 'array destructuring declaration with rest element',
+
+		input: `
+			const [a, ...b] = [1, 2, 3, 4];
+			console.log(a, b);
+		`,
+		output: `
+			var ref = [1, 2, 3, 4];
+			var a = ref[0];
+			var b = ref.slice(1);
+			console.log(a, b);
+		`
+	},
+
+	{
+		description: 'array destructuring declaration with complex rest element',
+
+		input: `
+			const x = [1, 2, {r: 9}, 3], [a, ...[, {r: b, s: c = 4} ]] = x;
+			console.log(a, b, c);
+		`,
+		output: `
+			var x = [1, 2, {r: 9}, 3];
+			var a = x[0];
+			var x_slice_1_1 = x.slice(1)[1];
+			var b = x_slice_1_1.r;
+			var c = x_slice_1_1.s; if ( c === void 0 ) c = 4;
+			console.log(a, b, c);
+		`
+	},
+
+	{
+		description: 'destructuring function parameters with array rest element',
+
+		input: `
+			function foo([a, ...[, {r: b, s: c = 4} ]]) {
+				console.log(a, b, c);
+			}
+			foo( [1, 2, {r: 9}, 3] );
+		`,
+		output: `
+			function foo(ref) {
+				var a = ref[0];
+				var ref_slice_1_1 = ref.slice(1)[1];
+				var b = ref_slice_1_1.r;
+				var c = ref_slice_1_1.s; if ( c === void 0 ) c = 4;
+
+				console.log(a, b, c);
+			}
+			foo( [1, 2, {r: 9}, 3] );
+		`
+	},
+
+	{
+		description: 'destructuring array assignment with complex rest element',
+
+		input: `
+			let x = [1, 2, {r: 9}, {s: ["table"]} ];
+			let a, b, c, d;
+			([a, ...[ , {r: b}, {r: c = "nothing", s: [d] = "nope"} ]] = x);
+			console.log(a, b, c, d);
+		`,
+		output: `
+			var x = [1, 2, {r: 9}, {s: ["table"]} ];
+			var a, b, c, d;
+			var assign, array, obj, temp;
+			((assign = x, a = assign[0], array = assign.slice(1), b = array[1].r, obj = array[2], c = obj.r, c = c === void 0 ? "nothing" : c, temp = obj.s, temp = temp === void 0 ? "nope" : temp, d = temp[0]));
+			console.log(a, b, c, d);
+		`
+	},
+
+	{
+		description: 'destructuring array rest element within an object property',
+
+		input: `
+			let foo = ({p: [x, ...y] = [6, 7], q: [...z] = [8]} = {}) => {
+				console.log(x, y, z);
+			};
+			foo({p: [1, 2, 3], q: [4, 5]});
+			foo({q: []} );
+			foo();
+		`,
+		output: `
+			var foo = function (ref) {
+				if ( ref === void 0 ) ref = {};
+				var ref_p = ref.p; if ( ref_p === void 0 ) ref_p = [6, 7];
+				var ref_p$1 = ref_p;
+				var x = ref_p$1[0];
+				var y = ref_p$1.slice(1);
+				var ref_q = ref.q; if ( ref_q === void 0 ) ref_q = [8];
+				var z = ref_q.slice(0);
+
+				console.log(x, y, z);
+			};
+			foo({p: [1, 2, 3], q: [4, 5]});
+			foo({q: []} );
+			foo();
+		`
+	},
+
+	{
 		description: 'transpiles destructuring assignment of an array',
 		input: `
 			[x, y] = [1, 2];`,

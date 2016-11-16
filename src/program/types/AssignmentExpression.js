@@ -105,7 +105,13 @@ export default class AssignmentExpression extends Node {
 						ref = temp;
 					}
 					elements.forEach( ( element, i ) => {
-						if ( element ) destructure( element, `${ref}[${i}]`, false );
+						if ( element ) {
+							if ( element.type === 'RestElement' ) {
+								destructure( element.argument, `${ref}.slice(${i})`, false );
+							} else {
+								destructure( element, `${ref}[${i}]`, false );
+							}
+						}
 					} );
 				}
 			}

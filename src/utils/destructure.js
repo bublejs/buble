@@ -42,7 +42,11 @@ function destructureArrayPattern ( code, scope, node, ref, inline, statementGene
 	node.elements.forEach( ( element, i ) => {
 		if ( !element ) return;
 
-		handleProperty( code, scope, c, element, `${ref}[${i}]`, inline, statementGenerators );
+		if ( element.type === 'RestElement' ) {
+			handleProperty( code, scope, c, element.argument, `${ref}.slice(${i})`, inline, statementGenerators );
+		} else {
+			handleProperty( code, scope, c, element, `${ref}[${i}]`, inline, statementGenerators );
+		}
 		c = element.end;
 	});
 
@@ -154,13 +158,21 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 				node.elements.forEach( ( element, i ) => {
 					if ( !element ) return;
 
-					handleProperty( code, scope, c, element, `${ref}[${i}]`, inline, statementGenerators );
+					if ( element.type === 'RestElement' ) {
+						handleProperty( code, scope, c, element.argument, `${ref}.slice(${i})`, inline, statementGenerators );
+					} else {
+						handleProperty( code, scope, c, element, `${ref}[${i}]`, inline, statementGenerators );
+					}
 					c = element.end;
 				});
 			} else {
 				const index = findIndex( node.elements, Boolean );
 				const element = node.elements[ index ];
-				handleProperty( code, scope, c, element, `${value}[${index}]`, inline, statementGenerators );
+				if ( element.type === 'RestElement' ) {
+					handleProperty( code, scope, c, element.argument, `${value}.slice(${index})`, inline, statementGenerators );
+				} else {
+					handleProperty( code, scope, c, element, `${value}[${index}]`, inline, statementGenerators );
+				}
 				c = element.end;
 			}
 
