@@ -341,7 +341,7 @@ module.exports = [
 		output: `
 			var one, two, three, four;
 			var assign;
-			((assign = x, one = assign[FirstProp], two = assign[SecondProp], two = two === void 0 ? 'Too' : two, three = assign[3], four = assign.Fore));
+			((assign = x, one = assign[FirstProp], two = assign[SecondProp], two = two === void 0 ? 'Too' : two, three = assign[3], four = assign.Fore, assign));
 		`
 	},
 
@@ -467,7 +467,7 @@ module.exports = [
 			var x = [1, 2, {r: 9}, {s: ["table"]} ];
 			var a, b, c, d;
 			var assign, array, obj, temp;
-			((assign = x, a = assign[0], array = assign.slice(1), b = array[1].r, obj = array[2], c = obj.r, c = c === void 0 ? "nothing" : c, temp = obj.s, temp = temp === void 0 ? "nope" : temp, d = temp[0]));
+			((assign = x, a = assign[0], array = assign.slice(1), b = array[1].r, obj = array[2], c = obj.r, c = c === void 0 ? "nothing" : c, temp = obj.s, temp = temp === void 0 ? "nope" : temp, d = temp[0], assign));
 			console.log(a, b, c, d);
 		`
 	},
@@ -507,7 +507,7 @@ module.exports = [
 			[x, y] = [1, 2];`,
 		output: `
 			var assign;
-			(assign = [1, 2], x = assign[0], y = assign[1]);`
+			(assign = [1, 2], x = assign[0], y = assign[1], assign);`
 	},
 
 	{
@@ -516,7 +516,7 @@ module.exports = [
 			[x = 4, y] = [1, 2];`,
 		output: `
 			var assign;
-			(assign = [1, 2], x = assign[0], x = x === void 0 ? 4 : x, y = assign[1]);`
+			(assign = [1, 2], x = assign[0], x = x === void 0 ? 4 : x, y = assign[1], assign);`
 	},
 
 	{
@@ -525,7 +525,7 @@ module.exports = [
 			[[x], y] = [1, 2];`,
 		output: `
 			var assign;
-			(assign = [1, 2], x = assign[0][0], y = assign[1]);`
+			(assign = [1, 2], x = assign[0][0], y = assign[1], assign);`
 	},
 
 	{
@@ -534,7 +534,7 @@ module.exports = [
 			[[x, z], y] = [1, 2];`,
 		output: `
 			var assign, array;
-			(assign = [1, 2], array = assign[0], x = array[0], z = array[1], y = assign[1]);`
+			(assign = [1, 2], array = assign[0], x = array[0], z = array[1], y = assign[1], assign);`
 	},
 
 	{
@@ -543,7 +543,7 @@ module.exports = [
 			[[x] = [], y] = [1, 2];`,
 		output: `
 			var assign, temp;
-			(assign = [1, 2], temp = assign[0], temp = temp === void 0 ? [] : temp, x = temp[0], y = assign[1]);`
+			(assign = [1, 2], temp = assign[0], temp = temp === void 0 ? [] : temp, x = temp[0], y = assign[1], assign);`
 	},
 
 	{
@@ -552,7 +552,7 @@ module.exports = [
 			[x, y.z] = [1, 2];`,
 		output: `
 			var assign;
-			(assign = [1, 2], x = assign[0], y.z = assign[1]);`
+			(assign = [1, 2], x = assign[0], y.z = assign[1], assign);`
 	},
 
 	{
@@ -561,7 +561,7 @@ module.exports = [
 			[x, y.z = 3] = [1, 2];`,
 		output: `
 			var assign, temp;
-			(assign = [1, 2], x = assign[0], temp = assign[1], temp = temp === void 0 ? 3 : temp, y.z = temp);`
+			(assign = [1, 2], x = assign[0], temp = assign[1], temp = temp === void 0 ? 3 : temp, y.z = temp, assign);`
 	},
 
 	{
@@ -570,7 +570,7 @@ module.exports = [
 			({x, y} = {x: 1});`,
 		output: `
 			var assign;
-			((assign = {x: 1}, x = assign.x, y = assign.y));`
+			((assign = {x: 1}, x = assign.x, y = assign.y, assign));`
 	},
 
 	{
@@ -579,7 +579,7 @@ module.exports = [
 			({x, y: z} = {x: 1});`,
 		output: `
 			var assign;
-			((assign = {x: 1}, x = assign.x, z = assign.y));`
+			((assign = {x: 1}, x = assign.x, z = assign.y, assign));`
 	},
 
 	{
@@ -588,7 +588,7 @@ module.exports = [
 			({x, y: {z}} = {x: 1});`,
 		output: `
 			var assign;
-			((assign = {x: 1}, x = assign.x, z = assign.y.z));`
+			((assign = {x: 1}, x = assign.x, z = assign.y.z, assign));`
 	},
 
 	{
@@ -597,7 +597,7 @@ module.exports = [
 			({x, y = 4} = {x: 1});`,
 		output: `
 			var assign;
-			((assign = {x: 1}, x = assign.x, y = assign.y, y = y === void 0 ? 4 : y));`
+			((assign = {x: 1}, x = assign.x, y = assign.y, y = y === void 0 ? 4 : y, assign));`
 	},
 
 	{
@@ -606,7 +606,7 @@ module.exports = [
 			({x, y: {z, q}} = {x: 1});`,
 		output: `
 			var assign, obj;
-			((assign = {x: 1}, x = assign.x, obj = assign.y, z = obj.z, q = obj.q));`
+			((assign = {x: 1}, x = assign.x, obj = assign.y, z = obj.z, q = obj.q, assign));`
 	},
 
 	{
@@ -615,7 +615,7 @@ module.exports = [
 			({x, y: {z}} = {x: 1});`,
 		output: `
 			var assign;
-			((assign = {x: 1}, x = assign.x, z = assign.y.z));`
+			((assign = {x: 1}, x = assign.x, z = assign.y.z, assign));`
 	},
 
 	{
@@ -628,7 +628,7 @@ module.exports = [
 		output: `
 			foo();
 			var assign;
-			if ( bar((assign = [1, 2], x = assign[0], y = assign[1])) ) {
+			if ( bar((assign = [1, 2], x = assign[0], y = assign[1], assign)) ) {
 				baz();
 			}`
 	},
@@ -642,7 +642,7 @@ module.exports = [
 		output: `
 			function foo() {
 				var assign;
-				(assign = [1, 2], x = assign[0], y = assign[1]);
+				(assign = [1, 2], x = assign[0], y = assign[1], assign);
 			}`
 	}
 ];

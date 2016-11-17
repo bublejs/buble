@@ -33,8 +33,8 @@ export default class AssignmentExpression extends Node {
 
 	transpileDestructuring ( code ) {
 		const scope = this.findScope( true );
-		const value = scope.createIdentifier( 'assign' );
-		const temporaries = [value];
+		const assign = scope.createIdentifier( 'assign' );
+		const temporaries = [ assign ];
 
 		const start = this.start;
 
@@ -52,7 +52,7 @@ export default class AssignmentExpression extends Node {
 			text += string;
 		}
 
-		write( `(${value} = ` );
+		write( `(${assign} = ` );
 		use( this.right );
 
 		// Walk `pattern`, generating code that assigns the value in
@@ -141,9 +141,9 @@ export default class AssignmentExpression extends Node {
 				throw new Error( `Unexpected node type in destructuring assignment (${pattern.type})` );
 			}
 		}
-		destructure( this.left, value, true );
+		destructure( this.left, assign, true );
 
-		code.insertRight( start, text + ')' );
+		code.insertRight( start, `${text}, ${assign})` );
 		code.remove( start, this.right.start );
 
 		const statement = this.findNearest( /(?:Statement|Declaration)$/ );
