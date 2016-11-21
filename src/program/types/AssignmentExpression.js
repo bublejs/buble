@@ -120,7 +120,7 @@ export default class AssignmentExpression extends Node {
 				const props = pattern.properties;
 				if ( props.length == 1 ) {
 					const prop = props[0];
-					const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.original.substring(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
+					const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
 					destructure( prop.value, value, false );
 				}
 				else {
@@ -131,7 +131,7 @@ export default class AssignmentExpression extends Node {
 						ref = temp;
 					}
 					props.forEach( prop => {
-						const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.original.substring(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
+						const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
 						destructure( prop.value, value, false );
 					} );
 				}
