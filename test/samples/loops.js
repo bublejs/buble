@@ -207,6 +207,59 @@ module.exports = [
 	},
 
 	{
+		description: 'loop variables with UpdateExpresssions between iterations (#150)',
+
+		input: `
+			var fns = [];
+
+			for ( let i = 0, j = 3; i < 10; i += 1 ) {
+				fns.push(function () { return i; });
+				++i;
+				j--;
+			}`,
+
+		output: `
+			var fns = [];
+
+			var loop = function ( i$1, j$1 ) {
+				fns.push(function () { return i$1; });
+				++i$1;
+				j$1--;
+
+				i = i$1;
+				j = j$1;
+			};
+
+			for ( var i = 0, j = 3; i < 10; i += 1 ) loop( i, j );`
+	},
+
+	{
+		description: 'loop variables with UpdateExpresssions between iterations, with conflict (#150)',
+
+		input: `
+			var i = 'conflicting';
+			var fns = [];
+
+			for ( let i = 0; i < 10; i += 1 ) {
+				fns.push(function () { return i; });
+				i++;
+			}`,
+
+		output: `
+			var i = 'conflicting';
+			var fns = [];
+
+			var loop = function ( i$2 ) {
+				fns.push(function () { return i$2; });
+				i$2++;
+
+				i$1 = i$2;
+			};
+
+			for ( var i$1 = 0; i$1 < 10; i$1 += 1 ) loop( i$1 );`
+	},
+
+	{
 		description: 'handles break and continue inside block-scoped loops (#12)',
 
 		input: `

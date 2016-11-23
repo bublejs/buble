@@ -8,6 +8,12 @@ export default class UpdateExpression extends Node {
 			if ( declaration && declaration.kind === 'const' ) {
 				throw new CompileError( this, `${this.argument.name} is read-only` );
 			}
+
+			// special case – https://gitlab.com/Rich-Harris/buble/issues/150
+			const statement = declaration && declaration.node.ancestor( 3 );
+			if ( statement && statement.type === 'ForStatement' && statement.body.contains( this ) ) {
+				statement.reassigned[ this.argument.name ] = true;
+			}
 		}
 
 		super.initialise( transforms );
