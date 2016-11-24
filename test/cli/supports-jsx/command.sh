@@ -1,1 +1,1 @@
-buble input.js -o actual/output.js
+buble input.jsx -o actual/output.js

@@ -36,7 +36,10 @@ function compileFile ( from, to, command, options ) {
 
 	if ( ext !== '.js' && ext !== '.jsm' && ext !== '.es6' && ext !== '.jsx') return;
 
-	if ( to ) to = to.slice( 0, -ext.length ) + '.js';
+	if ( to ) {
+		var extTo = path.extname( to );
+		to = to.slice( 0, -extTo.length ) + '.js';
+	}
 
 	var source = fs.readFileSync( from, 'utf-8' );
 	var result = buble.transform( source, {
