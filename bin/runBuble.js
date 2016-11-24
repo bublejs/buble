@@ -134,9 +134,11 @@ module.exports = function ( command ) {
 		});
 
 		process.stdin.on( 'end', function () {
+			options.source = command.input = "stdin";
+			options.file = command.output;
 			try {
 				var result = buble.transform( source, options );
-				write( result, null, command );
+				write( result, command.output, command );
 			} catch ( err ) {
 				handleError( err );
 			}
