@@ -16,9 +16,9 @@
     "build:umd": "rollup -c -f umd -o dist/buble.umd.js",
     "build:browser": "rollup -c --environment DEPS -f umd -o dist/buble.deps.js",
     "build:es": "rollup -c -f es6 -o dist/buble.es.js",
-    "test": "mocha test/test.js --compilers js:buble/register",
+    "test": "mocha test/test.js --compilers js:./register",
     "pretest": "npm run build:umd && npm run build:browser",
-    "test:node": "mocha test/test.js --compilers js:buble/register",
+    "test:node": "mocha test/test.js --compilers js:./register",
     "pretest:node": "npm run build:umd",
     "prepublish": "npm test && npm run build:es",
     "lint": "eslint src"
