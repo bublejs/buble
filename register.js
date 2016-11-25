@@ -24,6 +24,20 @@ var options = {
 	}
 };
 
+function configTransform (transforms, enabled) {
+	options.transforms = options.transforms || {}; 
+	transforms.forEach(function (transform) {
+		options.transforms[transform.trim()] = enabled;
+	});
+}
+
+if (process.env.BUBLE_OPTION_YES) {
+	configTransform(process.env.BUBLE_OPTION_YES.split(','), true);
+}
+if (process.env.BUBLE_OPTION_NO) {
+	configTransform(process.env.BUBLE_OPTION_NO.split(','), false);
+}
+
 function mkdirp ( dir ) {
 	var parent = path.dirname( dir );
 	if ( dir === parent ) return;
@@ -38,7 +52,7 @@ function mkdirp ( dir ) {
 
 var home = homedir();
 if ( home ) {
-	var cachedir = path.join( home, '.buble-cache', nodeVersion );
+	var cachedir = path.join( home, '.buble-cache', '' + nodeVersion );
 	mkdirp( cachedir );
 	fs.writeFileSync( path.join( home, '.buble-cache/README.txt' ), 'These files enable a faster startup when using buble/register. You can safely delete this folder at any time. See https://buble.surge.sh/guide/ for more information.' );
 }
