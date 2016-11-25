@@ -24,20 +24,6 @@ var options = {
 	}
 };
 
-function configTransform (transforms, enabled) {
-	options.transforms = options.transforms || {}; 
-	transforms.forEach(function (transform) {
-		options.transforms[transform.trim()] = enabled;
-	});
-}
-
-if (process.env.BUBLE_OPTION_YES) {
-	configTransform(process.env.BUBLE_OPTION_YES.split(','), true);
-}
-if (process.env.BUBLE_OPTION_NO) {
-	configTransform(process.env.BUBLE_OPTION_NO.split(','), false);
-}
-
 function mkdirp ( dir ) {
 	var parent = path.dirname( dir );
 	if ( dir === parent ) return;
