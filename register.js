@@ -43,11 +43,15 @@ if ( home ) {
 	fs.writeFileSync( path.join( home, '.buble-cache/README.txt' ), 'These files enable a faster startup when using buble/register. You can safely delete this folder at any time. See https://buble.surge.sh/guide/ for more information.' );
 }
 
+var optionsStringified = JSON.stringify( options );
+
 require.extensions[ '.js' ] = function ( m, filename ) {
 	if ( nodeModulesPattern.test( filename ) ) return original( m, filename );
 
 	var source = fs.readFileSync( filename, 'utf-8' );
 	var hash = crypto.createHash( 'sha256' );
+	hash.update( buble.VERSION );
+	hash.update( optionsStringified );
 	hash.update( source );
 	var key = hash.digest( 'hex' ) + '.json';
 	var cachepath = path.join( cachedir, key );
