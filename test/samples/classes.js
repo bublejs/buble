@@ -58,7 +58,7 @@ module.exports = [
 	},
 
 	{
-		description: 'deshadows method names',
+		description: 'no unnecessary deshadowing of method names',
 
 		input: `
 			var bar = 'x';
@@ -74,7 +74,7 @@ module.exports = [
 
 			var Foo = function Foo () {};
 
-			Foo.prototype.bar = function bar$1 ( str ) {
+			Foo.prototype.bar = function bar ( str ) {
 				return str + 'bar';
 			};`
 	},

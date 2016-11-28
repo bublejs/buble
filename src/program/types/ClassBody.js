@@ -83,7 +83,7 @@ export default class ClassBody extends Node {
 				let lhs;
 
 				let methodName = method.key.name;
-				if ( scope.contains( methodName ) || reserved[ methodName ] ) methodName = scope.createIdentifier( methodName );
+				if ( reserved[ methodName ] ) methodName = scope.createIdentifier( methodName );
 
 				// when method name is a string or a number let's pretend it's a computed method
 

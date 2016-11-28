@@ -10,8 +10,14 @@ export default class Property extends Node {
 				let name;
 				if ( this.key.type === 'Literal' && typeof this.key.value === 'number' ) {
 					name = "";
+				} else if ( this.key.type === 'Identifier' ) {
+					if ( reserved[ this.key.name ] || ! /^[a-z_$][a-z0-9_$]*$/i.test( this.key.name ) ) {
+						name = this.findScope( true ).createIdentifier( this.key.name );
+					} else {
+						name = this.key.name;
+					}
 				} else {
-					name = this.findScope( true ).createIdentifier( this.key.type === 'Identifier' ? this.key.name : this.key.value );
+					name = this.findScope( true ).createIdentifier( this.key.value );
 				}
 
 				if ( this.value.generator ) code.remove( this.start, this.key.start );
