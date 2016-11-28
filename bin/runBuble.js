@@ -131,8 +131,12 @@ module.exports = function ( command ) {
 		});
 
 		process.stdin.on( 'end', function () {
-			var result = buble.transform( source, options );
-			write( result, null, command );
+			try {
+				var result = buble.transform( source, options );
+				write( result, null, command );
+			} catch ( err ) {
+				handleError( err );
+			}
 		});
 	}
 };
