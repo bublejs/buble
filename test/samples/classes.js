@@ -597,6 +597,33 @@ module.exports = [
 	},
 
 	{
+		description: 'verify deindent() does not corrupt string literals in class methods (#159)',
+
+		input: `
+			class Foo {
+				bar() {
+					var s = "0\t1\t\t2\t\t\t3\t\t\t\t4\t\t\t\t\t5";
+					return s + '\t';
+				}
+				baz() {
+					return \`\t\`;
+				}
+			}
+		`,
+		output: `
+			var Foo = function Foo () {};
+
+			Foo.prototype.bar = function bar () {
+				var s = "0\t1\t\t2\t\t\t3\t\t\t\t4\t\t\t\t\t5";
+				return s + '\t';
+			};
+			Foo.prototype.baz = function baz () {
+				return "\\t";
+			};
+		`
+	},
+
+	{
 		description: 'deindents a function body with destructuring (#22)',
 
 		input: `

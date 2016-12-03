@@ -18,13 +18,13 @@ export default function Program ( source, ast, transforms, options ) {
 	wrap( this.body = ast, this );
 	this.body.__proto__ = BlockStatement.prototype;
 
-	this.templateElements = [];
+	this.indentExclusionElements = [];
 	this.body.initialise( transforms );
 
-	this.indentExclusions = {};
-	for ( const node of this.templateElements ) {
+	this.indentExclusions = Object.create( null );
+	for ( const node of this.indentExclusionElements ) {
 		for ( let i = node.start; i < node.end; i += 1 ) {
-			this.indentExclusions[ node.start + i ] = true;
+			this.indentExclusions[ i ] = true;
 		}
 	}
 

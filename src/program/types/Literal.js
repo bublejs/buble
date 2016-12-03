@@ -3,6 +3,12 @@ import CompileError from '../../utils/CompileError.js';
 import rewritePattern from 'regexpu-core';
 
 export default class Literal extends Node {
+	initialise () {
+		if ( typeof this.value === 'string' ) {
+			this.program.indentExclusionElements.push( this );
+		}
+	}
+
 	transpile ( code, transforms ) {
 		if ( transforms.numericLiteral ) {
 			const leading = this.raw.slice( 0, 2 );

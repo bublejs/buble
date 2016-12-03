@@ -7,15 +7,22 @@ export default function deindent ( node, code ) {
 	const end = node.end;
 
 	const indentStr = code.getIndentString();
-	const pattern = new RegExp( indentStr + '\\S', 'g' );
+	const indentStrLen = indentStr.length;
+	const indentStart = start - indentStrLen;
 
-	if ( code.original.slice( start - indentStr.length, start ) === indentStr ) {
-		code.remove( start - indentStr.length, start );
+	if ( !node.program.indentExclusions[ indentStart ]
+	&& code.original.slice( indentStart, start ) === indentStr ) {
+		code.remove( indentStart, start );
 	}
 
+	const pattern = new RegExp( indentStr + '\\S', 'g' );
 	const slice = code.original.slice( start, end );
 	let match;
+
 	while ( match = pattern.exec( slice ) ) {
-		if ( !node.program.indentExclusions[ match.index ] ) code.remove( start + match.index, start + match.index + indentStr.length );
+		const removeStart = start + match.index;
+		if ( !node.program.indentExclusions[ removeStart ] ) {
+			code.remove( removeStart, removeStart + indentStrLen );
+		}
 	}
 }
