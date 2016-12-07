@@ -504,8 +504,8 @@ module.exports = [
 		output: `
 			for (var a = 0; a < 10; a++) {
 				var j = 1, k = (void 0);
-				for (var i = 0, list = c; i < list.length; i += 1) {
-					var b = list[i];
+				for (var i = 0, list = c, useLen = typeof list.length === 'number' || typeof Symbol !== 'function', list = useLen ? list : list[Symbol.iterator](); useLen ? i < list.length : !(i = list.next()).done;) {
+					var b = useLen ? list[i++] : i.value;
 
 					var x = (void 0), y = 2
 					f(b, j, k, x, y)
@@ -526,8 +526,8 @@ module.exports = [
 			}
 		`,
 		output: `
-			for (var i = 0, list = c; i < list.length; i += 1) {
-				var b = list[i];
+			for (var i = 0, list = c, useLen = typeof list.length === 'number' || typeof Symbol !== 'function', list = useLen ? list : list[Symbol.iterator](); useLen ? i < list.length : !(i = list.next()).done;) {
+				var b = useLen ? list[i++] : i.value;
 
 				var x = (void 0), y = 2, z = (void 0);
 				f(b, x++, y++, z++)

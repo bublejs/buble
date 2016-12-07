@@ -22,8 +22,8 @@ module.exports = [
 			}`,
 
 		output: `
-			for ( var i = 0, list = array; i < list.length; i += 1 ) {
-				var member = list[i];
+			for ( var i = 0, list = array, useLen = typeof list.length === 'number' || typeof Symbol !== 'function', list = useLen ? list : list[Symbol.iterator](); useLen ? i < list.length : !(i = list.next()).done; ) {
+				var member = useLen ? list[i++] : i.value;
 
 				doSomething( member );
 			}`
@@ -39,8 +39,8 @@ module.exports = [
 			}`,
 
 		output: `
-			for ( var i = 0, list = [ 'a', 'b', 'c' ]; i < list.length; i += 1 ) {
-				var member = list[i];
+			for ( var i = 0, list = [ 'a', 'b', 'c' ], useLen = typeof list.length === 'number' || typeof Symbol !== 'function', list = useLen ? list : list[Symbol.iterator](); useLen ? i < list.length : !(i = list.next()).done; ) {
+				var member = useLen ? list[i++] : i.value;
 
 				doSomething( member );
 			}`
@@ -59,14 +59,14 @@ module.exports = [
 
 		output: `
 			var loop = function () {
-				var member = list[i];
+				var member = useLen ? list[i++] : i.value;
 
 				setTimeout( function () {
 					doSomething( member );
 				});
 			};
 
-			for ( var i = 0, list = [ 'a', 'b', 'c' ]; i < list.length; i += 1 ) loop();`
+			for ( var i = 0, list = [ 'a', 'b', 'c' ], useLen = typeof list.length === 'number' || typeof Symbol !== 'function', list = useLen ? list : list[Symbol.iterator](); useLen ? i < list.length : !(i = list.next()).done; ) loop();`
 	},
 
 	{
@@ -77,8 +77,8 @@ module.exports = [
 			for ( let member of array ) console.log( member );`,
 
 		output: `
-			for ( var i = 0, list = array; i < list.length; i += 1 ) {
-				var member = list[i];
+			for ( var i = 0, list = array, useLen = typeof list.length === 'number' || typeof Symbol !== 'function', list = useLen ? list : list[Symbol.iterator](); useLen ? i < list.length : !(i = list.next()).done; ) {
+				var member = useLen ? list[i++] : i.value;
 
 				console.log( member );
 			}`
@@ -94,8 +94,8 @@ module.exports = [
 			}`,
 
 		output: `
-			for (var i = 0, list = this.keys; i < list.length; i += 1) {
-				var key = list[i];
+			for (var i = 0, list = this.keys, useLen = typeof list.length === 'number' || typeof Symbol !== 'function', list = useLen ? list : list[Symbol.iterator](); useLen ? i < list.length : !(i = list.next()).done;) {
+				var key = useLen ? list[i++] : i.value;
 
 				console.log(key);
 			}`
@@ -111,8 +111,8 @@ module.exports = [
 			}`,
 
 		output: `
-			for ( var i = 0, list = items; i < list.length; i += 1 ) {
-				var item = list[i];
+			for ( var i = 0, list = items, useLen = typeof list.length === 'number' || typeof Symbol !== 'function', list = useLen ? list : list[Symbol.iterator](); useLen ? i < list.length : !(i = list.next()).done; ) {
+				var item = useLen ? list[i++] : i.value;
 
 				if ( item.foo ) { continue; }
 			}`
@@ -136,7 +136,7 @@ module.exports = [
 			var this$1 = this;
 
 			var loop = function () {
-				var item = list[i];
+				var item = useLen ? list[i++] : i.value;
 
 				console.log( this$1, arguments$1, item );
 				setTimeout( function () {
@@ -144,7 +144,7 @@ module.exports = [
 				});
 			};
 
-			for ( var i = 0, list = items; i < list.length; i += 1 ) loop();`
+			for ( var i = 0, list = items, useLen = typeof list.length === 'number' || typeof Symbol !== 'function', list = useLen ? list : list[Symbol.iterator](); useLen ? i < list.length : !(i = list.next()).done; ) loop();`
 	},
 
 	{
@@ -187,7 +187,7 @@ module.exports = [
 		output: `
 			function foo () {
 				var loop = function () {
-					var x = list[i];
+					var x = useLen ? list[i++] : i.value;
 
 					setTimeout( function () {
 						console.log( x );
@@ -196,7 +196,7 @@ module.exports = [
 					if ( x > 10 ) { return {}; }
 				};
 
-				for ( var i = 0, list = y; i < list.length; i += 1 ) {
+				for ( var i = 0, list = y, useLen = typeof list.length === 'number' || typeof Symbol !== 'function', list = useLen ? list : list[Symbol.iterator](); useLen ? i < list.length : !(i = list.next()).done; ) {
 					var returned = loop();
 
 					if ( returned ) return returned.v;
@@ -214,8 +214,8 @@ module.exports = [
 			}`,
 
 		output: `
-			for (var i = 0, list = [{x: 1, y: 2}]; i < list.length; i += 1) {
-				var ref = list[i];
+			for (var i = 0, list = [{x: 1, y: 2}], useLen = typeof list.length === 'number' || typeof Symbol !== 'function', list = useLen ? list : list[Symbol.iterator](); useLen ? i < list.length : !(i = list.next()).done;) {
+				var ref = useLen ? list[i++] : i.value;
 				var x = ref.x;
 				var y = ref.y;
 

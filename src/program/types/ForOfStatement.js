@@ -33,10 +33,11 @@ export default class ForOfStatement extends LoopStatement {
 
 		const key = scope.createIdentifier( 'i' );
 		const list = scope.createIdentifier( 'list' );
+		const useLen = scope.createIdentifier( 'useLen' );
 
 		if ( this.body.synthetic ) {
 			code.insertRight( this.left.start, `{\n${i1}` );
-			code.insertLeft( this.body.body[0].end, `\n${i0}}` );
+			code.insertLeft( this.body.end, `\n${i0}}` );
 		}
 
 		const bodyStart = this.body.body[0].start;
@@ -46,7 +47,9 @@ export default class ForOfStatement extends LoopStatement {
 
 
 		code.insertRight( this.right.start, `var ${key} = 0, ${list} = ` );
-		code.insertLeft( this.right.end, `; ${key} < ${list}.length; ${key} += 1` );
+		code.insertLeft( this.right.end, `, ${useLen} = typeof ${list}.length === 'number' || typeof Symbol !== 'function', ${list} = ${useLen} ? ${list} : ${list}[Symbol.iterator](); ${useLen} ? ${key} < ${list}.length : !(${key} = ${list}.next()).done;` );
+
+		const getVal = `${useLen} ? ${list}[${key}++] : ${key}.value`;
 
 		// destructuring. TODO non declaration destructuring
 		const declarator = this.left.type === 'VariableDeclaration' && this.left.declarations[0];
@@ -65,9 +68,9 @@ export default class ForOfStatement extends LoopStatement {
 			});
 
 			code.insertLeft( this.left.start + this.left.kind.length + 1, ref );
-			code.insertLeft( this.left.end, ` = ${list}[${key}];\n${i1}` );
+			code.insertLeft( this.left.end, ` = ${getVal};\n${i1}` );
 		} else {
-			code.insertLeft( this.left.end, ` = ${list}[${key}];\n\n${i1}` );
+			code.insertLeft( this.left.end, ` = ${getVal};\n\n${i1}` );
 		}
 
 		super.transpile( code, transforms );
