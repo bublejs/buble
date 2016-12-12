@@ -12,7 +12,7 @@ var versions = [ '0.10', '0.12', '4', '5', '6' ];
 
 if ( !~versions.indexOf( nodeVersion ) ) {
 	if ( +nodeVersion > 6 ) {
-		nodeVersion = 6;
+		nodeVersion = '6';
 	} else {
 		throw new Error( 'Unsupported version (' + nodeVersion + '). Please raise an issue at https://gitlab.com/Rich-Harris/buble/issues' );
 	}
@@ -38,7 +38,7 @@ function mkdirp ( dir ) {
 
 var home = homedir();
 if ( home ) {
-	var cachedir = path.join( home, '.buble-cache', '' + nodeVersion );
+	var cachedir = path.join( home, '.buble-cache', nodeVersion );
 	mkdirp( cachedir );
 	fs.writeFileSync( path.join( home, '.buble-cache/README.txt' ), 'These files enable a faster startup when using buble/register. You can safely delete this folder at any time. See https://buble.surge.sh/guide/ for more information.' );
 }
