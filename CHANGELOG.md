@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.14.3
+
+* Prevent crashing on Node versions more recent than the latest 'supported' version ([#102](https://gitlab.com/Rich-Harris/buble/merge_requests/102))
+
 ## 0.14.2
 
 * Allow `.jsx` file extension ([#127](https://gitlab.com/Rich-Harris/buble/issues/127))
