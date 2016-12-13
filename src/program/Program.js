@@ -7,7 +7,7 @@ export default function Program ( source, ast, transforms, options ) {
 
 	// options
 	this.jsx = options.jsx || 'React.createElement';
-	this.objectAssign = options.objectAssign;
+	this.options = options;
 
 	this.source = source;
 	this.magicString = new MagicString( source );

@@ -15,6 +15,7 @@ Basic options:
 -n, --no                 Transforms to always skip (overrides --target)
 --jsx                    Custom JSX pragma
 --objectAssign           Specify Object.assign or equivalent polyfill
+--no-named-function-expr Don't output named function expressions
 
 Examples:
 
