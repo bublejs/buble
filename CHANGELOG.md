@@ -1,5 +1,24 @@
 # buble changelog
 
+## 0.15.0
+
+* More informative CLI errors when input comes from stdin ([#155](https://gitlab.com/Rich-Harris/buble/issues/155))
+* Prevent PhantomJS shadowing errors ([#154](https://gitlab.com/Rich-Harris/buble/issues/154))
+* Use local `register.js` in tests ([#153](https://gitlab.com/Rich-Harris/buble/issues/153))
+* Correct CLI output filename with .jsx input ([#151](https://gitlab.com/Rich-Harris/buble/issues/151))
+* Fix whitespace removal bug ([#159](https://gitlab.com/Rich-Harris/buble/issues/159))
+* Allow computed properties in object destructuring ([#146](https://gitlab.com/Rich-Harris/buble/issues/146))
+* Support rest elements in array destructuring ([#147](https://gitlab.com/Rich-Harris/buble/issues/147))
+* Fix array swap assignment expression ([#148](https://gitlab.com/Rich-Harris/buble/issues/148))
+* Allow template string as destructuring default ([#145](https://gitlab.com/Rich-Harris/buble/issues/145))
+* Support multiple returning loops with block scoping ([cbc17ad5e](https://gitlab.com/Rich-Harris/buble/commit/cbc17ad5e1dc6e8af820fee372e6fb68e475afa4))
+* Fix `super` with spread arguments ([#129](https://gitlab.com/Rich-Harris/buble/issues/129))
+* Arrow function returning computed property ([#126](https://gitlab.com/Rich-Harris/buble/issues/126))
+* Allow computed property and object spread to coexist ([#144](https://gitlab.com/Rich-Harris/buble/issues/144))
+* Add `namedFunctionExpressions` option to prevent scope leak in old browsers ([#130](https://gitlab.com/Rich-Harris/buble/issues/130))
+* Fix exponentiation assignment edge case ([#122](https://gitlab.com/Rich-Harris/buble/issues/122))
+* Allow CLI `--output` flag to work with stdin input
+
 ## 0.14.3
 
 * Prevent crashing on Node versions more recent than the latest 'supported' version ([#102](https://gitlab.com/Rich-Harris/buble/merge_requests/102))
