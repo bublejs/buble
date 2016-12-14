@@ -208,5 +208,20 @@ module.exports = [
 
 		output: `
 			React.createElement( Foo, null, " ", React.createElement( 'h1', null, "Hello ", name, "!" ), "   " )`
-	}
+	},
+
+	{
+		description: 'fix Object.assign regression in JSXOpeningElement (#163)',
+
+		options: {
+			objectAssign: 'Object.assign'
+		},
+		input: `
+			<Thing two={"This no longer fails"} {...props}></Thing>
+		`,
+		output: `
+			React.createElement( Thing, Object.assign({}, { two: "This no longer fails" }, props))
+		`
+	},
+
 ];
