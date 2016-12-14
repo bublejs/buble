@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.15.1
+
+* Fix `Object.assign` regression ([#163](https://gitlab.com/Rich-Harris/buble/issues/163))
+
 ## 0.15.0
 
 * More informative CLI errors when input comes from stdin ([#155](https://gitlab.com/Rich-Harris/buble/issues/155))
