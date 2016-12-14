@@ -40,6 +40,8 @@ export default class ClassBody extends Node {
 				if ( !inFunctionExpression ) code.insertLeft( constructor.end, ';' );
 			}
 
+			let namedFunctions = this.program.options.namedFunctionExpressions !== false;
+			let namedConstructor = namedFunctions || this.parent.superClass || this.parent.type !== 'ClassDeclaration';
 			if ( this.parent.superClass ) {
 				let inheritanceBlock = `if ( ${superName} ) ${name}.__proto__ = ${superName};\n${i0}${name}.prototype = Object.create( ${superName} && ${superName}.prototype );\n${i0}${name}.prototype.constructor = ${name};`;
 
@@ -54,7 +56,7 @@ export default class ClassBody extends Node {
 					introBlock += inheritanceBlock + `\n\n${i0}`;
 				}
 			} else if ( !constructor ) {
-				let fn = `function ${name} () {}`;
+				let fn = 'function ' + (namedConstructor ? name + ' ' : '') + '() {}';
 				if ( this.parent.type === 'ClassDeclaration' ) fn += ';';
 				if ( this.body.length ) fn += `\n\n${i0}`;
 
@@ -67,11 +69,11 @@ export default class ClassBody extends Node {
 			let staticGettersAndSetters = [];
 			let prototypeAccessors;
 			let staticAccessors;
-			let namedFunctions = this.program.options.namedFunctionExpressions !== false
 
 			this.body.forEach( ( method, i ) => {
 				if ( method.kind === 'constructor' ) {
-					code.overwrite( method.key.start, method.key.end, `function ${name}` );
+					let constructorName = namedConstructor ? ' ' + name : '';
+					code.overwrite( method.key.start, method.key.end, `function${constructorName}` );
 					return;
 				}
 
