@@ -56,7 +56,7 @@ export default class JSXOpeningElement extends Node {
 					if (!this.program.options.objectAssign) {
 						throw new CompileError( this, 'Mixed JSX attributes ending in spread requires specified objectAssign option with \'Object.assign\' or polyfill helper.' );
 					}
-					before = html ? `', ${this.program.options.objectAssign}({},` : `, ${this.program.objectAssign}({},`;
+					before = html ? `', ${this.program.options.objectAssign}({},` : `, ${this.program.options.objectAssign}({},`;
 					after = ')';
 				}
 			} else {
