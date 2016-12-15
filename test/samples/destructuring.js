@@ -341,7 +341,7 @@ module.exports = [
 		output: `
 			var one, two, three, four;
 			var assign;
-			((assign = x, one = assign[FirstProp], two = assign[SecondProp], two = two === void 0 ? 'Too' : two, three = assign[3], four = assign.Fore, assign));
+			((assign = x, one = assign[FirstProp], two = assign[SecondProp], two = two === void 0 ? 'Too' : two, three = assign[3], four = assign.Fore));
 		`
 	},
 
@@ -467,7 +467,7 @@ module.exports = [
 			var x = [1, 2, {r: 9}, {s: ["table"]} ];
 			var a, b, c, d;
 			var assign, array, obj, temp;
-			((assign = x, a = assign[0], array = assign.slice(1), b = array[1].r, obj = array[2], c = obj.r, c = c === void 0 ? "nothing" : c, temp = obj.s, temp = temp === void 0 ? "nope" : temp, d = temp[0], assign));
+			((assign = x, a = assign[0], array = assign.slice(1), b = array[1].r, obj = array[2], c = obj.r, c = c === void 0 ? "nothing" : c, temp = obj.s, temp = temp === void 0 ? "nope" : temp, d = temp[0]));
 			console.log(a, b, c, d);
 		`
 	},
@@ -507,7 +507,7 @@ module.exports = [
 			[x, y] = [1, 2];`,
 		output: `
 			var assign;
-			(assign = [1, 2], x = assign[0], y = assign[1], assign);`
+			(assign = [1, 2], x = assign[0], y = assign[1]);`
 	},
 
 	{
@@ -516,7 +516,7 @@ module.exports = [
 			[x = 4, y] = [1, 2];`,
 		output: `
 			var assign;
-			(assign = [1, 2], x = assign[0], x = x === void 0 ? 4 : x, y = assign[1], assign);`
+			(assign = [1, 2], x = assign[0], x = x === void 0 ? 4 : x, y = assign[1]);`
 	},
 
 	{
@@ -525,7 +525,7 @@ module.exports = [
 			[[x], y] = [1, 2];`,
 		output: `
 			var assign;
-			(assign = [1, 2], x = assign[0][0], y = assign[1], assign);`
+			(assign = [1, 2], x = assign[0][0], y = assign[1]);`
 	},
 
 	{
@@ -534,7 +534,7 @@ module.exports = [
 			[[x, z], y] = [1, 2];`,
 		output: `
 			var assign, array;
-			(assign = [1, 2], array = assign[0], x = array[0], z = array[1], y = assign[1], assign);`
+			(assign = [1, 2], array = assign[0], x = array[0], z = array[1], y = assign[1]);`
 	},
 
 	{
@@ -543,7 +543,7 @@ module.exports = [
 			[[x] = [], y] = [1, 2];`,
 		output: `
 			var assign, temp;
-			(assign = [1, 2], temp = assign[0], temp = temp === void 0 ? [] : temp, x = temp[0], y = assign[1], assign);`
+			(assign = [1, 2], temp = assign[0], temp = temp === void 0 ? [] : temp, x = temp[0], y = assign[1]);`
 	},
 
 	{
@@ -552,7 +552,7 @@ module.exports = [
 			[x, y.z] = [1, 2];`,
 		output: `
 			var assign;
-			(assign = [1, 2], x = assign[0], y.z = assign[1], assign);`
+			(assign = [1, 2], x = assign[0], y.z = assign[1]);`
 	},
 
 	{
@@ -561,7 +561,7 @@ module.exports = [
 			[x, y.z = 3] = [1, 2];`,
 		output: `
 			var assign, temp;
-			(assign = [1, 2], x = assign[0], temp = assign[1], temp = temp === void 0 ? 3 : temp, y.z = temp, assign);`
+			(assign = [1, 2], x = assign[0], temp = assign[1], temp = temp === void 0 ? 3 : temp, y.z = temp);`
 	},
 
 	{
@@ -570,7 +570,7 @@ module.exports = [
 			({x, y} = {x: 1});`,
 		output: `
 			var assign;
-			((assign = {x: 1}, x = assign.x, y = assign.y, assign));`
+			((assign = {x: 1}, x = assign.x, y = assign.y));`
 	},
 
 	{
@@ -579,7 +579,7 @@ module.exports = [
 			({x, y: z} = {x: 1});`,
 		output: `
 			var assign;
-			((assign = {x: 1}, x = assign.x, z = assign.y, assign));`
+			((assign = {x: 1}, x = assign.x, z = assign.y));`
 	},
 
 	{
@@ -588,7 +588,7 @@ module.exports = [
 			({x, y: {z}} = {x: 1});`,
 		output: `
 			var assign;
-			((assign = {x: 1}, x = assign.x, z = assign.y.z, assign));`
+			((assign = {x: 1}, x = assign.x, z = assign.y.z));`
 	},
 
 	{
@@ -597,7 +597,7 @@ module.exports = [
 			({x, y = 4} = {x: 1});`,
 		output: `
 			var assign;
-			((assign = {x: 1}, x = assign.x, y = assign.y, y = y === void 0 ? 4 : y, assign));`
+			((assign = {x: 1}, x = assign.x, y = assign.y, y = y === void 0 ? 4 : y));`
 	},
 
 	{
@@ -606,7 +606,7 @@ module.exports = [
 			({x, y: {z, q}} = {x: 1});`,
 		output: `
 			var assign, obj;
-			((assign = {x: 1}, x = assign.x, obj = assign.y, z = obj.z, q = obj.q, assign));`
+			((assign = {x: 1}, x = assign.x, obj = assign.y, z = obj.z, q = obj.q));`
 	},
 
 	{
@@ -615,7 +615,7 @@ module.exports = [
 			({x, y: {z}} = {x: 1});`,
 		output: `
 			var assign;
-			((assign = {x: 1}, x = assign.x, z = assign.y.z, assign));`
+			((assign = {x: 1}, x = assign.x, z = assign.y.z));`
 	},
 
 	{
@@ -642,7 +642,7 @@ module.exports = [
 		output: `
 			function foo() {
 				var assign;
-				(assign = [1, 2], x = assign[0], y = assign[1], assign);
+				(assign = [1, 2], x = assign[0], y = assign[1]);
 			}`
 	},
 
@@ -701,6 +701,60 @@ module.exports = [
 			var d = ref.d; if ( d === void 0 ) d = { r: 5 };;
 			d[1 + 1] = 2;
 			d[h()] = i
+		`
+	},
+
+	{
+		description: 'destrucuring assignments requiring rvalues',
+
+		input: `
+			class Point {
+				set ( array ) {
+					return [ this.x, this.y ] = array;
+				}
+			}
+
+			let a, b, c = [ 1, 2, 3 ];
+			console.log( [ a, b ] = c );
+		`,
+		output: `
+			var Point = function Point () {};
+
+			Point.prototype.set = function set ( array ) {
+				var assign;
+					return (assign = array, this.x = assign[0], this.y = assign[1], assign);
+			};
+
+			var a, b, c = [ 1, 2, 3 ];
+			var assign;
+			console.log( (assign = c, a = assign[0], b = assign[1], assign) );
+		`
+	},
+
+	{
+		description: 'destrucuring assignments not requiring rvalues',
+
+		input: `
+			class Point {
+				set ( array ) {
+					[ this.x, this.y ] = array;
+				}
+			}
+
+			let a, b, c = [ 1, 2, 3 ];
+			[ a, b ] = c;
+		`,
+		output: `
+			var Point = function Point () {};
+
+			Point.prototype.set = function set ( array ) {
+				var assign;
+					(assign = array, this.x = assign[0], this.y = assign[1]);
+			};
+
+			var a, b, c = [ 1, 2, 3 ];
+			var assign;
+			(assign = c, a = assign[0], b = assign[1]);
 		`
 	},
 

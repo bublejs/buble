@@ -66,6 +66,22 @@ export default class Node {
 		return this.parent.findNearest( type );
 	}
 
+	unparenthesizedParent () {
+		let node = this.parent;
+		while ( node && node.type === 'ParenthesizedExpression' ) {
+			node = node.parent;
+		}
+		return node;
+	}
+
+	unparenthesize () {
+		let node = this;
+		while ( node.type === 'ParenthesizedExpression' ) {
+			node = node.expression;
+		}
+		return node;
+	}
+
 	findScope ( functionScope ) {
 		return this.parent.findScope( functionScope );
 	}

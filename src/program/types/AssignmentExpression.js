@@ -143,7 +143,14 @@ export default class AssignmentExpression extends Node {
 		}
 		destructure( this.left, assign, true );
 
-		code.insertRight( start, `${text}, ${assign})` );
+		if ( this.unparenthesizedParent().type === 'ExpressionStatement' ) {
+			// no rvalue needed for expression statement
+			code.insertRight( start, `${text})` );
+		} else {
+			// destructuring is part of an expression - need an rvalue
+			code.insertRight( start, `${text}, ${assign})` );
+		}
+
 		code.remove( start, this.right.start );
 
 		const statement = this.findNearest( /(?:Statement|Declaration)$/ );
@@ -167,8 +174,7 @@ export default class AssignmentExpression extends Node {
 		// simple or complex reference
 		let base;
 
-		let left = this.left;
-		while ( left.type === 'ParenthesizedExpression' ) left = left.expression;
+		const left = this.left.unparenthesize();
 
 		if ( left.type === 'Identifier' ) {
 			base = getAlias( left.name );
