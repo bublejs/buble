@@ -7,21 +7,24 @@ export default class Property extends Node {
 			if ( this.shorthand ) {
 				code.insertRight( this.start, `${this.key.name}: ` );
 			} else if ( this.method ) {
-				let name;
-				if ( this.key.type === 'Literal' && typeof this.key.value === 'number' ) {
-					name = "";
-				} else if ( this.key.type === 'Identifier' ) {
-					if ( reserved[ this.key.name ] || ! /^[a-z_$][a-z0-9_$]*$/i.test( this.key.name ) ) {
-						name = this.findScope( true ).createIdentifier( this.key.name );
+				let name = '';
+				if ( this.program.options.namedFunctionExpressions !== false ) {
+					if ( this.key.type === 'Literal' && typeof this.key.value === 'number' ) {
+						name = "";
+					} else if ( this.key.type === 'Identifier' ) {
+						if ( reserved[ this.key.name ] || ! /^[a-z_$][a-z0-9_$]*$/i.test( this.key.name ) ) {
+							name = this.findScope( true ).createIdentifier( this.key.name );
+						} else {
+							name = this.key.name;
+						}
 					} else {
-						name = this.key.name;
+						name = this.findScope( true ).createIdentifier( this.key.value );
 					}
-				} else {
-					name = this.findScope( true ).createIdentifier( this.key.value );
+					name = ' ' + name;
 				}
 
 				if ( this.value.generator ) code.remove( this.start, this.key.start );
-				code.insertLeft( this.key.end, `: function${this.value.generator ? '*' : ''} ${name}` );
+				code.insertLeft( this.key.end, `: function${this.value.generator ? '*' : ''}${name}` );
 			}
 		}
 
