@@ -665,42 +665,41 @@ module.exports = [
 	{
 		description: 'array destructuring with multiple defaults with hole',
 
-		// FIXME: unnecessary parens sometimes needed around defaults due to buble bugs
+		// FIXME: unnecessary parens needed around complex defaults due to buble bugs
 		input: `
 			let [
 				a = \`A\${baz() - 4}\`,
 				, /* hole */
 				c = (x => -x),
-				d = { r: 5, [h()]: i },
+				d = ({ r: 5, [h()]: i }),
 			] = [ "ok" ];
 		`,
 		output: `
 			var ref = [ "ok" ];
 			var a = ref[0]; if ( a === void 0 ) a = "A" + (baz() - 4);
 			var c = ref[2]; if ( c === void 0 ) c = (function (x) { return -x; });
-			var d = ref[3]; if ( d === void 0 ) d = { r: 5 };;
-			d[h()] = i
+			var d = ref[3]; if ( d === void 0 ) d = (( obj = { r: 5 }, obj[h()] = i, obj ));
+			var obj;
 		`
 	},
 
 	{
 		description: 'object destructuring with multiple defaults',
 
-		// FIXME: unnecessary parens sometimes needed around defaults due to buble bugs
+		// FIXME: unnecessary parens needed around complex defaults due to buble bugs
 		input: `
 			let {
 				a = \`A\${baz() - 4}\`,
 				c = (x => -x),
-				d = { r: 5, [1 + 1]: 2, [h()]: i }
+				d = ({ r: 5, [1 + 1]: 2, [h()]: i }),
 			} = { b: 3 };
 		`,
 		output: `
 			var ref = { b: 3 };
 			var a = ref.a; if ( a === void 0 ) a = "A" + (baz() - 4);
 			var c = ref.c; if ( c === void 0 ) c = (function (x) { return -x; });
-			var d = ref.d; if ( d === void 0 ) d = { r: 5 };;
-			d[1 + 1] = 2;
-			d[h()] = i
+			var d = ref.d; if ( d === void 0 ) d = (( obj = { r: 5 }, obj[1 + 1] = 2, obj[h()] = i, obj ));
+			var obj;
 		`
 	},
 
