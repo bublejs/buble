@@ -12,7 +12,9 @@ export default class Property extends Node {
 					if ( this.key.type === 'Literal' && typeof this.key.value === 'number' ) {
 						name = "";
 					} else if ( this.key.type === 'Identifier' ) {
-						if ( reserved[ this.key.name ] || ! /^[a-z_$][a-z0-9_$]*$/i.test( this.key.name ) ) {
+						if ( reserved[ this.key.name ] ||
+							 ! /^[a-z_$][a-z0-9_$]*$/i.test( this.key.name ) ||
+						     this.value.body.scope.references[this.key.name] ) {
 							name = this.findScope( true ).createIdentifier( this.key.name );
 						} else {
 							name = this.key.name;

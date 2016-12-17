@@ -109,4 +109,21 @@ module.exports = [
 			var obj$1; }
 		`
 	},
+
+	{
+		description: 'avoids shadowing free variables with method names (#166)',
+
+		input: `
+			let x = {
+				foo() { return foo },
+				bar() {}
+			}
+		`,
+		output: `
+			var x = {
+				foo: function foo$1() { return foo },
+				bar: function bar() {}
+			}
+		`
+	},
 ];

@@ -1181,6 +1181,23 @@ module.exports = [
 		`
 	},
 
+	{
+		description: "don't shadow variables with function names (#166)",
+
+		input: `
+			class X {
+				foo() { return foo }
+				bar() {}
+			}
+		`,
+		output: `
+			var X = function X () {};
+
+			X.prototype.foo = function () { return foo };
+			X.prototype.bar = function bar () {};
+		`
+	},
+
 	// TODO more tests. e.g. getters and setters.
 	// 'super.*' is not allowed before super()
 ];

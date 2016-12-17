@@ -140,7 +140,8 @@ export default class ClassBody extends Node {
 
 				code.insertRight( method.start, lhs );
 
-				const rhs = ( isAccessor ? `.${method.kind}` : '' ) + ` = function` + ( method.value.generator ? '* ' : ' ' ) + ( method.computed || isAccessor || !namedFunctions ? '' : `${methodName} ` );
+				const funcName = method.computed || isAccessor || !namedFunctions || method.value.body.scope.references[methodName] ? '' : `${methodName} `
+				const rhs = ( isAccessor ? `.${method.kind}` : '' ) + ` = function` + ( method.value.generator ? '* ' : ' ' ) + funcName;
 				code.remove( c, method.value.start );
 				code.insertRight( method.value.start, rhs );
 				code.insertLeft( method.end, ';' );
