@@ -86,7 +86,9 @@ export default class ClassBody extends Node {
 				let lhs;
 
 				let methodName = method.key.name;
-				if ( reserved[ methodName ] ) methodName = scope.createIdentifier( methodName );
+				if ( reserved[ methodName ] || method.value.body.scope.references[methodName] ) {
+					methodName = scope.createIdentifier( methodName );
+				}
 
 				// when method name is a string or a number let's pretend it's a computed method
 
@@ -140,7 +142,7 @@ export default class ClassBody extends Node {
 
 				code.insertRight( method.start, lhs );
 
-				const funcName = method.computed || isAccessor || !namedFunctions || method.value.body.scope.references[methodName] ? '' : `${methodName} `
+				const funcName = method.computed || isAccessor || !namedFunctions ? '' : `${methodName} `
 				const rhs = ( isAccessor ? `.${method.kind}` : '' ) + ` = function` + ( method.value.generator ? '* ' : ' ' ) + funcName;
 				code.remove( c, method.value.start );
 				code.insertRight( method.value.start, rhs );

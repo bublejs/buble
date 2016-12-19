@@ -1193,7 +1193,7 @@ module.exports = [
 		output: `
 			var X = function X () {};
 
-			X.prototype.foo = function () { return foo };
+			X.prototype.foo = function foo$1 () { return foo };
 			X.prototype.bar = function bar () {};
 		`
 	},
