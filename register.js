@@ -38,7 +38,7 @@ function mkdirp ( dir ) {
 
 var home = homedir();
 if ( home ) {
-	var cachedir = path.join( home, '.buble-cache', nodeVersion );
+	var cachedir = path.join( home, '.buble-cache', String(nodeVersion) );
 	mkdirp( cachedir );
 	fs.writeFileSync( path.join( home, '.buble-cache/README.txt' ), 'These files enable a faster startup when using buble/register. You can safely delete this folder at any time. See https://buble.surge.sh/guide/ for more information.' );
 }
