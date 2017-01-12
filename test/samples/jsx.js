@@ -224,4 +224,15 @@ module.exports = [
 		`
 	},
 
+	{
+		description: 'fix no space between JSXOpeningElement attributes (#178)',
+
+		input: `
+			<div style={{color:'#000000'}}className='content'/>
+		`,
+		output: `
+			React.createElement( 'div', { style: {color:'#000000'}, className: 'content' })
+		`
+	},
+
 ];
