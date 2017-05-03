@@ -46,17 +46,25 @@ export function target ( target ) {
 
 export function transform ( source, options = {} ) {
 	let ast;
+	let jsx = null;
 
 	try {
 		ast = parse( source, {
 			ecmaVersion: 7,
 			preserveParens: true,
 			sourceType: 'module',
+			onComment: (block, text) => {
+				if ( !jsx ) {
+					let match = /@jsx\s+([^\s]+)/.exec( text );
+					if ( match ) jsx = match[1];
+				}
+			},
 			plugins: {
 				jsx: true,
 				objectSpread: true
 			}
 		});
+		options.jsx = jsx || options.jsx;
 	} catch ( err ) {
 		err.snippet = getSnippet( source, err.loc );
 		err.toString = () => `${err.name}: ${err.message}\n${err.snippet}`;
