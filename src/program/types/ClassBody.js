@@ -156,12 +156,12 @@ export default class ClassBody extends Node {
 				let outro = [];
 
 				if ( prototypeGettersAndSetters.length ) {
-					intro.push( `var ${prototypeAccessors} = { ${prototypeGettersAndSetters.map( name => `${name}: {}` ).join( ',' )} };` );
+					intro.push( `var ${prototypeAccessors} = { ${prototypeGettersAndSetters.map( name => `${name}: { configurable: true }` ).join( ',' )} };` );
 					outro.push( `Object.defineProperties( ${name}.prototype, ${prototypeAccessors} );` );
 				}
 
 				if ( staticGettersAndSetters.length ) {
-					intro.push( `var ${staticAccessors} = { ${staticGettersAndSetters.map( name => `${name}: {}` ).join( ',' )} };` );
+					intro.push( `var ${staticAccessors} = { ${staticGettersAndSetters.map( name => `${name}: { configurable: true }` ).join( ',' )} };` );
 					outro.push( `Object.defineProperties( ${name}, ${staticAccessors} );` );
 				}
 
