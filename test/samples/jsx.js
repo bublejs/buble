@@ -246,7 +246,8 @@ module.exports = [
 		output: `
 			/* @jsx customPragma */
 			/* @jsx customPragmaWannabe */
-			var div = customPragma( 'div', null, "Hello" )`
+			var div = customPragma( 'div', null, "Hello" )
+		`
 	},
 
 	{
