@@ -235,4 +235,40 @@ module.exports = [
 		`
 	},
 
+	{
+		description: 'supports /* @jsx customPragma */ directives (#195)',
+		input: `
+			/* @jsx customPragma */
+			var div = <div>Hello</div>
+		`,
+		output: `
+			/* @jsx customPragma */
+			var div = customPragma( 'div', null, "Hello" )
+		`
+	},
+
+	{
+		description: 'ignores subsequent /* @jsx customPragma */ directives (#195)',
+		input: `
+			/* @jsx customPragma */
+			/* @jsx customPragmaWannabe */
+			var div = <div>Hello</div>
+		`,
+		output: `
+			/* @jsx customPragma */
+			/* @jsx customPragmaWannabe */
+			var div = customPragma( 'div', null, "Hello" )
+		`
+	},
+
+	{
+		description: 'handles dash-cased value-less props',
+
+		input: `
+			<Thing data-foo></Thing>
+		`,
+		output: `
+			React.createElement( Thing, { 'data-foo': true })
+		`
+	}
 ];

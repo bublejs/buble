@@ -1,13 +1,11 @@
 import buble from 'rollup-plugin-buble';
 import json from 'rollup-plugin-json';
-import nodeResolve from 'rollup-plugin-node-resolve';
+import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
+import pkg from './package.json';
 
-var external = process.env.DEPS ? [] : [ 'acorn/dist/acorn.js', 'magic-string' ];
-
-export default {
-	entry: 'src/index.js',
-	moduleName: 'buble',
+const config = {
+	input: 'src/index.js',
 	plugins: [
 		json(),
 		commonjs(),
@@ -22,15 +20,30 @@ export default {
 				dangerousForOf: true
 			}
 		}),
-		nodeResolve({
-			jsnext: true,
-			skip: external
-		})
+		resolve()
 	],
-	external: external,
-	globals: {
-		'acorn/dist/acorn.js': 'acorn',
-		'magic-string': 'MagicString'
-	},
-	sourceMap: true
+	name: 'buble',
+	sourcemap: true
 };
+
+export default [
+	/* ESM/UMD builds */
+	Object.assign({}, config, {
+		external: ['acorn/dist/acorn.js', 'magic-string'],
+		output: [
+			{ format: 'es', file: pkg.module },
+			{ format: 'umd', file: pkg.main }
+		],
+		globals: {
+			'acorn/dist/acorn.js': 'acorn',
+			'magic-string': 'MagicString'
+		}
+	}),
+
+	/* UMD with bundled dependencies, for browsers */
+	Object.assign({}, config, {
+		output: [
+			{ format: 'umd', file: pkg.browser }
+		]
+	})
+];
