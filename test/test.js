@@ -93,7 +93,7 @@ describe( 'buble', () => {
 
 								return {
 									name: name,
-									contents: contents
+									contents: contents.replace(/\r\n/g, '\n')
 								};
 							});
 					}
