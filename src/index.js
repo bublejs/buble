@@ -1,4 +1,4 @@
-import acorn from 'acorn/dist/acorn.js';
+import acorn from 'acorn';
 import acornJsx from 'acorn-jsx/inject';
 import acornObjectSpread from 'acorn-object-spread/inject';
 import Program from './program/Program.js';
@@ -50,7 +50,7 @@ export function transform ( source, options = {} ) {
 
 	try {
 		ast = parse( source, {
-			ecmaVersion: 7,
+			ecmaVersion: 8,
 			preserveParens: true,
 			sourceType: 'module',
 			onComment: (block, text) => {

@@ -60,7 +60,7 @@ module.exports = [
 				let x = 2;
 			}`,
 
-		error: /x is already declared/
+		error: /Identifier 'x' has already been declared/
 	},
 
 	{
@@ -72,7 +72,7 @@ module.exports = [
 				var x = 2;
 			}`,
 
-		error: /x is already declared/
+		error: /Identifier 'x' has already been declared/
 	},
 
 	{
