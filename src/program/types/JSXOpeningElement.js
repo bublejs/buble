@@ -28,7 +28,10 @@ export default class JSXOpeningElement extends Node {
 				const attr = this.attributes[i];
 
 				if ( i > 0 ) {
-					code.overwrite( c, attr.start, ', ' );
+					if ( attr.start === c )
+						code.insertRight( c, ', ' );
+					else
+						code.overwrite( c, attr.start, ', ' );
 				}
 
 				if ( hasSpread && attr.type !== 'JSXSpreadAttribute' ) {
