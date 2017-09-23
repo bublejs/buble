@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "test": "mocha test/test.js --compilers js:./register",
+    "test": "mocha test/test.js",
     "pretest": "npm run build",
     "prepublish": "npm test",
     "lint": "eslint src"
