@@ -246,8 +246,17 @@ module.exports = [
 		output: `
 			/* @jsx customPragma */
 			/* @jsx customPragmaWannabe */
-			var div = customPragma( 'div', null, "Hello" )
-		`
+			var div = customPragma( 'div', null, "Hello" )`
 	},
 
+	{
+		description: 'handles dash-cased value-less props',
+
+		input: `
+			<Thing data-foo></Thing>
+		`,
+		output: `
+			React.createElement( Thing, { 'data-foo': true })
+		`
+	}
 ];
