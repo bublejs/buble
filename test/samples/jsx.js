@@ -224,4 +224,15 @@ module.exports = [
 		`
 	},
 
+	{
+		description: 'handles dash-cased value-less props',
+
+		input: `
+			<Thing data-foo></Thing>
+		`,
+		output: `
+			React.createElement( Thing, { 'data-foo': true })
+		`
+	},
+
 ];
