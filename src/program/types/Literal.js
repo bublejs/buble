@@ -13,7 +13,7 @@ export default class Literal extends Node {
 		if ( transforms.numericLiteral ) {
 			const leading = this.raw.slice( 0, 2 );
 			if ( leading === '0b' || leading === '0o' ) {
-				code.overwrite( this.start, this.end, String( this.value ), true );
+				code.overwrite( this.start, this.end, String( this.value ), { storeName: true });
 			}
 		}
 

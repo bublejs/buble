@@ -8,15 +8,15 @@ export default class IfStatement extends Node {
 	transpile ( code, transforms ) {
 		if ( this.consequent.type !== 'BlockStatement'
 				|| this.consequent.type === 'BlockStatement' && this.consequent.synthetic ) {
-			code.insertLeft( this.consequent.start, '{ ' );
-			code.insertRight( this.consequent.end, ' }' );
+			code.appendLeft( this.consequent.start, '{ ' );
+			code.prependRight( this.consequent.end, ' }' );
 		}
 
 		if ( this.alternate && this.alternate.type !== 'IfStatement' && (
 				this.alternate.type !== 'BlockStatement'
 				|| this.alternate.type === 'BlockStatement' && this.alternate.synthetic ) ) {
-			code.insertLeft( this.alternate.start, '{ ' );
-			code.insertRight( this.alternate.end, ' }' );
+			code.appendLeft( this.alternate.start, '{ ' );
+			code.prependRight( this.alternate.end, ' }' );
 		}
 
 		super.transpile( code, transforms );

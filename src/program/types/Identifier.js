@@ -37,7 +37,7 @@ export default class Identifier extends Node {
 
 	transpile ( code ) {
 		if ( this.alias ) {
-			code.overwrite( this.start, this.end, this.alias, true );
+			code.overwrite( this.start, this.end, this.alias, { storeName: true });
 		}
 	}
 }

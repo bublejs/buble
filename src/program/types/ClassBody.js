@@ -37,7 +37,7 @@ export default class ClassBody extends Node {
 					code.move( constructor.start, nextMethod ? nextMethod.start : this.end - 1, this.body[0].start );
 				}
 
-				if ( !inFunctionExpression ) code.insertLeft( constructor.end, ';' );
+				if ( !inFunctionExpression ) code.appendLeft( constructor.end, ';' );
 			}
 
 			let namedFunctions = this.program.options.namedFunctionExpressions !== false;
@@ -132,21 +132,21 @@ export default class ClassBody extends Node {
 				let c = method.key.end;
 				if ( method.computed ) {
 					if ( fake_computed ) {
-						code.insertRight( method.key.start, '[' );
-						code.insertLeft( method.key.end, ']' );
+						code.prependRight( method.key.start, '[' );
+						code.appendLeft( method.key.end, ']' );
 					} else {
 						while ( code.original[c] !== ']' ) c += 1;
 						c += 1;
 					}
 				}
 
-				code.insertRight( method.start, lhs );
+				code.prependRight( method.start, lhs );
 
 				const funcName = method.computed || isAccessor || !namedFunctions ? '' : `${methodName} `;
 				const rhs = ( isAccessor ? `.${method.kind}` : '' ) + ` = function` + ( method.value.generator ? '* ' : ' ' ) + funcName;
 				code.remove( c, method.value.start );
-				code.insertRight( method.value.start, rhs );
-				code.insertLeft( method.end, ';' );
+				code.prependRight( method.value.start, rhs );
+				code.appendLeft( method.end, ';' );
 
 				if ( method.value.generator ) code.remove( method.start, method.key.start );
 			});
@@ -173,12 +173,12 @@ export default class ClassBody extends Node {
 			}
 
 			if ( constructor ) {
-				code.insertLeft( constructor.end, introBlock );
+				code.appendLeft( constructor.end, introBlock );
 			} else {
-				code.insertRight( this.start, introBlock );
+				code.prependRight( this.start, introBlock );
 			}
 
-			code.insertLeft( this.end, outroBlock );
+			code.appendLeft( this.end, outroBlock );
 		}
 
 		super.transpile( code, transforms );

@@ -5,7 +5,7 @@ export default class Property extends Node {
 	transpile ( code, transforms ) {
 		if ( transforms.conciseMethodProperty && !this.computed && this.parent.type !== 'ObjectPattern' ) {
 			if ( this.shorthand ) {
-				code.insertRight( this.start, `${this.key.name}: ` );
+				code.prependRight( this.start, `${this.key.name}: ` );
 			} else if ( this.method ) {
 				let name = '';
 				if ( this.program.options.namedFunctionExpressions !== false ) {
@@ -26,13 +26,13 @@ export default class Property extends Node {
 				}
 
 				if ( this.value.generator ) code.remove( this.start, this.key.start );
-				code.insertLeft( this.key.end, `: function${this.value.generator ? '*' : ''}${name}` );
+				code.appendLeft( this.key.end, `: function${this.value.generator ? '*' : ''}${name}` );
 			}
 		}
 
 		if ( transforms.reservedProperties && reserved[ this.key.name ] ) {
-			code.insertRight( this.key.start, `'` );
-			code.insertLeft( this.key.end, `'` );
+			code.prependRight( this.key.start, `'` );
+			code.appendLeft( this.key.end, `'` );
 		}
 
 		super.transpile( code, transforms );

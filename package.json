@@ -63,7 +63,7 @@
     "acorn": "^5.1.2",
     "acorn-jsx": "^3.0.1",
     "acorn-object-spread": "github:Rich-Harris/acorn-object-spread",
-    "magic-string": "^0.14.0",
+    "magic-string": "^0.22.4",
     "minimist": "^1.2.0",
     "os-homedir": "^1.0.1",
     "vlq": "^0.2.2"

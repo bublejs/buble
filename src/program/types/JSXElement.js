@@ -35,7 +35,7 @@ export default class JSXElement extends Node {
 					// empty block is a no op
 				} else {
 					const tail = code.original[ c ] === '\n' && child.type !== 'Literal' ? '' : ' ';
-					code.insertLeft( c, `,${tail}` );
+					code.appendLeft( c, `,${tail}` );
 				}
 
 				if ( child.type === 'Literal' ) {

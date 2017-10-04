@@ -33,36 +33,33 @@ export default class TemplateLiteral extends Node {
 			                     this.parent.type !== 'VariableDeclarator' &&
 			                     ( this.parent.type !== 'BinaryExpression' || this.parent.operator !== '+' );
 
-			if ( parenthesise ) code.insertRight( this.start, '(' );
+			if ( parenthesise ) code.appendRight( this.start, '(' );
 
 			let lastIndex = this.start;
 
 			ordered.forEach( ( node, i ) => {
-				if ( node.type === 'TemplateElement' ) {
-					let replacement = '';
-					if ( i ) replacement += ' + ';
-					replacement += JSON.stringify( node.value.cooked );
+				let prefix = i === 0 ?
+					parenthesise ? '(' : '' :
+					' + ';
 
-					code.overwrite( lastIndex, node.end, replacement );
+				if ( node.type === 'TemplateElement' ) {
+					code.overwrite( lastIndex, node.end, prefix + JSON.stringify( node.value.cooked ) );
 				} else {
 					const parenthesise = node.type !== 'Identifier'; // TODO other cases where it's safe
 
-					let replacement = '';
-					if ( i ) replacement += ' + ';
-					if ( parenthesise ) replacement += '(';
+					if ( parenthesise ) prefix += '(';
 
-					code.overwrite( lastIndex, node.start, replacement );
+					code.remove( lastIndex, node.start );
 
-					if ( parenthesise ) code.insertLeft( node.end, ')' );
+					if ( prefix ) code.prependRight( node.start, prefix );
+					if ( parenthesise ) code.appendLeft( node.end, ')' );
 				}
 
 				lastIndex = node.end;
 			});
 
-			let close = '';
-			if ( parenthesise ) close += ')';
-
-			code.overwrite( lastIndex, this.end, close );
+			if ( parenthesise ) code.appendLeft( lastIndex, ')' );
+			code.remove( lastIndex, this.end );
 		}
 
 		super.transpile( code, transforms );

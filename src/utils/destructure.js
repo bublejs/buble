@@ -13,8 +13,8 @@ export default function destructure ( code, scope, node, ref, inline, statementG
 
 function destructureIdentifier ( code, scope, node, ref, inline, statementGenerators ) {
 	statementGenerators.push( ( start, prefix, suffix ) => {
-		code.insertRight( node.start, inline ? prefix : `${prefix}var ` );
-		code.insertLeft( node.end, ` = ${ref}${suffix}` );
+		code.prependRight( node.start, inline ? prefix : `${prefix}var ` );
+		code.appendLeft( node.end, ` = ${ref}${suffix}` );
 		code.move( node.start, node.end, start );
 	});
 }
@@ -25,9 +25,9 @@ function destructureAssignmentPattern ( code, scope, node, ref, inline, statemen
 
 	if ( !inline ) {
 		statementGenerators.push( ( start, prefix, suffix ) => {
-			code.insertRight( node.left.end, `${prefix}if ( ${name} === void 0 ) ${name}` );
+			code.prependRight( node.left.end, `${prefix}if ( ${name} === void 0 ) ${name}` );
 			code.move( node.left.end, node.right.end, start );
-			code.insertLeft( node.right.end, suffix );
+			code.appendLeft( node.right.end, suffix );
 		});
 	}
 
@@ -88,11 +88,11 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 
 			statementGenerators.push( ( start, prefix, suffix ) => {
 				if ( inline ) {
-					code.insertRight( node.right.start, `${name} = ${value} === undefined ? ` );
-					code.insertLeft( node.right.end, ` : ${value}` );
+					code.prependRight( node.right.start, `${name} = ${value} === undefined ? ` );
+					code.appendLeft( node.right.end, ` : ${value}` );
 				} else {
-					code.insertRight( node.right.start, `${prefix}var ${name} = ${value}; if ( ${name} === void 0 ) ${name} = ` );
-					code.insertLeft( node.right.end, suffix );
+					code.prependRight( node.right.start, `${prefix}var ${name} = ${value}; if ( ${name} === void 0 ) ${name} = ` );
+					code.appendLeft( node.right.end, suffix );
 				}
 
 				code.move( node.right.start, node.right.end, start );
@@ -117,10 +117,10 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 
 				statementGenerators.push( ( start, prefix, suffix ) => {
 					// this feels a tiny bit hacky, but we can't do a
-					// straightforward insertLeft and keep correct order...
-					code.insertRight( node.start, `${prefix}var ${ref} = ` );
+					// straightforward appendLeft and keep correct order...
+					code.prependRight( node.start, `${prefix}var ${ref} = ` );
 					code.overwrite( node.start, c = node.start + 1, value );
-					code.insertLeft( c, suffix );
+					code.appendLeft( c, suffix );
 
 					code.move( node.start, c, start );
 				});
@@ -148,9 +148,9 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 				const ref = scope.createIdentifier( value );
 
 				statementGenerators.push( ( start, prefix, suffix ) => {
-					code.insertRight( node.start, `${prefix}var ${ref} = ` );
+					code.prependRight( node.start, `${prefix}var ${ref} = ` );
 					code.overwrite( node.start, c = node.start + 1, value );
-					code.insertLeft( c, suffix );
+					code.appendLeft( c, suffix );
 
 					code.move( node.start, c, start );
 				});

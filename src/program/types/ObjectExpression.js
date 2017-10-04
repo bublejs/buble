@@ -35,11 +35,11 @@ export default class ObjectExpression extends Node {
 						const nextProp = this.properties[ i + 1 ];
 
 						if ( !lastProp || lastProp.type !== 'Property' || lastProp.computed ) {
-							code.insertRight( prop.start, '{' );
+							code.prependRight( prop.start, '{' );
 						}
 
 						if ( !nextProp || nextProp.type !== 'Property' || nextProp.computed ) {
-							code.insertLeft( prop.end, '}' );
+							code.appendLeft( prop.end, '}' );
 						}
 					}
 				}
@@ -81,9 +81,9 @@ export default class ObjectExpression extends Node {
 				name = this.findScope( true ).createIdentifier( 'obj' );
 
 				const statement = this.findNearest( /(?:Statement|Declaration)$/ );
-				code.insertLeft( statement.end, `\n${i0}var ${name};` );
+				code.appendLeft( statement.end, `\n${i0}var ${name};` );
 
-				code.insertRight( this.start, `( ${name} = ` );
+				code.prependRight( this.start, `( ${name} = ` );
 			}
 
 			const len = this.properties.length;
@@ -102,7 +102,7 @@ export default class ObjectExpression extends Node {
 					if (moveStart < prop.start) {
 						code.overwrite( moveStart, prop.start, propId );
 					} else {
-						code.insertRight( prop.start, propId );
+						code.prependRight( prop.start, propId );
 					}
 
 					let c = prop.key.end;
@@ -110,7 +110,7 @@ export default class ObjectExpression extends Node {
 					c += 1;
 
 					if ( prop.value.start > c ) code.remove( c, prop.value.start );
-					code.insertLeft( c, ' = ' );
+					code.appendLeft( c, ' = ' );
 					code.move( moveStart, prop.end, end );
 
 					if ( i < len - 1 && ! sawNonComputedProperty ) {
@@ -122,7 +122,7 @@ export default class ObjectExpression extends Node {
 					}
 
 					if ( prop.method && transforms.conciseMethodProperty ) {
-						code.insertRight( prop.value.start, 'function ' );
+						code.prependRight( prop.value.start, 'function ' );
 					}
 				} else {
 					sawNonComputedProperty = true;
@@ -135,7 +135,7 @@ export default class ObjectExpression extends Node {
 			}
 
 			if ( !isSimpleAssignment ) {
-				code.insertLeft( lastComputedProp.end, `, ${name} )` );
+				code.appendLeft( lastComputedProp.end, `, ${name} )` );
 			}
 		}
 	}

@@ -14,7 +14,7 @@ export default class VariableDeclaration extends Node {
 
 		if ( transforms.letConst && kind !== 'var' ) {
 			kind = 'var';
-			code.overwrite( this.start, this.start + this.kind.length, kind, true );
+			code.overwrite( this.start, this.start + this.kind.length, kind, { storeName: true });
 		}
 
 		if ( transforms.destructuring && this.parent.type !== 'ForOfStatement' ) {
@@ -47,8 +47,8 @@ export default class VariableDeclaration extends Node {
 						code.remove( declarator.id.end, declarator.end );
 					} else {
 						statementGenerators.push( ( start, prefix, suffix ) => {
-							code.insertRight( declarator.id.end, `var ${name}` );
-							code.insertLeft( declarator.init.end, `${suffix}` );
+							code.prependRight( declarator.id.end, `var ${name}` );
+							code.appendLeft( declarator.init.end, `${suffix}` );
 							code.move( declarator.id.end, declarator.end, start );
 						});
 					}
