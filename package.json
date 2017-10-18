@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/Rich-Harris/buble.git"
+    "url": "git+https://github.com/Rich-Harris/buble.git"
   },
   "keywords": [
     "javascript",
@@ -39,9 +39,9 @@
   "author": "Rich Harris",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitlab.com/Rich-Harris/buble/issues"
+    "url": "https://github.com/Rich-Harris/buble/issues"
   },
-  "homepage": "https://gitlab.com/Rich-Harris/buble#README",
+  "homepage": "https://github.com/Rich-Harris/buble#README",
   "devDependencies": {
     "buble": "0.8.2",
     "chalk": "^2.1.0",
