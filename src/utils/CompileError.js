@@ -2,8 +2,8 @@ import locate from './locate.js';
 import getSnippet from './getSnippet.js';
 
 export default class CompileError extends Error {
-	constructor ( node, message ) {
-		super();
+	constructor ( message, node ) {
+		super( message );
 
 		const source = node.program.magicString.original;
 		const loc = locate( source, node.start );
