@@ -112,8 +112,9 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 		case 'ObjectPattern': {
 			code.remove( c, c = node.start );
 
+			let ref = value
 			if ( node.properties.length > 1 ) {
-				const ref = scope.createIdentifier( value );
+				ref = scope.createIdentifier( value );
 
 				statementGenerators.push( ( start, prefix, suffix ) => {
 					// this feels a tiny bit hacky, but we can't do a
@@ -124,20 +125,10 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 
 					code.move( node.start, c, start );
 				});
-
-				node.properties.forEach( prop => {
-					const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
-					handleProperty( code, scope, c, prop.value, value, inline, statementGenerators );
-					c = prop.end;
-				});
-			} else {
-				const prop = node.properties[0];
-				const value_suffix = prop.computed || prop.key.type !== 'Identifier' ? `[${code.slice(prop.key.start, prop.key.end)}]` : `.${prop.key.name}`;
-				handleProperty( code, scope, c, prop.value, `${value}${value_suffix}`, inline, statementGenerators );
-				c = prop.end;
 			}
 
-			code.remove( c, node.end );
+			destructureObjectPattern( code, scope, node, ref, inline, statementGenerators )
+
 			break;
 		}
 
