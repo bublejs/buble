@@ -11,7 +11,7 @@ export default class ObjectExpression extends Node {
 		let computedPropertyCount = 0;
 
 		for ( let prop of this.properties ) {
-			if ( prop.type === 'SpreadProperty' ) {
+			if ( prop.type === 'SpreadElement' ) {
 				spreadPropertyCount += 1;
 			} else if ( prop.computed ) {
 				computedPropertyCount += 1;
