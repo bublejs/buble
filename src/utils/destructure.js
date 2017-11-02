@@ -119,10 +119,8 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 				statementGenerators.push( ( start, prefix, suffix ) => {
 					// this feels a tiny bit hacky, but we can't do a
 					// straightforward insertLeft and keep correct order...
-					code.insertRight( node.start, `${prefix}var ${ref} = ` );
-					code.overwrite( node.start, c = node.start + 1, value );
-					code.insertLeft( c, suffix );
 
+					code.overwrite( node.start, c = node.start + 1, `${prefix}var ${ref} = ${value}${suffix}` );
 					code.move( node.start, c, start );
 				});
 			}
