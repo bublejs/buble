@@ -56,9 +56,28 @@ function destructureArrayPattern ( code, scope, node, ref, inline, statementGene
 function destructureObjectPattern ( code, scope, node, ref, inline, statementGenerators ) {
 	let c = node.start;
 
+	const nonRestKeys = [];
 	node.properties.forEach( prop => {
-		let value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
-		handleProperty( code, scope, c, prop.value, value, inline, statementGenerators );
+		let value;
+		let content
+		if (prop.type === "Property") {
+			const isComputedKey = prop.computed || prop.key.type !== 'Identifier'
+			const key = isComputedKey ? code.slice(prop.key.start, prop.key.end) : prop.key.name
+			value = isComputedKey ? `${ref}[${key}]` : `${ref}.${key}`;
+			content = prop.value;
+			nonRestKeys.push(isComputedKey ? key : '"' + key + '"')
+		} else if (prop.type === "RestElement") {
+			content = prop.argument
+			value = scope.createIdentifier( 'rest' );
+			const n = scope.createIdentifier( 'n' );
+			statementGenerators.push( ( start, prefix, suffix ) => {
+				code.overwrite(prop.start, c = prop.argument.start, `${prefix}var ${value} = {}; for (var ${n} in ${ref}) if([${nonRestKeys.join(", ")}].indexOf(${n}) === -1) ${value}[${n}] = ${ref}[${n}]${suffix}`)
+				code.move(prop.start, c, start)
+			} );
+		} else {
+			throw new CompileError( this, `Unexpected node of type ${prop.type} in object pattern`)
+		}
+		handleProperty( code, scope, c, content, value, inline, statementGenerators );
 		c = prop.end;
 	});
 
