@@ -33,7 +33,7 @@ import NewExpression from './NewExpression.js';
 import ObjectExpression from './ObjectExpression.js';
 import Property from './Property.js';
 import ReturnStatement from './ReturnStatement.js';
-import SpreadProperty from './SpreadProperty.js';
+import SpreadElement from './SpreadElement.js';
 import Super from './Super.js';
 import TaggedTemplateExpression from './TaggedTemplateExpression.js';
 import TemplateElement from './TemplateElement.js';
@@ -79,7 +79,7 @@ export default {
 	ObjectExpression,
 	Property,
 	ReturnStatement,
-	SpreadProperty,
+	SpreadElement,
 	Super,
 	TaggedTemplateExpression,
 	TemplateElement,

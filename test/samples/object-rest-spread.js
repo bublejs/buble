@@ -173,5 +173,44 @@ module.exports = [
 		},
 		input: `var obj = { ...a, b: 1, dd: {...d, f: 1}, e};`,
 		output: `var obj = angular.extend({}, a, {b: 1, dd: angular.extend({}, d, {f: 1}), e: e});`
+	},
+
+	{
+		description: 'transpiles rest properties',
+		input: `var {a, ...b} = c`,
+		output: `var a = c.a;
+var rest = {}; for (var n in c) if(["a"].indexOf(n) === -1) rest[n] = c[n];
+var b = rest;`
+	},
+
+	{
+		description: 'transpiles nested rest properties',
+		input: `var {a, ...{b, ...d}} = c`,
+		output: `var a = c.a;
+var rest = {}; for (var n in c) if(["a"].indexOf(n) === -1) rest[n] = c[n];
+var rest$1 = rest;
+var b = rest$1.b;
+var rest$2 = {}; for (var n$1 in rest$1) if(["b"].indexOf(n$1) === -1) rest$2[n$1] = rest$1[n$1];
+var d = rest$2;`
+	},
+
+	{
+		description: 'transpiles rest properties in arguments',
+		input: `(function({x, ...y}) {})`,
+		output: `(function(ref) {
+	var x = ref.x;
+	var rest = {}; for (var n in ref) if(["x"].indexOf(n) === -1) rest[n] = ref[n];
+	var y = rest;
+})`
+	},
+
+	{
+		description: 'transpiles rest properties in arrow function arguments',
+		input: `(({x, ...y}) => {})`,
+		output: `(function (ref) {
+	var x = ref.x;
+	var rest = {}; for (var n in ref) if(["x"].indexOf(n) === -1) rest[n] = ref[n];
+	var y = rest;
+})`
 	}
 ];
