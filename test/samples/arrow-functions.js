@@ -186,5 +186,23 @@ module.exports = [
 			function no_op () {
 				(function() { return console.log( 'not printed' ); });
 			}`
-	}
+	},
+
+	{
+		description: 'are transformed even if disabled if they have a transpiled spread parameter',
+
+		options: { transforms: { arrow: false, spreadRest: true } },
+
+		input: `
+				(...args) => console.log( args );`,
+
+		output: `
+				(function() {
+					var args = [], len = arguments.length;
+					while ( len-- ) args[ len ] = arguments[ len ];
+
+					return console.log( args );
+				});`
+
+	},
 ];

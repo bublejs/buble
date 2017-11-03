@@ -7,7 +7,7 @@ export default class ArrowFunctionExpression extends Node {
 	}
 
 	transpile ( code, transforms ) {
-		if ( transforms.arrow ) {
+		if ( transforms.arrow || this.needsArguments(transforms) ) {
 			// remove arrow
 			let charIndex = this.body.start;
 			while ( code.original[ charIndex ] !== '=' ) {
@@ -32,5 +32,10 @@ export default class ArrowFunctionExpression extends Node {
 		}
 
 		super.transpile( code, transforms );
+	}
+
+	// Returns whether any transforms that will happen use `arguments`
+	needsArguments(transforms) {
+		return transforms.spreadRest && this.params.filter( param => param.type === 'RestElement' ).length > 0
 	}
 }
