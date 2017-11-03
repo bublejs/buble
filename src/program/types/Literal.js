@@ -20,7 +20,7 @@ export default class Literal extends Node {
 		if ( this.regex ) {
 			const { pattern, flags } = this.regex;
 
-			if ( transforms.stickyRegExp && /y/.test( flags ) ) throw new CompileError( this, 'Regular expression sticky flag is not supported' );
+			if ( transforms.stickyRegExp && /y/.test( flags ) ) throw new CompileError( 'Regular expression sticky flag is not supported', this );
 			if ( transforms.unicodeRegExp && /u/.test( flags ) ) {
 				code.overwrite( this.start, this.end, `/${rewritePattern( pattern, flags )}/${flags.replace( 'u', '' )}` );
 			}

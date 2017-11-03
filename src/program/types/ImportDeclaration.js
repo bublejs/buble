@@ -3,7 +3,7 @@ import CompileError from '../../utils/CompileError.js';
 
 export default class ImportDeclaration extends Node {
 	initialise ( transforms ) {
-		if ( transforms.moduleImport ) throw new CompileError( this, 'import is not supported' );
+		if ( transforms.moduleImport ) throw new CompileError( 'import is not supported', this );
 		super.initialise( transforms );
 	}
 }

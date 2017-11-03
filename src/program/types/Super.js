@@ -11,18 +11,18 @@ export default class Super extends Node {
 			const parentClass = this.findNearest( 'ClassBody' ).parent;
 			this.superClassName = parentClass.superClass && (parentClass.superClass.name || 'superclass');
 
-			if ( !this.superClassName ) throw new CompileError( this, 'super used in base class' );
+			if ( !this.superClassName ) throw new CompileError( 'super used in base class', this );
 
 			this.isCalled = this.parent.type === 'CallExpression' && this === this.parent.callee;
 
 			if ( this.method.kind !== 'constructor' && this.isCalled ) {
-				throw new CompileError( this, 'super() not allowed outside class constructor' );
+				throw new CompileError( 'super() not allowed outside class constructor', this );
 			}
 
 			this.isMember = this.parent.type === 'MemberExpression';
 
 			if ( !this.isCalled && !this.isMember ) {
-				throw new CompileError( this, 'Unexpected use of `super` (expected `super(...)` or `super.*`)' );
+				throw new CompileError( 'Unexpected use of `super` (expected `super(...)` or `super.*`)', this );
 			}
 		}
 

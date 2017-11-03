@@ -6,7 +6,7 @@ export default class UpdateExpression extends Node {
 		if ( this.argument.type === 'Identifier' ) {
 			const declaration = this.findScope( false ).findDeclaration( this.argument.name );
 			if ( declaration && declaration.kind === 'const' ) {
-				throw new CompileError( this, `${this.argument.name} is read-only` );
+				throw new CompileError( `${this.argument.name} is read-only`, this );
 			}
 
 			// special case – https://gitlab.com/Rich-Harris/buble/issues/150
