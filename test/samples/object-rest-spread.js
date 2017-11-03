@@ -24,7 +24,7 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles object rest spread with regular keys in between',
+		description: 'transpiles object spread with regular keys in between',
 		options: {
 			objectAssign: 'Object.assign'
 		},
@@ -33,7 +33,7 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles object rest spread mixed',
+		description: 'transpiles object spread mixed',
 		options: {
 			objectAssign: 'Object.assign'
 		},
@@ -42,7 +42,7 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles objects with rest spread with computed property (#144)',
+		description: 'transpiles objects with spread with computed property (#144)',
 		options: {
 			objectAssign: 'Object.assign'
 		},
@@ -99,7 +99,7 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles inline objects with rest spread with computed property (#144)',
+		description: 'transpiles inline objects with spread with computed property (#144)',
 		options: {
 			objectAssign: 'Object.assign'
 		},
@@ -149,7 +149,7 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles object rest spread nested',
+		description: 'transpiles object spread nested',
 		options: {
 			objectAssign: 'Object.assign'
 		},
@@ -158,7 +158,7 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles object rest spread deeply nested',
+		description: 'transpiles object spread deeply nested',
 		options: {
 			objectAssign: 'Object.assign'
 		},
@@ -167,7 +167,7 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles object reset spread with custom Object.assign',
+		description: 'transpiles object spread with custom Object.assign',
 		options: {
 			objectAssign: 'angular.extend'
 		},
