@@ -47,7 +47,7 @@ export default class Super extends Node {
 				this.superClassName :
 				`${this.superClassName}.prototype`;
 
-			code.overwrite( this.start, this.end, expression, { storeName: true });
+			code.overwrite( this.start, this.end, expression, { storeName: true, contentOnly: true });
 
 			const callExpression = this.isCalled ? this.parent : this.parent.parent;
 
