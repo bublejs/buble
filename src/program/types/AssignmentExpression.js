@@ -76,8 +76,7 @@ export default class AssignmentExpression extends Node {
 					write( `, ${target} = ${source} === void 0 ? ` );
 					use( pattern.right );
 					write( ` : ${source}` );
-				}
-				else {
+				} else {
 					const target = scope.createIdentifier( 'temp' );
 					let source = ref;
 					temporaries.push( target );
@@ -90,6 +89,8 @@ export default class AssignmentExpression extends Node {
 					write( ` : ${source}` );
 					destructure( pattern.left, target, true );
 				}
+
+				code.remove( pattern.start, pattern.right.start );
 			}
 
 			else if ( pattern.type === 'ArrayPattern' ) {
@@ -127,7 +128,10 @@ export default class AssignmentExpression extends Node {
 				if ( props.length == 1 ) {
 					const prop = props[0];
 					const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
+
+					code.remove( pattern.start, prop.value.start );
 					destructure( prop.value, value, false );
+					code.remove( prop.end, pattern.end );
 				}
 				else {
 					if ( !mayDuplicate ) {
@@ -136,10 +140,19 @@ export default class AssignmentExpression extends Node {
 						write( `, ${temp} = ${ref}` );
 						ref = temp;
 					}
+
+					let c = pattern.start;
+
 					props.forEach( prop => {
 						const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
+
+						code.remove(c, prop.value.start);
+						c = prop.end;
+
 						destructure( prop.value, value, false );
-					} );
+					});
+
+					code.remove(c, pattern.end);
 				}
 			}
 
