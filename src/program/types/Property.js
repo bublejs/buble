@@ -3,6 +3,8 @@ import reserved from '../../utils/reserved.js';
 
 export default class Property extends Node {
 	transpile ( code, transforms ) {
+		super.transpile( code, transforms );
+
 		if ( transforms.conciseMethodProperty && !this.computed && this.parent.type !== 'ObjectPattern' ) {
 			if ( this.shorthand ) {
 				code.prependRight( this.start, `${this.key.name}: ` );
@@ -34,7 +36,5 @@ export default class Property extends Node {
 			code.prependRight( this.key.start, `'` );
 			code.appendLeft( this.key.end, `'` );
 		}
-
-		super.transpile( code, transforms );
 	}
 }

@@ -3,6 +3,8 @@ import CompileError from '../../utils/CompileError.js';
 
 export default class JSXOpeningElement extends Node {
 	transpile ( code, transforms ) {
+		super.transpile( code, transforms );
+
 		code.overwrite( this.start, this.name.start, `${this.program.jsx}( ` );
 
 		const html = this.name.type === 'JSXIdentifier' && this.name.name[0] === this.name.name[0].toLowerCase();
@@ -76,8 +78,6 @@ export default class JSXOpeningElement extends Node {
 			code.appendLeft( this.name.end, html ? `', null` : `, null` );
 			c = this.name.end;
 		}
-
-		super.transpile( code, transforms );
 
 		if ( this.selfClosing ) {
 			code.overwrite( c, this.end, this.attributes.length ? `)` : ` )` );
