@@ -22,6 +22,8 @@ export default class VariableDeclaration extends Node {
 			let lastDeclaratorIsPattern;
 
 			this.declarations.forEach( ( declarator, i ) => {
+				declarator.transpile( code, transforms );
+
 				if ( declarator.id.type === 'Identifier' ) {
 					if ( i > 0 && this.declarations[ i - 1 ].id.type !== 'Identifier' ) {
 						code.overwrite( c, declarator.id.start, `var ` );
@@ -65,8 +67,6 @@ export default class VariableDeclaration extends Node {
 						fn( declarator.start, j === 0 ? prefix : '', suffix );
 					});
 				}
-
-				declarator.transpile( code, transforms );
 
 				c = declarator.end;
 				lastDeclaratorIsPattern = declarator.id.type !== 'Identifier';
