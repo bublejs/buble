@@ -147,7 +147,7 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 				});
 			}
 
-			destructureObjectPattern( code, scope, node, ref, inline, statementGenerators )
+			destructureObjectPattern( code, scope, node, ref, inline, statementGenerators );
 
 			break;
 		}
@@ -160,7 +160,7 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 
 				statementGenerators.push( ( start, prefix, suffix ) => {
 					code.prependRight( node.start, `${prefix}var ${ref} = ` );
-					code.overwrite( node.start, c = node.start + 1, value );
+					code.overwrite( node.start, c = node.start + 1, value, { contentOnly: true });
 					code.appendLeft( c, suffix );
 
 					code.move( node.start, c, start );
