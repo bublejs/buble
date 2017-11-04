@@ -13,7 +13,10 @@ export default class Literal extends Node {
 		if ( transforms.numericLiteral ) {
 			const leading = this.raw.slice( 0, 2 );
 			if ( leading === '0b' || leading === '0o' ) {
-				code.overwrite( this.start, this.end, String( this.value ), { storeName: true });
+				code.overwrite( this.start, this.end, String( this.value ), {
+					storeName: true,
+					contentOnly: true
+				});
 			}
 		}
 
@@ -22,7 +25,9 @@ export default class Literal extends Node {
 
 			if ( transforms.stickyRegExp && /y/.test( flags ) ) throw new CompileError( 'Regular expression sticky flag is not supported', this );
 			if ( transforms.unicodeRegExp && /u/.test( flags ) ) {
-				code.overwrite( this.start, this.end, `/${rewritePattern( pattern, flags )}/${flags.replace( 'u', '' )}` );
+				code.overwrite( this.start, this.end, `/${rewritePattern( pattern, flags )}/${flags.replace( 'u', '' )}`, {
+					contentOnly: true
+				});
 			}
 		}
 	}
