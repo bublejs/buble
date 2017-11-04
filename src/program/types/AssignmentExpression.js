@@ -107,18 +107,21 @@ export default class AssignmentExpression extends Node {
 						write( `, ${temp} = ${ref}` );
 						ref = temp;
 					}
+
 					let c = pattern.start;
 					elements.forEach( ( element, i ) => {
+						if (!element) return;
+
 						code.remove(c, element.start);
-						if ( element ) {
-							if ( element.type === 'RestElement' ) {
-								destructure( element.argument, `${ref}.slice(${i})`, false );
-							} else {
-								destructure( element, `${ref}[${i}]`, false );
-							}
-						}
 						c = element.end;
+
+						if ( element.type === 'RestElement' ) {
+							destructure( element.argument, `${ref}.slice(${i})`, false );
+						} else {
+							destructure( element, `${ref}[${i}]`, false );
+						}
 					});
+
 					code.remove(c, pattern.end);
 				}
 			}
