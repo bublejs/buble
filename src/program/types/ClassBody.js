@@ -140,8 +140,6 @@ export default class ClassBody extends Node {
 					}
 				}
 
-				code.prependRight( method.start, lhs );
-
 				const funcName = method.computed || isAccessor || !namedFunctions ? '' : `${methodName} `;
 				const rhs = ( isAccessor ? `.${method.kind}` : '' ) + ` = function` + ( method.value.generator ? '* ' : ' ' ) + funcName;
 				code.remove( c, method.value.start );
@@ -149,6 +147,8 @@ export default class ClassBody extends Node {
 				code.appendLeft( method.end, ';' );
 
 				if ( method.value.generator ) code.remove( method.start, method.key.start );
+
+				code.prependRight( method.start, lhs );
 			});
 
 			if ( prototypeGettersAndSetters.length || staticGettersAndSetters.length ) {
