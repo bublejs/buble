@@ -184,17 +184,6 @@ var b = rest;`
 	},
 
 	{
-		description: 'transpiles nested rest properties',
-		input: `var {a, ...{b, ...d}} = c`,
-		output: `var a = c.a;
-var rest = {}; for (var n in c) if(["a"].indexOf(n) === -1) rest[n] = c[n];
-var rest$1 = rest;
-var b = rest$1.b;
-var rest$2 = {}; for (var n$1 in rest$1) if(["b"].indexOf(n$1) === -1) rest$2[n$1] = rest$1[n$1];
-var d = rest$2;`
-	},
-
-	{
 		description: 'transpiles rest properties in arguments',
 		input: `(function({x, ...y}) {})`,
 		output: `(function(ref) {
