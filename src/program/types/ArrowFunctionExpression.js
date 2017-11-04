@@ -15,6 +15,8 @@ export default class ArrowFunctionExpression extends Node {
 			}
 			code.remove( charIndex, this.body.start );
 
+			super.transpile( code, transforms );
+
 			// wrap naked parameter
 			if ( this.params.length === 1 && this.start === this.params[0].start ) {
 				code.prependRight( this.params[0].start, '(' );
@@ -31,7 +33,9 @@ export default class ArrowFunctionExpression extends Node {
 			}
 		}
 
-		super.transpile( code, transforms );
+		else {
+			super.transpile( code, transforms );
+		}
 	}
 
 	// Returns whether any transforms that will happen use `arguments`
