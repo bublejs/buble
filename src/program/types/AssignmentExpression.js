@@ -95,7 +95,9 @@ export default class AssignmentExpression extends Node {
 			else if ( pattern.type === 'ArrayPattern' ) {
 				const elements = pattern.elements;
 				if ( elements.length === 1 ) {
+					code.remove( pattern.start, elements[0].start );
 					destructure( elements[0], `${ref}[0]`, false );
+					code.remove( elements[0].end, pattern.end );
 				}
 				else {
 					if ( !mayDuplicate ) {
@@ -104,7 +106,9 @@ export default class AssignmentExpression extends Node {
 						write( `, ${temp} = ${ref}` );
 						ref = temp;
 					}
+					let c = pattern.start;
 					elements.forEach( ( element, i ) => {
+						code.remove(c, element.start);
 						if ( element ) {
 							if ( element.type === 'RestElement' ) {
 								destructure( element.argument, `${ref}.slice(${i})`, false );
@@ -112,7 +116,9 @@ export default class AssignmentExpression extends Node {
 								destructure( element, `${ref}[${i}]`, false );
 							}
 						}
-					} );
+						c = element.end;
+					});
+					code.remove(c, pattern.end);
 				}
 			}
 
@@ -141,7 +147,9 @@ export default class AssignmentExpression extends Node {
 				throw new Error( `Unexpected node type in destructuring assignment (${pattern.type})` );
 			}
 		}
+
 		destructure( this.left, assign, true );
+		code.remove( this.left.end, this.right.start );
 
 		if ( this.unparenthesizedParent().type === 'ExpressionStatement' ) {
 			// no rvalue needed for expression statement
@@ -150,8 +158,6 @@ export default class AssignmentExpression extends Node {
 			// destructuring is part of an expression - need an rvalue
 			code.prependRight( start, `${text}, ${assign})` );
 		}
-
-		code.remove( start, this.right.start );
 
 		const statement = this.findNearest( /(?:Statement|Declaration)$/ );
 		code.appendLeft( statement.start, `var ${temporaries.join( ', ' )};\n${statement.getIndentation()}` );
