@@ -72,8 +72,8 @@ export default class VariableDeclaration extends Node {
 				lastDeclaratorIsPattern = declarator.id.type !== 'Identifier';
 			});
 
-			if ( lastDeclaratorIsPattern ) {
-				code.remove( c, this.end );
+			if ( lastDeclaratorIsPattern && this.end > c ) {
+				code.overwrite( c, this.end, '', { contentOnly: true });
 			}
 		}
 
