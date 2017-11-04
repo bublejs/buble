@@ -18,7 +18,10 @@ export default class ThisExpression extends Node {
 
 	transpile ( code ) {
 		if ( this.alias ) {
-			code.overwrite( this.start, this.end, this.alias, { storeName: true });
+			code.overwrite( this.start, this.end, this.alias, {
+				storeName: true,
+				contentOnly: true
+			});
 		}
 	}
 }
