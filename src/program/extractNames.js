@@ -11,8 +11,16 @@ const extractors = {
 
 	ObjectPattern ( names, node ) {
 		for ( const prop of node.properties ) {
-			extractors[ prop.value.type ]( names, prop.value );
+			extractors[ prop.type ]( names, prop );
 		}
+	},
+
+	Property ( names, node ) {
+		extractors[ node.value.type ]( names, node.value );
+	},
+
+	RestElement ( names, node ) {
+		extractors[ node.argument.type ]( names, node.argument );
 	},
 
 	ArrayPattern ( names, node ) {

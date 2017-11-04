@@ -1,6 +1,6 @@
 import * as acorn from 'acorn';
 import acornJsx from 'acorn-jsx/inject';
-import acornObjectSpread from 'acorn-object-spread/inject';
+import acornObjectSpread from 'acorn5-object-spread/inject';
 import Program from './program/Program.js';
 import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';

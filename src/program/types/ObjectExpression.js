@@ -11,7 +11,7 @@ export default class ObjectExpression extends Node {
 		let computedPropertyCount = 0;
 
 		for ( let prop of this.properties ) {
-			if ( prop.type === 'SpreadProperty' ) {
+			if ( prop.type === 'SpreadElement' ) {
 				spreadPropertyCount += 1;
 			} else if ( prop.computed ) {
 				computedPropertyCount += 1;
@@ -22,7 +22,7 @@ export default class ObjectExpression extends Node {
 
 		if ( spreadPropertyCount ) {
 			if ( !this.program.options.objectAssign ) {
-				throw new CompileError( this, 'Object spread operator requires specified objectAssign option with \'Object.assign\' or polyfill helper.' );
+				throw new CompileError( 'Object spread operator requires specified objectAssign option with \'Object.assign\' or polyfill helper.', this );
 			}
 			// enclose run of non-spread properties in curlies
 			let i = this.properties.length;

@@ -6,7 +6,7 @@ export default class AssignmentExpression extends Node {
 		if ( this.left.type === 'Identifier' ) {
 			const declaration = this.findScope( false ).findDeclaration( this.left.name );
 			if ( declaration && declaration.kind === 'const' ) {
-				throw new CompileError( this.left, `${this.left.name} is read-only` );
+				throw new CompileError( `${this.left.name} is read-only`, this.left );
 			}
 
 			// special case – https://gitlab.com/Rich-Harris/buble/issues/11

@@ -56,9 +56,28 @@ function destructureArrayPattern ( code, scope, node, ref, inline, statementGene
 function destructureObjectPattern ( code, scope, node, ref, inline, statementGenerators ) {
 	let c = node.start;
 
+	const nonRestKeys = [];
 	node.properties.forEach( prop => {
-		let value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
-		handleProperty( code, scope, c, prop.value, value, inline, statementGenerators );
+		let value;
+		let content
+		if (prop.type === "Property") {
+			const isComputedKey = prop.computed || prop.key.type !== 'Identifier'
+			const key = isComputedKey ? code.slice(prop.key.start, prop.key.end) : prop.key.name
+			value = isComputedKey ? `${ref}[${key}]` : `${ref}.${key}`;
+			content = prop.value;
+			nonRestKeys.push(isComputedKey ? key : '"' + key + '"')
+		} else if (prop.type === "RestElement") {
+			content = prop.argument
+			value = scope.createIdentifier( 'rest' );
+			const n = scope.createIdentifier( 'n' );
+			statementGenerators.push( ( start, prefix, suffix ) => {
+				code.overwrite(prop.start, c = prop.argument.start, `${prefix}var ${value} = {}; for (var ${n} in ${ref}) if([${nonRestKeys.join(", ")}].indexOf(${n}) === -1) ${value}[${n}] = ${ref}[${n}]${suffix}`)
+				code.move(prop.start, c, start)
+			} );
+		} else {
+			throw new CompileError( this, `Unexpected node of type ${prop.type} in object pattern`)
+		}
+		handleProperty( code, scope, c, content, value, inline, statementGenerators );
 		c = prop.end;
 	});
 
@@ -112,8 +131,9 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 		case 'ObjectPattern': {
 			code.remove( c, c = node.start );
 
+			let ref = value;
 			if ( node.properties.length > 1 ) {
-				const ref = scope.createIdentifier( value );
+				ref = scope.createIdentifier( value );
 
 				statementGenerators.push( ( start, prefix, suffix ) => {
 					// this feels a tiny bit hacky, but we can't do a
@@ -122,22 +142,13 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 					code.overwrite( node.start, c = node.start + 1, value );
 					code.appendLeft( c, suffix );
 
+					code.overwrite( node.start, c = node.start + 1, `${prefix}var ${ref} = ${value}${suffix}` );
 					code.move( node.start, c, start );
 				});
-
-				node.properties.forEach( prop => {
-					const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
-					handleProperty( code, scope, c, prop.value, value, inline, statementGenerators );
-					c = prop.end;
-				});
-			} else {
-				const prop = node.properties[0];
-				const value_suffix = prop.computed || prop.key.type !== 'Identifier' ? `[${code.slice(prop.key.start, prop.key.end)}]` : `.${prop.key.name}`;
-				handleProperty( code, scope, c, prop.value, `${value}${value_suffix}`, inline, statementGenerators );
-				c = prop.end;
 			}
 
-			code.remove( c, node.end );
+			destructureObjectPattern( code, scope, node, ref, inline, statementGenerators )
+
 			break;
 		}
 
