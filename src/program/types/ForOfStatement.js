@@ -9,10 +9,8 @@ export default class ForOfStatement extends LoopStatement {
 	}
 
 	transpile ( code, transforms ) {
-		if ( !transforms.dangerousForOf ) {
-			super.transpile( code, transforms );
-			return;
-		}
+		super.transpile( code, transforms );
+		if ( !transforms.dangerousForOf ) return;
 
 		// edge case (#80)
 		if ( !this.body.body[0] ) {
@@ -69,7 +67,5 @@ export default class ForOfStatement extends LoopStatement {
 		} else {
 			code.appendLeft( this.left.end, ` = ${list}[${key}];\n\n${i1}` );
 		}
-
-		super.transpile( code, transforms );
 	}
 }
