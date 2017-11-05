@@ -118,6 +118,7 @@ export default class AssignmentExpression extends Node {
 						c = element.end;
 
 						if ( element.type === 'RestElement' ) {
+							code.remove( element.start, element.argument.start );
 							destructure( element.argument, `${ref}.slice(${i})`, false );
 						} else {
 							destructure( element, `${ref}[${i}]`, false );
