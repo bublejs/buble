@@ -20,7 +20,7 @@ export default class ClassExpression extends Node {
 			if ( this.superClass ) {
 				code.remove( this.start, this.superClass.start );
 				code.remove( this.superClass.end, this.body.start );
-				code.insertLeft( this.start, `(function (${superName}) {\n${i1}` );
+				code.appendLeft( this.start, `(function (${superName}) {\n${i1}` );
 			} else {
 				code.overwrite( this.start, this.body.start, `(function () {\n${i1}` );
 			}
@@ -30,11 +30,11 @@ export default class ClassExpression extends Node {
 			const outro = `\n\n${i1}return ${this.name};\n${i0}}(`;
 
 			if ( this.superClass ) {
-				code.insertLeft( this.end, outro );
+				code.appendLeft( this.end, outro );
 				code.move( this.superClass.start, this.superClass.end, this.end );
-				code.insertRight( this.end, '))' );
+				code.prependRight( this.end, '))' );
 			} else {
-				code.insertLeft( this.end, `\n\n${i1}return ${this.name};\n${i0}}())` );
+				code.appendLeft( this.end, `\n\n${i1}return ${this.name};\n${i0}}())` );
 			}
 		}
 

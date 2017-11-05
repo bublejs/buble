@@ -47,21 +47,21 @@ export default class Super extends Node {
 				this.superClassName :
 				`${this.superClassName}.prototype`;
 
-			code.overwrite( this.start, this.end, expression, true );
+			code.overwrite( this.start, this.end, expression, { storeName: true, contentOnly: true });
 
 			const callExpression = this.isCalled ? this.parent : this.parent.parent;
 
 			if ( callExpression && callExpression.type === 'CallExpression' ) {
 				if ( !this.noCall ) { // special case – `super( ...args )`
-					code.insertLeft( callExpression.callee.end, '.call' );
+					code.appendLeft( callExpression.callee.end, '.call' );
 				}
 
 				const thisAlias = this.thisAlias || 'this';
 
 				if ( callExpression.arguments.length ) {
-					code.insertLeft( callExpression.arguments[0].start, `${thisAlias}, ` );
+					code.appendLeft( callExpression.arguments[0].start, `${thisAlias}, ` );
 				} else {
-					code.insertLeft( callExpression.end - 1, `${thisAlias}` );
+					code.appendLeft( callExpression.end - 1, `${thisAlias}` );
 				}
 			}
 		}

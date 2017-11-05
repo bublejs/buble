@@ -9,16 +9,14 @@ export default class ForOfStatement extends LoopStatement {
 	}
 
 	transpile ( code, transforms ) {
-		if ( !transforms.dangerousForOf ) {
-			super.transpile( code, transforms );
-			return;
-		}
+		super.transpile( code, transforms );
+		if ( !transforms.dangerousForOf ) return;
 
 		// edge case (#80)
 		if ( !this.body.body[0] ) {
 			if ( this.left.type === 'VariableDeclaration' && this.left.kind === 'var' ) {
 				code.remove( this.start, this.left.start );
-				code.insertLeft( this.left.end, ';' );
+				code.appendLeft( this.left.end, ';' );
 				code.remove( this.left.end, this.end );
 			} else {
 				code.remove( this.start, this.end );
@@ -35,8 +33,8 @@ export default class ForOfStatement extends LoopStatement {
 		const list = scope.createIdentifier( 'list' );
 
 		if ( this.body.synthetic ) {
-			code.insertRight( this.left.start, `{\n${i1}` );
-			code.insertLeft( this.body.body[0].end, `\n${i0}}` );
+			code.prependRight( this.left.start, `{\n${i1}` );
+			code.appendLeft( this.body.body[0].end, `\n${i0}}` );
 		}
 
 		const bodyStart = this.body.body[0].start;
@@ -45,8 +43,8 @@ export default class ForOfStatement extends LoopStatement {
 		code.move( this.left.start, this.left.end, bodyStart );
 
 
-		code.insertRight( this.right.start, `var ${key} = 0, ${list} = ` );
-		code.insertLeft( this.right.end, `; ${key} < ${list}.length; ${key} += 1` );
+		code.prependRight( this.right.start, `var ${key} = 0, ${list} = ` );
+		code.appendLeft( this.right.end, `; ${key} < ${list}.length; ${key} += 1` );
 
 		// destructuring. TODO non declaration destructuring
 		const declarator = this.left.type === 'VariableDeclaration' && this.left.declarations[0];
@@ -64,12 +62,10 @@ export default class ForOfStatement extends LoopStatement {
 				fn( bodyStart, '', suffix );
 			});
 
-			code.insertLeft( this.left.start + this.left.kind.length + 1, ref );
-			code.insertLeft( this.left.end, ` = ${list}[${key}];\n${i1}` );
+			code.appendLeft( this.left.start + this.left.kind.length + 1, ref );
+			code.appendLeft( this.left.end, ` = ${list}[${key}];\n${i1}` );
 		} else {
-			code.insertLeft( this.left.end, ` = ${list}[${key}];\n\n${i1}` );
+			code.appendLeft( this.left.end, ` = ${list}[${key}];\n\n${i1}` );
 		}
-
-		super.transpile( code, transforms );
 	}
 }

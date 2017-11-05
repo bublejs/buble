@@ -57,38 +57,38 @@ export default class CallExpression extends Node {
 							: callExpression.findNearest( /^Program$/ ).body;
 						const lastStatementInBlock = block[ block.length - 1 ];
 						const i0 = lastStatementInBlock.getIndentation();
-						code.insertRight( callExpression.start, `(${context} = ` );
-						code.insertLeft( callExpression.end, `)` );
-						code.insertLeft( lastStatementInBlock.end, `\n${i0}var ${context};` );
+						code.prependRight( callExpression.start, `(${context} = ` );
+						code.appendLeft( callExpression.end, `)` );
+						code.appendLeft( lastStatementInBlock.end, `\n${i0}var ${context};` );
 					}
 				} else {
 					context = 'void 0';
 				}
 
-				code.insertLeft( this.callee.end, '.apply' );
+				code.appendLeft( this.callee.end, '.apply' );
 
 				if ( _super ) {
 					_super.noCall = true; // bit hacky...
 
 					if ( this.arguments.length > 1 ) {
 						if ( firstArgument.type !== 'SpreadElement' ) {
-							code.insertRight( firstArgument.start, `[ ` );
+							code.prependRight( firstArgument.start, `[ ` );
 						}
 
-						code.insertLeft( this.arguments[ this.arguments.length - 1 ].end, ' )' );
+						code.appendLeft( this.arguments[ this.arguments.length - 1 ].end, ' )' );
 					}
 				}
 
 				else if ( this.arguments.length === 1 ) {
-					code.insertRight( firstArgument.start, `${context}, ` );
+					code.prependRight( firstArgument.start, `${context}, ` );
 				} else {
 					if ( firstArgument.type === 'SpreadElement' ) {
-						code.insertLeft( firstArgument.start, `${context}, ` );
+						code.appendLeft( firstArgument.start, `${context}, ` );
 					} else {
-						code.insertLeft( firstArgument.start, `${context}, [ ` );
+						code.appendLeft( firstArgument.start, `${context}, [ ` );
 					}
 
-					code.insertLeft( this.arguments[ this.arguments.length - 1 ].end, ' )' );
+					code.appendLeft( this.arguments[ this.arguments.length - 1 ].end, ' )' );
 				}
 			}
 		}

@@ -3,10 +3,12 @@ import CompileError from '../../utils/CompileError.js';
 
 export default class JSXOpeningElement extends Node {
 	transpile ( code, transforms ) {
+		super.transpile( code, transforms );
+
 		code.overwrite( this.start, this.name.start, `${this.program.jsx}( ` );
 
 		const html = this.name.type === 'JSXIdentifier' && this.name.name[0] === this.name.name[0].toLowerCase();
-		if ( html ) code.insertRight( this.name.start, `'` );
+		if ( html ) code.prependRight( this.name.start, `'` );
 
 		const len = this.attributes.length;
 		let c = this.name.end;
@@ -29,7 +31,7 @@ export default class JSXOpeningElement extends Node {
 
 				if ( i > 0 ) {
 					if ( attr.start === c )
-						code.insertRight( c, ', ' );
+						code.prependRight( c, ', ' );
 					else
 						code.overwrite( c, attr.start, ', ' );
 				}
@@ -39,11 +41,11 @@ export default class JSXOpeningElement extends Node {
 					const nextAttr = this.attributes[ i + 1 ];
 
 					if ( !lastAttr || lastAttr.type === 'JSXSpreadAttribute' ) {
-						code.insertRight( attr.start, '{ ' );
+						code.prependRight( attr.start, '{ ' );
 					}
 
 					if ( !nextAttr || nextAttr.type === 'JSXSpreadAttribute' ) {
-						code.insertLeft( attr.end, ' }' );
+						code.appendLeft( attr.end, ' }' );
 					}
 				}
 
@@ -67,17 +69,15 @@ export default class JSXOpeningElement extends Node {
 				after = ' }';
 			}
 
-			code.insertRight( this.name.end, before );
+			code.prependRight( this.name.end, before );
 
 			if ( after ) {
-				code.insertLeft( this.attributes[ len - 1 ].end, after );
+				code.appendLeft( this.attributes[ len - 1 ].end, after );
 			}
 		} else {
-			code.insertLeft( this.name.end, html ? `', null` : `, null` );
+			code.appendLeft( this.name.end, html ? `', null` : `, null` );
 			c = this.name.end;
 		}
-
-		super.transpile( code, transforms );
 
 		if ( this.selfClosing ) {
 			code.overwrite( c, this.end, this.attributes.length ? `)` : ` )` );

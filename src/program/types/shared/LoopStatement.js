@@ -59,8 +59,8 @@ export default class LoopStatement extends Node {
 			const before = `var ${loop} = function (${paramString}) ` + ( this.body.synthetic ? `{\n${i0}${code.getIndentString()}` : '' );
 			const after = ( this.body.synthetic ? `\n${i0}}` : '' ) + `;\n\n${i0}`;
 
-			code.insertRight( this.body.start, before );
-			code.insertLeft( this.body.end, after );
+			code.prependRight( this.body.start, before );
+			code.appendLeft( this.body.end, after );
 			code.move( this.start, this.body.start, this.body.end );
 
 			if ( this.canBreak || this.canReturn ) {
@@ -71,19 +71,19 @@ export default class LoopStatement extends Node {
 				if ( this.canReturn ) insert += `\n${i1}if ( ${returned} ) return ${returned}.v;`;
 				insert += `\n${i0}}`;
 
-				code.insertRight( this.body.end, insert );
+				code.prependRight( this.body.end, insert );
 			} else {
 				const callExpression = `${loop}(${argString});`;
 
 				if ( this.type === 'DoWhileStatement' ) {
 					code.overwrite( this.start, this.body.start, `do {\n${i1}${callExpression}\n${i0}}` );
 				} else {
-					code.insertRight( this.body.end, callExpression );
+					code.prependRight( this.body.end, callExpression );
 				}
 			}
 		} else if ( needsBlock ) {
-			code.insertLeft( this.body.start, '{ ' );
-			code.insertRight( this.body.end, ' }' );
+			code.appendLeft( this.body.start, '{ ' );
+			code.prependRight( this.body.end, ' }' );
 		}
 
 		super.transpile( code, transforms );

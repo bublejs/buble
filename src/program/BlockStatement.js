@@ -124,14 +124,14 @@ export default class BlockStatement extends Node {
 		if ( this.argumentsAlias ) {
 			introStatementGenerators.push( ( start, prefix, suffix ) => {
 				const assignment = `${prefix}var ${this.argumentsAlias} = arguments${suffix}`;
-				code.insertLeft( start, assignment );
+				code.appendLeft( start, assignment );
 			});
 		}
 
 		if ( this.thisAlias ) {
 			introStatementGenerators.push( ( start, prefix, suffix ) => {
 				const assignment = `${prefix}var ${this.thisAlias} = this${suffix}`;
-				code.insertLeft( start, assignment );
+				code.appendLeft( start, assignment );
 			});
 		}
 
@@ -139,7 +139,7 @@ export default class BlockStatement extends Node {
 			introStatementGenerators.push( ( start, prefix, suffix ) => {
 				const i = this.scope.createIdentifier( 'i' );
 				const assignment = `${prefix}var ${i} = arguments.length, ${this.argumentsArrayAlias} = Array(${i});\n${indentation}while ( ${i}-- ) ${this.argumentsArrayAlias}[${i}] = arguments[${i}]${suffix}`;
-				code.insertLeft( start, assignment );
+				code.appendLeft( start, assignment );
 			});
 		}
 
@@ -158,18 +158,18 @@ export default class BlockStatement extends Node {
 				const expr = this.body[0];
 
 				if ( introStatementGenerators.length ) {
-					code.insertLeft( this.start, `{` ).insertRight( this.end, `${this.parent.getIndentation()}}` );
+					code.appendLeft( this.start, `{` ).prependRight( this.end, `${this.parent.getIndentation()}}` );
 
-					code.insertRight( expr.start, `\n${indentation}return ` );
-					code.insertLeft( expr.end, `;\n` );
+					code.prependRight( expr.start, `\n${indentation}return ` );
+					code.appendLeft( expr.end, `;\n` );
 				} else if ( transforms.arrow ) {
-					code.insertLeft( expr.start, `{ return ` );
-					code.insertLeft( expr.end, `; }` );
+					code.prependRight( expr.start, `{ return ` );
+					code.appendLeft( expr.end, `; }` );
 				}
 			}
 
 			else if ( introStatementGenerators.length ) {
-				code.insertLeft( this.start, `{` ).insertRight( this.end, `}` );
+				code.prependRight( this.start, `{` ).appendLeft( this.end, `}` );
 			}
 		}
 
@@ -200,9 +200,9 @@ export default class BlockStatement extends Node {
 						const lhs = `${prefix}if ( ${param.left.name} === void 0 ) ${param.left.name}`;
 
 						code
-							.insertRight( param.left.end, lhs )
+							.prependRight( param.left.end, lhs )
 							.move( param.left.end, param.right.end, start )
-							.insertLeft( param.right.end, suffix );
+							.appendLeft( param.right.end, suffix );
 					});
 				}
 			}
@@ -228,9 +228,9 @@ export default class BlockStatement extends Node {
 						const count = params.length - 1;
 
 						if ( count ) {
-							code.insertLeft( start, `${prefix}var ${name} = [], ${len} = arguments.length - ${count};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ]${suffix}` );
+							code.prependRight( start, `${prefix}var ${name} = [], ${len} = arguments.length - ${count};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${len} ] = arguments[ ${len} + ${count} ]${suffix}` );
 						} else {
-							code.insertLeft( start, `${prefix}var ${name} = [], ${len} = arguments.length;\n${indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ]${suffix}` );
+							code.prependRight( start, `${prefix}var ${name} = [], ${len} = arguments.length;\n${indentation}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ]${suffix}` );
 						}
 					});
 				}
@@ -240,7 +240,7 @@ export default class BlockStatement extends Node {
 				if ( transforms.parameterDestructuring ) {
 					const ref = this.scope.createIdentifier( 'ref' );
 					destructure( code, this.scope, param, ref, false, introStatementGenerators );
-					code.insertLeft( param.start, ref );
+					code.prependRight( param.start, ref );
 				}
 			}
 		});
@@ -264,7 +264,7 @@ export default class BlockStatement extends Node {
 							name;
 
 						declaration.name = outerAlias;
-						code.overwrite( declaration.node.start, declaration.node.end, outerAlias, true );
+						code.overwrite( declaration.node.start, declaration.node.end, outerAlias, { storeName: true });
 
 						forStatement.aliases[ name ] = {
 							outer: outerAlias,
@@ -277,7 +277,7 @@ export default class BlockStatement extends Node {
 								outerAlias;
 
 							if ( name !== alias ) {
-								code.overwrite( identifier.start, identifier.end, alias, true );
+								code.overwrite( identifier.start, identifier.end, alias, { storeName: true });
 							}
 						}
 
@@ -290,11 +290,11 @@ export default class BlockStatement extends Node {
 
 					if ( name !== alias ) {
 						declaration.name = alias;
-						code.overwrite( declaration.node.start, declaration.node.end, alias, true );
+						code.overwrite( declaration.node.start, declaration.node.end, alias, { storeName: true });
 
 						for ( const identifier of declaration.instances ) {
 							identifier.rewritten = true;
-							code.overwrite( identifier.start, identifier.end, alias, true );
+							code.overwrite( identifier.start, identifier.end, alias, { storeName: true });
 						}
 					}
 				}

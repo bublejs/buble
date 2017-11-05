@@ -223,8 +223,8 @@ module.exports = [
 			foo => bar({[x - y]: obj});
 		`,
 		output: `
-			(function(foo) { return bar(( obj$1 = {}, obj$1[x - y] = obj, obj$1 ))
-				var obj$1;; });
+			!function(foo) { return bar(( obj$1 = {}, obj$1[x - y] = obj, obj$1 ))
+				var obj$1;; };
 		`
 	},
 

@@ -31,14 +31,14 @@ export default class ClassDeclaration extends Node {
 			if ( this.superClass ) {
 				if ( this.superClass.end === this.body.start ) {
 					code.remove( this.id.end, this.superClass.start );
-					code.insertLeft( this.id.end, ` = (function (${superName}) {\n${i1}` );
+					code.appendLeft( this.id.end, ` = (function (${superName}) {\n${i1}` );
 				} else {
 					code.overwrite( this.id.end, this.superClass.start, ' = ' );
 					code.overwrite( this.superClass.end, this.body.start, `(function (${superName}) {\n${i1}` );
 				}
 			} else {
 				if ( this.id.end === this.body.start ) {
-					code.insertLeft( this.id.end, ' = ' );
+					code.appendLeft( this.id.end, ' = ' );
 				} else {
 					code.overwrite( this.id.end, this.body.start, ' = ' );
 				}
@@ -47,11 +47,11 @@ export default class ClassDeclaration extends Node {
 			this.body.transpile( code, transforms, !!this.superClass, superName );
 
 			if ( this.superClass ) {
-				code.insertLeft( this.end, `\n\n${i1}return ${this.name};\n${i0}}(` );
+				code.appendLeft( this.end, `\n\n${i1}return ${this.name};\n${i0}}(` );
 				code.move( this.superClass.start, this.superClass.end, this.end );
-				code.insertRight( this.end, `));${syntheticDefaultExport}` );
+				code.prependRight( this.end, `));${syntheticDefaultExport}` );
 			} else if ( syntheticDefaultExport ) {
-				code.insertRight( this.end, syntheticDefaultExport );
+				code.prependRight( this.end, syntheticDefaultExport );
 			}
 		}
 

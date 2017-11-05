@@ -25,8 +25,8 @@ export default function spread ( code, elements, start, argumentsArrayAlias, isN
 			if ( element.type === 'SpreadElement' ) {
 				code.remove( element.start, element.argument.start );
 			} else {
-				code.insertRight( element.start, '[' );
-				code.insertRight( element.end, ']' );
+				code.prependRight( element.start, '[' );
+				code.prependRight( element.end, ']' );
 			}
 		}
 
@@ -50,8 +50,8 @@ export default function spread ( code, elements, start, argumentsArrayAlias, isN
 			if ( element.type === 'SpreadElement' ) {
 				code.remove( element.start, element.argument.start );
 			} else {
-				code.insertLeft( element.start, '[' );
-				code.insertLeft( element.end, ']' );
+				code.appendLeft( element.start, '[' );
+				code.appendLeft( element.end, ']' );
 			}
 		}
 	}
