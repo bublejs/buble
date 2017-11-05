@@ -67,6 +67,8 @@ export default class AssignmentExpression extends Node {
 
 			else if ( pattern.type === 'AssignmentPattern' ) {
 				if ( pattern.left.type === 'Identifier' ) {
+					code.remove( pattern.start, pattern.right.start );
+
 					const target = pattern.left.name;
 					let source = ref;
 					if ( !mayDuplicate ) {
@@ -77,6 +79,8 @@ export default class AssignmentExpression extends Node {
 					use( pattern.right );
 					write( ` : ${source}` );
 				} else {
+					code.remove( pattern.left.end, pattern.right.start );
+
 					const target = scope.createIdentifier( 'temp' );
 					let source = ref;
 					temporaries.push( target );
@@ -89,8 +93,6 @@ export default class AssignmentExpression extends Node {
 					write( ` : ${source}` );
 					destructure( pattern.left, target, true );
 				}
-
-				code.remove( pattern.start, pattern.right.start );
 			}
 
 			else if ( pattern.type === 'ArrayPattern' ) {
