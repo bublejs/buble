@@ -171,7 +171,7 @@ module.exports = [
 			() => console.log( 'not printed' );`,
 
 		output: `
-			(function() { return console.log( 'not printed' ); });`
+			!function() { return console.log( 'not printed' ); };`
 	},
 
 	{
@@ -184,7 +184,7 @@ module.exports = [
 
 		output: `
 			function no_op () {
-				(function() { return console.log( 'not printed' ); });
+				!function() { return console.log( 'not printed' ); };
 			}`
 	},
 
@@ -197,12 +197,12 @@ module.exports = [
 				(...args) => console.log( args );`,
 
 		output: `
-				(function() {
+				!function() {
 					var args = [], len = arguments.length;
 					while ( len-- ) args[ len ] = arguments[ len ];
 
 					return console.log( args );
-				});`
+				};`
 
-	},
+	}
 ];

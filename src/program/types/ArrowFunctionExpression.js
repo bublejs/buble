@@ -26,8 +26,7 @@ export default class ArrowFunctionExpression extends Node {
 			// add function
 			if ( this.parent && this.parent.type === 'ExpressionStatement' ) {
 				// standalone expression statement
-				code.prependRight( this.start, '(function' );
-				code.appendLeft( this.end, ')' );
+				code.prependRight( this.start, '!function' );
 			} else {
 				code.prependRight( this.start, 'function ' );
 			}
