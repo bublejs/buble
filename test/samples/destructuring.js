@@ -765,10 +765,10 @@ module.exports = [
 		`,
 
 		output: `
-			var ref = {};
-			ref['a'] = 1;
+			var ref = ( obj = {}, obj['a'] = 1, obj );
 			var a = ref.a;
 			var b = ref.b;
+			var obj;
 		`
 	}
 

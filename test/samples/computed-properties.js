@@ -35,10 +35,9 @@ module.exports = [
 			};`,
 
 		output: `
-			var obj = {
-				b: 2
-			};
-			obj[a] = 1;`
+			var obj = {};
+			obj[a] = 1;
+			obj.b = 2;`
 	},
 
 	{
@@ -69,10 +68,10 @@ module.exports = [
 
 		output: `
 			var obj = {
-				a: 1,
-				c: 3
+				a: 1
 			};
-			obj[b] = 2;`
+			obj[b] = 2;
+			obj.c = 3;`
 	},
 
 	{
@@ -89,13 +88,12 @@ module.exports = [
 			};`,
 
 		output: `
-			var obj = {
-				b: 2,
-				e: 5
-			};
+			var obj = {};
 			obj[a] = 1;
+			obj.b = 2;
 			obj[c] = 3;
 			obj[d] = 4;
+			obj.e = 5;
 			obj[f] = 6;`
 	},
 
@@ -106,7 +104,7 @@ module.exports = [
 			var a = 'foo', obj = { [a]: 'bar', x: 42 }, bar = obj.foo;`,
 
 		output: `
-			var a = 'foo', obj = ( obj$1 = { x: 42 }, obj$1[a] = 'bar', obj$1 ), bar = obj.foo;
+			var a = 'foo', obj = ( obj$1 = {}, obj$1[a] = 'bar', obj$1.x = 42, obj$1 ), bar = obj.foo;
 			var obj$1;`
 	},
 
