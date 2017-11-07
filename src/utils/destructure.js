@@ -1,3 +1,4 @@
+import CompileError from '../utils/CompileError.js';
 import { findIndex } from './array.js';
 
 const handlers = {
