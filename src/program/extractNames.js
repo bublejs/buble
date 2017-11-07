@@ -19,10 +19,6 @@ const extractors = {
 		extractors[ node.value.type ]( names, node.value );
 	},
 
-	RestElement ( names, node ) {
-		extractors[ node.argument.type ]( names, node.argument );
-	},
-
 	ArrayPattern ( names, node ) {
 		for ( const element of node.elements )  {
 			if ( element ) extractors[ element.type ]( names, element );
