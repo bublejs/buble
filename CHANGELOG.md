@@ -1,5 +1,10 @@
 # buble changelog
 
+## 0.17.1
+
+* Error on nested rest elements ([#31](https://github.com/Rich-Harris/buble/pull/31))
+* Allow destructuring with computed properties ([#34](https://github.com/Rich-Harris/buble/pull/34))
+
 ## 0.17.0
 
 * Update dependencies
