@@ -1,5 +1,13 @@
 # buble changelog
 
+## 0.17.0
+
+* Update dependencies
+* Transpile arrow functions unconditionally if spread arguments need transpilation ([#22](https://github.com/Rich-Harris/buble/pull/22))
+* Better object spread support ([#25](https://github.com/Rich-Harris/buble/pull/25))
+* Rest properties ([#30](https://github.com/Rich-Harris/buble/pull/30))
+* Fix ([#24](https://github.com/Rich-Harris/buble/pull/24))
+
 ## 0.16.0
 
 * Allow truthy dash-cased props ([#2](https://github.com/Rich-Harris/buble/pull/2))

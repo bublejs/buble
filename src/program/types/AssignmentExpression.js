@@ -44,7 +44,7 @@ export default class AssignmentExpression extends Node {
 		// predictable.
 		let text = '';
 		function use ( node ) {
-			code.insertRight( node.start, text );
+			code.prependRight( node.start, text );
 			code.move( node.start, node.end, start );
 			text = '';
 		}
@@ -67,6 +67,8 @@ export default class AssignmentExpression extends Node {
 
 			else if ( pattern.type === 'AssignmentPattern' ) {
 				if ( pattern.left.type === 'Identifier' ) {
+					code.remove( pattern.start, pattern.right.start );
+
 					const target = pattern.left.name;
 					let source = ref;
 					if ( !mayDuplicate ) {
@@ -76,8 +78,9 @@ export default class AssignmentExpression extends Node {
 					write( `, ${target} = ${source} === void 0 ? ` );
 					use( pattern.right );
 					write( ` : ${source}` );
-				}
-				else {
+				} else {
+					code.remove( pattern.left.end, pattern.right.start );
+
 					const target = scope.createIdentifier( 'temp' );
 					let source = ref;
 					temporaries.push( target );
@@ -95,7 +98,9 @@ export default class AssignmentExpression extends Node {
 			else if ( pattern.type === 'ArrayPattern' ) {
 				const elements = pattern.elements;
 				if ( elements.length === 1 ) {
+					code.remove( pattern.start, elements[0].start );
 					destructure( elements[0], `${ref}[0]`, false );
+					code.remove( elements[0].end, pattern.end );
 				}
 				else {
 					if ( !mayDuplicate ) {
@@ -104,15 +109,23 @@ export default class AssignmentExpression extends Node {
 						write( `, ${temp} = ${ref}` );
 						ref = temp;
 					}
+
+					let c = pattern.start;
 					elements.forEach( ( element, i ) => {
-						if ( element ) {
-							if ( element.type === 'RestElement' ) {
-								destructure( element.argument, `${ref}.slice(${i})`, false );
-							} else {
-								destructure( element, `${ref}[${i}]`, false );
-							}
+						if (!element) return;
+
+						code.remove(c, element.start);
+						c = element.end;
+
+						if ( element.type === 'RestElement' ) {
+							code.remove( element.start, element.argument.start );
+							destructure( element.argument, `${ref}.slice(${i})`, false );
+						} else {
+							destructure( element, `${ref}[${i}]`, false );
 						}
-					} );
+					});
+
+					code.remove(c, pattern.end);
 				}
 			}
 
@@ -121,7 +134,10 @@ export default class AssignmentExpression extends Node {
 				if ( props.length == 1 ) {
 					const prop = props[0];
 					const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
+
+					code.remove( pattern.start, prop.value.start );
 					destructure( prop.value, value, false );
+					code.remove( prop.end, pattern.end );
 				}
 				else {
 					if ( !mayDuplicate ) {
@@ -130,10 +146,19 @@ export default class AssignmentExpression extends Node {
 						write( `, ${temp} = ${ref}` );
 						ref = temp;
 					}
+
+					let c = pattern.start;
+
 					props.forEach( prop => {
 						const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
+
+						code.remove(c, prop.value.start);
+						c = prop.end;
+
 						destructure( prop.value, value, false );
-					} );
+					});
+
+					code.remove(c, pattern.end);
 				}
 			}
 
@@ -141,20 +166,20 @@ export default class AssignmentExpression extends Node {
 				throw new Error( `Unexpected node type in destructuring assignment (${pattern.type})` );
 			}
 		}
+
 		destructure( this.left, assign, true );
+		code.remove( this.left.end, this.right.start );
 
 		if ( this.unparenthesizedParent().type === 'ExpressionStatement' ) {
 			// no rvalue needed for expression statement
-			code.insertRight( start, `${text})` );
+			code.prependRight( start, `${text})` );
 		} else {
 			// destructuring is part of an expression - need an rvalue
-			code.insertRight( start, `${text}, ${assign})` );
+			code.prependRight( start, `${text}, ${assign})` );
 		}
 
-		code.remove( start, this.right.start );
-
 		const statement = this.findNearest( /(?:Statement|Declaration)$/ );
-		code.insertLeft( statement.start, `var ${temporaries.join( ', ' )};\n${statement.getIndentation()}` );
+		code.appendLeft( statement.start, `var ${temporaries.join( ', ' )};\n${statement.getIndentation()}` );
 	}
 
 	transpileExponentiation ( code ) {
@@ -203,23 +228,23 @@ export default class AssignmentExpression extends Node {
 
 			if ( left.start === statement.start ) {
 				if ( needsObjectVar && needsPropertyVar ) {
-					code.insertRight( statement.start, `var ${object} = ` );
+					code.prependRight( statement.start, `var ${object} = ` );
 					code.overwrite( left.object.end, left.property.start, `;\n${i0}var ${property} = ` );
 					code.overwrite( left.property.end, left.end, `;\n${i0}${object}[${property}]` );
 				}
 
 				else if ( needsObjectVar ) {
-					code.insertRight( statement.start, `var ${object} = ` );
-					code.insertLeft( left.object.end, `;\n${i0}` );
-					code.insertLeft( left.object.end, object );
+					code.prependRight( statement.start, `var ${object} = ` );
+					code.appendLeft( left.object.end, `;\n${i0}` );
+					code.appendLeft( left.object.end, object );
 				}
 
 				else if ( needsPropertyVar ) {
-					code.insertRight( left.property.start, `var ${property} = ` );
-					code.insertLeft( left.property.end, `;\n${i0}` );
+					code.prependRight( left.property.start, `var ${property} = ` );
+					code.appendLeft( left.property.end, `;\n${i0}` );
 					code.move( left.property.start, left.property.end, this.start );
 
-					code.insertLeft( left.object.end, `[${property}]` );
+					code.appendLeft( left.object.end, `[${property}]` );
 					code.remove( left.object.end, left.property.start );
 					code.remove( left.property.end, left.end );
 				}
@@ -231,23 +256,23 @@ export default class AssignmentExpression extends Node {
 				if ( needsPropertyVar ) declarators.push( property );
 
 				if ( declarators.length ) {
-					code.insertRight( statement.start, `var ${declarators.join( ', ' )};\n${i0}` );
+					code.prependRight( statement.start, `var ${declarators.join( ', ' )};\n${i0}` );
 				}
 
 				if ( needsObjectVar && needsPropertyVar ) {
-					code.insertRight( left.start, `( ${object} = ` );
+					code.prependRight( left.start, `( ${object} = ` );
 					code.overwrite( left.object.end, left.property.start, `, ${property} = ` );
 					code.overwrite( left.property.end, left.end, `, ${object}[${property}]` );
 				}
 
 				else if ( needsObjectVar ) {
-					code.insertRight( left.start, `( ${object} = ` );
-					code.insertLeft( left.object.end, `, ${object}` );
+					code.prependRight( left.start, `( ${object} = ` );
+					code.appendLeft( left.object.end, `, ${object}` );
 				}
 
 				else if ( needsPropertyVar ) {
-					code.insertRight( left.property.start, `( ${property} = ` );
-					code.insertLeft( left.property.end, `, ` );
+					code.prependRight( left.property.start, `( ${property} = ` );
+					code.appendLeft( left.property.end, `, ` );
 					code.move( left.property.start, left.property.end, left.start );
 
 					code.overwrite( left.object.end, left.property.start, `[${property}]` );
@@ -255,14 +280,14 @@ export default class AssignmentExpression extends Node {
 				}
 
 				if ( needsPropertyVar ) {
-					code.insertLeft( this.end, ` )` );
+					code.appendLeft( this.end, ` )` );
 				}
 			}
 
 			base = object + ( left.computed || needsPropertyVar ? `[${property}]` : `.${property}` );
 		}
 
-		code.insertRight( this.right.start, `Math.pow( ${base}, ` );
-		code.insertLeft( this.right.end, ` )` );
+		code.prependRight( this.right.start, `Math.pow( ${base}, ` );
+		code.appendLeft( this.right.end, ` )` );
 	}
 }

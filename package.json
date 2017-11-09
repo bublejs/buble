@@ -1,6 +1,6 @@
 {
   "name": "buble",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "The blazing fast, batteries-included ES2015 compiler",
   "main": "dist/buble.umd.js",
   "module": "dist/buble.es.js",
@@ -62,8 +62,8 @@
   "dependencies": {
     "acorn": "^5.1.2",
     "acorn-jsx": "^3.0.1",
-    "acorn5-object-spread": "^4.0.0",
-    "magic-string": "^0.14.0",
+    "acorn5-object-spread":  "^4.0.0",
+    "magic-string": "^0.22.4",
     "minimist": "^1.2.0",
     "os-homedir": "^1.0.1",
     "vlq": "^0.2.2"
