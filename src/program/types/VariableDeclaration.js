@@ -14,7 +14,7 @@ export default class VariableDeclaration extends Node {
 
 		if ( transforms.letConst && kind !== 'var' ) {
 			kind = 'var';
-			code.overwrite( this.start, this.start + this.kind.length, kind, { storeName: true });
+			code.overwrite( this.start, this.start + this.kind.length, kind, { storeName: true } );
 		}
 
 		if ( transforms.destructuring && this.parent.type !== 'ForOfStatement' ) {
@@ -52,7 +52,7 @@ export default class VariableDeclaration extends Node {
 							code.prependRight( declarator.id.end, `var ${name}` );
 							code.appendLeft( declarator.init.end, `${suffix}` );
 							code.move( declarator.id.end, declarator.end, start );
-						});
+						} );
 					}
 
 					destructure( code, declarator.findScope( false ), declarator.id, name, inline, statementGenerators );
@@ -65,22 +65,22 @@ export default class VariableDeclaration extends Node {
 						}
 
 						fn( declarator.start, j === 0 ? prefix : '', suffix );
-					});
+					} );
 				}
 
 				c = declarator.end;
 				lastDeclaratorIsPattern = declarator.id.type !== 'Identifier';
-			});
+			} );
 
 			if ( lastDeclaratorIsPattern && this.end > c ) {
-				code.overwrite( c, this.end, '', { contentOnly: true });
+				code.overwrite( c, this.end, '', { contentOnly: true } );
 			}
 		}
 
 		else {
 			this.declarations.forEach( declarator => {
 				declarator.transpile( code, transforms );
-			});
+			} );
 		}
 	}
 }

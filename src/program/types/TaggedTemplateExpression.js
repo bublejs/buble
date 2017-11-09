@@ -16,7 +16,7 @@ export default class TaggedTemplateExpression extends Node {
 
 			// insert strings at start
 			const templateStrings = this.quasi.quasis.map( quasi => JSON.stringify( quasi.value.cooked ) );
-			code.overwrite( this.tag.end, ordered[0].start, `([${templateStrings.join(', ')}]` );
+			code.overwrite( this.tag.end, ordered[0].start, `([${templateStrings.join( ', ' )}]` );
 
 			let lastIndex = ordered[0].start;
 			ordered.forEach( node => {
@@ -27,7 +27,7 @@ export default class TaggedTemplateExpression extends Node {
 				}
 
 				lastIndex = node.end;
-			});
+			} );
 
 			code.overwrite( lastIndex, this.end, ')' );
 		}

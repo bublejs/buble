@@ -47,7 +47,7 @@ export default class ObjectExpression extends Node {
 
 			// wrap the whole thing in Object.assign
 			firstPropertyStart = this.properties[0].start;
-			code.overwrite( this.start, firstPropertyStart, `${this.program.options.objectAssign}({}, `);
+			code.overwrite( this.start, firstPropertyStart, `${this.program.options.objectAssign}({}, ` );
 			code.overwrite( this.properties[ this.properties.length - 1 ].end, this.end, ')' );
 		}
 
@@ -99,7 +99,7 @@ export default class ObjectExpression extends Node {
 
 					const propId = isSimpleAssignment ? `;\n${i0}${name}` : `, ${name}`;
 
-					if (moveStart < prop.start) {
+					if ( moveStart < prop.start ) {
 						code.overwrite( moveStart, prop.start, propId );
 					} else {
 						code.prependRight( prop.start, propId );

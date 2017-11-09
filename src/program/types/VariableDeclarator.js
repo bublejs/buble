@@ -27,8 +27,8 @@ export default class VariableDeclarator extends Node {
 		return this.parent
 			&& this.parent.type === 'VariableDeclaration'
 			&& this.parent.parent
-			&& (this.parent.parent.type === 'ForInStatement'
-				|| this.parent.parent.type === 'ForOfStatement')
+			&& ( this.parent.parent.type === 'ForInStatement'
+				|| this.parent.parent.type === 'ForOfStatement' )
 			&& this.parent.parent.left
 			&& this.parent.parent.left.declarations[0] === this;
 	}

@@ -22,7 +22,7 @@ export default class JSXElement extends Node {
 
 			// remove whitespace-only literals, unless on a single line
 			return /\S/.test( child.value ) || !/\n/.test( child.value );
-		});
+		} );
 
 		if ( children.length ) {
 			let c = this.openingElement.end;

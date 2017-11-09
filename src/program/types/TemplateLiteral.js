@@ -14,7 +14,7 @@ export default class TemplateLiteral extends Node {
 
 					// exclude all empty strings not at the head
 					return !i;
-				});
+				} );
 
 			// special case – we may be able to skip the first element,
 			// if it's the empty string, but only if the second and
@@ -56,7 +56,7 @@ export default class TemplateLiteral extends Node {
 				}
 
 				lastIndex = node.end;
-			});
+			} );
 
 			if ( parenthesise ) code.appendLeft( lastIndex, ')' );
 			code.remove( lastIndex, this.end );

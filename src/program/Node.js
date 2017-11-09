@@ -16,7 +16,7 @@ function toJSON ( node ) {
 		} else {
 			obj[ key ] = node[ key ];
 		}
-	});
+	} );
 
 	return obj;
 }

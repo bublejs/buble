@@ -16,7 +16,7 @@ export default class Literal extends Node {
 				code.overwrite( this.start, this.end, String( this.value ), {
 					storeName: true,
 					contentOnly: true
-				});
+				} );
 			}
 		}
 
@@ -27,7 +27,7 @@ export default class Literal extends Node {
 			if ( transforms.unicodeRegExp && /u/.test( flags ) ) {
 				code.overwrite( this.start, this.end, `/${rewritePattern( pattern, flags )}/${flags.replace( 'u', '' )}`, {
 					contentOnly: true
-				});
+				} );
 			}
 		}
 	}
