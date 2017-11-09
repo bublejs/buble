@@ -19,7 +19,7 @@ export default function spread ( code, elements, start, argumentsArrayAlias, isN
 
 	if ( firstSpreadIndex === -1 ) return false; // false indicates no spread elements
 
-	if (isNew) {
+	if ( isNew ) {
 		for ( i = 0; i < elements.length; i += 1 ) {
 			let element = elements[i];
 			if ( element.type === 'SpreadElement' ) {

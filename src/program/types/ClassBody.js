@@ -56,7 +56,7 @@ export default class ClassBody extends Node {
 					introBlock += inheritanceBlock + `\n\n${i0}`;
 				}
 			} else if ( !constructor ) {
-				let fn = 'function ' + (namedConstructor ? name + ' ' : '') + '() {}';
+				let fn = 'function ' + ( namedConstructor ? name + ' ' : '' ) + '() {}';
 				if ( this.parent.type === 'ClassDeclaration' ) fn += ';';
 				if ( this.body.length ) fn += `\n\n${i0}`;
 
@@ -149,7 +149,7 @@ export default class ClassBody extends Node {
 				if ( method.value.generator ) code.remove( method.start, method.key.start );
 
 				code.prependRight( method.start, lhs );
-			});
+			} );
 
 			if ( prototypeGettersAndSetters.length || staticGettersAndSetters.length ) {
 				let intro = [];

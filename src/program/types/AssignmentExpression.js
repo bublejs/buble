@@ -112,9 +112,9 @@ export default class AssignmentExpression extends Node {
 
 					let c = pattern.start;
 					elements.forEach( ( element, i ) => {
-						if (!element) return;
+						if ( !element ) return;
 
-						code.remove(c, element.start);
+						code.remove( c, element.start );
 						c = element.end;
 
 						if ( element.type === 'RestElement' ) {
@@ -123,9 +123,9 @@ export default class AssignmentExpression extends Node {
 						} else {
 							destructure( element, `${ref}[${i}]`, false );
 						}
-					});
+					} );
 
-					code.remove(c, pattern.end);
+					code.remove( c, pattern.end );
 				}
 			}
 
@@ -133,7 +133,7 @@ export default class AssignmentExpression extends Node {
 				const props = pattern.properties;
 				if ( props.length == 1 ) {
 					const prop = props[0];
-					const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
+					const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice( prop.key.start, prop.key.end )}]` : `${ref}.${prop.key.name}`;
 
 					code.remove( pattern.start, prop.value.start );
 					destructure( prop.value, value, false );
@@ -150,15 +150,15 @@ export default class AssignmentExpression extends Node {
 					let c = pattern.start;
 
 					props.forEach( prop => {
-						const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice(prop.key.start, prop.key.end)}]` : `${ref}.${prop.key.name}`;
+						const value = prop.computed || prop.key.type !== 'Identifier' ? `${ref}[${code.slice( prop.key.start, prop.key.end )}]` : `${ref}.${prop.key.name}`;
 
-						code.remove(c, prop.value.start);
+						code.remove( c, prop.value.start );
 						c = prop.end;
 
 						destructure( prop.value, value, false );
-					});
+					} );
 
-					code.remove(c, pattern.end);
+					code.remove( c, pattern.end );
 				}
 			}
 

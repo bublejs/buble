@@ -1,3 +1,4 @@
+import CompileError from '../utils/CompileError.js';
 import { findIndex } from './array.js';
 
 const handlers = {
@@ -16,7 +17,7 @@ function destructureIdentifier ( code, scope, node, ref, inline, statementGenera
 		code.prependRight( node.start, inline ? prefix : `${prefix}var ` );
 		code.appendLeft( node.end, ` = ${ref}${suffix}` );
 		code.move( node.start, node.end, start );
-	});
+	} );
 }
 
 function destructureAssignmentPattern ( code, scope, node, ref, inline, statementGenerators ) {
@@ -28,7 +29,7 @@ function destructureAssignmentPattern ( code, scope, node, ref, inline, statemen
 			code.prependRight( node.left.end, `${prefix}if ( ${name} === void 0 ) ${name}` );
 			code.move( node.left.end, node.right.end, start );
 			code.appendLeft( node.right.end, suffix );
-		});
+		} );
 	}
 
 	if ( !isIdentifier ) {
@@ -48,7 +49,7 @@ function destructureArrayPattern ( code, scope, node, ref, inline, statementGene
 			handleProperty( code, scope, c, element, `${ref}[${i}]`, inline, statementGenerators );
 		}
 		c = element.end;
-	});
+	} );
 
 	code.remove( c, node.end );
 }
@@ -59,27 +60,27 @@ function destructureObjectPattern ( code, scope, node, ref, inline, statementGen
 	const nonRestKeys = [];
 	node.properties.forEach( prop => {
 		let value;
-		let content
-		if (prop.type === "Property") {
-			const isComputedKey = prop.computed || prop.key.type !== 'Identifier'
-			const key = isComputedKey ? code.slice(prop.key.start, prop.key.end) : prop.key.name
+		let content;
+		if ( prop.type === "Property" ) {
+			const isComputedKey = prop.computed || prop.key.type !== 'Identifier';
+			const key = isComputedKey ? code.slice( prop.key.start, prop.key.end ) : prop.key.name;
 			value = isComputedKey ? `${ref}[${key}]` : `${ref}.${key}`;
 			content = prop.value;
-			nonRestKeys.push(isComputedKey ? key : '"' + key + '"')
-		} else if (prop.type === "RestElement") {
-			content = prop.argument
+			nonRestKeys.push( isComputedKey ? key : '"' + key + '"' );
+		} else if ( prop.type === "RestElement" ) {
+			content = prop.argument;
 			value = scope.createIdentifier( 'rest' );
 			const n = scope.createIdentifier( 'n' );
 			statementGenerators.push( ( start, prefix, suffix ) => {
-				code.overwrite(prop.start, c = prop.argument.start, `${prefix}var ${value} = {}; for (var ${n} in ${ref}) if([${nonRestKeys.join(", ")}].indexOf(${n}) === -1) ${value}[${n}] = ${ref}[${n}]${suffix}`)
-				code.move(prop.start, c, start)
+				code.overwrite( prop.start, c = prop.argument.start, `${prefix}var ${value} = {}; for (var ${n} in ${ref}) if([${nonRestKeys.join( ", " )}].indexOf(${n}) === -1) ${value}[${n}] = ${ref}[${n}]${suffix}` );
+				code.move( prop.start, c, start );
 			} );
 		} else {
-			throw new CompileError( this, `Unexpected node of type ${prop.type} in object pattern`)
+			throw new CompileError( this, `Unexpected node of type ${prop.type} in object pattern` );
 		}
 		handleProperty( code, scope, c, content, value, inline, statementGenerators );
 		c = prop.end;
-	});
+	} );
 
 	code.remove( c, node.end );
 }
@@ -115,7 +116,7 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 				}
 
 				code.move( node.right.start, node.right.end, start );
-			});
+			} );
 
 			if ( isIdentifier ) {
 				code.remove( c, node.right.start );
@@ -144,7 +145,7 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 
 					code.overwrite( node.start, c = node.start + 1, `${prefix}var ${ref} = ${value}${suffix}` );
 					code.move( node.start, c, start );
-				});
+				} );
 			}
 
 			destructureObjectPattern( code, scope, node, ref, inline, statementGenerators );
@@ -160,11 +161,11 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 
 				statementGenerators.push( ( start, prefix, suffix ) => {
 					code.prependRight( node.start, `${prefix}var ${ref} = ` );
-					code.overwrite( node.start, c = node.start + 1, value, { contentOnly: true });
+					code.overwrite( node.start, c = node.start + 1, value, { contentOnly: true } );
 					code.appendLeft( c, suffix );
 
 					code.move( node.start, c, start );
-				});
+				} );
 
 				node.elements.forEach( ( element, i ) => {
 					if ( !element ) return;
@@ -175,7 +176,7 @@ function handleProperty ( code, scope, c, node, value, inline, statementGenerato
 						handleProperty( code, scope, c, element, `${ref}[${i}]`, inline, statementGenerators );
 					}
 					c = element.end;
-				});
+				} );
 			} else {
 				const index = findIndex( node.elements, Boolean );
 				const element = node.elements[ index ];

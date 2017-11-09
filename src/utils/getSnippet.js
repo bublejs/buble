@@ -21,7 +21,7 @@ export default function getSnippet ( source, loc, length = 1 ) {
 	const offset = lastLine.slice( 0, loc.column ).replace( /\t/g, '  ' ).length;
 
 	let snippet = lines
-		.map( ( line, i ) => `${pad( i + first + 1, numDigits )} : ${line.replace( /\t/g, '  ')}` )
+		.map( ( line, i ) => `${pad( i + first + 1, numDigits )} : ${line.replace( /\t/g, '  ' )}` )
 		.join( '\n' );
 
 	snippet += '\n' + repeat( ' ', numDigits + 3 + offset ) + repeat( '^', length );

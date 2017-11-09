@@ -60,7 +60,7 @@ export default class ForOfStatement extends LoopStatement {
 				}
 
 				fn( bodyStart, '', suffix );
-			});
+			} );
 
 			code.appendLeft( this.left.start + this.left.kind.length + 1, ref );
 			code.appendLeft( this.left.end, ` = ${list}[${key}];\n${i1}` );
