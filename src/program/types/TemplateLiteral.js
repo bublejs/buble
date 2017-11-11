@@ -36,25 +36,28 @@ export default class TemplateLiteral extends Node {
 			if ( parenthesise ) code.appendRight( this.start, '(' );
 
 			let lastIndex = this.start;
-
 			ordered.forEach( ( node, i ) => {
 				let prefix = i === 0 ?
 					parenthesise ? '(' : '' :
 					' + ';
 
 				if ( node.type === 'TemplateElement' ) {
-					code.overwrite( lastIndex, node.end, prefix + JSON.stringify( node.value.cooked ) );
+					const prefix__plus =
+								(i === 0
+									&& parenthesise
+									&& this.parent.type === 'TemplateLiteral'
+								) ? ' + '
+									: '';
+					code.overwrite( lastIndex, node.end, prefix__plus + prefix + JSON.stringify( node.value.cooked ) );
 				} else {
 					const parenthesise = node.type !== 'Identifier'; // TODO other cases where it's safe
 
 					if ( parenthesise ) prefix += '(';
 
 					code.remove( lastIndex, node.start );
-
 					if ( prefix ) code.prependRight( node.start, prefix );
 					if ( parenthesise ) code.appendLeft( node.end, ')' );
 				}
-
 				lastIndex = node.end;
 			});
 
