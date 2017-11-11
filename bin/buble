@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-var minimist = require( 'minimist' );
+var minimist = require('minimist');
 
-var command = minimist( process.argv.slice( 2 ), {
+var command = minimist(process.argv.slice(2), {
 	alias: {
 		// Short options
 		h: 'help',
@@ -15,14 +15,10 @@ var command = minimist( process.argv.slice( 2 ), {
 	}
 });
 
-if ( command.help || ( process.argv.length <= 2 && process.stdin.isTTY ) ) {
-	require( './showHelp' )();
-}
-
-else if ( command.version ) {
-	console.log( 'Bublé version ' + require( '../package.json' ).version );
-}
-
-else {
-	require( './runBuble' )( command );
+if (command.help || (process.argv.length <= 2 && process.stdin.isTTY)) {
+	require('./showHelp')();
+} else if (command.version) {
+	console.log('Bublé version ' + require('../package.json').version); // eslint-disable-line no-console
+} else {
+	require('./runBuble')(command);
 }

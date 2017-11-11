@@ -1,46 +1,58 @@
-var chalk = require( 'chalk' );
+var chalk = require('chalk');
+
+function print(msg) {
+	console.error(chalk.red(msg)); // eslint-disable-line no-console
+}
 
 var handlers = {
-	MISSING_INPUT_OPTION: function () {
-		console.error( chalk.red( 'You must specify an --input (-i) option' ) );
+	MISSING_INPUT_OPTION: () => {
+		print('You must specify an --input (-i) option');
 	},
 
-	MISSING_OUTPUT_DIR: function () {
-		console.error( chalk.red( 'You must specify an --output (-o) option when compiling a directory of files' ) );
+	MISSING_OUTPUT_DIR: () => {
+		print(
+			'You must specify an --output (-o) option when compiling a directory of files'
+		);
 	},
 
-	MISSING_OUTPUT_FILE: function () {
-		console.error( chalk.red( 'You must specify an --output (-o) option when creating a file with a sourcemap' ) );
+	MISSING_OUTPUT_FILE: () => {
+		print(
+			'You must specify an --output (-o) option when creating a file with a sourcemap'
+		);
 	},
 
-	ONE_AT_A_TIME: function ( err ) {
-		console.error( chalk.red( 'Bublé can only compile one file/directory at a time' ) );
+	ONE_AT_A_TIME: () => {
+		print('Bublé can only compile one file/directory at a time');
 	},
 
-	DUPLICATE_IMPORT_OPTIONS: function ( err ) {
-		console.error( chalk.red( 'use --input, or pass input path as argument – not both' ) );
+	DUPLICATE_IMPORT_OPTIONS: () => {
+		print('use --input, or pass input path as argument – not both');
 	},
 
-	BAD_TARGET: function ( err ) {
-		console.error( chalk.red( 'illegal --target option' ) );
+	BAD_TARGET: () => {
+		print('illegal --target option');
 	}
 };
 
-module.exports = function handleError ( err ) {
+module.exports = function handleError(err) {
 	var handler;
 
-	if ( handler = handlers[ err && err.code ] ) {
-		handler( err );
+	if ((handler = handlers[err && err.code])) {
+		handler(err);
 	} else {
-		if ( err.snippet ) console.error( chalk.red( '---\n' + err.snippet ) );
-		console.error( chalk.red( err.message || err ) );
+		if (err.snippet) print('---\n' + err.snippet);
+		print(err.message || err);
 
-		if ( err.stack ) {
-			console.error( chalk.grey( err.stack ) );
+		if (err.stack) {
+			console.error(chalk.grey(err.stack)); // eslint-disable-line no-console
 		}
 	}
 
-	console.error( 'Type ' + chalk.cyan( 'buble --help' ) + ' for help, or visit https://buble.surge.sh/guide/' );
+	console.error( // eslint-disable-line no-console
+		'Type ' +
+			chalk.cyan('buble --help') +
+			' for help, or visit https://buble.surge.sh/guide/'
+	);
 
-	process.exit( 1 );
+	process.exit(1);
 };

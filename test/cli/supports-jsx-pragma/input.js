@@ -1,1 +1,1 @@
-var img = <img src='foo.gif'/>;
+var img = <img src="foo.gif" />;

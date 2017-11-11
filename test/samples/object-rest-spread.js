@@ -98,7 +98,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles inline objects with spread with computed property (#144)',
+		description:
+			'transpiles inline objects with spread with computed property (#144)',
 		options: {
 			objectAssign: 'Object.assign'
 		},

@@ -26,7 +26,8 @@ module.exports = [
 	},
 
 	{
-		description: 'imports and exports are ignored with `transforms.modules === false`',
+		description:
+			'imports and exports are ignored with `transforms.modules === false`',
 		options: { transforms: { modules: false } },
 		input: `import 'foo'; export { foo };`,
 		output: `import 'foo'; export { foo };`

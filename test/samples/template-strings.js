@@ -12,7 +12,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles an untagged template literal containing complex expressions',
+		description:
+			'transpiles an untagged template literal containing complex expressions',
 		input: 'var str = `foo${bar + baz}qux`;',
 		output: `var str = "foo" + (bar + baz) + "qux";`
 	},
@@ -36,14 +37,16 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles tagged template literals with `transforms.dangerousTaggedTemplateString = true`',
+		description:
+			'transpiles tagged template literals with `transforms.dangerousTaggedTemplateString = true`',
 		options: { transforms: { dangerousTaggedTemplateString: true } },
 		input: 'var str = x`y${(() => 42)()}`;',
 		output: `var str = x(["y", ""], (function () { return 42; })());`
 	},
 
 	{
-		description: 'transpiles tagged template literals with `transforms.dangerousTaggedTemplateString = true`',
+		description:
+			'transpiles tagged template literals with `transforms.dangerousTaggedTemplateString = true`',
 		options: { transforms: { dangerousTaggedTemplateString: true } },
 		input: 'var str = x`${(() => 42)()}y`;',
 		output: `var str = x(["", "y"], (function () { return 42; })());`
@@ -62,7 +65,8 @@ module.exports = [
 	},
 
 	{
-		description: 'does not parenthesise template strings in arithmetic expressions',
+		description:
+			'does not parenthesise template strings in arithmetic expressions',
 		input: 'var str = `x${y}` + z; var str2 = `x${y}` * z;',
 		output: 'var str = "x" + y + z; var str2 = ("x" + y) * z;'
 	},

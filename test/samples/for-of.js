@@ -13,7 +13,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles for-of with array assumption with `transforms.dangerousForOf`',
+		description:
+			'transpiles for-of with array assumption with `transforms.dangerousForOf`',
 		options: { transforms: { dangerousForOf: true } },
 
 		input: `
@@ -118,7 +119,6 @@ module.exports = [
 
 				if ( item.foo ) { continue; }
 			}`
-
 	},
 
 	{

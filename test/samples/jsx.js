@@ -136,7 +136,7 @@ module.exports = [
 		input: `
 			<h1>
 				Hello {name}
-				!${"      "}
+				!${'      '}
 				It's  nice to meet you
 			</h1>`,
 		output: `
@@ -177,7 +177,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles mixed JSX spread attributes ending in spread with custom Object.assign',
+		description:
+			'transpiles mixed JSX spread attributes ending in spread with custom Object.assign',
 		options: {
 			objectAssign: 'angular.extend'
 		},
@@ -186,7 +187,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles mixed JSX spread attributes ending in other values',
+		description:
+			'transpiles mixed JSX spread attributes ending in other values',
 		options: {
 			objectAssign: 'Object.assign'
 		},

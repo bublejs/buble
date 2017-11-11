@@ -30,7 +30,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles block scoping inside while loops with function bodies',
+		description:
+			'transpiles block scoping inside while loops with function bodies',
 
 		input: `
 			function log ( square ) {
@@ -60,7 +61,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles block scoping inside do-while loops with function bodies',
+		description:
+			'transpiles block scoping inside do-while loops with function bodies',
 
 		input: `
 			function log ( square ) {
@@ -92,7 +94,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles block-less for loops with block-scoped declarations inside function body',
+		description:
+			'transpiles block-less for loops with block-scoped declarations inside function body',
 
 		input: `
 			for ( let i = 0; i < 10; i += 1 ) setTimeout( () => console.log( i ), i * 100 );`,
@@ -106,7 +109,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles block scoping inside loops without function bodies',
+		description:
+			'transpiles block scoping inside loops without function bodies',
 
 		input: `
 			for ( let i = 0; i < 10; i += 1 ) {
@@ -122,7 +126,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles block-less for loops without block-scoped declarations inside function body',
+		description:
+			'transpiles block-less for loops without block-scoped declarations inside function body',
 
 		input: `
 			for ( let i = 0; i < 10; i += 1 ) console.log( i );`,
@@ -132,7 +137,8 @@ module.exports = [
 	},
 
 	{
-		description: 'preserves correct `this` and `arguments` inside block scoped loop (#10)',
+		description:
+			'preserves correct `this` and `arguments` inside block scoped loop (#10)',
 
 		input: `
 			for ( let i = 0; i < 10; i += 1 ) {
@@ -157,7 +163,8 @@ module.exports = [
 	},
 
 	{
-		description: 'maintains value of for loop variables between iterations (#11)',
+		description:
+			'maintains value of for loop variables between iterations (#11)',
 
 		input: `
 			var fns = [];
@@ -181,7 +188,8 @@ module.exports = [
 	},
 
 	{
-		description: 'maintains value of for loop variables between iterations, with conflict (#11)',
+		description:
+			'maintains value of for loop variables between iterations, with conflict (#11)',
 
 		input: `
 			var i = 'conflicting';
@@ -207,7 +215,8 @@ module.exports = [
 	},
 
 	{
-		description: 'loop variables with UpdateExpresssions between iterations (#150)',
+		description:
+			'loop variables with UpdateExpresssions between iterations (#150)',
 
 		input: `
 			var fns = [];
@@ -234,7 +243,8 @@ module.exports = [
 	},
 
 	{
-		description: 'loop variables with UpdateExpresssions between iterations, with conflict (#150)',
+		description:
+			'loop variables with UpdateExpresssions between iterations, with conflict (#150)',
 
 		input: `
 			var i = 'conflicting';
@@ -349,7 +359,8 @@ module.exports = [
 	},
 
 	{
-		description: 'does not incorrectly rename variables declared in for loop head',
+		description:
+			'does not incorrectly rename variables declared in for loop head',
 
 		input: `
 			for ( let foo = 0; foo < 10; foo += 1 ) {
@@ -365,7 +376,8 @@ module.exports = [
 	},
 
 	{
-		description: 'does not rewrite as function if `transforms.letConst === false`',
+		description:
+			'does not rewrite as function if `transforms.letConst === false`',
 		options: { transforms: { letConst: false } },
 
 		input: `
@@ -514,7 +526,8 @@ module.exports = [
 	},
 
 	{
-		description: 'complex destructuring in variable declaration in for loop head',
+		description:
+			'complex destructuring in variable declaration in for loop head',
 
 		input: `
 			var range = function () {
@@ -536,7 +549,8 @@ module.exports = [
 	},
 
 	{
-		description: 'arrow functions in block-less for loops in a block-less if/else chain (#110)',
+		description:
+			'arrow functions in block-less for loops in a block-less if/else chain (#110)',
 
 		input: `
 			if (x)
@@ -595,7 +609,8 @@ module.exports = [
 	},
 
 	{
-		description: 'always initialises block-scoped variable in for-of loop (#125)',
+		description:
+			'always initialises block-scoped variable in for-of loop (#125)',
 
 		options: { transforms: { dangerousForOf: true } },
 
@@ -618,11 +633,12 @@ module.exports = [
 					f(b, j, k, x, y)
 				}
 			}
-		`,
+		`
 	},
 
 	{
-		description: 'always initialises block-scoped variable in simple for-of loop (#125)',
+		description:
+			'always initialises block-scoped variable in simple for-of loop (#125)',
 
 		options: { transforms: { dangerousForOf: true } },
 
@@ -639,7 +655,7 @@ module.exports = [
 				var x = (void 0), y = 2, z = (void 0);
 				f(b, x++, y++, z++)
 			}
-		`,
+		`
 	},
 
 	{
@@ -658,11 +674,12 @@ module.exports = [
 				var x = (void 0), y = 2, z = (void 0);
 				f(k, r++, s++, t++, x++, y++, z++)
 			}
-		`,
+		`
 	},
 
 	{
-		description: 'use alias for this in right side of nested for-in loop declaration (#142)',
+		description:
+			'use alias for this in right side of nested for-in loop declaration (#142)',
 
 		input: `
 			let arr = [];
@@ -701,11 +718,12 @@ module.exports = [
 				console.log( arr.join( ' ' ) );
 			};
 			new Foo().do();
-		`,
+		`
 	},
 
 	{
-		description: 'use alias for this in right side of nested for-of loop declaration (#142)',
+		description:
+			'use alias for this in right side of nested for-of loop declaration (#142)',
 
 		options: { transforms: { dangerousForOf: true } },
 
@@ -750,7 +768,6 @@ module.exports = [
 				console.log( arr.join( ' ' ) );
 			};
 			new Foo().do();
-		`,
-	},
-
+		`
+	}
 ];

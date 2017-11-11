@@ -1,2 +1,2 @@
-console.log( 'bar' );
+console.log('bar');
 //# sourceMappingURL=bar.js.map

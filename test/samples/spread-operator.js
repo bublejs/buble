@@ -24,13 +24,15 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles a spread operator in a method call with other arguments',
+		description:
+			'transpiles a spread operator in a method call with other arguments',
 		input: `var max = Math.max( 0, ...values );`,
 		output: `var max = Math.max.apply( Math, [ 0 ].concat( values ) );`
 	},
 
 	{
-		description: 'transpiles a spread operator in a method call of an expression',
+		description:
+			'transpiles a spread operator in a method call of an expression',
 
 		input: `
 			( foo || bar ).baz( ...values );`,
@@ -55,7 +57,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles a spread operator in a call in an arrow function using this (#115)',
+		description:
+			'transpiles a spread operator in a call in an arrow function using this (#115)',
 
 		input: `
 			function foo(...args) {
@@ -106,7 +109,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles a spread operator in a new call in an arrow function using this',
+		description:
+			'transpiles a spread operator in a new call in an arrow function using this',
 
 		input: `
 			function foo(...args) {
@@ -156,7 +160,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles a spread operator in an expression method call within an if',
+		description:
+			'transpiles a spread operator in an expression method call within an if',
 
 		input: `
 			var result;
@@ -173,7 +178,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles spread operators in expression method calls within a function',
+		description:
+			'transpiles spread operators in expression method calls within a function',
 
 		input: `
 			function foo() {
@@ -245,9 +251,11 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles spread operators with template literals (issue #99)',
+		description:
+			'transpiles spread operators with template literals (issue #99)',
 		input: 'console.log( `%s ${label}:`, `${color}`, ...args );',
-		output: 'console.log.apply( console, [ ("%s " + label + ":"), ("" + color) ].concat( args ) );'
+		output:
+			'console.log.apply( console, [ ("%s " + label + ":"), ("" + color) ].concat( args ) );'
 	},
 
 	{
@@ -257,7 +265,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles a spread operator in a function call with other arguments',
+		description:
+			'transpiles a spread operator in a function call with other arguments',
 		input: `sprintf( str, ...values );`,
 		output: `sprintf.apply( void 0, [ str ].concat( values ) );`
 	},
@@ -269,14 +278,16 @@ module.exports = [
 	},
 
 	{
-		description: 'can be disabled in array expressions `transforms.spreadRest: false`',
+		description:
+			'can be disabled in array expressions `transforms.spreadRest: false`',
 		options: { transforms: { spreadRest: false } },
 		input: `var chars = [ ...string ]`,
 		output: `var chars = [ ...string ]`
 	},
 
 	{
-		description: 'can be disabled in call expressions with `transforms.spreadRest: false`',
+		description:
+			'can be disabled in call expressions with `transforms.spreadRest: false`',
 		options: { transforms: { spreadRest: false } },
 		input: `var max = Math.max( ...values );`,
 		output: `var max = Math.max( ...values );`
@@ -289,7 +300,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles multiple spread operators in an array with trailing comma',
+		description:
+			'transpiles multiple spread operators in an array with trailing comma',
 		input: `var arr = [ ...a, ...b, ...c, ];`,
 		output: `var arr = a.concat( b, c );`
 	},
@@ -301,7 +313,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles mixture of spread and non-spread elements in array with trailing comma',
+		description:
+			'transpiles mixture of spread and non-spread elements in array with trailing comma',
 		input: `var arr = [ ...a, b, ...c, d, ];`,
 		output: `var arr = a.concat( [b], c, [d] );`
 	},
@@ -370,7 +383,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles mixture of spread and non-spread operators in function call',
+		description:
+			'transpiles mixture of spread and non-spread operators in function call',
 		input: `var max = Math.max( ...a, b, ...c, d );`,
 		output: `var max = Math.max.apply( Math, a.concat( [b], c, [d] ) );`
 	},
@@ -559,6 +573,5 @@ module.exports = [
 						var ref$1;; }; }
 			}
 		`
-	},
-
+	}
 ];

@@ -1,1 +1,1 @@
-var img = React.createElement( 'img', { src: 'foo.gif' });
+var img = React.createElement('img', { src: 'foo.gif' });
