@@ -1,3 +1,1 @@
-var answer = function() {
-	return 42;
-};
+var answer = function () { return 42; };

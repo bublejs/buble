@@ -1,3 +1,1 @@
-const answer = function() {
-	return 42;
-};
+const answer = function () { return 42; };
