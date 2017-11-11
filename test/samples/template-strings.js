@@ -102,5 +102,11 @@ module.exports = [
 		description: 'concats expression with variable',
 		input: 'var str = `${a + b}${c}`;',
 		output: 'var str = "" + (a + b) + c;'
+	},
+
+	{
+		description: 'interpolations inside interpolations',
+		input: 'var string = `foo${`${bar}`}`',
+		output: `var string = "foo" + ("" + bar)`
 	}
 ];
