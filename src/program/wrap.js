@@ -13,42 +13,45 @@ const statementsWithBlocks = {
 	ArrowFunctionExpression: 'body'
 };
 
-export default function wrap ( raw, parent ) {
-	if ( !raw ) return;
+export default function wrap(raw, parent) {
+	if (!raw) return;
 
-	if ( 'length' in raw ) {
+	if ('length' in raw) {
 		let i = raw.length;
-		while ( i-- ) wrap( raw[i], parent );
+		while (i--) wrap(raw[i], parent);
 		return;
 	}
 
 	// with e.g. shorthand properties, key and value are
 	// the same node. We don't want to wrap an object twice
-	if ( raw.__wrapped ) return;
+	if (raw.__wrapped) return;
 	raw.__wrapped = true;
 
-	if ( !keys[ raw.type ] ) {
-		keys[ raw.type ] = Object.keys( raw ).filter( key => typeof raw[ key ] === 'object' );
+	if (!keys[raw.type]) {
+		keys[raw.type] = Object.keys(raw).filter(
+			key => typeof raw[key] === 'object'
+		);
 	}
 
 	// special case – body-less if/for/while statements. TODO others?
-	const bodyType = statementsWithBlocks[ raw.type ];
-	if ( bodyType && raw[ bodyType ].type !== 'BlockStatement' ) {
-		const expression = raw[ bodyType ];
+	const bodyType = statementsWithBlocks[raw.type];
+	if (bodyType && raw[bodyType].type !== 'BlockStatement') {
+		const expression = raw[bodyType];
 
 		// create a synthetic block statement, otherwise all hell
 		// breaks loose when it comes to block scoping
-		raw[ bodyType ] = {
+		raw[bodyType] = {
 			start: expression.start,
 			end: expression.end,
 			type: 'BlockStatement',
-			body: [ expression ],
+			body: [expression],
 			synthetic: true
 		};
 	}
 
-	new Node( raw, parent );
+	new Node(raw, parent);
 
-	const type = ( raw.type === 'BlockStatement' ? BlockStatement : types[ raw.type ] ) || Node;
+	const type =
+		(raw.type === 'BlockStatement' ? BlockStatement : types[raw.type]) || Node;
 	raw.__proto__ = type.prototype;
 }

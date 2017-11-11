@@ -1,2 +1,2 @@
 /* @jsx customPragma */
-var div = <div>Hello</div>
+var div = <div>Hello</div>;

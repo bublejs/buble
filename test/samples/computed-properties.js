@@ -158,7 +158,8 @@ module.exports = [
 	},
 
 	{
-		description: 'creates a computed method with a non-identifier expression (#78)',
+		description:
+			'creates a computed method with a non-identifier expression (#78)',
 
 		input: `
 			var obj = {
@@ -175,7 +176,8 @@ module.exports = [
 	},
 
 	{
-		description: 'does not require space before parens of computed method (#82)',
+		description:
+			'does not require space before parens of computed method (#82)',
 
 		input: `
 			var obj = {
@@ -192,7 +194,8 @@ module.exports = [
 	},
 
 	{
-		description: 'supports computed shorthand function with object spread in body (#135)',
+		description:
+			'supports computed shorthand function with object spread in body (#135)',
 
 		options: {
 			objectAssign: 'Object.assign'
@@ -215,7 +218,8 @@ module.exports = [
 	},
 
 	{
-		description: 'object literal with computed property within arrow expression (#126)',
+		description:
+			'object literal with computed property within arrow expression (#126)',
 
 		input: `
 			foo => bar({[x - y]: obj});
@@ -224,6 +228,5 @@ module.exports = [
 			!function(foo) { return bar(( obj$1 = {}, obj$1[x - y] = obj, obj$1 ))
 				var obj$1;; };
 		`
-	},
-
+	}
 ];

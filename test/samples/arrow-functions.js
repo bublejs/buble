@@ -175,7 +175,8 @@ module.exports = [
 	},
 
 	{
-		description: 'handles standalone arrow function expression statement within a function',
+		description:
+			'handles standalone arrow function expression statement within a function',
 
 		input: `
 			function no_op () {
@@ -189,7 +190,8 @@ module.exports = [
 	},
 
 	{
-		description: 'are transformed even if disabled if they have a transpiled spread parameter',
+		description:
+			'are transformed even if disabled if they have a transpiled spread parameter',
 
 		options: { transforms: { arrow: false, spreadRest: true } },
 
@@ -203,6 +205,5 @@ module.exports = [
 
 					return console.log( args );
 				};`
-
 	}
 ];

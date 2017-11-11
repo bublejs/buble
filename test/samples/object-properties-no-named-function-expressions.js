@@ -52,7 +52,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles shorthand methods with numeric or string names (#139)',
+		description:
+			'transpiles shorthand methods with numeric or string names (#139)',
 		options: { namedFunctionExpressions: false },
 
 		input: `
@@ -83,15 +84,23 @@ module.exports = [
 	},
 
 	{
-		description: 'shorthand properties can be disabled with `transforms.conciseMethodProperty === false`',
-		options: { namedFunctionExpressions: false, transforms: { conciseMethodProperty: false } },
+		description:
+			'shorthand properties can be disabled with `transforms.conciseMethodProperty === false`',
+		options: {
+			namedFunctionExpressions: false,
+			transforms: { conciseMethodProperty: false }
+		},
 		input: `var obj = { x, y, z () {} }`,
 		output: `var obj = { x, y, z () {} }`
 	},
 
 	{
-		description: 'computed properties can be disabled with `transforms.computedProperty === false`',
-		options: { namedFunctionExpressions: false, transforms: { computedProperty: false } },
+		description:
+			'computed properties can be disabled with `transforms.computedProperty === false`',
+		options: {
+			namedFunctionExpressions: false,
+			transforms: { computedProperty: false }
+		},
 		input: `var obj = { [x]: 'x' }`,
 		output: `var obj = { [x]: 'x' }`
 	},
@@ -114,5 +123,5 @@ module.exports = [
 				{ console.log(JSON.stringify(( obj$1 = {}, obj$1['bar'] = 3, obj$1 )));
 			var obj$1; }
 		`
-	},
+	}
 ];

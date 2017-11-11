@@ -2,7 +2,7 @@ import MagicString from 'magic-string';
 import BlockStatement from './BlockStatement.js';
 import wrap from './wrap.js';
 
-export default function Program ( source, ast, transforms, options ) {
+export default function Program(source, ast, transforms, options) {
 	this.type = 'Root';
 
 	// options
@@ -10,29 +10,29 @@ export default function Program ( source, ast, transforms, options ) {
 	this.options = options;
 
 	this.source = source;
-	this.magicString = new MagicString( source );
+	this.magicString = new MagicString(source);
 
 	this.ast = ast;
 	this.depth = 0;
 
-	wrap( this.body = ast, this );
+	wrap((this.body = ast), this);
 	this.body.__proto__ = BlockStatement.prototype;
 
 	this.indentExclusionElements = [];
-	this.body.initialise( transforms );
+	this.body.initialise(transforms);
 
-	this.indentExclusions = Object.create( null );
-	for ( const node of this.indentExclusionElements ) {
-		for ( let i = node.start; i < node.end; i += 1 ) {
-			this.indentExclusions[ i ] = true;
+	this.indentExclusions = Object.create(null);
+	for (const node of this.indentExclusionElements) {
+		for (let i = node.start; i < node.end; i += 1) {
+			this.indentExclusions[i] = true;
 		}
 	}
 
-	this.body.transpile( this.magicString, transforms );
+	this.body.transpile(this.magicString, transforms);
 }
 
 Program.prototype = {
-	export ( options = {} ) {
+	export(options = {}) {
 		return {
 			code: this.magicString.toString(),
 			map: this.magicString.generateMap({
@@ -43,11 +43,11 @@ Program.prototype = {
 		};
 	},
 
-	findNearest () {
+	findNearest() {
 		return null;
 	},
 
-	findScope () {
+	findScope() {
 		return null;
 	}
 };

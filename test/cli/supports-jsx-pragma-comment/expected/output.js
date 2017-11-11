@@ -1,2 +1,2 @@
 /* @jsx customPragma */
-var div = customPragma( 'div', null, "Hello" )
+var div = customPragma( 'div', null, "Hello" );

@@ -6,7 +6,6 @@ module.exports = [
 			({async, foo})`,
 
 		output: `
-			({async: async, foo: foo})`,
+			({async: async, foo: foo})`
 	}
-
 ];

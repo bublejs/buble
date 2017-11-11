@@ -42,7 +42,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles a class declaration without a constructor function',
+		description:
+			'transpiles a class declaration without a constructor function',
 		options: { namedFunctionExpressions: false },
 
 		input: `
@@ -236,7 +237,10 @@ module.exports = [
 
 	{
 		description: 'transpiles export default class',
-		options: { transforms: { moduleExport: false }, namedFunctionExpressions: false },
+		options: {
+			transforms: { moduleExport: false },
+			namedFunctionExpressions: false
+		},
 
 		input: `
 			export default class Foo {
@@ -253,7 +257,10 @@ module.exports = [
 
 	{
 		description: 'transpiles export default subclass',
-		options: { transforms: { moduleExport: false }, namedFunctionExpressions: false },
+		options: {
+			transforms: { moduleExport: false },
+			namedFunctionExpressions: false
+		},
 
 		input: `
 			export default class Foo extends Bar {
@@ -280,7 +287,10 @@ module.exports = [
 
 	{
 		description: 'transpiles export default subclass with subsequent statement',
-		options: { transforms: { moduleExport: false }, namedFunctionExpressions: false },
+		options: {
+			transforms: { moduleExport: false },
+			namedFunctionExpressions: false
+		},
 
 		input: `
 			export default class Foo extends Bar {
@@ -354,7 +364,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles an anonymous class expression with a non-constructor method',
+		description:
+			'transpiles an anonymous class expression with a non-constructor method',
 		options: { namedFunctionExpressions: false },
 
 		input: `
@@ -540,7 +551,10 @@ module.exports = [
 
 	{
 		description: 'can be disabled with `transforms.classes: false`',
-		options: { namedFunctionExpressions: false, transforms: { classes: false } },
+		options: {
+			namedFunctionExpressions: false,
+			transforms: { classes: false }
+		},
 
 		input: `
 			class Foo extends Bar {
@@ -676,7 +690,8 @@ module.exports = [
 	},
 
 	{
-		description: 'verify deindent() does not corrupt string literals in class methods (#159)',
+		description:
+			'verify deindent() does not corrupt string literals in class methods (#159)',
 		options: { namedFunctionExpressions: false },
 
 		input: `
@@ -836,7 +851,8 @@ module.exports = [
 	},
 
 	{
-		description: 'uses correct indentation for inserted statements in constructor (#39)',
+		description:
+			'uses correct indentation for inserted statements in constructor (#39)',
 		options: { namedFunctionExpressions: false },
 
 		input: `
@@ -880,7 +896,8 @@ module.exports = [
 	},
 
 	{
-		description: 'uses correct indentation for inserted statements in subclass constructor (#39)',
+		description:
+			'uses correct indentation for inserted statements in subclass constructor (#39)',
 		options: { namedFunctionExpressions: false },
 
 		input: `
@@ -1071,7 +1088,7 @@ module.exports = [
 
 			Foo.prototype.catch = function () {
 				// code goes here
-			};`,
+			};`
 	},
 
 	{
@@ -1149,7 +1166,8 @@ module.exports = [
 	},
 
 	{
-		description: 'static methods with computed names with varied spacing (#139)',
+		description:
+			'static methods with computed names with varied spacing (#139)',
 		options: { namedFunctionExpressions: false },
 
 		input: `
@@ -1201,7 +1219,8 @@ module.exports = [
 	},
 
 	{
-		description: 'static methods with numeric or string names with varied spacing (#139)',
+		description:
+			'static methods with numeric or string names with varied spacing (#139)',
 		options: { namedFunctionExpressions: false },
 
 		input: `
@@ -1218,7 +1237,7 @@ module.exports = [
 			D["Static Method"] = function (){};
 			D["foo"] = function (){};
 		`
-	},
+	}
 
 	// TODO more tests. e.g. getters and setters.
 	// 'super.*' is not allowed before super()

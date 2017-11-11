@@ -96,7 +96,8 @@ module.exports = [
 	},
 
 	{
-		description: 'Safari/WebKit bug workaround: parameter shadowing function expression name (#154)',
+		description:
+			'Safari/WebKit bug workaround: parameter shadowing function expression name (#154)',
 
 		input: `
 			"use strict"; // necessary to trigger WebKit bug
@@ -184,6 +185,5 @@ module.exports = [
 				return bar;
 			}
 		`
-	},
-
+	}
 ];

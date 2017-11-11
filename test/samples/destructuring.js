@@ -87,14 +87,16 @@ module.exports = [
 	},
 
 	{
-		description: 'can be disabled in declarations with `transforms.destructuring === false`',
+		description:
+			'can be disabled in declarations with `transforms.destructuring === false`',
 		options: { transforms: { destructuring: false } },
 		input: `var { x, y } = point;`,
 		output: `var { x, y } = point;`
 	},
 
 	{
-		description: 'can be disabled in function parameters with `transforms.parameterDestructuring === false`',
+		description:
+			'can be disabled in function parameters with `transforms.parameterDestructuring === false`',
 		options: { transforms: { parameterDestructuring: false } },
 		input: `function foo ({ x, y }) {}`,
 		output: `function foo ({ x, y }) {}`
@@ -140,7 +142,8 @@ module.exports = [
 	},
 
 	{
-		description: 'does not destructure variable declarations intelligently (#53)',
+		description:
+			'does not destructure variable declarations intelligently (#53)',
 
 		input: `
 			var { foo: bar, baz } = obj;
@@ -204,7 +207,8 @@ module.exports = [
 	},
 
 	{
-		description: 'default values in destructured object parameter with a default value (#37)',
+		description:
+			'default values in destructured object parameter with a default value (#37)',
 
 		input: `
 			function foo ({ arg1 = 123, arg2 = 456 } = {}) {
@@ -511,7 +515,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles destructuring assignment of an array with a default value',
+		description:
+			'transpiles destructuring assignment of an array with a default value',
 		input: `
 			[x = 4, y] = [1, 2];`,
 		output: `
@@ -529,7 +534,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles nested destructuring assignment of an array without evaluating a memberexpr twice',
+		description:
+			'transpiles nested destructuring assignment of an array without evaluating a memberexpr twice',
 		input: `
 			[[x, z], y] = [1, 2];`,
 		output: `
@@ -538,7 +544,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles nested destructuring assignment of an array with a default',
+		description:
+			'transpiles nested destructuring assignment of an array with a default',
 		input: `
 			[[x] = [], y] = [1, 2];`,
 		output: `
@@ -574,7 +581,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles destructuring assignment of an object where key and pattern names differ',
+		description:
+			'transpiles destructuring assignment of an object where key and pattern names differ',
 		input: `
 			({x, y: z} = {x: 1});`,
 		output: `
@@ -592,7 +600,8 @@ module.exports = [
 	},
 
 	{
-		description: 'transpiles destructuring assignment of an object with a default value',
+		description:
+			'transpiles destructuring assignment of an object with a default value',
 		input: `
 			({x, y = 4} = {x: 1});`,
 		output: `
@@ -610,7 +619,7 @@ module.exports = [
 	},
 
 	{
-		description: 'doesn\'t create an object temporary unless necessary',
+		description: "doesn't create an object temporary unless necessary",
 		input: `
 			({x, y: {z}} = {x: 1});`,
 		output: `
@@ -771,5 +780,4 @@ module.exports = [
 			var obj;
 		`
 	}
-
 ];

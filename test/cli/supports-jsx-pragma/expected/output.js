@@ -1,1 +1,1 @@
-var img = NotReact.createElement( 'img', { src: 'foo.gif' });
+var img = NotReact.createElement( 'img', { src: "foo.gif" });
