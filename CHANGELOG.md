@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.17.3
+
+* Move `chalk` to dependencies ([#35](https://github.com/Rich-Harris/buble/issues/35))
+
 ## 0.17.2
 
 * Fix nested template literals regression ([#39](https://github.com/Rich-Harris/buble/issues/39))
