@@ -1,4 +1,3 @@
-import buble from 'rollup-plugin-buble';
 import json from 'rollup-plugin-json';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
@@ -9,17 +8,6 @@ const config = {
 	plugins: [
 		json(),
 		commonjs(),
-		buble({
-			include: [
-				'src/**',
-				'node_modules/acorn-object-spread/**',
-				'node_modules/unicode-loose-match/**',
-				'node_modules/regexpu-core/**'
-			],
-			transforms: {
-				dangerousForOf: true
-			}
-		}),
 		resolve()
 	],
 	name: 'buble',
