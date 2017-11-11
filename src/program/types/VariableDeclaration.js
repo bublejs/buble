@@ -41,7 +41,7 @@ export default class VariableDeclaration extends Node {
 
 					const name = simple ? declarator.init.name : declarator.findScope( true ).createIdentifier( 'ref' );
 
-					let c = declarator.start;
+					c = declarator.start;
 
 					let statementGenerators = [];
 

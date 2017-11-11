@@ -10,6 +10,9 @@ const config = {
 		json(),
 		commonjs(),
 		buble({
+			target: {
+				node: 4
+			},
 			include: [
 				'src/**',
 				'node_modules/acorn-object-spread/**',
