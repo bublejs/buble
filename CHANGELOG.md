@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.17.2
+
+* Fix nested template literals regression ([#39](https://github.com/Rich-Harris/buble/issues/39))
+
 ## 0.17.1
 
 * Error on nested rest elements ([#31](https://github.com/Rich-Harris/buble/pull/31))
