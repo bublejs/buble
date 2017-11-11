@@ -2,6 +2,8 @@ import Node from '../Node.js';
 
 export default class TemplateLiteral extends Node {
 	transpile ( code, transforms ) {
+		super.transpile( code, transforms );
+
 		if ( transforms.templateString && this.parent.type !== 'TaggedTemplateExpression' ) {
 			let ordered = this.expressions.concat( this.quasis )
 				.sort( ( a, b ) => a.start - b.start || a.end - b.end )
@@ -28,6 +30,7 @@ export default class TemplateLiteral extends Node {
 			}
 
 			const parenthesise = ( this.quasis.length !== 1 || this.expressions.length !== 0 ) &&
+			                     this.parent.type !== 'TemplateLiteral' &&
 			                     this.parent.type !== 'AssignmentExpression' &&
 			                     this.parent.type !== 'AssignmentPattern' &&
 			                     this.parent.type !== 'VariableDeclarator' &&
@@ -36,35 +39,30 @@ export default class TemplateLiteral extends Node {
 			if ( parenthesise ) code.appendRight( this.start, '(' );
 
 			let lastIndex = this.start;
+
 			ordered.forEach( ( node, i ) => {
 				let prefix = i === 0 ?
 					parenthesise ? '(' : '' :
 					' + ';
 
 				if ( node.type === 'TemplateElement' ) {
-					const prefix__plus =
-								(i === 0
-									&& parenthesise
-									&& this.parent.type === 'TemplateLiteral'
-								) ? ' + '
-									: '';
-					code.overwrite( lastIndex, node.end, prefix__plus + prefix + JSON.stringify( node.value.cooked ) );
+					code.overwrite( lastIndex, node.end, prefix + JSON.stringify( node.value.cooked ) );
 				} else {
 					const parenthesise = node.type !== 'Identifier'; // TODO other cases where it's safe
 
 					if ( parenthesise ) prefix += '(';
 
 					code.remove( lastIndex, node.start );
+
 					if ( prefix ) code.prependRight( node.start, prefix );
 					if ( parenthesise ) code.appendLeft( node.end, ')' );
 				}
+
 				lastIndex = node.end;
 			});
 
 			if ( parenthesise ) code.appendLeft( lastIndex, ')' );
 			code.remove( lastIndex, this.end );
 		}
-
-		super.transpile( code, transforms );
 	}
 }
