@@ -31,5 +31,13 @@ module.exports = [
 		options: { transforms: { modules: false } },
 		input: `import 'foo'; export { foo };`,
 		output: `import 'foo'; export { foo };`
+	},
+
+	{
+		description:
+			'Supports anonymous functions as default export',
+		options: { transforms: { modules: false } },
+		input: `export default function () {}`,
+		output: `export default function () {}`
 	}
 ];
