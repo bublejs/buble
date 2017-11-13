@@ -367,6 +367,29 @@ module.exports = [
 	},
 
 	{
+		description:
+			'transpiles an anonymous class expression that is assigned to a property',
+
+		input: `
+			const q = {};
+
+			q.a = class {
+				c () {}
+			};`,
+
+		output: `
+			var q = {};
+
+			q.a = (function () {
+				function a () {}
+
+				a.prototype.c = function c () {};
+
+				return a;
+			}());`
+	},
+
+	{
 		description: 'allows constructor to be in middle of body',
 
 		input: `
