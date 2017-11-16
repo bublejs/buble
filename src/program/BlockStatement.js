@@ -30,6 +30,7 @@ export default class BlockStatement extends Node {
 		this.thisAlias = null;
 		this.argumentsAlias = null;
 		this.defaultParameters = [];
+		this.createdDeclarations = [];
 
 		// normally the scope gets created here, during initialisation,
 		// but in some cases (e.g. `for` statements), we need to create
@@ -166,6 +167,13 @@ export default class BlockStatement extends Node {
 
 		super.transpile(code, transforms);
 
+		if (this.createdDeclarations.length) {
+			introStatementGenerators.push((start, prefix, suffix) => {
+				const assignment = `${prefix}var ${this.createdDeclarations.join(', ')}${suffix}`;
+				code.appendLeft(start, assignment);
+			});
+		}
+
 		if (this.synthetic) {
 			if (this.parent.type === 'ArrowFunctionExpression') {
 				const expr = this.body[0];
@@ -201,6 +209,12 @@ export default class BlockStatement extends Node {
 			if (i === introStatementGenerators.length - 1) suffix = `;\n`;
 			fn(start, prefix, suffix);
 		});
+	}
+
+	declareIdentifier(name) {
+		const id = this.scope.createIdentifier(name);
+		this.createdDeclarations.push(id);
+		return id;
 	}
 
 	transpileParameters(code, transforms, indentation, introStatementGenerators) {
