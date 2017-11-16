@@ -90,8 +90,8 @@ export default class BlockStatement extends Node {
 
 			this.indentation = '';
 
+			// eslint-disable-next-line no-constant-condition
 			while (true) {
-				// eslint-disable-line no-constant-condition
 				c += 1;
 				const char = source[c];
 
