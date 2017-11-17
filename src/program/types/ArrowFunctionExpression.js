@@ -33,6 +33,16 @@ export default class ArrowFunctionExpression extends Node {
 		} else {
 			super.transpile(code, transforms);
 		}
+		if (transforms.trailingFunctionCommas && this.params.length) {
+			let c = this.params[this.params.length - 1].end
+			while (code.original[c] !== ')' && c < this.body.start) {
+				if (code.original[c] === ',') {
+					code.remove(c, c + 1);
+					break;
+				}
+				++c;
+			}
+		}
 	}
 
 	// Returns whether any transforms that will happen use `arguments`

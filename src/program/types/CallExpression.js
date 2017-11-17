@@ -101,6 +101,17 @@ export default class CallExpression extends Node {
 			}
 		}
 
+		if (transforms.trailingFunctionCommas && this.arguments.length) {
+			let c = this.arguments[this.arguments.length - 1].end
+			while (code.original[c] !== ')' && c < this.end) {
+				if (code.original[c] === ',') {
+					code.remove(c, c + 1);
+					break;
+				}
+				++c;
+			}
+		}
+
 		super.transpile(code, transforms);
 	}
 }
