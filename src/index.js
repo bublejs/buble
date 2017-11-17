@@ -22,7 +22,7 @@ export function target(target) {
 		const versions = matrix[environment];
 		if (!versions)
 			throw new Error(
-				`Unknown environment '${environment}'. Please raise an issue at https://gitlab.com/Rich-Harris/buble/issues`
+				`Unknown environment '${environment}'. Please raise an issue at https://github.com/Rich-Harris/buble/issues`
 			);
 
 		const targetVersion = target[environment];
@@ -32,7 +32,7 @@ export function target(target) {
 					versions
 				).join(
 					', '
-				)}. Please raise an issue at https://gitlab.com/Rich-Harris/buble/issues`
+				)}. Please raise an issue at https://github.com/Rich-Harris/buble/issues`
 			);
 		const support = versions[targetVersion];
 
