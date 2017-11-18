@@ -10,7 +10,9 @@ export default class FunctionDeclaration extends Node {
 
 		this.body.createScope();
 
-		this.findScope(true).addDeclaration(this.id, 'function');
+		if (this.id) {
+			this.findScope(true).addDeclaration(this.id, 'function');
+		}
 		super.initialise(transforms);
 	}
 
