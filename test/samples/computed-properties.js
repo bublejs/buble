@@ -104,8 +104,9 @@ module.exports = [
 			var a = 'foo', obj = { [a]: 'bar', x: 42 }, bar = obj.foo;`,
 
 		output: `
-			var a = 'foo', obj = ( obj$1 = {}, obj$1[a] = 'bar', obj$1.x = 42, obj$1 ), bar = obj.foo;
-			var obj$1;`
+			var obj$1;
+
+			var a = 'foo', obj = ( obj$1 = {}, obj$1[a] = 'bar', obj$1.x = 42, obj$1 ), bar = obj.foo;`
 	},
 
 	{
@@ -136,8 +137,9 @@ module.exports = [
 			call({ [a]: 5 });`,
 
 		output: `
-			call(( obj = {}, obj[a] = 5, obj ));
-			var obj;`
+			var obj;
+
+			call(( obj = {}, obj[a] = 5, obj ));`
 	},
 
 	{
@@ -225,8 +227,22 @@ module.exports = [
 			foo => bar({[x - y]: obj});
 		`,
 		output: `
-			!function(foo) { return bar(( obj$1 = {}, obj$1[x - y] = obj, obj$1 ))
-				var obj$1;; };
+			var obj$1;
+
+			!function(foo) { return bar(( obj$1 = {}, obj$1[x - y] = obj, obj$1 )); };
+		`
+	},
+
+	{
+		description: 'Supports nested computed properties (#51)',
+
+		input: `
+			(function () { return { [key]: { [key]: val } } })
+		`,
+		output: `
+			(function () {
+			var obj, obj$1;
+ return ( obj$1 = {}, obj$1[key] = ( obj = {}, obj[key] = val, obj ), obj$1 ) })
 		`
 	}
 ];

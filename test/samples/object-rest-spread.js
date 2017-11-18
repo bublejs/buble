@@ -62,12 +62,11 @@ module.exports = [
 			var a12 = { ...b, [c]:3, d:4 };
 		`,
 		output: `
+			var obj, obj$1, obj$2, obj$3, obj$4, obj$5, obj$6, obj$7, obj$8;
+
 			var a0 = Object.assign(( obj = {}, obj[ x ] = true, obj ), y);
-			var obj;
 			var a1 = Object.assign(( obj$1 = {}, obj$1[ w ] = 0, obj$1[ x ] = true, obj$1 ), y);
-			var obj$1;
 			var a2 = Object.assign(( obj$2 = { v: v }, obj$2[ w ] = 0, obj$2[ x ] = true, obj$2 ), y);
-			var obj$2;
 			var a3 = {};
 			a3[ w ] = 0;
 			a3[ x ] = true;
@@ -76,24 +75,18 @@ module.exports = [
 			a4[ x ] = true;
 			a4.y = y;
 			var a5 = Object.assign(( obj$3 = { k : 9 }, obj$3[ x ] = true, obj$3 ), y);
-			var obj$3;
 			var a6 = Object.assign({}, y, ( obj$4 = {}, obj$4[ x ] = true, obj$4 ));
-			var obj$4;
 			var a7 = Object.assign({}, y, ( obj$5 = {}, obj$5[ w ] = 0, obj$5[ x ] = true, obj$5 ));
-			var obj$5;
 			var a8 = Object.assign({ k : 9 }, y, ( obj$6 = {}, obj$6[ x ] = true, obj$6 ));
-			var obj$6;
 			var a9 = {};
 			a9[ x ] = true;
 			a9[ y ] = false;
 			a9[ z ] = 9;
 			var a10 = Object.assign(( obj$7 = {}, obj$7[ x ] = true, obj$7 ), y, {p: p}, q);
-			var obj$7;
 			var a11 = { x: x };
 			a11[c] = 9;
 			a11.y = y;
 			var a12 = Object.assign({}, b, ( obj$8 = {}, obj$8[c] = 3, obj$8 ), {d:4});
-			var obj$8;
 		`
 	},
 
@@ -119,32 +112,21 @@ module.exports = [
 			f12({ ...b, [c]:3, d:4 });
 		`,
 		output: `
+			var obj, obj$1, obj$2, obj$3, obj$4, obj$5, obj$6, obj$7, obj$8, obj$9, obj$10, obj$11, obj$12;
+
 			f0( Object.assign(( obj = {}, obj[ x ] = true, obj ), y) );
-			var obj;
 			f1( Object.assign(( obj$1 = {}, obj$1[ w ] = 0, obj$1[ x ] = true, obj$1 ), y) );
-			var obj$1;
 			f2( Object.assign(( obj$2 = { v: v }, obj$2[ w ] = 0, obj$2[ x ] = true, obj$2 ), y) );
-			var obj$2;
 			f3( ( obj$3 = {}, obj$3[ w ] = 0, obj$3[ x ] = true, obj$3 ) );
-			var obj$3;
 			f4( ( obj$4 = {}, obj$4[ w ] = 0, obj$4[ x ] = true, obj$4.y = y, obj$4 ) );
-			var obj$4;
 			f5( Object.assign(( obj$5 = { k : 9 }, obj$5[ x ] = true, obj$5 ), y) );
-			var obj$5;
 			f6( Object.assign({}, y, ( obj$6 = {}, obj$6[ x ] = true, obj$6 )) );
-			var obj$6;
 			f7( Object.assign({}, y, ( obj$7 = {}, obj$7[ w ] = 0, obj$7[ x ] = true, obj$7 )) );
-			var obj$7;
 			f8( Object.assign({ k : 9 }, y, ( obj$8 = {}, obj$8[ x ] = true, obj$8 )) );
-			var obj$8;
 			f9( ( obj$9 = {}, obj$9[ x ] = true, obj$9[ y ] = false, obj$9[ z ] = 9, obj$9 ) );
-			var obj$9;
 			f10( Object.assign(( obj$10 = {}, obj$10[ x ] = true, obj$10 ), y, {p: p}, q) );
-			var obj$10;
 			f11( ( obj$11 = { x: x }, obj$11[c] = 9, obj$11.y = y, obj$11 ) );
-			var obj$11;
 			f12(Object.assign({}, b, ( obj$12 = {}, obj$12[c] = 3, obj$12 ), {d:4}));
-			var obj$12;
 		`
 	},
 
