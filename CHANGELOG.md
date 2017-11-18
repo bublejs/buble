@@ -1,5 +1,12 @@
 # buble changelog
 
+## 0.18.0
+
+* Allow anonymous functions and classes as default exports ([#37](https://github.com/Rich-Harris/buble/issues/37))
+* Handle non-breaking spaces in JSX ([#46](https://github.com/Rich-Harris/buble/issues/46))
+* Allow anonymous classes to be assigned to properties ([#33](https://github.com/Rich-Harris/buble/issues/33))
+* Add `trailingFunctionCommas` transformation ([#50](https://github.com/Rich-Harris/buble/issues/50))
+
 ## 0.17.3
 
 * Move `chalk` to dependencies ([#35](https://github.com/Rich-Harris/buble/issues/35))
