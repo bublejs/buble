@@ -21,7 +21,7 @@ export default class JSXElement extends Node {
 			if (child.type !== 'Literal') return true;
 
 			// remove whitespace-only literals, unless on a single line
-			return /\S/.test(child.value) || !/\n/.test(child.value);
+			return /\S/.test(child.raw) || !/\n/.test(child.raw);
 		});
 
 		if (children.length) {
@@ -43,7 +43,7 @@ export default class JSXElement extends Node {
 				}
 
 				if (child.type === 'Literal') {
-					const str = normalise(child.value, i === children.length - 1);
+					const str = normalise(child.raw, i === children.length - 1);
 					code.overwrite(child.start, child.end, str);
 				}
 

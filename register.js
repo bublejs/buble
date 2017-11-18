@@ -14,7 +14,7 @@ if ( !~versions.indexOf( nodeVersion ) ) {
 	if ( +nodeVersion > 6 ) {
 		nodeVersion = '6';
 	} else {
-		throw new Error( 'Unsupported version (' + nodeVersion + '). Please raise an issue at https://gitlab.com/Rich-Harris/buble/issues' );
+		throw new Error( 'Unsupported version (' + nodeVersion + '). Please raise an issue at https://github.com/Rich-Harris/buble/issues' );
 	}
 }
 

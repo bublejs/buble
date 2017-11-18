@@ -2,13 +2,17 @@ import Node from '../Node.js';
 
 export default class ClassExpression extends Node {
 	initialise(transforms) {
-		this.name = this.id
+		this.name = ( this.id
 			? this.id.name
 			: this.parent.type === 'VariableDeclarator'
 				? this.parent.id.name
-				: this.parent.type === 'AssignmentExpression'
-					? this.parent.left.name
-					: this.findScope(true).createIdentifier('anonymous');
+				: this.parent.type !== 'AssignmentExpression'
+					? null
+					: this.parent.left.type === 'Identifier'
+						? this.parent.left.name
+						: this.parent.left.type === 'MemberExpression'
+							? this.parent.left.property.name
+							: null ) || this.findScope(true).createIdentifier('anonymous');
 
 		super.initialise(transforms);
 	}
