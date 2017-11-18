@@ -1,4 +1,5 @@
 import Node from '../Node.js';
+import removeTrailingComma from '../../utils/removeTrailingComma.js';
 
 export default class ArrowFunctionExpression extends Node {
 	initialise(transforms) {
@@ -7,6 +8,8 @@ export default class ArrowFunctionExpression extends Node {
 	}
 
 	transpile(code, transforms) {
+		const naked = this.params.length === 1 && this.start === this.params[0].start;
+
 		if (transforms.arrow || this.needsArguments(transforms)) {
 			// remove arrow
 			let charIndex = this.body.start;
@@ -18,7 +21,7 @@ export default class ArrowFunctionExpression extends Node {
 			super.transpile(code, transforms);
 
 			// wrap naked parameter
-			if (this.params.length === 1 && this.start === this.params[0].start) {
+			if (naked) {
 				code.prependRight(this.params[0].start, '(');
 				code.appendLeft(this.params[0].end, ')');
 			}
@@ -33,15 +36,9 @@ export default class ArrowFunctionExpression extends Node {
 		} else {
 			super.transpile(code, transforms);
 		}
-		if (transforms.trailingFunctionCommas && this.params.length) {
-			let c = this.params[this.params.length - 1].end
-			while (code.original[c] !== ')' && c < this.body.start) {
-				if (code.original[c] === ',') {
-					code.remove(c, c + 1);
-					break;
-				}
-				++c;
-			}
+
+		if (transforms.trailingFunctionCommas && this.params.length && !naked) {
+			removeTrailingComma(code, this.params[this.params.length - 1].end);
 		}
 	}
 

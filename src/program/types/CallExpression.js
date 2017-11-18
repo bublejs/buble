@@ -1,5 +1,6 @@
 import Node from '../Node.js';
 import spread, { isArguments } from '../../utils/spread.js';
+import removeTrailingComma from '../../utils/removeTrailingComma.js';
 
 export default class CallExpression extends Node {
 	initialise(transforms) {
@@ -102,14 +103,7 @@ export default class CallExpression extends Node {
 		}
 
 		if (transforms.trailingFunctionCommas && this.arguments.length) {
-			let c = this.arguments[this.arguments.length - 1].end
-			while (code.original[c] !== ')' && c < this.end) {
-				if (code.original[c] === ',') {
-					code.remove(c, c + 1);
-					break;
-				}
-				++c;
-			}
+			removeTrailingComma(code, this.arguments[this.arguments.length - 1].end);
 		}
 
 		super.transpile(code, transforms);

@@ -1,5 +1,6 @@
 import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
+import removeTrailingComma from '../../utils/removeTrailingComma.js';
 
 export default class FunctionDeclaration extends Node {
 	initialise(transforms) {
@@ -16,14 +17,7 @@ export default class FunctionDeclaration extends Node {
 	transpile(code, transforms) {
 		super.transpile(code, transforms);
 		if (transforms.trailingFunctionCommas && this.params.length) {
-			let c = this.params[this.params.length - 1].end
-			while (code.original[c] !== ')' && c < this.body.start) {
-				if (code.original[c] === ',') {
-					code.remove(c, c + 1);
-					break;
-				}
-				++c;
-			}
+			removeTrailingComma(code, this.params[this.params.length - 1].end);
 		}
 	}
 }
