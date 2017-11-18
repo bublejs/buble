@@ -31,5 +31,33 @@ module.exports = [
 		options: { transforms: { modules: false } },
 		input: `import 'foo'; export { foo };`,
 		output: `import 'foo'; export { foo };`
+	},
+
+	{
+		description:
+			'Supports anonymous classes as default export',
+		options: { transforms: { modules: false } },
+		input: `
+			export default class {
+				constructor() {
+					foo()
+				}
+
+				a() {
+					bar()
+				}
+			}
+		`,
+		output: `
+			var defaultExport = function defaultExport() {
+				foo()
+			};
+
+			defaultExport.prototype.a = function a () {
+				bar()
+			};
+
+			export default defaultExport;
+		`
 	}
 ];
