@@ -272,5 +272,20 @@ module.exports = [
 		output: `
 			React.createElement( Thing, { 'data-foo': true })
 		`
+	},
+
+	{
+		description: 'handles non-breaking white-space entities',
+
+		input: `
+			<div>
+				<a>1</a>&nbsp;
+				&nbsp;
+			</div>
+		`,
+		output: `
+			React.createElement( 'div', null,
+				React.createElement( 'a', null, "1" ), "&nbsp; &nbsp;")
+		`
 	}
 ];
