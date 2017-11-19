@@ -13016,6 +13016,12 @@ var parse = ref.parse;
 
 const dangerousTransforms = ['dangerousTaggedTemplateString', 'dangerousForOf'];
 
+const fallbackOrThrow = (fallback, error) => {
+	if (!('bitmask' in fallback)) throw new Error(error)
+	if (!fallback.suppress) console.error(error);
+	return fallback.bitmask
+};
+
 function target(target) {
 	const fallback = {}; 
 	if ('fallback' in target) {
@@ -13023,7 +13029,10 @@ function target(target) {
 		fallback.version = target.fallback[fallback.environment];
 		fallback.suppress = !!target.fallback.suppress;
 		delete target.fallback;
+		if (matrix[fallback.environment] && (fallback.version in matrix[fallback.environment]))
+			fallback.bitmask = matrix[fallback.environment][fallback.version];
 	}
+
 	const targets = Object.keys(target);
 	let bitmask = targets.length
 		? 0b11111111111111111111111111111111
@@ -13031,30 +13040,10 @@ function target(target) {
 
 	Object.keys(target).forEach(environment => {
 		const versions = matrix[environment];
-		if (!versions)
-			throw new Error(
-				`Unknown environment '${environment}'. Please raise an issue at https://github.com/Rich-Harris/buble/issues`
-			);
-
-		const targetVersion = target[environment];
-		if (!(targetVersion in versions))
-			if (!matrix[fallback.environment] || !(fallback.version in matrix[fallback.environment]))
-				throw new Error(
-					`Support data exists for the following versions of ${environment}: ${Object.keys(
-						versions
-					).join(
-						', '
-					)}. Please raise an issue at https://github.com/Rich-Harris/buble/issues. Data for fallback is not available either.`
-				);
-			else 
-				if (!fallback.suppress)
-					console.error(`Support data exists for the following versions of ${environment}: ${Object.keys(
-							versions
-						).join(
-							', '
-						)}. Please raise an issue at https://github.com/Rich-Harris/buble/issues. Defaulting to fallback version ${fallback.environment} ${fallback.version}`);
-
-		const support = versions[targetVersion] || matrix[fallback.environment][fallback.version];
+		const support = 
+			!versions                          ? fallbackOrThrow(fallback, `Unknown environment '${environment}'. Please raise an issue at https://github.com/Rich-Harris/buble/issues`)
+		: !(target[environment] in versions) ? fallbackOrThrow(fallback, `Support data exists for the following versions of ${environment}: ${Object.keys(versions).join(', ')}. Please raise an issue at https://github.com/Rich-Harris/buble/issues`)
+																				 : versions[target[environment]];
 
 		bitmask &= support;
 	});

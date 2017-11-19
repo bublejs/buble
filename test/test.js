@@ -182,6 +182,20 @@ describe('buble', () => {
 			assert.ok(!transforms.arrow);
 		});
 
+		it('falls back if nonexistent browser', () => {
+			var transforms = buble.target({ nonexistent: 99, fallback: { node: 5 }});
+
+			assert.ok(transforms.defaultParameter);
+			assert.ok(!transforms.arrow);
+		});
+
+		it('falls back if nonexistent version', () => {
+			var transforms = buble.target({ chrome: -99, fallback: { node: 5 }});
+
+			assert.ok(transforms.defaultParameter);
+			assert.ok(!transforms.arrow);
+		});
+
 		it('only applies necessary transforms', () => {
 			var source = `
 				const power = ( base, exponent = 2 ) => Math.pow( base, exponent );`;
