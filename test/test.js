@@ -189,11 +189,18 @@ describe('buble', () => {
 			assert.ok(!transforms.arrow);
 		});
 
-		it('falls back if nonexistent version', () => {
-			var transforms = buble.target({ chrome: -99, fallback: { node: 5 }});
+		it('uses nearest version if nonexistent version', () => {
+			var transforms = buble.target({ chrome: 51 });
+			assert.ok(transforms.exponentiation); // chrome 51
 
-			assert.ok(transforms.defaultParameter);
-			assert.ok(!transforms.arrow);
+			var transforms = buble.target({ chrome: 99 });
+			assert.ok(!transforms.exponentiation); // chrome 52
+
+			var transforms = buble.target({ chrome: 99, fallback: { node: 5 } });
+			assert.ok(!transforms.exponentiation); // chrome 52
+
+			var transforms = buble.target({ chrome: 10, fallback: { node: 5 }});
+			assert.ok(!transforms.arrow); // node 5
 		});
 
 		it('only applies necessary transforms', () => {

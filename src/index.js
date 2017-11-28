@@ -12,10 +12,18 @@ const { parse } = [acornObjectSpread, acornJsx].reduce(
 
 const dangerousTransforms = ['dangerousTaggedTemplateString', 'dangerousForOf'];
 
-const fallbackOrThrow = (fallback, error) => {
+const fallbackOrThrow = (fallback, environment, version) => {
+	const error = `Unknown environment/version '${environment}/${version}'. Please raise an issue at https://github.com/Rich-Harris/buble/issues`
 	if (!('bitmask' in fallback)) throw new Error(error)
 	if (!fallback.suppress) console.error(error)
 	return fallback.bitmask
+}
+
+const nearest = (versions, version, fallback, environment) => {
+	const nearestVersion = Object.keys(versions).sort().reverse().find(v => v <= version)
+	return nearestVersion
+		? versions[nearestVersion]
+		: fallbackOrThrow(fallback, environment, version)
 }
 
 export function target(target) {
@@ -36,10 +44,10 @@ export function target(target) {
 
 	Object.keys(target).forEach(environment => {
 		const versions = matrix[environment]
-		const support = 
-			!versions                          ? fallbackOrThrow(fallback, `Unknown environment '${environment}'. Please raise an issue at https://github.com/Rich-Harris/buble/issues`)
-		: !(target[environment] in versions) ? fallbackOrThrow(fallback, `Support data exists for the following versions of ${environment}: ${Object.keys(versions).join(', ')}. Please raise an issue at https://github.com/Rich-Harris/buble/issues`)
-																				 : versions[target[environment]]
+				, version  = target[environment]
+				, support  = !versions           ? fallbackOrThrow(fallback, environment, version)
+									 : version in versions ? versions[version]
+																				 : nearest(versions, version, fallback, environment)
 
 		bitmask &= support;
 	});

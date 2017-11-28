@@ -13022,10 +13022,18 @@ var parse = ref.parse;
 
 const dangerousTransforms = ['dangerousTaggedTemplateString', 'dangerousForOf'];
 
-const fallbackOrThrow = (fallback, error) => {
+const fallbackOrThrow = (fallback, environment, version$$1) => {
+	const error = `Unknown environment/version '${environment}/${version$$1}'. Please raise an issue at https://github.com/Rich-Harris/buble/issues`;
 	if (!('bitmask' in fallback)) throw new Error(error)
 	if (!fallback.suppress) console.error(error);
 	return fallback.bitmask
+};
+
+const nearest = (versions, version$$1, fallback, environment) => {
+	const nearestVersion = Object.keys(versions).sort().reverse().find(v => v <= version$$1);
+	return nearestVersion
+		? versions[nearestVersion]
+		: fallbackOrThrow(fallback, environment, version$$1)
 };
 
 function target(target) {
@@ -13045,11 +13053,11 @@ function target(target) {
 		: 0b01000000000000000000000000000000;
 
 	Object.keys(target).forEach(environment => {
-		const versions = matrix[environment];
-		const support = 
-			!versions                          ? fallbackOrThrow(fallback, `Unknown environment '${environment}'. Please raise an issue at https://github.com/Rich-Harris/buble/issues`)
-		: !(target[environment] in versions) ? fallbackOrThrow(fallback, `Support data exists for the following versions of ${environment}: ${Object.keys(versions).join(', ')}. Please raise an issue at https://github.com/Rich-Harris/buble/issues`)
-																				 : versions[target[environment]];
+		const versions = matrix[environment]
+				, version$$1  = target[environment]
+				, support  = !versions           ? fallbackOrThrow(fallback, environment, version$$1)
+									 : version$$1 in versions ? versions[version$$1]
+																				 : nearest(versions, version$$1, fallback, environment);
 
 		bitmask &= support;
 	});
