@@ -57,17 +57,10 @@ export default class CallExpression extends Node {
 					if (this.callee.object.type === 'Identifier') {
 						context = this.callee.object.name;
 					} else {
-						context = this.findScope(true).createIdentifier('ref');
+						context = this.findScope(true).createDeclaration('ref');
 						const callExpression = this.callee.object;
-						const enclosure = callExpression.findNearest(/Function/);
-						const block = enclosure
-							? enclosure.body.body
-							: callExpression.findNearest(/^Program$/).body;
-						const lastStatementInBlock = block[block.length - 1];
-						const i0 = lastStatementInBlock.getIndentation();
 						code.prependRight(callExpression.start, `(${context} = `);
 						code.appendLeft(callExpression.end, `)`);
-						code.appendLeft(lastStatementInBlock.end, `\n${i0}var ${context};`);
 					}
 				} else {
 					context = 'void 0';
