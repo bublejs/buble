@@ -35,8 +35,7 @@ export default class AssignmentExpression extends Node {
 
 	transpileDestructuring(code) {
 		const scope = this.findScope(true);
-		const assign = scope.createIdentifier('assign');
-		const temporaries = [assign];
+		const assign = scope.createDeclaration('assign');
 
 		const start = this.start;
 
@@ -84,9 +83,8 @@ export default class AssignmentExpression extends Node {
 				} else {
 					code.remove(pattern.left.end, pattern.right.start);
 
-					const target = scope.createIdentifier('temp');
+					const target = scope.createDeclaration('temp');
 					let source = ref;
-					temporaries.push(target);
 					if (!mayDuplicate) {
 						write(`, ${target} = ${ref}`);
 						source = target;
@@ -104,8 +102,7 @@ export default class AssignmentExpression extends Node {
 					code.remove(elements[0].end, pattern.end);
 				} else {
 					if (!mayDuplicate) {
-						const temp = scope.createIdentifier('array');
-						temporaries.push(temp);
+						const temp = scope.createDeclaration('array');
 						write(`, ${temp} = ${ref}`);
 						ref = temp;
 					}
@@ -141,8 +138,7 @@ export default class AssignmentExpression extends Node {
 					code.remove(prop.end, pattern.end);
 				} else {
 					if (!mayDuplicate) {
-						const temp = scope.createIdentifier('obj');
-						temporaries.push(temp);
+						const temp = scope.createDeclaration('obj');
 						write(`, ${temp} = ${ref}`);
 						ref = temp;
 					}
@@ -180,12 +176,6 @@ export default class AssignmentExpression extends Node {
 			// destructuring is part of an expression - need an rvalue
 			code.prependRight(start, `${text}, ${assign})`);
 		}
-
-		const statement = this.findNearest(/(?:Statement|Declaration)$/);
-		code.appendLeft(
-			statement.start,
-			`var ${temporaries.join(', ')};\n${statement.getIndentation()}`
-		);
 	}
 
 	transpileExponentiation(code) {
@@ -223,24 +213,24 @@ export default class AssignmentExpression extends Node {
 					? getAlias(left.property.name)
 					: left.property.name;
 			} else {
-				property = scope.createIdentifier('property');
+				property = scope.createDeclaration('property');
 				needsPropertyVar = true;
 			}
 
 			if (left.object.type === 'Identifier') {
 				object = getAlias(left.object.name);
 			} else {
-				object = scope.createIdentifier('object');
+				object = scope.createDeclaration('object');
 				needsObjectVar = true;
 			}
 
 			if (left.start === statement.start) {
 				if (needsObjectVar && needsPropertyVar) {
-					code.prependRight(statement.start, `var ${object} = `);
+					code.prependRight(statement.start, `${object} = `);
 					code.overwrite(
 						left.object.end,
 						left.property.start,
-						`;\n${i0}var ${property} = `
+						`;\n${i0}${property} = `
 					);
 					code.overwrite(
 						left.property.end,
@@ -248,11 +238,11 @@ export default class AssignmentExpression extends Node {
 						`;\n${i0}${object}[${property}]`
 					);
 				} else if (needsObjectVar) {
-					code.prependRight(statement.start, `var ${object} = `);
+					code.prependRight(statement.start, `${object} = `);
 					code.appendLeft(left.object.end, `;\n${i0}`);
 					code.appendLeft(left.object.end, object);
 				} else if (needsPropertyVar) {
-					code.prependRight(left.property.start, `var ${property} = `);
+					code.prependRight(left.property.start, `${property} = `);
 					code.appendLeft(left.property.end, `;\n${i0}`);
 					code.move(left.property.start, left.property.end, this.start);
 
@@ -261,17 +251,6 @@ export default class AssignmentExpression extends Node {
 					code.remove(left.property.end, left.end);
 				}
 			} else {
-				let declarators = [];
-				if (needsObjectVar) declarators.push(object);
-				if (needsPropertyVar) declarators.push(property);
-
-				if (declarators.length) {
-					code.prependRight(
-						statement.start,
-						`var ${declarators.join(', ')};\n${i0}`
-					);
-				}
-
 				if (needsObjectVar && needsPropertyVar) {
 					code.prependRight(left.start, `( ${object} = `);
 					code.overwrite(

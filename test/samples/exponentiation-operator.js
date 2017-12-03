@@ -59,7 +59,9 @@ module.exports = [
 			foo.bar.baz **= y;`,
 
 		output: `
-			var object = foo.bar;
+			var object;
+
+			object = foo.bar;
 			object.baz = Math.pow( object.baz, y );`
 	},
 
@@ -82,7 +84,9 @@ module.exports = [
 			foo[ bar() ] **= y;`,
 
 		output: `
-			var property = bar();
+			var property;
+
+			property = bar();
 			foo[property] = Math.pow( foo[property], y );`
 	},
 
@@ -94,8 +98,10 @@ module.exports = [
 			foo[ bar() ][ baz() ] **= y;`,
 
 		output: `
-			var object = foo[ bar() ];
-			var property = baz();
+			var property, object;
+
+			object = foo[ bar() ];
+			property = baz();
 			object[property] = Math.pow( object[property], y );`
 	},
 
@@ -107,7 +113,8 @@ module.exports = [
 			var baz = 1, lolwut = foo[ bar() ][ baz * 2 ] **= y;`,
 
 		output: `
-			var object, property;
+			var property, object;
+
 			var baz = 1, lolwut = ( object = foo[ bar() ], property = baz * 2, object[property] = Math.pow( object[property], y ) );`
 	},
 
@@ -120,6 +127,7 @@ module.exports = [
 
 		output: `
 			var property;
+
 			var baz = 1, lolwut = ( property = bar(), foo[property] = Math.pow( foo[property], y ) );`
 	},
 
@@ -171,6 +179,7 @@ module.exports = [
 		`,
 		output: `
 			var property;
+
 			x=( property = bar(), a[property]=Math.pow( a[property], 2 ) );
 		`
 	}
