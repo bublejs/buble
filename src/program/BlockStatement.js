@@ -16,7 +16,8 @@ export default class BlockStatement extends Node {
 		this.isFunctionBlock = this.parentIsFunction || this.parent.type === 'Root';
 		this.scope = new Scope({
 			block: !this.isFunctionBlock,
-			parent: this.parent.findScope(false)
+			parent: this.parent.findScope(false),
+			declare: id => this.createdDeclarations.push(id)
 		});
 
 		if (this.parentIsFunction) {
@@ -209,12 +210,6 @@ export default class BlockStatement extends Node {
 			if (i === introStatementGenerators.length - 1) suffix = `;\n`;
 			fn(start, prefix, suffix);
 		});
-	}
-
-	declareIdentifier(name) {
-		const id = this.scope.createIdentifier(name);
-		this.createdDeclarations.push(id);
-		return id;
 	}
 
 	transpileParameters(code, transforms, indentation, introStatementGenerators) {

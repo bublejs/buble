@@ -132,7 +132,7 @@ export default class ObjectExpression extends Node {
 					firstSpreadProperty === null ||
 					firstComputedProperty < firstSpreadProperty
 				) {
-					name = this.findLexicalBoundary().declareIdentifier('obj');
+					name = this.findScope(true).createDeclaration('obj');
 
 					code.prependRight(this.start, `( ${name} = `);
 				} else name = null; // We don't actually need this variable
@@ -155,7 +155,7 @@ export default class ObjectExpression extends Node {
 					lastComputedProp = prop;
 
 					if (!name) {
-						name = this.findLexicalBoundary().declareIdentifier('obj');
+						name = this.findScope(true).createDeclaration('obj');
 
 						const propId = name + (prop.computed ? '' : '.');
 						code.appendRight(prop.start, `( ${name} = {}, ${propId}`);
