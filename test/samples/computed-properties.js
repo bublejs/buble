@@ -227,9 +227,11 @@ module.exports = [
 			foo => bar({[x - y]: obj});
 		`,
 		output: `
-			var obj$1;
+			!function(foo) {
+				var obj$1;
 
-			!function(foo) { return bar(( obj$1 = {}, obj$1[x - y] = obj, obj$1 )); };
+				return bar(( obj$1 = {}, obj$1[x - y] = obj, obj$1 ));
+			};
 		`
 	},
 
@@ -243,6 +245,19 @@ module.exports = [
 			(function () {
 			var obj, obj$1;
  return ( obj$1 = {}, obj$1[key] = ( obj = {}, obj[key] = val, obj ), obj$1 ) })
+		`
+	},
+
+	{
+		description: 'Puts helper variables in correct scope',
+
+		input: `
+			((x) => {var obj = 2; console.log([{[x]: 1}, obj]);})(3);
+		`,
+		output: `
+			(function (x) {
+			var obj$1;
+var obj = 2; console.log([( obj$1 = {}, obj$1[x] = 1, obj$1 ), obj]);})(3);
 		`
 	}
 ];

@@ -6,6 +6,7 @@ export default function Scope(options) {
 
 	this.parent = options.parent;
 	this.isBlockScope = !!options.block;
+	this.createDeclarationCallback = options.declare;
 
 	let scope = this;
 	while (scope.isBlockScope) scope = scope.parent;
@@ -92,6 +93,12 @@ Scope.prototype = {
 
 		this.aliases[name] = true;
 		return name;
+	},
+
+	createDeclaration(base) {
+		const id = this.createIdentifier(base);
+		this.createDeclarationCallback(id);
+		return id;
 	},
 
 	findDeclaration(name) {
