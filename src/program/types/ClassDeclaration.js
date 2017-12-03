@@ -31,10 +31,10 @@ export default class ClassDeclaration extends Node {
 				code.remove(this.parent.start, this.start);
 			}
 
-			let c = this.start
+			let c = this.start;
 			if (this.id) {
 				code.overwrite(c, this.id.start, 'var ');
-				c = this.id.end
+				c = this.id.end;
 			} else {
 				code.prependLeft(c, `var ${this.name}`);
 			}
