@@ -38,8 +38,9 @@ module.exports = [
 			( foo || bar ).baz( ...values );`,
 
 		output: `
-			(ref = ( foo || bar )).baz.apply( ref, values );
-			var ref;`
+			var ref;
+
+			(ref = ( foo || bar )).baz.apply( ref, values );`
 	},
 
 	{
@@ -51,8 +52,9 @@ module.exports = [
 			}`,
 		output: `
 			function a( args ) {
-				return (ref = this).go.apply( ref, args );
 				var ref;
+
+				return (ref = this).go.apply( ref, args );
 			}`
 	},
 
@@ -84,16 +86,18 @@ module.exports = [
 				while ( len-- ) args[ len ] = arguments[ len ];
 
 				return Domain.run(function () {
-					return (ref = this$1).go.apply(ref, args);
 					var ref;
+
+					return (ref = this$1).go.apply(ref, args);
 				});
 			}
 			function bar(args) {
 				var this$1 = this;
 
 				return Domain.run(function () {
-					return (ref = this$1).go.apply(ref, args);
 					var ref;
+
+					return (ref = this$1).go.apply(ref, args);
 				});
 			}
 			function baz() {
@@ -101,8 +105,9 @@ module.exports = [
 				var this$1 = this;
 
 				return Domain.run(function () {
-					return (ref = this$1).go.apply(ref, arguments$1);
 					var ref;
+
+					return (ref = this$1).go.apply(ref, arguments$1);
 				});
 			}
 		`
@@ -170,11 +175,12 @@ module.exports = [
 			process( result );`,
 
 		output: `
+			var ref$1;
+
 			var result;
 			if ( ref )
 				{ result = (ref$1 = expr()).baz.apply( ref$1, values ); }
-			process( result );
-			var ref$1;`
+			process( result );`
 	},
 
 	{
@@ -190,12 +196,12 @@ module.exports = [
 			}`,
 		output: `
 			function foo() {
+				var ref$1, ref$2;
+
 				stuff();
 				if ( ref )
 					{ return (ref$1 = expr()).baz.apply( ref$1, values ); }
 				return (ref$2 = (up || down)).bar.apply( ref$2, values );
-				var ref$1;
-				var ref$2;
 			}`
 	},
 
@@ -211,12 +217,12 @@ module.exports = [
 			}`,
 		output: `
 			function ref() {
+				var ref, ref$2;
+
 				stuff();
 				if ( ref$1 )
 					{ return (ref = expr()).baz.apply( ref, [ a ].concat( values, [(ref$2 = (up || down)).bar.apply( ref$2, [ c ].concat( values, [d] ) )] ) ); }
 				return other();
-				var ref;
-				var ref$2;
 			}`
 	},
 
@@ -243,9 +249,9 @@ module.exports = [
 				prepare: function prepare() {
 					var i = arguments.length, argsArray = Array(i);
 					while ( i-- ) argsArray[i] = arguments[i];
+					var ref;
 
 					return (ref = this.add).bind.apply(ref, [ this ].concat( argsArray ))
-					var ref;
 				}
 			}`
 	},
@@ -526,8 +532,11 @@ module.exports = [
 		output: `
 			function foo (x) {
 				if ( x )
-					{ return function (ref) { return (ref$1 = (bar || baz)).Test.apply( ref$1, [ ref ].concat( x ) )
-						var ref$1;; }; }
+					{ return function (ref) {
+						var ref$1;
+
+						return (ref$1 = (bar || baz)).Test.apply( ref$1, [ ref ].concat( x ) );
+						}; }
 			}
 		`
 	},
@@ -569,8 +578,11 @@ module.exports = [
 				while ( i-- ) argsArray[i] = arguments[i];
 
 				if ( x )
-					{ return function (ref) { return (ref$1 = (bar || baz)).Test.apply( ref$1, [ ref ].concat( arguments$1 ) )
-						var ref$1;; }; }
+					{ return function (ref) {
+						var ref$1;
+
+						return (ref$1 = (bar || baz)).Test.apply( ref$1, [ ref ].concat( arguments$1 ) );
+						}; }
 			}
 		`
 	}
