@@ -193,7 +193,7 @@ describe('buble', () => {
 			assert.equal(
 				result,
 				`
-				const power = ( base, exponent ) => {
+				var power = ( base, exponent ) => {
 					if ( exponent === void 0 ) exponent = 2;
 
 					return Math.pow( base, exponent );
