@@ -22,14 +22,20 @@ export default class TaggedTemplateExpression extends Node {
 				.concat(this.quasi.quasis)
 				.sort((a, b) => a.start - b.start);
 
+			const root = this.findNearest('Program');
+
 			// insert strings at start
 			const templateStrings = this.quasi.quasis.map(quasi =>
 				JSON.stringify(quasi.value.cooked)
 			);
+
+			const templateObject = root.scope.createIdentifier('templateObject');
+			code.prependRight(0, `var ${templateObject} = Object.freeze([${templateStrings.join(', ')}]);\n`);
+
 			code.overwrite(
 				this.tag.end,
 				ordered[0].start,
-				`([${templateStrings.join(', ')}]`
+				`(${templateObject}`
 			);
 
 			let lastIndex = ordered[0].start;
