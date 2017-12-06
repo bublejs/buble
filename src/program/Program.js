@@ -18,6 +18,8 @@ export default function Program(source, ast, transforms, options) {
 	wrap((this.body = ast), this);
 	this.body.__proto__ = BlockStatement.prototype;
 
+	this.templateLiteralQuasis = Object.create(null);
+
 	this.indentExclusionElements = [];
 	this.body.initialise(transforms);
 

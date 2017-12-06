@@ -41,7 +41,7 @@ module.exports = [
 			'transpiles tagged template literals with `transforms.dangerousTaggedTemplateString = true`',
 		options: { transforms: { dangerousTaggedTemplateString: true } },
 		input: 'var str = x`y${(() => 42)()}`;',
-		output: `var str = x(["y", ""], (function () { return 42; })());`
+		output: `var templateObject = Object.freeze(["y", ""]);\nvar str = x(templateObject, (function () { return 42; })());`
 	},
 
 	{
@@ -49,7 +49,14 @@ module.exports = [
 			'transpiles tagged template literals with `transforms.dangerousTaggedTemplateString = true`',
 		options: { transforms: { dangerousTaggedTemplateString: true } },
 		input: 'var str = x`${(() => 42)()}y`;',
-		output: `var str = x(["", "y"], (function () { return 42; })());`
+		output: `var templateObject = Object.freeze(["", "y"]);\nvar str = x(templateObject, (function () { return 42; })());`
+	},
+
+	{
+		description: 'reuses quasi array for identical tagged template strings',
+		options: { transforms: { dangerousTaggedTemplateString: true } },
+		input: 'x`a${a}b`, x`a${b}b`, x`b${c}a`',
+		output: `var templateObject$1 = Object.freeze(["b", "a"]);\nvar templateObject = Object.freeze(["a", "b"]);\nx(templateObject, a), x(templateObject, b), x(templateObject$1, c)`
 	},
 
 	{
