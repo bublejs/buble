@@ -64,5 +64,15 @@ module.exports = [
 				var b = ref[0];
 				var c = ref$1.c;
 })`
+	},
+
+	{
+		description: 'strips trailing commas in new expression arguments',
+
+		input: `
+			new f(a,)`,
+
+		output: `
+			new f(a)`
 	}
 ];
