@@ -14,7 +14,7 @@ export default function Scope(options) {
 	this.identifiers = [];
 	this.declarations = Object.create(null);
 	this.references = Object.create(null);
-	this.blockScopedDeclarations = Object.create(null);
+	this.blockScopedDeclarations = this.isBlockScope ? null : Object.create(null);
 	this.aliases = Object.create(null);
 }
 
