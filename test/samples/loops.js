@@ -543,7 +543,7 @@ module.exports = [
 				return { start: 10, end: 20 };
 			}
 
-			for ( var ref = range(), i = ref.start, end = ref.end === undefined ? 100 : ref.end; i < end; i += 1 ) {
+			for ( var ref = range(), i = ref.start, end = ref.end, end = end === void 0 ? 100 : end; i < end; i += 1 ) {
 				console.log( i );
 			}`
 	},

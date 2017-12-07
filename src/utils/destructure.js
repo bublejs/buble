@@ -190,9 +190,9 @@ function handleProperty(
 				if (inline) {
 					code.prependRight(
 						node.right.start,
-						`${name} = ${value} === undefined ? `
+						`${name} = ${value}, ${name} = ${name} === void 0 ? `
 					);
-					code.appendLeft(node.right.end, ` : ${value}`);
+					code.appendLeft(node.right.end, ` : ${name}`);
 				} else {
 					code.prependRight(
 						node.right.start,
