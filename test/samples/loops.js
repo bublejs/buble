@@ -565,6 +565,21 @@ module.exports = [
 
 	{
 		description:
+			'nested array destructuring in variable declaration in for loop head',
+
+		input: `
+			for ( var [[x, z], y] = [1, 2]; i < end; i += 1 ) {
+				console.log( i );
+			}`,
+
+		output: `
+			for ( var ref = [1, 2], ref_0 = ref[0], x = ref_0[0], z = ref_0[1], y = ref[1]; i < end; i += 1 ) {
+				console.log( i );
+			}`
+	},
+
+	{
+		description:
 			'arrow functions in block-less for loops in a block-less if/else chain (#110)',
 
 		input: `

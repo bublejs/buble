@@ -265,7 +265,7 @@ function handleProperty(
 				const ref = scope.createIdentifier(value);
 
 				statementGenerators.push((start, prefix, suffix) => {
-					code.prependRight(node.start, `${prefix}var ${ref} = `);
+					code.prependRight(node.start, (inline ? '' : `${prefix}var `) + `${ref} = `);
 					code.overwrite(node.start, (c = node.start + 1), value, {
 						contentOnly: true
 					});
