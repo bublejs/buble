@@ -18,7 +18,7 @@ export default class JSXElement extends Node {
 		super.transpile(code, transforms);
 
 		const children = this.children.filter(child => {
-			if (child.type !== 'Literal') return true;
+			if (child.type !== 'JSXText') return true;
 
 			// remove whitespace-only literals, unless on a single line
 			return /\S/.test(child.raw) || !/\n/.test(child.raw);
@@ -38,11 +38,11 @@ export default class JSXElement extends Node {
 					// empty block is a no op
 				} else {
 					const tail =
-						code.original[c] === '\n' && child.type !== 'Literal' ? '' : ' ';
+						code.original[c] === '\n' && child.type !== 'JSXText' ? '' : ' ';
 					code.appendLeft(c, `,${tail}`);
 				}
 
-				if (child.type === 'Literal') {
+				if (child.type === 'JSXText') {
 					const str = normalise(child.raw, i === children.length - 1);
 					code.overwrite(child.start, child.end, str);
 				}

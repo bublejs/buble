@@ -2,7 +2,7 @@ import Node from '../Node.js';
 
 function containsNewLine(node) {
 	return (
-		node.type === 'Literal' && !/\S/.test(node.value) && /\n/.test(node.value)
+		node.type === 'JSXText' && !/\S/.test(node.value) && /\n/.test(node.value)
 	);
 }
 
