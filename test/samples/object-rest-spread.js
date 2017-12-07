@@ -161,7 +161,7 @@ module.exports = [
 		description: 'transpiles rest properties',
 		input: `var {a, ...b} = c`,
 		output: `var a = c.a;
-var rest = {}; for (var n in c) if(["a"].indexOf(n) === -1) rest[n] = c[n];
+var rest = {}; for (var n in c) if (Object.prototype.hasOwnProperty.call(c, n) && ["a"].indexOf(n) === -1) rest[n] = c[n];
 var b = rest;`
 	},
 
@@ -170,7 +170,7 @@ var b = rest;`
 		input: `(function({x, ...y}) {})`,
 		output: `(function(ref) {
 	var x = ref.x;
-	var rest = {}; for (var n in ref) if(["x"].indexOf(n) === -1) rest[n] = ref[n];
+	var rest = {}; for (var n in ref) if (Object.prototype.hasOwnProperty.call(ref, n) && ["x"].indexOf(n) === -1) rest[n] = ref[n];
 	var y = rest;
 })`
 	},
@@ -180,7 +180,7 @@ var b = rest;`
 		input: `(({x, ...y}) => {})`,
 		output: `(function (ref) {
 	var x = ref.x;
-	var rest = {}; for (var n in ref) if(["x"].indexOf(n) === -1) rest[n] = ref[n];
+	var rest = {}; for (var n in ref) if (Object.prototype.hasOwnProperty.call(ref, n) && ["x"].indexOf(n) === -1) rest[n] = ref[n];
 	var y = rest;
 })`
 	}

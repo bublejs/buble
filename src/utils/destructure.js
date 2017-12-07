@@ -131,7 +131,7 @@ function destructureObjectPattern(
 				code.overwrite(
 					prop.start,
 					(c = prop.argument.start),
-					`${prefix}var ${value} = {}; for (var ${n} in ${ref}) if([${nonRestKeys.join(
+					`${prefix}var ${value} = {}; for (var ${n} in ${ref}) if (Object.prototype.hasOwnProperty.call(${ref}, ${n}) && [${nonRestKeys.join(
 						', '
 					)}].indexOf(${n}) === -1) ${value}[${n}] = ${ref}[${n}]${suffix}`
 				);
