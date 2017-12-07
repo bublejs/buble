@@ -156,6 +156,12 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles JSX fragments',
+		input: `var divs = <><div contentEditable /><div /></>;`,
+		output: `var divs = React.createElement( React.Fragment, null, React.createElement( 'div', { contentEditable: true }), React.createElement( 'div', null ) );`
+	},
+
+	{
 		description: 'transpiles one JSX spread attributes',
 		input: `var element = <div {...props} />;`,
 		output: `var element = React.createElement( 'div', props);`
