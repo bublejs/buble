@@ -782,5 +782,24 @@ module.exports = [
 			var a = ref.a;
 			var b = ref.b;
 		`
+	},
+
+	{
+		description: 'destructures within block scope',
+
+		input: `
+			if (true) {
+				let [[a, b]] = [[1, 2]];
+			}
+		`,
+
+		output: `
+			if (true) {
+				var ref = [[1, 2]];
+				var ref_0 = ref[0];
+				var a = ref_0[0];
+				var b = ref_0[1];
+			}
+		`
 	}
 ];
