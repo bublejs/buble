@@ -550,6 +550,21 @@ module.exports = [
 
 	{
 		description:
+			'nested destructuring in variable declaration in for loop head',
+
+		input: `
+			for ( var { start: { a, b } } = range(); i < end; i += 1 ) {
+				console.log( i );
+			}`,
+
+		output: `
+			for ( var ref = range(), ref_start = ref.start, a = ref_start.a, b = ref_start.b; i < end; i += 1 ) {
+				console.log( i );
+			}`
+	},
+
+	{
+		description:
 			'arrow functions in block-less for loops in a block-less if/else chain (#110)',
 
 		input: `
