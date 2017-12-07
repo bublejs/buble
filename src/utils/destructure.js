@@ -128,12 +128,11 @@ function destructureObjectPattern(
 			value = scope.createIdentifier('rest');
 			const n = scope.createIdentifier('n');
 			statementGenerators.push((start, prefix, suffix) => {
+				const helper = prop.program.getObjectWithoutPropertiesHelper(code);
 				code.overwrite(
 					prop.start,
 					(c = prop.argument.start),
-					`${prefix}var ${value} = {}; for (var ${n} in ${ref}) if (Object.prototype.hasOwnProperty.call(${ref}, ${n}) && [${nonRestKeys.join(
-						', '
-					)}].indexOf(${n}) === -1) ${value}[${n}] = ${ref}[${n}]${suffix}`
+					`${prefix}var ${value} = ${helper}( ${ref}, [${nonRestKeys.join(', ')}] )${suffix}`
 				);
 				code.move(prop.start, c, start);
 			});

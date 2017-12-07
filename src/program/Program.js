@@ -25,6 +25,7 @@ export default function Program(source, ast, transforms, options) {
 			break;
 		}
 	}
+	this.objectWithoutPropertiesHelper = null;
 
 	this.indentExclusionElements = [];
 	this.body.initialise(transforms);
@@ -57,5 +58,17 @@ Program.prototype = {
 
 	findScope() {
 		return null;
+	},
+
+	getObjectWithoutPropertiesHelper(code) {
+		if (!this.objectWithoutPropertiesHelper) {
+			this.objectWithoutPropertiesHelper = this.body.scope.createIdentifier('objectWithoutProperties');
+			code.prependLeft(this.prependAt, `function ${this.objectWithoutPropertiesHelper} (obj, keys) { ` +
+				`var target = {}; for (var k in obj) ` +
+				`if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) ` +
+				`target[k] = obj[k]; return target; }\n`
+			);
+		}
+		return this.objectWithoutPropertiesHelper;
 	}
 };

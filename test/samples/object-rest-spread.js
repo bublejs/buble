@@ -160,27 +160,34 @@ module.exports = [
 	{
 		description: 'transpiles rest properties',
 		input: `var {a, ...b} = c`,
-		output: `var a = c.a;
-var rest = {}; for (var n in c) if (Object.prototype.hasOwnProperty.call(c, n) && ["a"].indexOf(n) === -1) rest[n] = c[n];
+		output: `function objectWithoutProperties (obj, keys) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+var a = c.a;
+var rest = objectWithoutProperties( c, ["a"] );
 var b = rest;`
 	},
 
 	{
 		description: 'transpiles rest properties in arguments',
-		input: `(function({x, ...y}) {})`,
-		output: `(function(ref) {
-	var x = ref.x;
-	var rest = {}; for (var n in ref) if (Object.prototype.hasOwnProperty.call(ref, n) && ["x"].indexOf(n) === -1) rest[n] = ref[n];
-	var y = rest;
-})`
+		input: `
+			"use strict";
+			function objectWithoutProperties({x, ...y}) {}`,
+		output: `
+			"use strict";
+			function objectWithoutProperties$1 (obj, keys) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+function objectWithoutProperties(ref) {
+				var x = ref.x;
+				var rest = objectWithoutProperties$1( ref, ["x"] );
+				var y = rest;
+}`
 	},
 
 	{
 		description: 'transpiles rest properties in arrow function arguments',
 		input: `(({x, ...y}) => {})`,
-		output: `(function (ref) {
+		output: `function objectWithoutProperties (obj, keys) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+(function (ref) {
 	var x = ref.x;
-	var rest = {}; for (var n in ref) if (Object.prototype.hasOwnProperty.call(ref, n) && ["x"].indexOf(n) === -1) rest[n] = ref[n];
+	var rest = objectWithoutProperties( ref, ["x"] );
 	var y = rest;
 })`
 	}
