@@ -190,5 +190,13 @@ function objectWithoutProperties(ref) {
 	var rest = objectWithoutProperties( ref, ["x"] );
 	var y = rest;
 })`
+	},
+
+	{
+	description: 'transpiles rest properties in for loop heads',
+	input: `for( var {a, ...b} = c;; ) {}`,
+	output: `function objectWithoutProperties (obj, keys) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+for( var a = c.a, rest = objectWithoutProperties( c, ["a"] ), b = rest;; ) {}`
 	}
+
 ];

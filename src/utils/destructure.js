@@ -132,7 +132,7 @@ function destructureObjectPattern(
 				code.overwrite(
 					prop.start,
 					(c = prop.argument.start),
-					`${prefix}var ${value} = ${helper}( ${ref}, [${nonRestKeys.join(', ')}] )${suffix}`
+					(inline ? '' : `${prefix}var `) + `${value} = ${helper}( ${ref}, [${nonRestKeys.join(', ')}] )${suffix}`
 				);
 				code.move(prop.start, c, start);
 			});
