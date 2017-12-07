@@ -192,7 +192,7 @@ function handleProperty(
 						node.right.start,
 						`${name} = ${value}, ${name} = ${name} === void 0 ? `
 					);
-					code.appendLeft(node.right.end, ` : ${name}`);
+					code.appendLeft(node.right.end, ` : ${name}${suffix}`);
 				} else {
 					code.prependRight(
 						node.right.start,

@@ -580,6 +580,36 @@ module.exports = [
 
 	{
 		description:
+			'array destructuring with default value in variable declaration in for loop head',
+
+		input: `
+			for ( var [x, y = 4, z] = [1, 2, 3]; i < end; i += 1 ) {
+				console.log( i );
+			}`,
+
+		output: `
+			for ( var ref = [1, 2, 3], x = ref[0], y = ref[1], y = y === void 0 ? 4 : y, z = ref[2]; i < end; i += 1 ) {
+				console.log( i );
+			}`
+	},
+
+	{
+		description:
+			'object destructuring with default value in variable declaration in for loop head',
+
+		input: `
+			for ( var {x, y = 4, z} = {}; i < end; i += 1 ) {
+				console.log( i );
+			}`,
+
+		output: `
+			for ( var ref = {}, x = ref.x, y = ref.y, y = y === void 0 ? 4 : y, z = ref.z; i < end; i += 1 ) {
+				console.log( i );
+			}`
+	},
+
+	{
+		description:
 			'arrow functions in block-less for loops in a block-less if/else chain (#110)',
 
 		input: `
