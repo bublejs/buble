@@ -157,11 +157,11 @@ describe('buble', () => {
 				assert.equal(err.message, 'x is read-only (1:13)');
 				assert.equal(
 					err.snippet,
-					`1 : const x = 1; x++;\n                 ^^^`
+					`1 : const x = 1; x++;\n                 ^`
 				);
 				assert.equal(
 					err.toString(),
-					`CompileError: x is read-only (1:13)\n1 : const x = 1; x++;\n                 ^^^`
+					`CompileError: x is read-only (1:13)\n1 : const x = 1; x++;\n                 ^`
 				);
 			}
 		});

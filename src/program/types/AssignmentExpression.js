@@ -1,15 +1,11 @@
 import Node from '../Node.js';
-import CompileError from '../../utils/CompileError.js';
+import checkConst from '../../utils/checkConst.js';
 import destructure from '../../utils/destructure.js';
 
 export default class AssignmentExpression extends Node {
 	initialise(transforms) {
 		if (this.left.type === 'Identifier') {
 			const declaration = this.findScope(false).findDeclaration(this.left.name);
-			if (declaration && declaration.kind === 'const') {
-				throw new CompileError(`${this.left.name} is read-only`, this.left);
-			}
-
 			// special case – https://gitlab.com/Rich-Harris/buble/issues/11
 			const statement = declaration && declaration.node.ancestor(3);
 			if (
@@ -25,6 +21,12 @@ export default class AssignmentExpression extends Node {
 	}
 
 	transpile(code, transforms) {
+		if (this.left.type === 'Identifier') {
+			// Do this check after everything has been initialized to find
+			// shadowing declarations after this expression
+			checkConst(this.left, this.findScope(false));
+		}
+
 		if (this.operator === '**=' && transforms.exponentiation) {
 			this.transpileExponentiation(code, transforms);
 		} else if (/Pattern/.test(this.left.type) && transforms.destructuring) {

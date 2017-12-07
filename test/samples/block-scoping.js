@@ -440,5 +440,35 @@ module.exports = [
 				a();
 				b();
 			}`
+	},
+
+	{
+		description: 'correctly recognizes shadowing of const variables by mutable variables declared after mutation',
+
+		input: `
+			const bar = "FAIL";
+			(function() {
+					function foo() {
+							--bar;
+							bar = ["fail", "PASS", "Fail"][bar];
+					}
+					let bar = 2;
+					foo();
+					console.log(bar);
+			}());
+		`,
+
+		output: `
+			var bar = "FAIL";
+			(function() {
+					function foo() {
+							--bar;
+							bar = ["fail", "PASS", "Fail"][bar];
+					}
+					var bar = 2;
+					foo();
+					console.log(bar);
+			}());
+		`
 	}
 ];

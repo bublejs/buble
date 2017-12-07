@@ -1,5 +1,5 @@
 import Node from '../Node.js';
-import CompileError from '../../utils/CompileError.js';
+import checkConst from '../../utils/checkConst.js';
 
 export default class UpdateExpression extends Node {
 	initialise(transforms) {
@@ -7,10 +7,6 @@ export default class UpdateExpression extends Node {
 			const declaration = this.findScope(false).findDeclaration(
 				this.argument.name
 			);
-			if (declaration && declaration.kind === 'const') {
-				throw new CompileError(`${this.argument.name} is read-only`, this);
-			}
-
 			// special case – https://gitlab.com/Rich-Harris/buble/issues/150
 			const statement = declaration && declaration.node.ancestor(3);
 			if (
@@ -23,5 +19,14 @@ export default class UpdateExpression extends Node {
 		}
 
 		super.initialise(transforms);
+	}
+
+	transpile(code, transforms) {
+		if (this.argument.type === 'Identifier') {
+			// Do this check after everything has been initialized to find
+			// shadowing declarations after this expression
+			checkConst(this.argument, this.findScope(false));
+		}
+		super.transpile(code, transforms);
 	}
 }
