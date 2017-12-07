@@ -60,6 +60,13 @@ module.exports = [
 	},
 
 	{
+		description: 'reuses quasi array for identical tagged template strings in strict mode',
+		options: { transforms: { dangerousTaggedTemplateString: true } },
+		input: '"use strict";\nx`a${a}b`, x`a${b}b`, x`b${c}a`',
+		output: `"use strict";\nvar templateObject$1 = Object.freeze(["b", "a"]);\nvar templateObject = Object.freeze(["a", "b"]);\nx(templateObject, a), x(templateObject, b), x(templateObject$1, c)`
+	},
+
+	{
 		description: 'parenthesises template strings as necessary',
 		input: 'var str = `x${y}`.toUpperCase();',
 		output: 'var str = ("x" + y).toUpperCase();'

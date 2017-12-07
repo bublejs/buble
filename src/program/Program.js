@@ -19,6 +19,12 @@ export default function Program(source, ast, transforms, options) {
 	this.body.__proto__ = BlockStatement.prototype;
 
 	this.templateLiteralQuasis = Object.create(null);
+	for (let i = 0; i < this.body.body.length; ++i) {
+		if (!this.body.body[i].directive) {
+			this.prependAt = this.body.body[i].start;
+			break;
+		}
+	}
 
 	this.indentExclusionElements = [];
 	this.body.initialise(transforms);
