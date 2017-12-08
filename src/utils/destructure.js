@@ -133,7 +133,6 @@ function destructureObjectPattern(
 		} else if (prop.type === 'RestElement') {
 			content = prop.argument;
 			value = createIdentifier('rest');
-			const n = createIdentifier('n');
 			statementGenerators.push((start, prefix, suffix) => {
 				const helper = prop.program.getObjectWithoutPropertiesHelper(code);
 				code.overwrite(
