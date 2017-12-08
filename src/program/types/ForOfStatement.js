@@ -61,7 +61,7 @@ export default class ForOfStatement extends LoopStatement {
 			destructure(
 				code,
 				id => scope.createIdentifier(id),
-				id => scope.resolveName(id),
+				({ name }) => scope.resolveName(name),
 				declarator.id,
 				ref,
 				false,

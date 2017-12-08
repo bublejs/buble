@@ -30,7 +30,7 @@ function destructureIdentifier(
 	statementGenerators
 ) {
 	statementGenerators.push((start, prefix, suffix) => {
-		code.overwrite(node.start, node.end, (inline ? prefix : `${prefix}var `) + resolveName(node.name) + ` = ${ref}${suffix}`);
+		code.overwrite(node.start, node.end, (inline ? prefix : `${prefix}var `) + resolveName(node) + ` = ${ref}${suffix}`);
 		code.move(node.start, node.end, start);
 	});
 }
@@ -214,7 +214,7 @@ function handleProperty(
 			const isIdentifier = node.left.type === 'Identifier';
 
 			if (isIdentifier) {
-				name = resolveName(node.left.name);
+				name = resolveName(node.left);
 			} else {
 				name = createIdentifier(value);
 			}

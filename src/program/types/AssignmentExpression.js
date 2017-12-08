@@ -47,7 +47,11 @@ export default class AssignmentExpression extends Node {
 		destructure(
 			code,
 			id => writeScope.createDeclaration(id),
-			id => lookupScope.resolveName(id),
+			node => {
+				const name = lookupScope.resolveName(node.name);
+				checkConst(node, lookupScope);
+				return name;
+			},
 			this.left,
 			assign,
 			true,

@@ -86,6 +86,52 @@ module.exports = [
 	},
 
 	{
+		description: 'disallows destructured reassignment to constants, short-hand property',
+		input: `
+			const x = 1;
+			({ x } = {});
+		`,
+		error: /x is read-only/
+	},
+
+	{
+		description: 'disallows destructured reassignment to constants, rest property',
+		skip: true,
+		input: `
+			const x = 1;
+			({ ...x } = {});
+		`,
+		error: /x is read-only/
+	},
+
+	{
+		description: 'disallows destructured reassignment to constants, renamed property',
+		input: `
+			const x = 1;
+			({ y: x } = {});
+		`,
+		error: /x is read-only/
+	},
+
+	{
+		description: 'disallows destructured reassignment to constants, array',
+		input: `
+			const x = 1;
+			([ x ] = []);
+		`,
+		error: /x is read-only/
+	},
+
+	{
+		description: 'disallows destructured reassignment to constants, rest element',
+		input: `
+			const x = 1;
+			([ ...x ] = []);
+		`,
+		error: /x is read-only/
+	},
+
+	{
 		description: 'disallows updates to constants',
 		input: `
 			const x = 1;

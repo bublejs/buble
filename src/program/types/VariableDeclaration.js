@@ -64,7 +64,7 @@ export default class VariableDeclaration extends Node {
 					destructure(
 						code,
 						id => scope.createIdentifier(id),
-						id => scope.resolveName(id),
+						({ name }) => scope.resolveName(name),
 						declarator.id,
 						name,
 						inline,
