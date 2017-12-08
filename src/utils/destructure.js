@@ -30,6 +30,21 @@ function destructureIdentifier(
 	statementGenerators
 ) {
 	statementGenerators.push((start, prefix, suffix) => {
+		code.overwrite(node.start, node.end, (inline ? prefix : `${prefix}var `) + resolveName(node.name) + ` = ${ref}${suffix}`);
+		code.move(node.start, node.end, start);
+	});
+}
+
+function destructureMemberExpression(
+	code,
+	createIdentifier,
+	resolveName,
+	node,
+	ref,
+	inline,
+	statementGenerators
+) {
+	statementGenerators.push((start, prefix, suffix) => {
 		code.prependRight(node.start, inline ? prefix : `${prefix}var `);
 		code.appendLeft(node.end, ` = ${ref}${suffix}`);
 		code.move(node.start, node.end, start);
@@ -179,6 +194,19 @@ function handleProperty(
 			);
 			break;
 		}
+
+		case 'MemberExpression':
+			code.remove(c, node.start);
+			destructureMemberExpression(
+				code,
+				createIdentifier,
+				resolveName,
+				node,
+				value,
+				true,
+				statementGenerators
+			);
+			break;
 
 		case 'AssignmentPattern': {
 			let name;

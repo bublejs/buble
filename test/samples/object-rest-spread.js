@@ -167,6 +167,15 @@ var b = rest;`
 	},
 
 	{
+		description: 'transpiles rest properties in assignments',
+		input: `({a, ...b} = c);`,
+		output: `function objectWithoutProperties (obj, keys) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+
+var assign, rest;
+((assign = c, a = assign.a, rest = objectWithoutProperties( assign, ["a"] ), b = rest));`
+	},
+
+	{
 		description: 'transpiles rest properties in arguments',
 		input: `
 			"use strict";

@@ -469,11 +469,11 @@ module.exports = [
 			console.log(a, b, c, d);
 		`,
 		output: `
-			var assign, array, obj, temp;
+			var assign, assign_slice_1_, assign_slice_1_2, assign_slice_1_2_s;
 
 			var x = [1, 2, {r: 9}, {s: ["table"]} ];
 			var a, b, c, d;
-			((assign = x, a = assign[0], array = assign.slice(1), b = array[1].r, obj = array[2], c = obj.r, c = c === void 0 ? "nothing" : c, temp = obj.s, temp = temp === void 0 ? "nope" : temp, d = temp[0]));
+			((assign = x, a = assign[0], assign_slice_1_ = assign.slice(1), b = assign_slice_1_[1].r, assign_slice_1_2 = assign_slice_1_[2], c = assign_slice_1_2.r, c = c === void 0 ? "nothing" : c, assign_slice_1_2_s = assign_slice_1_2.s, assign_slice_1_2_s = assign_slice_1_2_s === void 0 ? "nope" : assign_slice_1_2_s, d = assign_slice_1_2_s[0]));
 			console.log(a, b, c, d);
 		`
 	},
@@ -544,9 +544,9 @@ module.exports = [
 		input: `
 			[[x, z], y] = [1, 2];`,
 		output: `
-			var assign, array;
+			var assign, assign_0;
 
-			(assign = [1, 2], array = assign[0], x = array[0], z = array[1], y = assign[1]);`
+			(assign = [1, 2], assign_0 = assign[0], x = assign_0[0], z = assign_0[1], y = assign[1]);`
 	},
 
 	{
@@ -555,9 +555,9 @@ module.exports = [
 		input: `
 			[[x] = [], y] = [1, 2];`,
 		output: `
-			var assign, temp;
+			var assign, assign_0;
 
-			(assign = [1, 2], temp = assign[0], temp = temp === void 0 ? [] : temp, x = temp[0], y = assign[1]);`
+			(assign = [1, 2], assign_0 = assign[0], assign_0 = assign_0 === void 0 ? [] : assign_0, x = assign_0[0], y = assign[1]);`
 	},
 
 	{
@@ -575,9 +575,9 @@ module.exports = [
 		input: `
 			[x, y.z = 3] = [1, 2];`,
 		output: `
-			var assign, temp;
+			var assign, assign_1;
 
-			(assign = [1, 2], x = assign[0], temp = assign[1], temp = temp === void 0 ? 3 : temp, y.z = temp);`
+			(assign = [1, 2], x = assign[0], assign_1 = assign[1], assign_1 = assign_1 === void 0 ? 3 : assign_1, y.z = assign_1);`
 	},
 
 	{
@@ -627,9 +627,9 @@ module.exports = [
 		input: `
 			({x, y: {z, q}} = {x: 1});`,
 		output: `
-			var assign, obj;
+			var assign, assign_y;
 
-			((assign = {x: 1}, x = assign.x, obj = assign.y, z = obj.z, q = obj.q));`
+			((assign = {x: 1}, x = assign.x, assign_y = assign.y, z = assign_y.z, q = assign_y.q));`
 	},
 
 	{
@@ -822,5 +822,27 @@ module.exports = [
 				var b = ref_0[1];
 			}
 		`
+	},
+
+	{
+		description: 'destructures rewritten block scope variables',
+
+		input: `
+			let x;
+			if (maybe) {
+				let x;
+				({ x } = { x: 3 });
+				[ x ] = [ 3 ];
+			}`,
+
+		output: `
+			var assign, assign$1;
+
+			var x;
+			if (maybe) {
+				var x$1;
+				((assign = { x: 3 }, x$1 = assign.x));
+				(assign$1 = [ 3 ], x$1 = assign$1[0]);
+			}`
 	}
 ];

@@ -1,5 +1,6 @@
 import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
+import destructure from '../../utils/destructure.js';
 
 export default class AssignmentExpression extends Node {
 	initialise(transforms) {
@@ -34,147 +35,38 @@ export default class AssignmentExpression extends Node {
 	}
 
 	transpileDestructuring(code) {
-		const scope = this.findScope(true);
-		const assign = scope.createDeclaration('assign');
+		const writeScope = this.findScope(true);
+		const lookupScope = this.findScope(false);
+		const assign = writeScope.createDeclaration('assign');
+		code.appendRight(this.left.end, `(${assign}`);
 
-		const start = this.start;
+		code.appendLeft(this.right.end, ', ');
+		const statementGenerators = [];
+		destructure(
+			code,
+			id => writeScope.createDeclaration(id),
+			id => lookupScope.resolveName(id),
+			this.left,
+			assign,
+			true,
+			statementGenerators
+		);
 
-		// We need to pick out some elements from the original code,
-		// interleaved with generated code. These helpers are used to
-		// easily do that while keeping the order of the output
-		// predictable.
-		let text = '';
-		function use(node) {
-			code.prependRight(node.start, text);
-			code.move(node.start, node.end, start);
-			text = '';
-		}
-		function write(string) {
-			text += string;
-		}
-
-		write(`(${assign} = `);
-		use(this.right);
-
-		// Walk `pattern`, generating code that assigns the value in
-		// `ref` to it. When `mayDuplicate` is false, the function
-		// must take care to only output `ref` once.
-		function destructure(pattern, ref, mayDuplicate) {
-			if (
-				pattern.type === 'Identifier' ||
-				pattern.type === 'MemberExpression'
-			) {
-				write(', ');
-				use(pattern);
-				write(` = ${ref}`);
-			} else if (pattern.type === 'AssignmentPattern') {
-				if (pattern.left.type === 'Identifier') {
-					code.remove(pattern.start, pattern.right.start);
-
-					const target = pattern.left.name;
-					let source = ref;
-					if (!mayDuplicate) {
-						write(`, ${target} = ${ref}`);
-						source = target;
-					}
-					write(`, ${target} = ${source} === void 0 ? `);
-					use(pattern.right);
-					write(` : ${source}`);
-				} else {
-					code.remove(pattern.left.end, pattern.right.start);
-
-					const target = scope.createDeclaration('temp');
-					let source = ref;
-					if (!mayDuplicate) {
-						write(`, ${target} = ${ref}`);
-						source = target;
-					}
-					write(`, ${target} = ${source} === void 0 ? `);
-					use(pattern.right);
-					write(` : ${source}`);
-					destructure(pattern.left, target, true);
-				}
-			} else if (pattern.type === 'ArrayPattern') {
-				const elements = pattern.elements;
-				if (elements.length === 1) {
-					code.remove(pattern.start, elements[0].start);
-					destructure(elements[0], `${ref}[0]`, false);
-					code.remove(elements[0].end, pattern.end);
-				} else {
-					if (!mayDuplicate) {
-						const temp = scope.createDeclaration('array');
-						write(`, ${temp} = ${ref}`);
-						ref = temp;
-					}
-
-					let c = pattern.start;
-					elements.forEach((element, i) => {
-						if (!element) return;
-
-						code.remove(c, element.start);
-						c = element.end;
-
-						if (element.type === 'RestElement') {
-							code.remove(element.start, element.argument.start);
-							destructure(element.argument, `${ref}.slice(${i})`, false);
-						} else {
-							destructure(element, `${ref}[${i}]`, false);
-						}
-					});
-
-					code.remove(c, pattern.end);
-				}
-			} else if (pattern.type === 'ObjectPattern') {
-				const props = pattern.properties;
-				if (props.length == 1) {
-					const prop = props[0];
-					const value =
-						prop.computed || prop.key.type !== 'Identifier'
-							? `${ref}[${code.slice(prop.key.start, prop.key.end)}]`
-							: `${ref}.${prop.key.name}`;
-
-					code.remove(pattern.start, prop.value.start);
-					destructure(prop.value, value, false);
-					code.remove(prop.end, pattern.end);
-				} else {
-					if (!mayDuplicate) {
-						const temp = scope.createDeclaration('obj');
-						write(`, ${temp} = ${ref}`);
-						ref = temp;
-					}
-
-					let c = pattern.start;
-
-					props.forEach(prop => {
-						const value =
-							prop.computed || prop.key.type !== 'Identifier'
-								? `${ref}[${code.slice(prop.key.start, prop.key.end)}]`
-								: `${ref}.${prop.key.name}`;
-
-						code.remove(c, prop.value.start);
-						c = prop.end;
-
-						destructure(prop.value, value, false);
-					});
-
-					code.remove(c, pattern.end);
-				}
-			} else {
-				throw new Error(
-					`Unexpected node type in destructuring assignment (${pattern.type})`
-				);
+		let suffix = ', ';
+		statementGenerators.forEach((fn, j) => {
+			if (j === statementGenerators.length - 1) {
+				suffix = '';
 			}
-		}
 
-		destructure(this.left, assign, true);
-		code.remove(this.left.end, this.right.start);
+			fn(this.end, '', suffix);
+		});
 
 		if (this.unparenthesizedParent().type === 'ExpressionStatement') {
 			// no rvalue needed for expression statement
-			code.prependRight(start, `${text})`);
+			code.appendRight(this.end, `)`);
 		} else {
 			// destructuring is part of an expression - need an rvalue
-			code.prependRight(start, `${text}, ${assign})`);
+			code.appendRight(this.end, `, ${assign})`);
 		}
 	}
 
