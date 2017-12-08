@@ -180,10 +180,6 @@ export default class AssignmentExpression extends Node {
 
 	transpileExponentiation(code) {
 		const scope = this.findScope(false);
-		const getAlias = name => {
-			const declaration = scope.findDeclaration(name);
-			return declaration ? declaration.name : name;
-		};
 
 		// first, the easy part – `**=` -> `=`
 		let charIndex = this.left.end;
@@ -198,7 +194,7 @@ export default class AssignmentExpression extends Node {
 		const left = this.left.unparenthesize();
 
 		if (left.type === 'Identifier') {
-			base = getAlias(left.name);
+			base = scope.resolveName(left.name);
 		} else if (left.type === 'MemberExpression') {
 			let object;
 			let needsObjectVar = false;
@@ -210,7 +206,7 @@ export default class AssignmentExpression extends Node {
 
 			if (left.property.type === 'Identifier') {
 				property = left.computed
-					? getAlias(left.property.name)
+					? scope.resolveName(left.property.name)
 					: left.property.name;
 			} else {
 				property = scope.createDeclaration('property');
@@ -218,7 +214,7 @@ export default class AssignmentExpression extends Node {
 			}
 
 			if (left.object.type === 'Identifier') {
-				object = getAlias(left.object.name);
+				object = scope.resolveName(left.object.name);
 			} else {
 				object = scope.createDeclaration('object');
 				needsObjectVar = true;

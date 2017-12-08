@@ -119,8 +119,7 @@ export default class ObjectExpression extends Node {
 			if (spreadPropertyCount) isSimpleAssignment = false;
 
 			// handle block scoping
-			const declaration = this.findScope(false).findDeclaration(name);
-			if (declaration) name = declaration.name;
+			name = this.findScope(false).resolveName(name);
 
 			const start = firstPropertyStart;
 			const end = this.end;

@@ -178,9 +178,7 @@ function handleProperty(
 			const isIdentifier = node.left.type === 'Identifier';
 
 			if (isIdentifier) {
-				name = node.left.name;
-				const declaration = scope.findDeclaration(name);
-				if (declaration) name = declaration.name;
+				name = scope.resolveName(node.left.name);
 			} else {
 				name = scope.createIdentifier(value);
 			}
