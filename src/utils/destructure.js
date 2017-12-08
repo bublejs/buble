@@ -10,18 +10,20 @@ const handlers = {
 
 export default function destructure(
 	code,
-	scope,
+	createIdentifier,
+	resolveName,
 	node,
 	ref,
 	inline,
 	statementGenerators
 ) {
-	handlers[node.type](code, scope, node, ref, inline, statementGenerators);
+	handlers[node.type](code, createIdentifier, resolveName, node, ref, inline, statementGenerators);
 }
 
 function destructureIdentifier(
 	code,
-	scope,
+	createIdentifier,
+	resolveName,
 	node,
 	ref,
 	inline,
@@ -36,7 +38,8 @@ function destructureIdentifier(
 
 function destructureAssignmentPattern(
 	code,
-	scope,
+	createIdentifier,
+	resolveName,
 	node,
 	ref,
 	inline,
@@ -57,13 +60,14 @@ function destructureAssignmentPattern(
 	}
 
 	if (!isIdentifier) {
-		destructure(code, scope, node.left, ref, inline, statementGenerators);
+		destructure(code, createIdentifier, resolveName, node.left, ref, inline, statementGenerators);
 	}
 }
 
 function destructureArrayPattern(
 	code,
-	scope,
+	createIdentifier,
+	resolveName,
 	node,
 	ref,
 	inline,
@@ -77,7 +81,8 @@ function destructureArrayPattern(
 		if (element.type === 'RestElement') {
 			handleProperty(
 				code,
-				scope,
+				createIdentifier,
+				resolveName,
 				c,
 				element.argument,
 				`${ref}.slice(${i})`,
@@ -87,7 +92,8 @@ function destructureArrayPattern(
 		} else {
 			handleProperty(
 				code,
-				scope,
+				createIdentifier,
+				resolveName,
 				c,
 				element,
 				`${ref}[${i}]`,
@@ -103,7 +109,8 @@ function destructureArrayPattern(
 
 function destructureObjectPattern(
 	code,
-	scope,
+	createIdentifier,
+	resolveName,
 	node,
 	ref,
 	inline,
@@ -125,8 +132,8 @@ function destructureObjectPattern(
 			nonRestKeys.push(isComputedKey ? key : '"' + key + '"');
 		} else if (prop.type === 'RestElement') {
 			content = prop.argument;
-			value = scope.createIdentifier('rest');
-			const n = scope.createIdentifier('n');
+			value = createIdentifier('rest');
+			const n = createIdentifier('n');
 			statementGenerators.push((start, prefix, suffix) => {
 				const helper = prop.program.getObjectWithoutPropertiesHelper(code);
 				code.overwrite(
@@ -142,7 +149,7 @@ function destructureObjectPattern(
 				`Unexpected node of type ${prop.type} in object pattern`
 			);
 		}
-		handleProperty(code, scope, c, content, value, inline, statementGenerators);
+		handleProperty(code, createIdentifier, resolveName, c, content, value, inline, statementGenerators);
 		c = prop.end;
 	});
 
@@ -151,7 +158,8 @@ function destructureObjectPattern(
 
 function handleProperty(
 	code,
-	scope,
+	createIdentifier,
+	resolveName,
 	c,
 	node,
 	value,
@@ -163,7 +171,8 @@ function handleProperty(
 			code.remove(c, node.start);
 			destructureIdentifier(
 				code,
-				scope,
+				createIdentifier,
+				resolveName,
 				node,
 				value,
 				inline,
@@ -178,9 +187,9 @@ function handleProperty(
 			const isIdentifier = node.left.type === 'Identifier';
 
 			if (isIdentifier) {
-				name = scope.resolveName(node.left.name);
+				name = resolveName(node.left.name);
 			} else {
-				name = scope.createIdentifier(value);
+				name = createIdentifier(value);
 			}
 
 			statementGenerators.push((start, prefix, suffix) => {
@@ -208,7 +217,8 @@ function handleProperty(
 				code.remove(node.left.end, node.right.start);
 				handleProperty(
 					code,
-					scope,
+					createIdentifier,
+					resolveName,
 					c,
 					node.left,
 					name,
@@ -225,7 +235,7 @@ function handleProperty(
 
 			let ref = value;
 			if (node.properties.length > 1) {
-				ref = scope.createIdentifier(value);
+				ref = createIdentifier(value);
 
 				statementGenerators.push((start, prefix, suffix) => {
 					// this feels a tiny bit hacky, but we can't do a
@@ -245,7 +255,8 @@ function handleProperty(
 
 			destructureObjectPattern(
 				code,
-				scope,
+				createIdentifier,
+				resolveName,
 				node,
 				ref,
 				inline,
@@ -259,7 +270,7 @@ function handleProperty(
 			code.remove(c, (c = node.start));
 
 			if (node.elements.filter(Boolean).length > 1) {
-				const ref = scope.createIdentifier(value);
+				const ref = createIdentifier(value);
 
 				statementGenerators.push((start, prefix, suffix) => {
 					code.prependRight(node.start, (inline ? '' : `${prefix}var `) + `${ref} = `);
@@ -277,7 +288,8 @@ function handleProperty(
 					if (element.type === 'RestElement') {
 						handleProperty(
 							code,
-							scope,
+							createIdentifier,
+							resolveName,
 							c,
 							element.argument,
 							`${ref}.slice(${i})`,
@@ -287,7 +299,8 @@ function handleProperty(
 					} else {
 						handleProperty(
 							code,
-							scope,
+							createIdentifier,
+							resolveName,
 							c,
 							element,
 							`${ref}[${i}]`,
@@ -303,7 +316,8 @@ function handleProperty(
 				if (element.type === 'RestElement') {
 					handleProperty(
 						code,
-						scope,
+						createIdentifier,
+						resolveName,
 						c,
 						element.argument,
 						`${value}.slice(${index})`,
@@ -313,7 +327,8 @@ function handleProperty(
 				} else {
 					handleProperty(
 						code,
-						scope,
+						createIdentifier,
+						resolveName,
 						c,
 						element,
 						`${value}[${index}]`,

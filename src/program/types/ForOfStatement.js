@@ -58,7 +58,15 @@ export default class ForOfStatement extends LoopStatement {
 		if (declarator && declarator.id.type !== 'Identifier') {
 			let statementGenerators = [];
 			const ref = scope.createIdentifier('ref');
-			destructure(code, scope, declarator.id, ref, false, statementGenerators);
+			destructure(
+				code,
+				id => scope.createIdentifier(id),
+				id => scope.resolveName(id),
+				declarator.id,
+				ref,
+				false,
+				statementGenerators
+			);
 
 			let suffix = `;\n${i1}`;
 			statementGenerators.forEach((fn, i) => {

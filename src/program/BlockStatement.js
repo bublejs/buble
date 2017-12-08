@@ -282,7 +282,8 @@ export default class BlockStatement extends Node {
 					const ref = this.scope.createIdentifier('ref');
 					destructure(
 						code,
-						this.scope,
+						id => this.scope.createIdentifier(id),
+						id => this.scope.resolveName(id),
 						param,
 						ref,
 						false,

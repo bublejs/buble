@@ -60,9 +60,11 @@ export default class VariableDeclaration extends Node {
 						});
 					}
 
+					const scope = declarator.findScope(false);
 					destructure(
 						code,
-						declarator.findScope(false),
+						id => scope.createIdentifier(id),
+						id => scope.resolveName(id),
 						declarator.id,
 						name,
 						inline,
