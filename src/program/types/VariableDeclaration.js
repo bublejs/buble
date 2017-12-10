@@ -19,7 +19,7 @@ export default class VariableDeclaration extends Node {
 			});
 		}
 
-		if (transforms.destructuring && this.parent.type !== 'ForOfStatement') {
+		if (transforms.destructuring && this.parent.type !== 'ForOfStatement' && this.parent.type !== 'ForInStatement') {
 			let c = this.start;
 			let lastDeclaratorIsPattern;
 

@@ -829,5 +829,31 @@ module.exports = [
 			};
 			new Foo().do();
 		`
+	},
+
+	{
+		description: 'transpiles destructuring in for-in loop heads',
+
+		input: `for (var [a, b] in []) {}`,
+
+		output: `for (var ref in []) {var a = ref[0];
+	var b = ref[1];
+
+	}`
+	},
+
+	{
+		description: 'transpiles destructuring in for-in loop heads',
+
+		input: `
+			for ([a, b = "_"] in [])
+				f(a, b)`,
+
+		output: `
+			for (var ref in [])
+				{ var a = ref[0];
+				var b = ref[1]; if ( b === void 0 ) b = "_";
+
+				f(a, b) }`
 	}
 ];
