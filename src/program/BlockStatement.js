@@ -155,6 +155,15 @@ export default class BlockStatement extends Node {
 
 		if (/Function/.test(this.parent.type)) {
 			this.transpileParameters(
+				this.parent.params,
+				code,
+				transforms,
+				indentation,
+				introStatementGenerators
+			);
+		} else if ('CatchClause' === this.parent.type) {
+			this.transpileParameters(
+				[this.parent.param],
 				code,
 				transforms,
 				indentation,
@@ -212,9 +221,7 @@ export default class BlockStatement extends Node {
 		});
 	}
 
-	transpileParameters(code, transforms, indentation, introStatementGenerators) {
-		const params = this.parent.params;
-
+	transpileParameters(params, code, transforms, indentation, introStatementGenerators) {
 		params.forEach(param => {
 			if (
 				param.type === 'AssignmentPattern' &&
