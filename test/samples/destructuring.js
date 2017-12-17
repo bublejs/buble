@@ -844,5 +844,19 @@ module.exports = [
 				((assign = { x: 3 }, x$1 = assign.x));
 				(assign$1 = [ 3 ], x$1 = assign$1[0]);
 			}`
+	},
+
+	{
+		description: 'destructures try catch parameters',
+
+		input: `
+			try {} catch ({message}) {
+			}`,
+
+		output: `
+			try {} catch (ref) {
+				var message = ref.message;
+
+			}`
 	}
 ];
