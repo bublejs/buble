@@ -52,19 +52,18 @@ export default class ForOfStatement extends LoopStatement {
 		code.prependRight(this.right.start, `var ${key} = 0, ${list} = `);
 		code.appendLeft(this.right.end, `; ${key} < ${list}.length; ${key} += 1`);
 
-		// destructuring. TODO non declaration destructuring
-		const declarator =
-			this.left.type === 'VariableDeclaration' && this.left.declarations[0];
-		if (declarator && declarator.id.type !== 'Identifier') {
+		const isDeclaration = this.left.type === 'VariableDeclaration';
+		const maybeDestructuring = isDeclaration ? this.left.declarations[0].id : this.left;
+		if (maybeDestructuring.type !== 'Identifier') {
 			let statementGenerators = [];
 			const ref = scope.createIdentifier('ref');
 			destructure(
 				code,
 				id => scope.createIdentifier(id),
 				({ name }) => scope.resolveName(name),
-				declarator.id,
+				maybeDestructuring,
 				ref,
-				false,
+				!isDeclaration,
 				statementGenerators
 			);
 
@@ -77,8 +76,12 @@ export default class ForOfStatement extends LoopStatement {
 				fn(bodyStart, '', suffix);
 			});
 
-			code.appendLeft(this.left.start + this.left.kind.length + 1, ref);
-			code.appendLeft(this.left.end, ` = ${list}[${key}];\n${i1}`);
+			if (isDeclaration) {
+				code.appendLeft(this.left.start + this.left.kind.length + 1, ref);
+				code.appendLeft(this.left.end, ` = ${list}[${key}];\n${i1}`);
+			} else {
+				code.appendLeft(this.left.end, `var ${ref} = ${list}[${key}];\n${i1}`);
+			}
 		} else {
 			code.appendLeft(this.left.end, ` = ${list}[${key}];\n\n${i1}`);
 		}
