@@ -114,8 +114,20 @@ module.exports = [
 	},
 
 	{
-		description: 'avoids shadowing free variables with method names (#166)',
+		description: 'transpiles string-keyed properties after computed properties',
 
+		input: `
+			fn({['computed']:1, 'some-var':2, a: 3});
+		`,
+		output: `
+			var obj;
+
+			fn(( obj = {}, obj['computed'] = 1, obj['some-var'] = 2, obj.a = 3, obj ));
+		`
+	},
+
+	{
+		description: 'avoids shadowing free variables with method names (#166)',
 		input: `
 			let x = {
 				foo() { return foo },
