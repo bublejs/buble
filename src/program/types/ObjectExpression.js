@@ -161,7 +161,7 @@ export default class ObjectExpression extends Node {
 					} else {
 						const propId =
 							(isSimpleAssignment ? `;\n${i0}${name}` : `, ${name}`) +
-							(prop.computed ? '' : '.');
+							(prop.key.type === 'Literal' || prop.computed ? '' : '.');
 
 						if (moveStart < prop.start) {
 							code.overwrite(moveStart, prop.start, propId);
@@ -175,7 +175,15 @@ export default class ObjectExpression extends Node {
 						while (code.original[c] !== ']') c += 1;
 						c += 1;
 					}
-					if (prop.shorthand) {
+					if (prop.key.type === 'Literal' && !prop.computed) {
+						console.log('' + code)
+						code.overwrite(
+							prop.start,
+							prop.key.end + 1,
+							'[' + code.slice(prop.start, prop.key.end) + '] = '
+						);
+						console.log('' + code)
+					} else if (prop.shorthand) {
 						code.overwrite(
 							prop.start,
 							prop.key.end,
