@@ -858,5 +858,23 @@ module.exports = [
 				var message = ref.message;
 
 			}`
+	},
+
+	{
+		description: 'destructures parameters with same name as function',
+
+		input: `
+			const a = {
+				options (options) {
+					const { input } = options;
+				}
+			}`,
+
+		output: `
+			var a = {
+				options: function options (options$1) {
+					var input = options$1.input;
+				}
+			}`
 	}
 ];
