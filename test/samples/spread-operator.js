@@ -38,9 +38,7 @@ module.exports = [
 			( foo || bar ).baz( ...values );`,
 
 		output: `
-			var ref;
-
-			(ref = ( foo || bar )).baz.apply( ref, values );`
+			var ref; (ref = ( foo || bar )).baz.apply( ref, values );`
 	},
 
 	{
@@ -585,5 +583,20 @@ module.exports = [
 						}; }
 			}
 		`
-	}
+	},
+
+	{
+		description:
+			'transpiles a spread operator with semicolon before parens',
+
+		input: `
+			const foo = { bar: [] }
+			const baz = true ? [1,2,3] : []
+			foo.bar.push(...baz)`,
+
+		output: `
+			var foo = { bar: [] }
+			var baz = true ? [1,2,3] : []
+			var ref; (ref = foo.bar).push.apply(ref, baz)`
+	},
 ];
