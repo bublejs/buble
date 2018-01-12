@@ -74,5 +74,25 @@ module.exports = [
 
 		output: `
 			new f(a)`
-	}
+	},
+
+	{
+		description: 'keeps commas in trailing comments in normal function declaration arguments',
+
+		input: `
+			function f(a/*,*/) {}`,
+
+		output: `
+			function f(a/*,*/) {}`
+	},
+
+	{
+		description: 'strips trailing commas after comments in normal function declaration arguments',
+
+		input: `
+			function f(a/*a*/,) {}`,
+
+		output: `
+			function f(a/*a*/) {}`
+	},
 ];
