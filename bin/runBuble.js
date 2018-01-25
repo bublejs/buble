@@ -1,6 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var buble = require('../dist/buble.deps.js');
+var buble = require('..');
 var handleError = require('./handleError.js');
 var EOL = require('os').EOL;
 
