@@ -1,12 +1,11 @@
 import * as acorn from 'acorn';
 import acornJsx from 'acorn-jsx/inject';
-import acornObjectSpread from 'acorn5-object-spread/inject';
 import acornDynamicImport from 'acorn-dynamic-import/lib/inject';
 import Program from './program/Program.js';
 import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';
 
-const { parse } = [acornObjectSpread, acornJsx, acornDynamicImport].reduce(
+const { parse } = [acornJsx, acornDynamicImport].reduce(
 	(final, plugin) => plugin(final),
 	acorn
 );
@@ -58,7 +57,7 @@ export function transform(source, options = {}) {
 
 	try {
 		ast = parse(source, {
-			ecmaVersion: 8,
+			ecmaVersion: 9,
 			preserveParens: true,
 			sourceType: 'module',
 			onComment: (block, text) => {
@@ -69,7 +68,6 @@ export function transform(source, options = {}) {
 			},
 			plugins: {
 				jsx: true,
-				objectSpread: true,
 				dynamicImport: true
 			}
 		});
