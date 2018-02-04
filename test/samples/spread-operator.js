@@ -585,5 +585,21 @@ module.exports = [
 						}; }
 			}
 		`
+	},
+
+	{
+		description: 'transpiles spread with template literal afterwards',
+
+		input: `
+			[...f(b), "n"];
+			[...f(b), 'n'];
+			[...f(b), \`n\`];
+		`,
+
+		output: `
+			f(b).concat( ["n"]);
+			f(b).concat( ['n']);
+			f(b).concat( ["n"]);
+		`
 	}
 ];
