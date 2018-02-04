@@ -181,19 +181,23 @@ export default class ObjectExpression extends Node {
 							prop.key.end + 1,
 							'[' + code.slice(prop.start, prop.key.end) + '] = '
 						);
-					} else if (prop.shorthand) {
+					} else if (prop.shorthand || (prop.method && !prop.computed && transforms.conciseMethodProperty)) {
+						// Replace : with = if Property::transpile inserted the :
 						code.overwrite(
-							prop.start,
+							prop.key.start,
 							prop.key.end,
-							code.slice(prop.start, prop.key.end).replace(/:/, ' =')
+							code.slice(prop.key.start, prop.key.end).replace(/:/, ' =')
 						);
 					} else {
 						if (prop.value.start > c) code.remove(c, prop.value.start);
-						code.appendLeft(c, ' = ');
+						code.prependLeft(c, ' = ');
 					}
 
-					if (prop.method && transforms.conciseMethodProperty) {
-						code.prependRight(prop.value.start, 'function ');
+					// This duplicates behavior from Property::transpile which is disabled
+					// for computed properties or if conciseMethodProperty is false
+					if (prop.method && (prop.computed || !transforms.conciseMethodProperty)) {
+						if (prop.value.generator) code.remove(prop.start, prop.key.start);
+						code.prependRight(prop.value.start, `function${prop.value.generator ? '*' : ''} `);
 					}
 				} else if (prop.type === 'SpreadElement') {
 					if (name && i > 0) {

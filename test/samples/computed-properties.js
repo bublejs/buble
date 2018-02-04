@@ -41,6 +41,38 @@ module.exports = [
 	},
 
 	{
+		description: 'creates a computed property at start of literal with method afterwards',
+
+		input: `
+			var obj = {
+				[a]: 1,
+				b() {}
+			};`,
+
+		output: `
+			var obj = {};
+			obj[a] = 1;
+			obj.b = function b() {};`
+	},
+
+	{
+		description: 'creates a computed property at start of literal with generator method afterwards when transpiling methods is disabled',
+
+		options: { transforms: { conciseMethodProperty: false, generator: false } },
+
+		input: `
+			var obj = {
+				[a]: 1,
+				*b() {}
+			};`,
+
+		output: `
+			var obj = {};
+			obj[a] = 1;
+			obj.b = function* () {};`
+	},
+
+	{
 		description: 'creates a computed property at end of literal',
 
 		input: `
