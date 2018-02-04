@@ -24,9 +24,12 @@ const config = {
 			}
 		}),
 		resolve()
-	],
-	name: 'buble',
-	sourcemap: true
+	]
+};
+
+const globals = {
+  'acorn/dist/acorn.js': 'acorn',
+  'magic-string': 'MagicString'
 };
 
 export default [
@@ -34,19 +37,15 @@ export default [
 	Object.assign({}, config, {
 		external: ['acorn/dist/acorn.js', 'magic-string'],
 		output: [
-			{ format: 'es', file: pkg.module },
-			{ format: 'umd', file: pkg.main }
-		],
-		globals: {
-			'acorn/dist/acorn.js': 'acorn',
-			'magic-string': 'MagicString'
-		}
+			{ format: 'es', file: pkg.module, globals, sourcemap: true, name: 'buble' },
+			{ format: 'umd', file: pkg.main, globals, sourcemap: true, name: 'buble' }
+		]
 	}),
 
 	/* UMD with bundled dependencies, for browsers */
 	Object.assign({}, config, {
 		output: [
-			{ format: 'umd', file: pkg.browser }
+			{ format: 'umd', file: pkg.browser, sourcemap: true, name: 'buble' }
 		]
 	})
 ];
