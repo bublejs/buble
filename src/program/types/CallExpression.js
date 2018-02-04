@@ -57,9 +57,20 @@ export default class CallExpression extends Node {
 					if (this.callee.object.type === 'Identifier') {
 						context = this.callee.object.name;
 					} else {
-						context = this.findScope(true).createDeclaration('ref');
 						const callExpression = this.callee.object;
-						code.prependRight(callExpression.start, `(${context} = `);
+
+						// Prepend the declaraction in place to prevent an expression
+						// begining with a parenthesis. Other types are guarded by
+						// an expression before the parenthesis so the declaration
+						// is created at the top of the scope.
+						if (this.parent.type === 'ExpressionStatement') {
+							context = this.findScope(true).createIdentifier('ref');
+							code.prependRight(callExpression.start, `var ${context}; (${context} = `);
+						} else {
+							context = this.findScope(true).createDeclaration('ref');
+							code.prependRight(callExpression.start, `(${context} = `);
+						}
+
 						code.appendLeft(callExpression.end, `)`);
 					}
 				} else {
