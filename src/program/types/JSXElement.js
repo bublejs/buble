@@ -1,6 +1,9 @@
 import Node from '../Node.js';
 
 function normalise(str, removeTrailingWhitespace) {
+
+	str = str.replace(/\u00a0/g, '&nbsp;');
+
 	if (removeTrailingWhitespace && /\n/.test(str)) {
 		str = str.replace(/\s+$/, '');
 	}
@@ -43,7 +46,7 @@ export default class JSXElement extends Node {
 				}
 
 				if (child.type === 'JSXText') {
-					const str = normalise(child.raw, i === children.length - 1);
+					const str = normalise(child.value, i === children.length - 1);
 					code.overwrite(child.start, child.end, str);
 				}
 

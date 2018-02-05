@@ -293,5 +293,19 @@ module.exports = [
 			React.createElement( 'div', null,
 				React.createElement( 'a', null, "1" ), "&nbsp; &nbsp;")
 		`
+	},
+
+	{
+		description: 'transpiles entities',
+
+		input: `
+			<div>
+				<a>1&lt;</a>&nbsp;
+			</div>
+		`,
+		output: `
+			React.createElement( 'div', null,
+				React.createElement( 'a', null, "1<" ), "&nbsp;")
+		`
 	}
 ];
