@@ -96,7 +96,6 @@ module.exports = [
 
 	{
 		description: 'disallows destructured reassignment to constants, rest property',
-		skip: true,
 		input: `
 			const x = 1;
 			({ ...x } = {});
@@ -421,7 +420,6 @@ module.exports = [
 	},
 
 	{
-		skip: true,
 		description: 'deconflicts rest element declarations',
 
 		input: `
@@ -436,7 +434,9 @@ module.exports = [
 			var x;
 
 			if ( true ) {
-				var first = y[0], second = y[1], x$1 = y.slice( 2 );
+				var first = y[0];
+				var second = y[1];
+				var x$1 = y.slice(2);
 				console.log( x$1 );
 			}`
 	},
