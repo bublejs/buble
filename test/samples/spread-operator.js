@@ -601,5 +601,13 @@ module.exports = [
 			f(b).concat( ['n']);
 			f(b).concat( ["n"]);
 		`
+	},
+
+	{
+		description: 'transpiles spread with arrow function afterwards',
+
+		input: `[...A, () => 'B']`,
+
+		output: `A.concat( [function () { return 'B'; }])`
 	}
 ];

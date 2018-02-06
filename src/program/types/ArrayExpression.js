@@ -23,6 +23,8 @@ export default class ArrayExpression extends Node {
 	}
 
 	transpile(code, transforms) {
+		super.transpile(code, transforms);
+
 		if (transforms.spreadRest) {
 			// erase trailing comma after last array element if not an array hole
 			if (this.elements.length) {
@@ -64,7 +66,5 @@ export default class ArrayExpression extends Node {
 				}
 			}
 		}
-
-		super.transpile(code, transforms);
 	}
 }
