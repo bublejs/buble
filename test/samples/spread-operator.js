@@ -158,7 +158,7 @@ module.exports = [
 				while ( i-- ) argsArray[i] = arguments[i];
 
 				return Domain.run(function () {
-					return new (Function.prototype.bind.apply( this$1.Test, [ null ].concat( arguments$1) ));
+					return new (Function.prototype.bind.apply( this$1.Test, [ null ].concat( argsArray) ));
 				});
 			}
 		`
@@ -557,7 +557,7 @@ module.exports = [
 				while ( i-- ) argsArray[i] = arguments[i];
 
 				if ( x )
-					{ return function (ref) { return new (Function.prototype.bind.apply( (bar || baz).Test, [ null ].concat( [ref], arguments$1 ) )); }; }
+					{ return function (ref) { return new (Function.prototype.bind.apply( (bar || baz).Test, [ null ].concat( [ref], argsArray ) )); }; }
 			}
 		`
 	},
@@ -609,5 +609,13 @@ module.exports = [
 		input: `[...A, () => 'B']`,
 
 		output: `A.concat( [function () { return 'B'; }])`
+	},
+
+	{
+		description: 'transpiles spread in new with arrow function afterwards',
+
+		input: `new X(...A, () => 'B')`,
+
+		output: `new (Function.prototype.bind.apply( X, [ null ].concat( A, [function () { return 'B'; }]) ))`
 	}
 ];

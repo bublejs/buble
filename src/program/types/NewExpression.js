@@ -21,6 +21,8 @@ export default class NewExpression extends Node {
 	}
 
 	transpile(code, transforms) {
+		super.transpile(code, transforms);
+
 		if (transforms.spreadRest && this.arguments.length) {
 			const firstArgument = this.arguments[0];
 			const isNew = true;
@@ -46,7 +48,6 @@ export default class NewExpression extends Node {
 			}
 		}
 
-		super.transpile(code, transforms);
 		if (this.arguments.length) {
 			removeTrailingComma(code, this.arguments[this.arguments.length - 1].end);
 		}
