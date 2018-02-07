@@ -1,4 +1,3 @@
-import './wrap.js'; // TODO necessary for ordering. sort it out
 import Node from './Node.js';
 import Scope from './Scope.js';
 import destructure from '../utils/destructure.js';
