@@ -21,7 +21,7 @@
     "test": "mocha test/test.js",
     "pretest": "npm run build",
     "prepublish": "npm test",
-    "lint": "eslint src"
+    "lint": "eslint bin/ src/ test/test.js"
   },
   "bin": {
     "buble": "./bin/buble"

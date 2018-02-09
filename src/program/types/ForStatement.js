@@ -13,15 +13,9 @@ export default class ForStatement extends LoopStatement {
 
 		if (this.shouldRewriteAsFunction) {
 			// which variables are declared in the init statement?
-			const names =
-				this.init.type === 'VariableDeclaration'
-					? [].concat.apply(
-							[],
-							this.init.declarations.map(declarator =>
-								extractNames(declarator.id)
-							)
-						)
-					: [];
+			const names = this.init.type === 'VariableDeclaration'
+				? this.init.declarations.map(declarator => extractNames(declarator.id))
+				: [];
 
 			const aliases = this.aliases;
 

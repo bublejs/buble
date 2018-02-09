@@ -14,15 +14,9 @@ export default class ForInStatement extends LoopStatement {
 
 		if (this.shouldRewriteAsFunction) {
 			// which variables are declared in the init statement?
-			const names =
-				hasDeclaration
-					? [].concat.apply(
-							[],
-							this.left.declarations.map(declarator =>
-								extractNames(declarator.id)
-							)
-						)
-					: [];
+			const names = hasDeclaration
+				? this.left.declarations.map(declarator => extractNames(declarator.id))
+				: [];
 
 			this.args = names.map(
 				name => (name in this.aliases ? this.aliases[name].outer : name)

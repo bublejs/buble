@@ -98,7 +98,7 @@ module.exports = function(command) {
 	};
 
 	if (command.target) {
-		if (!/^(?:(\w+):([\d\.]+),)*(\w+):([\d\.]+)$/.test(command.target)) {
+		if (!/^(?:(\w+):([\d.]+),)*(\w+):([\d.]+)$/.test(command.target)) {
 			handleError({ code: 'BAD_TARGET' });
 		}
 
