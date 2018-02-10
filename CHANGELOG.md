@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.19.1
+
+* Fix transpiling let and const if arrow functions are not transpiled (i. e. node: 4)
+
 ## 0.19.0
 
 ### Enhancements
