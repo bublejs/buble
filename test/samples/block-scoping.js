@@ -516,5 +516,25 @@ module.exports = [
 					console.log(bar);
 			}());
 		`
+	},
+
+	{
+		description: 'correctly transpiles if arrow functions are not transpiled',
+
+		options: { transforms: { arrow: false } },
+
+		input: `
+			var c;
+			if (true) {
+				let c = prop.end;
+				console.log(c);
+			}`,
+
+		output: `
+			var c;
+			if (true) {
+				var c$1 = prop.end;
+				console.log(c$1);
+			}`,
 	}
 ];

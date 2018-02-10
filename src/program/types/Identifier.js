@@ -16,8 +16,9 @@ export default class Identifier extends Node {
 	}
 
 	initialise(transforms) {
-		if (transforms.arrow && isReference(this, this.parent)) {
+		if (isReference(this, this.parent)) {
 			if (
+				transforms.arrow &&
 				this.name === 'arguments' &&
 				!this.findScope(false).contains(this.name)
 			) {
