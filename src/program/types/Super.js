@@ -7,7 +7,7 @@ export default class Super extends Node {
 		if (transforms.classes) {
 			this.method = this.findNearest('MethodDefinition');
 			if (!this.method)
-				throw new CompileError(this, 'use of super outside class method');
+				throw new CompileError('use of super outside class method', this);
 
 			const parentClass = this.findNearest('ClassBody').parent;
 			this.superClassName =
