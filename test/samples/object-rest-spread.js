@@ -160,7 +160,7 @@ module.exports = [
 	{
 		description: 'transpiles rest properties',
 		input: `var {a, ...b} = c`,
-		output: `function objectWithoutProperties (obj, keys) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+		output: `function objectWithoutProperties (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
 var a = c.a;
 var rest = objectWithoutProperties( c, ["a"] );
 var b = rest;`
@@ -169,7 +169,7 @@ var b = rest;`
 	{
 		description: 'transpiles rest properties in assignments',
 		input: `({a, ...b} = c);`,
-		output: `function objectWithoutProperties (obj, keys) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+		output: `function objectWithoutProperties (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
 
 var assign, rest;
 ((assign = c, a = assign.a, rest = objectWithoutProperties( assign, ["a"] ), b = rest));`
@@ -182,7 +182,7 @@ var assign, rest;
 			function objectWithoutProperties({x, ...y}) {}`,
 		output: `
 			"use strict";
-			function objectWithoutProperties$1 (obj, keys) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+			function objectWithoutProperties$1 (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
 function objectWithoutProperties(ref) {
 				var x = ref.x;
 				var rest = objectWithoutProperties$1( ref, ["x"] );
@@ -193,7 +193,7 @@ function objectWithoutProperties(ref) {
 	{
 		description: 'transpiles rest properties in arrow function arguments',
 		input: `(({x, ...y}) => {})`,
-		output: `function objectWithoutProperties (obj, keys) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+		output: `function objectWithoutProperties (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
 (function (ref) {
 	var x = ref.x;
 	var rest = objectWithoutProperties( ref, ["x"] );
@@ -204,14 +204,14 @@ function objectWithoutProperties(ref) {
 	{
 	description: 'transpiles rest properties in for loop heads',
 	input: `for( var {a, ...b} = c;; ) {}`,
-	output: `function objectWithoutProperties (obj, keys) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+	output: `function objectWithoutProperties (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
 for( var a = c.a, rest = objectWithoutProperties( c, ["a"] ), b = rest;; ) {}`
 	},
 
 	{
 	description: 'transpiles trivial rest properties in for loop heads',
 	input: `for( var {...b} = c;; ) {}`,
-	output: `function objectWithoutProperties (obj, keys) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+	output: `function objectWithoutProperties (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
 for( var rest = objectWithoutProperties( c, [] ), b = rest;; ) {}`
 	}
 

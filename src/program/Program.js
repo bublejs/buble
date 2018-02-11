@@ -63,7 +63,7 @@ Program.prototype = {
 	getObjectWithoutPropertiesHelper(code) {
 		if (!this.objectWithoutPropertiesHelper) {
 			this.objectWithoutPropertiesHelper = this.body.scope.createIdentifier('objectWithoutProperties');
-			code.prependLeft(this.prependAt, `function ${this.objectWithoutPropertiesHelper} (obj, keys) { ` +
+			code.prependLeft(this.prependAt, `function ${this.objectWithoutPropertiesHelper} (obj, exclude) { ` +
 				`var target = {}; for (var k in obj) ` +
 				`if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) ` +
 				`target[k] = obj[k]; return target; }\n`
