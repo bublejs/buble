@@ -1,10 +1,16 @@
 # buble changelog
 
-## 0.19.1
+## 0.19.2 (2018-02-12)
+
+* Correctly specify browser field in package.json ([#107](https://github.com/Rich-Harris/buble/issues/107))
+* Fix a compile error about using `super` outside of class methods
+* Fix transpiling rest properties
+
+## 0.19.1 (2018-02-10)
 
 * Fix transpiling let and const if arrow functions are not transpiled (i. e. node: 4)
 
-## 0.19.0
+## 0.19.0 (2018-02-10)
 
 ### Enhancements
 
