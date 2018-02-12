@@ -5,8 +5,8 @@
   "main": "dist/buble.cjs.js",
   "module": "dist/buble.es.js",
   "browser": {
-    "dist/buble.cjs.js": "dist/buble-browser.cjs.js",
-    "dist/buble.es.js": "dist/buble-browser.es.js"
+    "dist/buble.cjs.js": "./dist/buble-browser.cjs.js",
+    "dist/buble.es.js": "./dist/buble-browser.es.js"
   },
   "unpkg": "dist/buble-browser-deps.umd.js",
   "files": [
