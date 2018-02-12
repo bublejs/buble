@@ -1,0 +1,6 @@
+---
+  rules:
+    no-empty:
+      - "error"
+      - { allowEmptyCatch: true }
+    no-console: "off"

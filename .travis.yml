@@ -18,3 +18,4 @@ script:
       node_modules/.bin/acorn --ecma3 register.js > /dev/null;
       npm run test:bundlers;
     fi
+  - node scripts/run_test262.js
