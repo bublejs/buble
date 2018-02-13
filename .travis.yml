@@ -9,5 +9,6 @@ env:
   global:
     - BUILD_TIMEOUT=10000
 
-install:
-  - npm install
+script:
+  - node_modules/.bin/acorn --ecma5 dist/buble-browser.cjs.js
+  - node_modules/.bin/acorn --ecma5 dist/buble-browser-deps.umd.js
