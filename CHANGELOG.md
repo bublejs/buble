@@ -1,5 +1,9 @@
 # buble changelog
 
+## 0.19.3 (2018-02-13)
+
+* Make sure browser builds are actually valid ES5 (except for the modules build)
+
 ## 0.19.2 (2018-02-12)
 
 * Correctly specify browser field in package.json ([#107](https://github.com/Rich-Harris/buble/issues/107))
