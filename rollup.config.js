@@ -26,8 +26,9 @@ const createConfig = (opts) => {
 				target: !browser ? { node: 4 } : null,
 				include: [
 					'src/**',
-					'node_modules/unicode-loose-match/**',
-					'node_modules/regexpu-core/**'
+					'node_modules/regexpu-core/**',
+					'node_modules/unicode-match-property-ecmascript/**',
+					'node_modules/unicode-match-property-value-ecmascript/**',
 				],
 				transforms: {
 					dangerousForOf: true
