@@ -1,3 +1,4 @@
+import CompileError from '../../utils/CompileError.js';
 import Node from '../Node.js';
 import { findIndex } from '../../utils/array.js';
 import reserved from '../../utils/reserved.js';
@@ -91,6 +92,12 @@ export default class ClassBody extends Node {
 			let staticAccessors;
 
 			this.body.forEach((method, i) => {
+				if ((method.kind === 'get' || method.kind === 'set') && transforms.getterSetter) {
+					throw new CompileError(
+						"getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error",
+						method);
+				}
+
 				if (method.kind === 'constructor') {
 					let constructorName = namedConstructor ? ' ' + name : '';
 					code.overwrite(

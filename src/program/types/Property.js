@@ -1,7 +1,17 @@
+import CompileError from '../../utils/CompileError.js';
 import Node from '../Node.js';
 import reserved from '../../utils/reserved.js';
 
 export default class Property extends Node {
+	initialise(transforms) {
+		if ((this.kind === 'get' || this.kind === 'set') && transforms.getterSetter) {
+			throw new CompileError(
+				"getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error",
+				this);
+		}
+		super.initialise(transforms);
+	}
+
 	transpile(code, transforms) {
 		super.transpile(code, transforms);
 
