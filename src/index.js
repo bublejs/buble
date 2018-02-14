@@ -15,8 +15,8 @@ const dangerousTransforms = ['dangerousTaggedTemplateString', 'dangerousForOf'];
 export function target(target) {
 	const targets = Object.keys(target);
 	let bitmask = targets.length
-		? 0b11111111111111111111
-		: 0b01000000000000000000;
+		? 0b111111111111111111111
+		: 0b010000000000000000001;
 
 	Object.keys(target).forEach(environment => {
 		const versions = matrix[environment];
