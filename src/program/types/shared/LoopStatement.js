@@ -15,6 +15,8 @@ export default class LoopStatement extends Node {
 		this.reassigned = Object.create(null);
 		this.aliases = Object.create(null);
 
+		this.thisRefs = [];
+
 		super.initialise(transforms);
 
 		if (transforms.letConst) {
@@ -37,6 +39,9 @@ export default class LoopStatement extends Node {
 						nearestFunctionExpression.depth > this.depth
 					) {
 						this.shouldRewriteAsFunction = true;
+						for (const node of this.thisRefs) {
+							node.alias = node.alias || node.findLexicalBoundary().getThisAlias();
+						}
 						break;
 					}
 				}
