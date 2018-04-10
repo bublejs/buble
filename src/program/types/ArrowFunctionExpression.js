@@ -1,6 +1,7 @@
 import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 import removeTrailingComma from '../../utils/removeTrailingComma.js';
+import AwaitExpression from './AwaitExpression';
 
 export default class ArrowFunctionExpression extends Node {
 	initialise(transforms) {
@@ -22,6 +23,7 @@ export default class ArrowFunctionExpression extends Node {
 			}
 			code.remove(charIndex, this.body.start);
 
+			AwaitExpression.removeAsync(code, transforms, this.async, this.start);
 			super.transpile(code, transforms);
 
 			// wrap naked parameter
@@ -38,6 +40,7 @@ export default class ArrowFunctionExpression extends Node {
 				code.prependRight(this.start, 'function ');
 			}
 		} else {
+			AwaitExpression.removeAsync(code, transforms, this.async, this.start);
 			super.transpile(code, transforms);
 		}
 

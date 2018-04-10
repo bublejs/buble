@@ -1,11 +1,20 @@
 import Node from '../Node.js';
-import CompileError from '../../utils/CompileError.js';
+
+const noop = () => {};
 
 export default class AwaitExpression extends Node {
-	initialise(transforms) {
-		if (transforms.asyncAwait) {
-			CompileError.missingTransform("await", "asyncAwait", this);
+	static removeAsync(code, transforms, async, start, callback = noop) {
+		if (transforms.asyncAwait && async) {
+			code.remove(start, start + 6);
+			callback();
 		}
-		super.initialise(transforms);
+	}
+
+	transpile (code, transforms) {
+		AwaitExpression.removeAsync(code, transforms, true, this.start, () => {
+			code.insertLeft(this.argument.start, 'return ');
+		});
+
+		super.transpile(code, transforms);
 	}
 }
