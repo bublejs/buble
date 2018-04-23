@@ -11,8 +11,7 @@ export default class Literal extends Node {
 
 	transpile(code, transforms) {
 		if (transforms.numericLiteral) {
-			const leading = this.raw.slice(0, 2);
-			if (leading === '0b' || leading === '0o') {
+			if (this.raw.match(/^0[bo]/i)) {
 				code.overwrite(this.start, this.end, String(this.value), {
 					storeName: true,
 					contentOnly: true
