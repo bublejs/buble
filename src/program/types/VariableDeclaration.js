@@ -15,6 +15,7 @@ export default class VariableDeclaration extends Node {
 		if (transforms.letConst && kind !== 'var') {
 			kind = 'var';
 			code.overwrite(this.start, this.start + this.kind.length, kind, {
+				contentOnly: true,
 				storeName: true
 			});
 		}

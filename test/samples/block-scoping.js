@@ -536,5 +536,13 @@ module.exports = [
 				var c$1 = prop.end;
 				console.log(c$1);
 			}`,
+	},
+
+	{
+		description: 'emits correct code after block-less if',
+
+		input: 'if(0);const e=0',
+
+		output: 'if(0){ ; }var e=0'
 	}
 ];
