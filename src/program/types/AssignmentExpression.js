@@ -69,7 +69,7 @@ export default class AssignmentExpression extends Node {
 
 		if (this.unparenthesizedParent().type === 'ExpressionStatement') {
 			// no rvalue needed for expression statement
-			code.appendRight(this.end, `)`);
+			code.prependRight(this.end, `)`);
 		} else {
 			// destructuring is part of an expression - need an rvalue
 			code.appendRight(this.end, `, ${assign})`);
