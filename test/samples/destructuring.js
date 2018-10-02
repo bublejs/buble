@@ -876,5 +876,17 @@ module.exports = [
 					var input = options$1.input;
 				}
 			}`
+	},
+
+	{
+		description: 'destructuring inside a brace-less if',
+
+		input: `
+			if (from) [from, to] = [to, from]`,
+
+		output: `
+			var assign;
+
+			if (from) { (assign = [to, from], from = assign[0], to = assign[1]) }`
 	}
 ];
