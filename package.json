@@ -20,7 +20,7 @@
     "build": "rollup -c",
     "test": "mocha test/test.js",
     "pretest": "npm run build",
-    "prepublish": "npm test",
+    "prepare": "npm test",
     "lint": "eslint bin/ src/ test/test.js"
   },
   "bin": {
