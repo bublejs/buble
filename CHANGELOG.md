@@ -1,5 +1,13 @@
 # buble changelog
 
+## 0.19.4 (2018-10-06)
+
+* Fix transpiling destructuring assignments in brace-less if statement's bodies ([#152](https://github.com/Rich-Harris/buble/issues/152))
+* Fix transpiling const and let after brace-less if statements ([#132](https://github.com/Rich-Harris/buble/issues/132))
+* Transpile binary and octal number literals if base prefix is upper-case ([#74](https://github.com/Rich-Harris/buble/issues/74))
+* Mark classes as supported in Chrome 48
+* Mark destructuring of arrow function arguments as not supported in Firefox < 52
+
 ## 0.19.3 (2018-02-13)
 
 * Make sure browser builds are actually valid ES5 (except for the modules build)
