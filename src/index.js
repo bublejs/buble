@@ -62,10 +62,6 @@ export function transform(source, options = {}) {
 					let match = /@jsx\s+([^\s]+)/.exec(text);
 					if (match) jsx = match[1];
 				}
-			},
-			plugins: {
-				jsx: true,
-				dynamicImport: true
 			}
 		});
 		options.jsx = jsx || options.jsx;
