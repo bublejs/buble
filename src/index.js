@@ -1,14 +1,11 @@
-import * as acorn from 'acorn';
-import acornJsx from 'acorn-jsx/inject';
-import acornDynamicImport from 'acorn-dynamic-import/lib/inject';
+import { Parser } from 'acorn';
+import acornJsx from 'acorn-jsx';
+import acornDynamicImport from 'acorn-dynamic-import';
 import Program from './program/Program.js';
 import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';
 
-const { parse } = [acornJsx, acornDynamicImport].reduce(
-	(final, plugin) => plugin(final),
-	acorn
-);
+const parser = Parser.extend(acornDynamicImport, acornJsx());
 
 const dangerousTransforms = ['dangerousTaggedTemplateString', 'dangerousForOf'];
 
@@ -56,8 +53,8 @@ export function transform(source, options = {}) {
 	let jsx = null;
 
 	try {
-		ast = parse(source, {
-			ecmaVersion: 9,
+		ast = parser.parse(source, {
+			ecmaVersion: 10,
 			preserveParens: true,
 			sourceType: 'module',
 			onComment: (block, text) => {

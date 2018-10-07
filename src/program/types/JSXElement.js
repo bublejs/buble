@@ -28,7 +28,7 @@ export default class JSXElement extends Node {
 		});
 
 		if (children.length) {
-			let c = this.openingElement.end;
+			let c = (this.openingElement || this.openingFragment).end;
 
 			let i;
 			for (i = 0; i < children.length; i += 1) {

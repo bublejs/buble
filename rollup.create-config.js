@@ -20,7 +20,7 @@ const createConfig = (opts) => {
 		external: external,
 		plugins: [
 			json(),
-			commonjs(),
+			commonjs({ extensions: ['.js', '.mjs'] }),
 			buble({
 				target: !browser ? { node: 4 } : null,
 				include: [
