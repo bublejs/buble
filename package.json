@@ -52,12 +52,12 @@
     "glob": "^7.1.3",
     "mocha": "^5.2.0",
     "rimraf": "^2.5.2",
-    "rollup": "^0.66.4",
+    "rollup": "0.66.0",
     "rollup-plugin-buble": "^0.19.2",
     "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-json": "^3.1.0",
     "rollup-plugin-node-resolve": "^3.4.0",
-    "source-map": "^0.7.3",
+    "source-map": "^0.6.1",
     "source-map-support": "^0.5.9"
   },
   "dependencies": {

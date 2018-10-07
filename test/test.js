@@ -241,30 +241,29 @@ describe('buble', () => {
 				source: 'input.js'
 			});
 
-			return (new SourceMapConsumer(result.map)).then(smc => {
-				var location = getLocation(result.code, 'add');
-				var expected = getLocation(source, 'add');
+			var smc = new SourceMapConsumer(result.map);
+			var location = getLocation(result.code, 'add');
+			var expected = getLocation(source, 'add');
 
-				var actual = smc.originalPositionFor(location);
+			var actual = smc.originalPositionFor(location);
 
-				assert.deepEqual(actual, {
-					line: expected.line,
-					column: expected.column,
-					source: 'input.js',
-					name: null
-				});
+			assert.deepEqual(actual, {
+				line: expected.line,
+				column: expected.column,
+				source: 'input.js',
+				name: null
+			});
 
-				location = getLocation(result.code, 'a +');
-				expected = getLocation(source, 'a +');
+			location = getLocation(result.code, 'a +');
+			expected = getLocation(source, 'a +');
 
-				actual = smc.originalPositionFor(location);
+			actual = smc.originalPositionFor(location);
 
-				assert.deepEqual(actual, {
-					line: expected.line,
-					column: expected.column,
-					source: 'input.js',
-					name: null
-				});
+			assert.deepEqual(actual, {
+				line: expected.line,
+				column: expected.column,
+				source: 'input.js',
+				name: null
 			});
 		});
 
@@ -279,22 +278,21 @@ describe('buble', () => {
 				file: 'output.js',
 				source: 'input.js'
 			});
-			return (new SourceMapConsumer(result.map)).then(smc => {
-				var location = getLocation(result.code, 'var');
-				var actual = smc.originalPositionFor(location);
+			var smc = new SourceMapConsumer(result.map);
+			var location = getLocation(result.code, 'var');
+			var actual = smc.originalPositionFor(location);
 
-				assert.equal(actual.name, 'const');
+			assert.equal(actual.name, 'const');
 
-				location = getLocation(result.code, 'var', location.char + 1);
-				actual = smc.originalPositionFor(location);
+			location = getLocation(result.code, 'var', location.char + 1);
+			actual = smc.originalPositionFor(location);
 
-				assert.equal(actual.name, 'const');
+			assert.equal(actual.name, 'const');
 
-				location = getLocation(result.code, 'foo$1', location.char + 1);
-				actual = smc.originalPositionFor(location);
+			location = getLocation(result.code, 'foo$1', location.char + 1);
+			actual = smc.originalPositionFor(location);
 
-				assert.equal(actual.name, 'foo');
-			});
+			assert.equal(actual.name, 'foo');
 		});
 
 		it('handles moved content', () => {
@@ -310,30 +308,29 @@ describe('buble', () => {
 				file: 'output.js',
 				source: 'input.js'
 			});
-			return (new SourceMapConsumer(result.map)).then(smc => {
-				var location = getLocation(result.code, 'i < 10');
-				var expected = getLocation(source, 'i < 10');
+			var smc = new SourceMapConsumer(result.map);
+			var location = getLocation(result.code, 'i < 10');
+			var expected = getLocation(source, 'i < 10');
 
-				var actual = smc.originalPositionFor(location);
+			var actual = smc.originalPositionFor(location);
 
-				assert.deepEqual(actual, {
-					line: expected.line,
-					column: expected.column,
-					source: 'input.js',
-					name: null
-				});
+			assert.deepEqual(actual, {
+				line: expected.line,
+				column: expected.column,
+				source: 'input.js',
+				name: null
+			});
 
-				location = getLocation(result.code, 'setTimeout');
-				expected = getLocation(source, 'setTimeout');
+			location = getLocation(result.code, 'setTimeout');
+			expected = getLocation(source, 'setTimeout');
 
-				actual = smc.originalPositionFor(location);
+			actual = smc.originalPositionFor(location);
 
-				assert.deepEqual(actual, {
-					line: expected.line,
-					column: expected.column,
-					source: 'input.js',
-					name: null
-				});
+			assert.deepEqual(actual, {
+				line: expected.line,
+				column: expected.column,
+				source: 'input.js',
+				name: null
 			});
 		});
 	});
