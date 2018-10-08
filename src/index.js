@@ -57,6 +57,7 @@ export function transform(source, options = {}) {
 			ecmaVersion: 10,
 			preserveParens: true,
 			sourceType: 'module',
+			allowReturnOutsideFunction: true,
 			onComment: (block, text) => {
 				if (!jsx) {
 					let match = /@jsx\s+([^\s]+)/.exec(text);
