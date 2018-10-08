@@ -21,7 +21,7 @@
     "test": "mocha test/test.js",
     "pretest": "npm run build",
     "prepublish": "npm test",
-    "lint": "eslint bin/ src/ test/test.js"
+    "lint": "eslint bin/ src/ test/test.js test/utils/ register.js rollup.*.js"
   },
   "bin": {
     "buble": "./bin/buble"

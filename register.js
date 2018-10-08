@@ -78,7 +78,7 @@ require.extensions[ '.js' ] = function ( m, filename ) {
 				console.log( 'Error compiling ' + filename + ':\n---' );
 				console.log( err.snippet );
 				console.log( err.message );
-				console.log( '' )
+				console.log( '' );
 				process.exit( 1 );
 			}
 

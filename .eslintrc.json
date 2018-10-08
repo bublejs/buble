@@ -16,5 +16,13 @@
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module"
-    }
+    },
+    "overrides": [
+      {
+        "files": ["register.js"],
+        "rules": {
+          "no-console": [ 0 ]
+        }
+      }
+    ]
 }

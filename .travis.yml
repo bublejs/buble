@@ -10,5 +10,6 @@ env:
     - BUILD_TIMEOUT=10000
 
 script:
+  - npm run lint
   - node_modules/.bin/acorn --ecma5 dist/buble-browser.cjs.js > /dev/null
   - node_modules/.bin/acorn --ecma5 dist/buble-browser-deps.umd.js > /dev/null
