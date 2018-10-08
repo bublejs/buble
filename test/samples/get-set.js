@@ -29,7 +29,7 @@ Object.defineProperties( X.prototype, prototypeAccessors );`,
 		input: `class X {
 			get x() {}
 		}`,
-		error: 'getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error (2:3)'
+		error: /getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error \(2:3\)/
 	},
 
 	{
@@ -38,7 +38,7 @@ Object.defineProperties( X.prototype, prototypeAccessors );`,
 		input: `X = {
 			get x() {}
 		}`,
-		error: 'getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error (2:3)'
+		error: /getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error \(2:3\)/
 	},
 
 	{
@@ -47,7 +47,7 @@ Object.defineProperties( X.prototype, prototypeAccessors );`,
 		input: `class X {
 			get x() {}
 		}`,
-		error: 'getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error (2:3)'
+		error: /getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error \(2:3\)/
 	},
 
 	{
@@ -56,6 +56,6 @@ Object.defineProperties( X.prototype, prototypeAccessors );`,
 		input: `X = {
 			get x() {}
 		}`,
-		error: 'getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error (2:3)'
+		error: /getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error \(2:3\)/
 	},
 ]
