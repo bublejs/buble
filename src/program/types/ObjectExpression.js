@@ -234,12 +234,7 @@ export default class ObjectExpression extends Node {
 				if (i < len - 1 && !sawNonComputedProperty) {
 					while (code.original[c] !== ',') c += 1;
 				} else if (i == len - 1) c = this.end;
-				code.remove(prop.end, c);
-			}
-
-			// special case
-			if (computedPropertyCount === len) {
-				code.remove(this.properties[len - 1].end, this.end - 1);
+				if (prop.end != c) code.overwrite(prop.end, c, '', {contentOnly: true});
 			}
 
 			if (!isSimpleAssignment && name) {
