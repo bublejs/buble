@@ -888,5 +888,20 @@ module.exports = [
 			var assign;
 
 			if (from) { (assign = [to, from], from = assign[0], to = assign[1]) }`
+	},
+
+	{
+		description: 'destructuring nested computed properties',
+
+		options: {
+			objectAssign: 'Object.assign'
+		},
+
+		input: `var z1 = { [b]: { ...c, [d]: 'Hello, World!' } }`,
+
+		output: `
+var obj;
+var z1 = {};
+z1[b] = Object.assign({}, c, ( obj = {}, obj[d] = 'Hello, World!', obj ))`
 	}
 ];
