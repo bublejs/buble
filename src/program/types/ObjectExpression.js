@@ -25,7 +25,7 @@ export default class ObjectExpression extends Node {
 			}
 		}
 
-		if (spreadPropertyCount) {
+		if (spreadPropertyCount && transforms.objectRestSpread) {
 			if (!this.program.options.objectAssign) {
 				throw new CompileError(
 					"Object spread operator requires specified objectAssign option with 'Object.assign' or polyfill helper.",

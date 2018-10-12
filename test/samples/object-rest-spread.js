@@ -89,7 +89,43 @@ module.exports = [
 			var a12 = Object.assign({}, b, ( obj$8 = {}, obj$8[c] = 3, obj$8 ), {d:4});
 		`
 	},
-
+	{
+		description: 'doesn\'t transpile objects with spread with computed property if disabled',
+		options: {
+			objectAssign: 'Object.assign',
+			transforms: { objectRestSpread: false, computedProperty: false, conciseMethodProperty: false }
+		},
+		input: `
+			var a0 = { [ x ] : true , ... y };
+			var a1 = { [ w ] : 0 , [ x ] : true , ... y };
+			var a2 = { v, [ w ] : 0, [ x ] : true, ... y };
+			var a3 = { [ w ] : 0, [ x ] : true };
+			var a4 = { [ w ] : 0 , [ x ] : true , y };
+			var a5 = { k : 9 , [ x ] : true, ... y };
+			var a6 = { ... y, [ x ] : true };
+			var a7 = { ... y, [ w ] : 0, [ x ] : true };
+			var a8 = { k : 9, ... y, [ x ] : true };
+			var a9 = { [ x ] : true , [ y ] : false , [ z ] : 9 };
+			var a10 = { [ x ] : true, ...y, p, ...q };
+			var a11 = { x, [c] : 9 , y };
+			var a12 = { ...b, [c]:3, d:4 };
+		`,
+		output: `
+			var a0 = { [ x ] : true , ... y };
+			var a1 = { [ w ] : 0 , [ x ] : true , ... y };
+			var a2 = { v, [ w ] : 0, [ x ] : true, ... y };
+			var a3 = { [ w ] : 0, [ x ] : true };
+			var a4 = { [ w ] : 0 , [ x ] : true , y };
+			var a5 = { k : 9 , [ x ] : true, ... y };
+			var a6 = { ... y, [ x ] : true };
+			var a7 = { ... y, [ w ] : 0, [ x ] : true };
+			var a8 = { k : 9, ... y, [ x ] : true };
+			var a9 = { [ x ] : true , [ y ] : false , [ z ] : 9 };
+			var a10 = { [ x ] : true, ...y, p, ...q };
+			var a11 = { x, [c] : 9 , y };
+			var a12 = { ...b, [c]:3, d:4 };
+		`
+	},
 	{
 		description:
 			'transpiles inline objects with spread with computed property (#144)',

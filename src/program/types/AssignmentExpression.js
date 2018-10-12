@@ -30,7 +30,7 @@ export default class AssignmentExpression extends Node {
 		if (this.operator === '**=' && transforms.exponentiation) {
 			this.transpileExponentiation(code, transforms);
 		} else if (/Pattern/.test(this.left.type) && transforms.destructuring) {
-			this.transpileDestructuring(code, transforms);
+			this.transpileDestructuring(code);
 		}
 
 		super.transpile(code, transforms);
