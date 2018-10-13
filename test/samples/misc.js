@@ -150,7 +150,7 @@ module.exports = [
 				return foo * baz$1 - baz$1 * bar;
 			};
 
-			var a = (function () {
+			var a = /*@__PURE__*/(function () {
 				function Bar () {}
 
 				Bar.prototype.b = function b (a, b$3, c) {
@@ -160,7 +160,7 @@ module.exports = [
 				return Bar;
 			}());
 
-			var b = (function () {
+			var b = /*@__PURE__*/(function () {
 				function b () {}
 
 				b.prototype.b = function b (a, b$1, c) {

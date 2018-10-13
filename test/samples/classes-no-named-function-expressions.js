@@ -123,7 +123,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var Foo = (function (Bar) {
+			var Foo = /*@__PURE__*/(function (Bar) {
 				function Foo () {
 					Bar.apply(this, arguments);
 				}
@@ -157,7 +157,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var Foo = (function (Bar) {
+			var Foo = /*@__PURE__*/(function (Bar) {
 				function Foo ( x ) {
 					Bar.call( this, x );
 					this.y = 'z';
@@ -196,7 +196,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var Foo = (function (Bar) {
+			var Foo = /*@__PURE__*/(function (Bar) {
 				function Foo () {
 					Bar.apply(this, arguments);
 				}
@@ -268,7 +268,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var Foo = (function (Bar) {
+			var Foo = /*@__PURE__*/(function (Bar) {
 				function Foo () {
 					Bar.apply(this, arguments);
 				}
@@ -300,7 +300,7 @@ module.exports = [
 			new Foo().bar();`,
 
 		output: `
-			var Foo = (function (Bar) {
+			var Foo = /*@__PURE__*/(function (Bar) {
 				function Foo () {
 					Bar.apply(this, arguments);
 				}
@@ -335,7 +335,7 @@ module.exports = [
 			var Foo = class {};`,
 
 		output: `
-			var Foo = (function () {
+			var Foo = /*@__PURE__*/(function () {
 				function Foo () {}
 
 				return Foo;
@@ -354,7 +354,7 @@ module.exports = [
 			};`,
 
 		output: `
-			var Foo = (function () {
+			var Foo = /*@__PURE__*/(function () {
 				function Foo ( x ) {
 					this.x = x;
 				}
@@ -376,7 +376,7 @@ module.exports = [
 			};`,
 
 		output: `
-			var Foo = (function () {
+			var Foo = /*@__PURE__*/(function () {
 				function Foo () {}
 
 				Foo.prototype.bar = function ( x ) {
@@ -517,7 +517,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var Circle = (function (Shape) {
+			var Circle = /*@__PURE__*/(function (Shape) {
 				function Circle ( radius ) {
 					Shape.call(this);
 					this.radius = radius;
@@ -585,13 +585,13 @@ module.exports = [
 			}`,
 
 		output: `
-			var q = {a: (function () {
+			var q = {a: /*@__PURE__*/(function () {
 				function anonymous () {}
 
 				return anonymous;
 			}())};
 
-			var b = (function (superclass) {
+			var b = /*@__PURE__*/(function (superclass) {
 				function b () {
 					superclass.apply(this, arguments);
 				}
@@ -618,13 +618,13 @@ module.exports = [
 			};`,
 
 		output: `
-			var q = {a: (function () {
+			var q = {a: /*@__PURE__*/(function () {
 				function anonymous () {}
 
 				return anonymous;
 			}())};
 
-			var b = (function (superclass) {
+			var b = /*@__PURE__*/(function (superclass) {
 				function b () {
 					superclass.apply(this, arguments);
 				}
@@ -651,7 +651,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var b = (function (superclass) {
+			var b = /*@__PURE__*/(function (superclass) {
 				function b() {
 					superclass.call(this);
 				}
@@ -676,7 +676,7 @@ module.exports = [
 			};`,
 
 		output: `
-			SubClass = (function (SuperClass) {
+			SubClass = /*@__PURE__*/(function (SuperClass) {
 				function SubClass() {
 					SuperClass.call(this);
 				}
@@ -751,7 +751,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var Foo = (function (Bar) {
+			var Foo = /*@__PURE__*/(function (Bar) {
 				function Foo () {
 					Bar.apply(this, arguments);
 				}
@@ -794,7 +794,7 @@ module.exports = [
 
 			A.prototype.x = function (){};
 
-			var B = (function () {
+			var B = /*@__PURE__*/(function () {
 				function B () {}
 
 				B.prototype.x = function (){};
@@ -802,7 +802,7 @@ module.exports = [
 				return B;
 			}());
 
-			var C = (function (D) {
+			var C = /*@__PURE__*/(function (D) {
 				function C () {
 					D.apply(this, arguments);
 				}
@@ -816,7 +816,7 @@ module.exports = [
 				return C;
 			}(D));
 
-			var E = (function (F) {
+			var E = /*@__PURE__*/(function (F) {
 				function E () {
 					F.apply(this, arguments);
 				}
@@ -921,7 +921,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var Foo = (function (Bar) {
+			var Foo = /*@__PURE__*/(function (Bar) {
 				function Foo ( options, ref ) {
 					var this$1 = this;
 					var a2 = ref.a2;
@@ -964,7 +964,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var SubClass = (function (SuperClass) {
+			var SubClass = /*@__PURE__*/(function (SuperClass) {
 				function SubClass() {
 					var args = [], len = arguments.length;
 					while ( len-- ) args[ len ] = arguments[ len ];
@@ -992,7 +992,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var SubClass = (function (SuperClass) {
+			var SubClass = /*@__PURE__*/(function (SuperClass) {
 				function SubClass() {
 					var args = [], len = arguments.length;
 					while ( len-- ) args[ len ] = arguments[ len ];
@@ -1125,7 +1125,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var A = (function (B) {
+			var A = /*@__PURE__*/(function (B) {
 				function A () {
 					var this$1 = this;
 
