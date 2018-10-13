@@ -6,7 +6,6 @@ export default class ObjectExpression extends Node {
 		super.transpile(code, transforms);
 
 		let firstPropertyStart = this.start + 1;
-		let regularPropertyCount = 0;
 		let spreadPropertyCount = 0;
 		let computedPropertyCount = 0;
 		let firstSpreadProperty = null;
@@ -17,47 +16,44 @@ export default class ObjectExpression extends Node {
 			if (prop.type === 'SpreadElement') {
 				spreadPropertyCount += 1;
 				if (firstSpreadProperty === null) firstSpreadProperty = i;
-			} else if (prop.computed) {
+			} else if (prop.computed && transforms.computedProperty) {
 				computedPropertyCount += 1;
 				if (firstComputedProperty === null) firstComputedProperty = i;
-			} else if (prop.type === 'Property') {
-				regularPropertyCount += 1;
 			}
 		}
 
-		if (spreadPropertyCount && transforms.objectRestSpread) {
+		if (spreadPropertyCount && !transforms.objectRestSpread && !(computedPropertyCount && transforms.computedProperty)) {
+			spreadPropertyCount = 0;
+			firstSpreadProperty = null;
+		} else if (spreadPropertyCount) {
 			if (!this.program.options.objectAssign) {
 				throw new CompileError(
 					"Object spread operator requires specified objectAssign option with 'Object.assign' or polyfill helper.",
 					this
 				);
 			}
-			// enclose run of non-spread properties in curlies
 			let i = this.properties.length;
-			if (regularPropertyCount && !computedPropertyCount) {
-				while (i--) {
-					const prop = this.properties[i];
+			while (i--) {
+				const prop = this.properties[i];
 
-					if (prop.type === 'Property' && !prop.computed) {
-						const lastProp = this.properties[i - 1];
-						const nextProp = this.properties[i + 1];
+				// enclose run of non-spread properties in curlies
+				if (prop.type === 'Property' && !computedPropertyCount) {
+					const lastProp = this.properties[i - 1];
+					const nextProp = this.properties[i + 1];
 
-						if (
-							!lastProp ||
-							lastProp.type !== 'Property' ||
-							lastProp.computed
-						) {
-							code.prependRight(prop.start, '{');
-						}
-
-						if (
-							!nextProp ||
-							nextProp.type !== 'Property' ||
-							nextProp.computed
-						) {
-							code.appendLeft(prop.end, '}');
-						}
+					if (!lastProp || lastProp.type !== 'Property') {
+						code.prependRight(prop.start, '{');
 					}
+
+					if (!nextProp || nextProp.type !== 'Property') {
+						code.appendLeft(prop.end, '}');
+					}
+				}
+
+				// Remove ellipsis on spread property
+				if (prop.type === 'SpreadElement') {
+					code.remove(prop.start, prop.argument.start);
+					code.remove(prop.argument.end, prop.end);
 				}
 			}
 

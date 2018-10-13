@@ -127,6 +127,34 @@ module.exports = [
 		`
 	},
 	{
+		description: 'supports transpiling spread properties if computed properties shouldn\'t be transpiled',
+		options: {
+			objectAssign: 'Object.assign',
+			transforms: { computedProperty: false, conciseMethodProperty: false }
+		},
+		input: `
+			var a0 = { [ x ] : true , ... y };
+		`,
+		output: `
+			var a0 = Object.assign({}, {[ x ] : true} , y);
+		`,
+	},
+	{
+		description: 'supports transpiling computed properties if spread properties shouldn\'t be transpiled',
+		options: {
+			objectAssign: 'Object.assign',
+			transforms: { objectRestSpread: false, conciseMethodProperty: false }
+		},
+		input: `
+			var a0 = { [ x ] : true , ... y };
+		`,
+		output: `
+			var obj;
+
+			var a0 = Object.assign(( obj = {}, obj[ x ] = true, obj ), y);
+		`,
+	},
+	{
 		description:
 			'transpiles inline objects with spread with computed property (#144)',
 		options: {
