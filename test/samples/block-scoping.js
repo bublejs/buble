@@ -313,7 +313,7 @@ module.exports = [
 			}`,
 
 		output: `
-			var bar = (function () {
+			var bar = /*@__PURE__*/(function () {
 				function foo () {}
 
 				return foo;
