@@ -28,9 +28,9 @@ export default class ClassExpression extends Node {
 			if (this.superClass) {
 				code.remove(this.start, this.superClass.start);
 				code.remove(this.superClass.end, this.body.start);
-				code.appendLeft(this.start, `(function (${superName}) {\n${i1}`);
+				code.appendLeft(this.start, `/*@__PURE__*/(function (${superName}) {\n${i1}`);
 			} else {
-				code.overwrite(this.start, this.body.start, `(function () {\n${i1}`);
+				code.overwrite(this.start, this.body.start, `/*@__PURE__*/(function () {\n${i1}`);
 			}
 
 			this.body.transpile(code, transforms, true, superName);
