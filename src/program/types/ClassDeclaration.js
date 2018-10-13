@@ -42,13 +42,13 @@ export default class ClassDeclaration extends Node {
 			if (this.superClass) {
 				if (this.superClass.end === this.body.start) {
 					code.remove(c, this.superClass.start);
-					code.appendLeft(c, ` = (function (${superName}) {\n${i1}`);
+					code.appendLeft(c, ` = /*@__PURE__*/(function (${superName}) {\n${i1}`);
 				} else {
 					code.overwrite(c, this.superClass.start, ' = ');
 					code.overwrite(
 						this.superClass.end,
 						this.body.start,
-						`(function (${superName}) {\n${i1}`
+						`/*@__PURE__*/(function (${superName}) {\n${i1}`
 					);
 				}
 			} else {
