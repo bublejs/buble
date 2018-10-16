@@ -122,7 +122,7 @@ export default class BlockStatement extends Node {
 	transpile(code, transforms) {
 		const indentation = this.getIndentation();
 
-		let introStatementGenerators = [];
+		const introStatementGenerators = [];
 
 		if (this.argumentsAlias) {
 			introStatementGenerators.push((start, prefix, suffix) => {
@@ -212,7 +212,7 @@ export default class BlockStatement extends Node {
 			start = this.start + 1;
 		}
 
-		let prefix = `\n${indentation}`;
+		const prefix = `\n${indentation}`;
 		let suffix = ';';
 		introStatementGenerators.forEach((fn, i) => {
 			if (i === introStatementGenerators.length - 1) suffix = `;\n`;
@@ -305,7 +305,7 @@ export default class BlockStatement extends Node {
 		Object.keys(this.scope.blockScopedDeclarations).forEach(name => {
 			const declarations = this.scope.blockScopedDeclarations[name];
 
-			for (let declaration of declarations) {
+			for (const declaration of declarations) {
 				let cont = false; // TODO implement proper continue...
 
 				if (declaration.kind === 'for.let') {

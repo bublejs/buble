@@ -49,9 +49,9 @@ export default class ClassBody extends Node {
 				if (!inFunctionExpression) code.appendLeft(constructor.end, ';');
 			}
 
-			let namedFunctions =
+			const namedFunctions =
 				this.program.options.namedFunctionExpressions !== false;
-			let namedConstructor =
+			const namedConstructor =
 				namedFunctions ||
 				this.parent.superClass ||
 				this.parent.type !== 'ClassDeclaration';
@@ -86,8 +86,8 @@ export default class ClassBody extends Node {
 
 			const scope = this.findScope(false);
 
-			let prototypeGettersAndSetters = [];
-			let staticGettersAndSetters = [];
+			const prototypeGettersAndSetters = [];
+			const staticGettersAndSetters = [];
 			let prototypeAccessors;
 			let staticAccessors;
 
@@ -99,7 +99,7 @@ export default class ClassBody extends Node {
 				}
 
 				if (method.kind === 'constructor') {
-					let constructorName = namedConstructor ? ' ' + name : '';
+					const constructorName = namedConstructor ? ' ' + name : '';
 					code.overwrite(
 						method.key.start,
 						method.key.end,
@@ -198,8 +198,8 @@ export default class ClassBody extends Node {
 			});
 
 			if (prototypeGettersAndSetters.length || staticGettersAndSetters.length) {
-				let intro = [];
-				let outro = [];
+				const intro = [];
+				const outro = [];
 
 				if (prototypeGettersAndSetters.length) {
 					intro.push(

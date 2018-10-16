@@ -1,7 +1,7 @@
 // used for debugging, without the noise created by
 // circular references
 function toJSON(node) {
-	var obj = {};
+	const obj = {};
 
 	Object.keys(node).forEach(key => {
 		if (
@@ -79,7 +79,7 @@ export default class Node {
 	}
 
 	initialise(transforms) {
-		for (var key of this.keys) {
+		for (const key of this.keys) {
 			const value = this[key];
 
 			if (Array.isArray(value)) {

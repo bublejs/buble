@@ -55,7 +55,7 @@ export default class ForOfStatement extends LoopStatement {
 		const isDeclaration = this.left.type === 'VariableDeclaration';
 		const maybeDestructuring = isDeclaration ? this.left.declarations[0].id : this.left;
 		if (maybeDestructuring.type !== 'Identifier') {
-			let statementGenerators = [];
+			const statementGenerators = [];
 			const ref = scope.createIdentifier('ref');
 			destructure(
 				code,

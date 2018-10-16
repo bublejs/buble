@@ -49,7 +49,7 @@ export default class VariableDeclaration extends Node {
 
 					c = declarator.start;
 
-					let statementGenerators = [];
+					const statementGenerators = [];
 
 					if (simple) {
 						code.remove(declarator.id.end, declarator.end);
@@ -72,7 +72,7 @@ export default class VariableDeclaration extends Node {
 						statementGenerators
 					);
 
-					let prefix = inline ? 'var ' : '';
+					const prefix = inline ? 'var ' : '';
 					let suffix = inline ? `, ` : `;\n${i0}`;
 					statementGenerators.forEach((fn, j) => {
 						if (

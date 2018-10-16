@@ -8,7 +8,7 @@ export default class TemplateLiteral extends Node {
 			transforms.templateString &&
 			this.parent.type !== 'TaggedTemplateExpression'
 		) {
-			let ordered = this.expressions
+			const ordered = this.expressions
 				.concat(this.quasis)
 				.sort((a, b) => a.start - b.start || a.end - b.end)
 				.filter((node, i) => {

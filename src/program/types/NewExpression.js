@@ -26,7 +26,7 @@ export default class NewExpression extends Node {
 		if (transforms.spreadRest && this.arguments.length) {
 			const firstArgument = this.arguments[0];
 			const isNew = true;
-			let hasSpreadElements = spread(
+			const hasSpreadElements = spread(
 				code,
 				this.arguments,
 				firstArgument.start,

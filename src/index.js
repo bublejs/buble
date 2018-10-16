@@ -36,7 +36,7 @@ export function target(target) {
 		bitmask &= support;
 	});
 
-	let transforms = Object.create(null);
+	const transforms = Object.create(null);
 	features.forEach((name, i) => {
 		transforms[name] = !(bitmask & (1 << i));
 	});
@@ -60,7 +60,7 @@ export function transform(source, options = {}) {
 			allowReturnOutsideFunction: true,
 			onComment: (block, text) => {
 				if (!jsx) {
-					let match = /@jsx\s+([^\s]+)/.exec(text);
+					const match = /@jsx\s+([^\s]+)/.exec(text);
 					if (match) jsx = match[1];
 				}
 			}
@@ -72,7 +72,7 @@ export function transform(source, options = {}) {
 		throw err;
 	}
 
-	let transforms = target(options.target || {});
+	const transforms = target(options.target || {});
 	Object.keys(options.transforms || {}).forEach(name => {
 		if (name === 'modules') {
 			if (!('moduleImport' in options.transforms))

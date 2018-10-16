@@ -13,7 +13,7 @@ export default class VariableDeclarator extends Node {
 
 	transpile(code, transforms) {
 		if (!this.init && transforms.letConst && this.parent.kind !== 'var') {
-			let inLoop = this.findNearest(
+			const inLoop = this.findNearest(
 				/Function|^For(In|Of)?Statement|^(?:Do)?WhileStatement/
 			);
 			if (

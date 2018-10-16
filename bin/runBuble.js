@@ -71,7 +71,7 @@ function write(result, to, command) {
 	if (to) {
 		fs.writeFileSync(to, result.code);
 	} else {
-		console.log(result.code); // eslint-disable-line no-console
+		console.log(result.code);
 	}
 }
 

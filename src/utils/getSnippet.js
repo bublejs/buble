@@ -1,5 +1,5 @@
 function pad(num, len) {
-	let result = String(num);
+	const result = String(num);
 	return result + repeat(' ', len - result.length);
 }
 

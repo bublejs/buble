@@ -31,7 +31,7 @@ export default function spread(
 
 	if (isNew) {
 		for (i = 0; i < elements.length; i += 1) {
-			let element = elements[i];
+			const element = elements[i];
 			if (element.type === 'SpreadElement') {
 				code.remove(element.start, element.argument.start);
 			} else {

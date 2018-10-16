@@ -11,6 +11,6 @@ module.exports = function() {
 			.toString()
 			.replace('<%= version %>', require('../package.json').version);
 
-		console.log('\n' + help + '\n'); // eslint-disable-line no-console
+		console.log('\n' + help + '\n');
 	});
 };

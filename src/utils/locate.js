@@ -1,13 +1,13 @@
 export default function locate(source, index) {
-	var lines = source.split('\n');
-	var len = lines.length;
+	const lines = source.split('\n');
+	const len = lines.length;
 
-	var lineStart = 0;
-	var i;
+	let lineStart = 0;
+	let i;
 
 	for (i = 0; i < len; i += 1) {
-		var line = lines[i];
-		var lineEnd = lineStart + line.length + 1; // +1 for newline
+		const line = lines[i];
+		const lineEnd = lineStart + line.length + 1; // +1 for newline
 
 		if (lineEnd > index) {
 			return { line: i + 1, column: index - lineStart, char: i };

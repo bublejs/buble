@@ -1,4 +1,5 @@
 {
+    "root": true,
     "rules": {
         "indent": [ 2, "tab", { "SwitchCase": 1 } ],
         "linebreak-style": [ 2, "unix" ],
@@ -6,7 +7,9 @@
         "keyword-spacing": [ 2, { "before": true, "after": true } ],
         "space-before-blocks": [ 2, "always" ],
         "no-mixed-spaces-and-tabs": [ 2, "smart-tabs" ],
-        "no-cond-assign": [ 0 ]
+        "no-cond-assign": [ 0 ],
+        "prefer-const": 2,
+        "no-var": 2
     },
     "env": {
         "es6": true,
@@ -21,7 +24,8 @@
       {
         "files": ["register.js"],
         "rules": {
-          "no-console": [ 0 ]
+          "no-console": [ 0 ],
+          "no-var": [ 0 ]
         }
       }
     ]

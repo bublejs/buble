@@ -1,7 +1,7 @@
 var chalk = require('chalk');
 
 function print(msg) {
-	console.error(chalk.red(msg)); // eslint-disable-line no-console
+	console.error(chalk.red(msg));
 }
 
 var handlers = {
@@ -44,11 +44,11 @@ module.exports = function handleError(err) {
 		print(err.message || err);
 
 		if (err.stack) {
-			console.error(chalk.grey(err.stack)); // eslint-disable-line no-console
+			console.error(chalk.grey(err.stack));
 		}
 	}
 
-	console.error( // eslint-disable-line no-console
+	console.error(
 		'Type ' +
 			chalk.cyan('buble --help') +
 			' for help, or visit https://buble.surge.sh/guide/'

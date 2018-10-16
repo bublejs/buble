@@ -28,7 +28,7 @@ export default class ArrayExpression extends Node {
 		if (transforms.spreadRest) {
 			// erase trailing comma after last array element if not an array hole
 			if (this.elements.length) {
-				let lastElement = this.elements[this.elements.length - 1];
+				const lastElement = this.elements[this.elements.length - 1];
 				if (
 					lastElement &&
 					/\s*,/.test(code.original.slice(lastElement.end, this.end))

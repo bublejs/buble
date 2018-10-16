@@ -47,7 +47,7 @@ export default class ForInStatement extends LoopStatement {
 
 		code.prependRight(pattern.end, isDeclaration ? ref : `var ${ref}`);
 
-		let statementGenerators = [];
+		const statementGenerators = [];
 		destructure(
 			code,
 			id => scope.createIdentifier(id),
