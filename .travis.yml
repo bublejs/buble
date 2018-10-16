@@ -12,8 +12,8 @@ env:
 script:
   - npm run test:register
   - if [ $TRAVIS_NODE_VERSION -eq 8 ]; then
-      npm run lint
-      node_modules/.bin/acorn --ecma3 dist/buble-browser.cjs.js > /dev/null
-      node_modules/.bin/acorn --ecma3 dist/buble-browser-deps.umd.js > /dev/null
-      node_modules/.bin/acorn --ecma3 register.js > /dev/null
+      npm run lint;
+      node_modules/.bin/acorn --ecma3 dist/buble-browser.cjs.js > /dev/null;
+      node_modules/.bin/acorn --ecma3 dist/buble-browser-deps.umd.js > /dev/null;
+      node_modules/.bin/acorn --ecma3 register.js > /dev/null;
     fi
