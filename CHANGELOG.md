@@ -1,5 +1,16 @@
 # buble changelog
 
+## 0.19.5 (2018-10-16)
+
+* Transpile U+2028 and U+2029 according to stage 4 proposal json-superset
+* Add `/*@__PURE__*/` annotations to transpiled classes
+* Update support data
+* Allow disabling spread properties transpiling
+* Fix specific edge case with spread and computed properties ([#139](https://github.com/Rich-Harris/buble/issues/139))
+* Allow global `return` statements
+* Don't create unnecessary `this` aliases with loops ([#120](https://github.com/Rich-Harris/buble/issues/120))
+* Don't allow getters and setters if IE8 is transpile target ([#20](https://github.com/Rich-Harris/buble/issues/20))
+
 ## 0.19.4 (2018-10-06)
 
 * Fix transpiling destructuring assignments in brace-less if statement's bodies ([#152](https://github.com/Rich-Harris/buble/issues/152))
