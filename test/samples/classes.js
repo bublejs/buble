@@ -1226,6 +1226,28 @@ module.exports = [
 			X.prototype.foo = function foo$1 () { return foo };
 			X.prototype.bar = function bar () {};
 		`
+	},
+
+	{
+		description: "transpiles class with super class in arrow function (#150)",
+
+		input: `
+			const f = (b) => class a extends b {};
+		`,
+
+		output: `
+			var f = function (b) { return /*@__PURE__*/(function (b) {
+					function a () {
+						b.apply(this, arguments);
+					}if ( b ) a.__proto__ = b;
+					a.prototype = Object.create( b && b.prototype );
+					a.prototype.constructor = a;
+
+					
+
+					return a;
+				}(b)); };
+		`
 	}
 
 	// TODO more tests. e.g. getters and setters.

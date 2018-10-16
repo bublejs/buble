@@ -28,22 +28,19 @@ export default class ClassExpression extends Node {
 			if (this.superClass) {
 				code.remove(this.start, this.superClass.start);
 				code.remove(this.superClass.end, this.body.start);
-				code.appendLeft(this.start, `/*@__PURE__*/(function (${superName}) {\n${i1}`);
+				code.appendRight(this.start, `/*@__PURE__*/(function (${superName}) {\n${i1}`);
 			} else {
 				code.overwrite(this.start, this.body.start, `/*@__PURE__*/(function () {\n${i1}`);
 			}
 
 			this.body.transpile(code, transforms, true, superName);
 
-			const outro = `\n\n${i1}return ${this.name};\n${i0}}(`;
-
+			let superClass = '';
 			if (this.superClass) {
-				code.appendLeft(this.end, outro);
-				code.move(this.superClass.start, this.superClass.end, this.end);
-				code.prependRight(this.end, '))');
-			} else {
-				code.appendLeft(this.end, `\n\n${i1}return ${this.name};\n${i0}}())`);
+				superClass = code.slice(this.superClass.start, this.superClass.end);
+				code.remove(this.superClass.start, this.superClass.end);
 			}
+			code.appendLeft(this.end, `\n\n${i1}return ${this.name};\n${i0}}(${superClass}))`);
 		} else {
 			this.body.transpile(code, transforms, false);
 		}
