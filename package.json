@@ -20,6 +20,8 @@
     "build": "rollup -c",
     "test": "mocha test/test.js",
     "pretest": "npm run build",
+    "test:register": "cat src/program/Node.js | sed 's/export default/module.exports =/' | node -r ./register.js",
+    "test:full": "npm run test && npm run test:register && npm run lint",
     "prepublish": "npm test",
     "lint": "eslint bin/ src/ test/test.js test/utils/ register.js rollup.*.js"
   },
