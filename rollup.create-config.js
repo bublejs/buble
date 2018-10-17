@@ -2,13 +2,14 @@ import buble from 'rollup-plugin-buble';
 import json from 'rollup-plugin-json';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
+import pkg from './package.json';
 
 const ensureArray = maybeArr => Array.isArray(maybeArr) ? maybeArr : [maybeArr];
 
 const createConfig = (opts) => {
 	opts = opts || {};
 	const browser = opts.browser || false;
-	const external = opts.external || ['acorn', 'magic-string'];
+	const external = opts.external || Object.keys(pkg.dependencies || {});
 	const output = ensureArray(opts.output);
 
 	return {
