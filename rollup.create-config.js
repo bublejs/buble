@@ -8,7 +8,7 @@ const ensureArray = maybeArr => Array.isArray(maybeArr) ? maybeArr : [maybeArr];
 const createConfig = (opts) => {
 	opts = opts || {};
 	const browser = opts.browser || false;
-	const external = opts.external || ['acorn', 'magic-string'];
+	const external = opts.external || ['magic-string'];
 	const output = ensureArray(opts.output);
 
 	return {
