@@ -20,7 +20,7 @@ const createConfig = (opts) => {
 		external: external,
 		plugins: [
 			json(),
-			commonjs({ extensions: ['.js', '.mjs'] }),
+			commonjs(),
 			buble({
 				target: !browser ? { node: 4 } : null,
 				include: [
@@ -34,7 +34,7 @@ const createConfig = (opts) => {
 					dangerousForOf: true
 				}
 			}),
-			resolve()
+			resolve({module: false})
 		],
 	};
 };
