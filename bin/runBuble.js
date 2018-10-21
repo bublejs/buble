@@ -92,8 +92,7 @@ module.exports = function(command) {
 		target: {},
 		transforms: {},
 		jsx: command.jsx,
-		objectAssign:
-			command.objectAssign === true ? 'Object.assign' : command.objectAssign,
+		objectAssign: command.objectAssign,
 		namedFunctionExpressions: command['named-function-expr'] !== false
 	};
 

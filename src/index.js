@@ -85,7 +85,7 @@ export function transform(source, options = {}) {
 		if (!(name in transforms)) throw new Error(`Unknown transform '${name}'`);
 		transforms[name] = options.transforms[name];
 	});
-
+	if (options.objectAssign === true) options.objectAssign = 'Object.assign';
 	return new Program(source, ast, transforms, options).export(options);
 }
 
