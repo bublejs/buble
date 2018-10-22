@@ -22,6 +22,10 @@
     "pretest": "npm run build",
     "test:register": "echo '\"use strict\";' | cat - src/program/Node.js | sed 's/export default/module.exports =/' | node -r ./register.js",
     "test:full": "npm run test && npm run test:register && npm run lint",
+    "test:bundlers": "npm run test:bundlers:rollup && npm run test:bundlers:webpack && npm run test:bundlers:parcel",
+    "test:bundlers:rollup": "test \"$(npx rollup -c test/bundlers/rollup.config.js | node)\" = 'var x = 4'",
+    "test:bundlers:webpack": "cd test/bundlers && mkdir -p node_modules && npm i webpack && node webpack.js && test \"$(node dist/main.js)\" = 'var x = 4'",
+    "test:bundlers:parcel": "cd test/bundlers && mkdir -p node_modules && npm i parcel && npx parcel build index.js --no-cache && test \"$(node dist/index.js)\" = 'var x = 4'",
     "prepublish": "npm test",
     "lint": "eslint bin/ src/ test/test.js test/utils/ register.js rollup.*.js"
   },

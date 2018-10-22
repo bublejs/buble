@@ -3,3 +3,4 @@ node_modules
 dist
 test/**/actual
 sandbox
+test/bundlers/package-lock.json
