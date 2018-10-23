@@ -1,5 +1,11 @@
 # buble changelog
 
+## 0.19.6 (2018-10-23)
+
+* Fix class expressions with heritage in arrow functions ([#150](https://github.com/Rich-Harris/buble/issues/150))
+* Support `objectAssign: true` in API as a short-hand for `objectAssign: "Object.assign"`
+* Bundle all acorn dependencies (for now), but no others ([#159](https://github.com/Rich-Harris/buble/issues/159))
+
 ## 0.19.5 (2018-10-16)
 
 * Transpile U+2028 and U+2029 according to stage 4 proposal json-superset
