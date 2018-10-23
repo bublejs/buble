@@ -9,7 +9,7 @@ const ensureArray = maybeArr => Array.isArray(maybeArr) ? maybeArr : [maybeArr];
 const createConfig = (opts) => {
 	opts = opts || {};
 	const browser = opts.browser || false;
-	const external = opts.external || Object.keys(pkg.dependencies || {});
+	const external = opts.external || Object.keys(pkg.dependencies || {}).filter(dep => !dep.match(/^acorn/));
 	const output = ensureArray(opts.output);
 
 	return {
@@ -26,10 +26,7 @@ const createConfig = (opts) => {
 				target: !browser ? { node: 4 } : null,
 				include: [
 					'src/**',
-					'node_modules/acorn-jsx/**',
-					'node_modules/regexpu-core/**',
-					'node_modules/unicode-match-property-ecmascript/**',
-					'node_modules/unicode-match-property-value-ecmascript/**',
+					'node_modules/acorn-jsx/**'
 				],
 				transforms: {
 					dangerousForOf: true
