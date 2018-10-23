@@ -53,6 +53,9 @@
   },
   "homepage": "https://github.com/Rich-Harris/buble#README",
   "devDependencies": {
+    "acorn": "^6.0.2",
+    "acorn-dynamic-import": "^4.0.0",
+    "acorn-jsx": "^5.0.0",
     "console-group": "^0.3.3",
     "eslint": "^4.19.1",
     "glob": "^7.1.3",
@@ -67,9 +70,6 @@
     "source-map-support": "^0.5.9"
   },
   "dependencies": {
-    "acorn": "^6.0.2",
-    "acorn-dynamic-import": "^4.0.0",
-    "acorn-jsx": "^5.0.0",
     "chalk": "^2.4.1",
     "magic-string": "^0.25.1",
     "minimist": "^1.2.0",
