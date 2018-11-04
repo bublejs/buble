@@ -107,6 +107,170 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles a class declaration with class fields and constructor',
+
+		input: `
+			class Foo {
+				constructor ( answer ) {
+					this.answer = answer;
+				}
+
+				baz = 0
+			}`,
+
+		output: `
+			var Foo = function Foo ( answer ) {
+				this.baz = 0;
+				this.answer = answer;
+			};
+
+			`
+	},
+
+	{
+		description: 'transpiles a class declaration with class fields without a constructor',
+
+		input: `
+			class Foo {
+				baz = 0
+			}`,
+
+		output: `
+			var Foo = function Foo () {
+				this.baz = 0;
+			};
+
+			`
+	},
+
+	{
+		description: 'transpiles a class declaration with computed class fields',
+
+		input: `
+			const baz = 'bar'
+			class Foo {
+				[baz] = 0
+			}`,
+
+		output: `
+			var baz = 'bar'
+			var Foo = function Foo () {
+				this[baz] = 0;
+			};
+
+			`
+	},
+
+	{
+		description: 'transpiles a class declaration with class fields with no value',
+
+		input: `
+			class Foo {
+				baz;
+			}`,
+
+		output: `
+			var Foo = function Foo () {
+				this.baz;
+			};
+
+			`
+	},
+
+	{
+		description: 'transpiles a class declaration with computed class fields with no value',
+
+		input: `
+			const baz = 'bar'
+			class Foo {
+				[baz];
+			}`,
+
+		output: `
+			var baz = 'bar'
+			var Foo = function Foo () {
+				this[baz];
+			};
+
+			`
+	},
+
+	{
+		description: 'transpiles a class declaration with class fields separated by semicolons',
+
+		input: `
+			class X { constructor() {} m = 5; y = 4; }
+			`,
+
+		output: `
+			var X = function X() {
+				this.m = 5;
+				this.y = 4;};  
+			`
+	},
+
+	{
+		description: 'transpiles a class declaration with class fields with comments',
+
+		input: `
+			class X {
+				constructor() {}
+				m = 5;
+				// comment
+				y = 4;
+			}
+			`,
+
+		output: `
+			var X = function X() {
+				this.m = 5;
+				this.y = 4;};
+			
+			// comment
+			
+			`
+	},
+
+	{
+		description: 'transpiles a subclass with class fields and super calls',
+
+		input: `
+			class Foo extends Bar {
+				constructor ( x ) {
+					super( x );
+					this.y = 'z';
+				}
+
+				baz ( a, b, c ) {
+					super.baz( a, b, c );
+				}
+
+				fab = 0
+			}`,
+
+		output: `
+			var Foo = /*@__PURE__*/(function (Bar) {
+				function Foo ( x ) {
+					this.fab = 0;
+					Bar.call( this, x );
+					this.y = 'z';
+				}
+
+				if ( Bar ) Foo.__proto__ = Bar;
+				Foo.prototype = Object.create( Bar && Bar.prototype );
+				Foo.prototype.constructor = Foo;
+
+				Foo.prototype.baz = function baz ( a, b, c ) {
+					Bar.prototype.baz.call( this, a, b, c );
+				};
+
+				
+
+				return Foo;
+			}(Bar));`
+	},
+
+	{
 		description: 'transpiles a subclass',
 
 		input: `
