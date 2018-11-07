@@ -93,9 +93,7 @@ export default class ClassBody extends Node {
 
 			this.body.forEach((method, i) => {
 				if ((method.kind === 'get' || method.kind === 'set') && transforms.getterSetter) {
-					throw new CompileError(
-						"getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error",
-						method);
+					CompileError.missingTransform("getters and setters", "getterSetter", method);
 				}
 
 				if (method.kind === 'constructor') {

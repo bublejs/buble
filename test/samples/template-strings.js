@@ -33,7 +33,7 @@ module.exports = [
 	{
 		description: 'does not transpile tagged template literals',
 		input: 'var str = x`y`',
-		error: /Tagged template strings are not supported/
+		error: /Transforming tagged template strings is not fully supported/
 	},
 
 	{

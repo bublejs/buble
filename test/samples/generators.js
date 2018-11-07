@@ -7,7 +7,7 @@ module.exports = [
 
 			}`,
 
-		error: /Generators are not supported/
+		error: /Transforming generators is not implemented/
 	},
 
 	{
@@ -18,7 +18,7 @@ module.exports = [
 
 			}`,
 
-		error: /Generators are not supported/
+		error: /Transforming generators is not implemented/
 	},
 
 	{
@@ -31,7 +31,7 @@ module.exports = [
 				}
 			};`,
 
-		error: /Generators are not supported/
+		error: /Transforming generators is not implemented/
 	},
 
 	{
@@ -44,7 +44,7 @@ module.exports = [
 				}
 			}`,
 
-		error: /Generators are not supported/
+		error: /Transforming generators is not implemented/
 	},
 
 	{

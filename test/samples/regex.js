@@ -8,7 +8,7 @@ module.exports = [
 	{
 		description: 'disallows sticky flag in regex literals',
 		input: `var regex = /x/y;`,
-		error: /Regular expression sticky flag is not supported/
+		error: /Transforming the regular expression sticky flag is not implemented/
 	},
 
 	{

@@ -7,9 +7,8 @@ export default class TaggedTemplateExpression extends Node {
 			transforms.templateString &&
 			!transforms.dangerousTaggedTemplateString
 		) {
-			throw new CompileError(
-				"Tagged template strings are not supported. Use `transforms: { templateString: false }` to skip transformation and disable this error, or `transforms: { dangerousTaggedTemplateString: true }` if you know what you're doing",
-				this
+			CompileError.missingTransform(
+				"tagged template strings", "templateString", this, "dangerousTaggedTemplateString"
 			);
 		}
 

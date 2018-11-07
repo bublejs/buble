@@ -25,10 +25,7 @@ export default class Literal extends Node {
 			const { pattern, flags } = this.regex;
 
 			if (transforms.stickyRegExp && /y/.test(flags))
-				throw new CompileError(
-					'Regular expression sticky flag is not supported',
-					this
-				);
+				CompileError.missingTransform('the regular expression sticky flag', 'stickyRegExp', this);
 			if (transforms.unicodeRegExp && /u/.test(flags)) {
 				code.overwrite(
 					this.start,

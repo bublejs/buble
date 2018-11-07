@@ -2,13 +2,13 @@ module.exports = [
 	{
 		description: 'disallows import statement',
 		input: `import 'foo';`,
-		error: /import is not supported/
+		error: /import is not implemented/
 	},
 
 	{
 		description: 'disallows export statement',
 		input: `export { foo };`,
-		error: /export is not supported/
+		error: /export is not implemented/
 	},
 
 	{

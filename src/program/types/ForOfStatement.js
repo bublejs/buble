@@ -5,10 +5,7 @@ import destructure from '../../utils/destructure.js';
 export default class ForOfStatement extends LoopStatement {
 	initialise(transforms) {
 		if (transforms.forOf && !transforms.dangerousForOf)
-			throw new CompileError(
-				"for...of statements are not supported. Use `transforms: { forOf: false }` to skip transformation and disable this error, or `transforms: { dangerousForOf: true }` if you know what you're doing",
-				this
-			);
+			CompileError.missingTransform("for-of statements", "forOf", this, "dangerousForOf");
 		super.initialise(transforms);
 	}
 

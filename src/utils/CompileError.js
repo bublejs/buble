@@ -27,4 +27,9 @@ export default class CompileError extends Error {
 	toString() {
 		return `${this.name}: ${this.message}\n${this.snippet}`;
 	}
+
+	static missingTransform(feature, transformKey, node, dangerousKey = null) {
+		const maybeDangerous = dangerousKey ? `, or \`transforms: { ${dangerousKey}: true }\` if you know what you're doing` : '';
+		throw new CompileError(`Transforming ${feature} is not ${dangerousKey ? "fully supported" : "implemented"}. Use \`transforms: { ${transformKey}: false }\` to skip transformation and disable this error${maybeDangerous}.`, node);
+	}
 }

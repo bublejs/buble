@@ -5,9 +5,7 @@ import reserved from '../../utils/reserved.js';
 export default class Property extends Node {
 	initialise(transforms) {
 		if ((this.kind === 'get' || this.kind === 'set') && transforms.getterSetter) {
-			throw new CompileError(
-				"getters and setters are not supported. Use `transforms: { getterSetter: false }` to skip transformation and disable this error",
-				this);
+			CompileError.missingTransform("getters and setters", "getterSetter", this);
 		}
 		super.initialise(transforms);
 	}
