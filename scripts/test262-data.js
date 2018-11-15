@@ -68,12 +68,12 @@ exports.file_list = [
 		"language/*bigint*",
 	]},
 
-  // These have an u flag, so regexpucore throws
+	// These have an u flag, so regexpucore throws
 	{ level: 3, desc: "regexpNamedGroups", files: [
 		"built-ins/RegExp/named-groups/(groups-p*.js|l*|unicode-(p*|r*))",
 	]},
 
-  // These don't have an u flag, so regexpucore is not executed on them
+	// These don't have an u flag, so regexpucore is not executed on them
 	{ level: 2, desc: "regexpNamedGroups", files: [
 		"annexB/built-ins/RegExp/named-groups/non-unicode-malformed.js",
 		"built-ins/RegExp/named-groups/groups-object-unmatched.js",
