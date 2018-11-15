@@ -74,7 +74,7 @@ export default class TemplateLiteral extends Node {
 			});
 
 			if (parenthesise) code.appendLeft(lastIndex, ')');
-			code.overwrite(lastIndex, this.end, "", { contentOnly: true } );
+			code.overwrite(lastIndex, this.end, "", { contentOnly: true });
 		}
 	}
 }
