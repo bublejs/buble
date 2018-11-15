@@ -58,7 +58,7 @@ const exec = (harness, text, filename, async) => {
 	});
 };
 
-const runTest = (content, harness, report, filename, async) => {
+const runTest = (content, harness, report, filename, async, config) => {
 	// If it is valid ES3 code, we don't need to transpile.
 	// import.meta and dynamic import() is valid ES3, though.
 	if (verbose) process.stdout.write("es3 ... ");
@@ -73,7 +73,7 @@ const runTest = (content, harness, report, filename, async) => {
 	// Transpile
 	let transformed;
 	try {
-		transformed = transform(content, { transforms: { dangerousForOf: true, dangerousTaggedTemplateString: true }, objectAssign: "Object.assign" }).code;
+		transformed = transform(content, { transforms: Object.assign({ dangerousForOf: true, dangerousTaggedTemplateString: true }, (config || {}).transforms), objectAssign: "Object.assign" }).code;
 	} catch (e) {
 		if (e.message.match(/is not implemented./)) return report(4, e);
 		return report(3, e);
@@ -153,11 +153,10 @@ const handle = test => {
 	////////////////////////
 	// Check expectations //
 	////////////////////////
-	let expected = {s: 0};
-	const expect = (s, tag) => {
-		if (s > expected.s) {
-			expected = {s, tag};
-		}
+	const expecteds = [{s: 0}];
+	const expect = (s, tag, config) => {
+		if (config) expecteds.push({s, tag, config});
+		else if (s > expecteds[0].s) expecteds[0] = {s, tag};
 	};
 
 	if ((nodeVersion === 4 && test.file === "built-ins/TypedArrayConstructors/of/this-is-not-constructor.js")) {
@@ -174,7 +173,7 @@ const handle = test => {
 				expect.apply(null, features_list[feature]);
 
 	for (const item of file_list)
-		if (test.file.match(item.pattern)) expect(item.level, item.desc);
+		if (test.file.match(item.pattern)) expect(item.level, item.desc, item.config);
 
 	// regExpUtils.js contains destructured arguments
 	if ((test.attrs.includes || []).indexOf("regExpUtils.js") > -1) {
@@ -184,21 +183,27 @@ const handle = test => {
 	//////////////
 	// Run test //
 	//////////////
-	return runTest(test.contents, harness, report(test, expected.s), test.file, test.attrs.flags.async).then(result => {
-		if (expected.s) {
-			const expectedString = `s${expected.s}_${expected.tag}`;
-			if (result.skip === "nodeBug" && expected.s > 1) {
-				fail(test, `Could not verify ${expectedString} due to skip_${result.skip}`);
-			} else if (!result.skip) {
-				if (!result.fail || result.fail !== "s" + expected.s && !((expected.s == 3 || expected.s == 4) && (result.fail == "s3" || result.fail == "s4"))) {
-					fail(test, `Expected ${expectedString}, but got ${JSON.stringify(result)}`);
-				} else {
-					result.fail = expectedString;
+	let ret = Promise.resolve();
+	for (let i = 0; i < expecteds.length; ++i) {
+		const expected = expecteds[i];
+		ret = ret.then(() => runTest(test.contents, harness, report(test, expected.s), test.file, test.attrs.flags.async, expected.config))
+			.then(result => {
+				if (expected.s) {
+					const expectedString = `s${expected.s}_${expected.tag}`;
+					if (result.skip === "nodeBug" && expected.s > 1) {
+						fail(test, `Could not verify ${expectedString} due to skip_${result.skip}`);
+					} else if (!result.skip) {
+						if (!result.fail || result.fail !== "s" + expected.s && !((expected.s == 3 || expected.s == 4) && (result.fail == "s3" || result.fail == "s4"))) {
+							fail(test, `Expected ${expectedString}, but got ${JSON.stringify(result)}`);
+						} else {
+							result.fail = expectedString;
+						}
+					}
 				}
-			}
-		}
-		return result.skip ? "skip_" + result.skip : (result.pass ? "pass_" + result.pass : "fail_" + result.fail);
-	});
+				return result.skip ? "skip_" + result.skip : (result.pass ? "pass_" + result.pass : "fail_" + result.fail);
+			});
+	}
+	return ret;
 };
 
 const testDir = path.dirname(require.resolve("test262/package.json"));

@@ -36,16 +36,19 @@ exports.file_list = [
 
 	// buble bug: async () => {} turned into function async() {}
 	// https://github.com/Rich-Harris/buble/issues/109
-	{ level: 1, desc: "asyncArrowFunctionEmittedAsName", files: [
-		"language/expressions/async-arrow-function/dflt-params-abrupt.js",
-		"language/expressions/async-arrow-function/dflt-params-arg-val-not-undefined.js",
-		"language/expressions/async-arrow-function/dflt-params-arg-val-undefined.js",
-		"language/expressions/async-arrow-function/dflt-params-ref-prior.js",
-		"language/expressions/async-arrow-function/params-trailing-comma-multiple.js",
-		"language/expressions/async-arrow-function/params-trailing-comma-single.js",
-		"language/expressions/async-arrow-function/try-return-finally-throw.js",
-		"language/expressions/async-arrow-function/try-throw-finally-throw.js",
-	]},
+	{ level: 1, desc: "asyncArrowFunctionEmittedAsName",
+		config: { transforms: { asyncAwait: false } },
+		files: [
+			"language/expressions/async-arrow-function/dflt-params-abrupt.js",
+			"language/expressions/async-arrow-function/dflt-params-arg-val-not-undefined.js",
+			"language/expressions/async-arrow-function/dflt-params-arg-val-undefined.js",
+			"language/expressions/async-arrow-function/dflt-params-ref-prior.js",
+			"language/expressions/async-arrow-function/params-trailing-comma-multiple.js",
+			"language/expressions/async-arrow-function/params-trailing-comma-single.js",
+			"language/expressions/async-arrow-function/try-return-finally-throw.js",
+			"language/expressions/async-arrow-function/try-throw-finally-throw.js",
+		]
+	},
 
 	// Acorn doesn't parse BigInt without acorn-bigint
 	{ level: 3, desc: "BigInt", files: [
@@ -124,18 +127,11 @@ exports.file_list = [
 		"*script-code-valid*",
 	]},
 
-	// buble bug: Does not transpile async functions
-	{ level: 2, desc: "asyncFunction", files: [
+	{ level: 4, desc: "asyncFunction", files: [
 		"*await*",
 		"*AsyncFunction*",
 		"*async-(gen|meth|super|function|await)*",
-		"language/expressions/async-arrow-function/try-reject-finally-reject.js",
-		"language/expressions/async-arrow-function/try-reject-finally-return.js",
-		"language/expressions/async-arrow-function/try-reject-finally-throw.js",
-		"language/expressions/async-arrow-function/try-return-finally-reject.js",
-		"language/expressions/async-arrow-function/try-return-finally-return.js",
-		"language/expressions/async-arrow-function/try-throw-finally-reject.js",
-		"language/expressions/async-arrow-function/try-throw-finally-return.js",
+		"language/expressions/async-arrow-function/(ar|aw|d|e|p|r|t)*",
 		"built-ins/Function/prototype/toString/async-arrow-function.js",
 		"*returns-promise.js",
 	]},
@@ -940,7 +936,7 @@ exports.file_list = [
 	{ level: 2, desc: "codePointEscapes", files: [
 		"built-ins/RegExp/property-escapes/character-class.js",
 	]},
-].map(i => ({ desc: i.desc, level: i.level, pattern: mapFilePatterns(i.files) }));
+].map(i => ({ config: i.config, desc: i.desc, level: i.level, pattern: mapFilePatterns(i.files) }));
 
 exports.skip_list = [
 	// FIXME: Do we skip these (instead of expect fail) because they work in some nodejs versions?
