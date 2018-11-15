@@ -57,6 +57,7 @@ export function transform(source, options = {}) {
 			ecmaVersion: 10,
 			preserveParens: true,
 			sourceType: 'module',
+			allowAwaitOutsideFunction: true,
 			allowReturnOutsideFunction: true,
 			onComment: (block, text) => {
 				if (!jsx) {

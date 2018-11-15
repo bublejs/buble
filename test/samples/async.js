@@ -111,5 +111,18 @@ module.exports = [
 		description: 'errors on async arrow function properties if transform is enabled',
 		input: `({ x: async () => {} })`,
 		error: /Transforming async arrow functions is not implemented/
+	},
+
+	{
+		description: 'passes through top-level await if transform is disabled',
+		options: { transforms: { asyncAwait: false } },
+		input: `const x = await someFunction();`,
+		output: `var x = await someFunction();`
+	},
+
+	{
+		description: 'errors on top-level await if transform is enabled',
+		input: `const x = await someFunction();`,
+		error: /Transforming await is not implemented/
 	}
 ];
