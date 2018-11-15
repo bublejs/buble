@@ -13,7 +13,7 @@ exports.features_list = {
 	// This is actually something bublé cannot handle, even though acorn parses it
 	"optional-catch-binding": [3, "unsupportedFeatures"],
 
-	"dynamic-import": [2, "importReserved"],
+	"dynamic-import": [4, "importReserved"],
 	"import.meta": [3, "importMeta"],
 
 	// test262 features bublé doesn't transpile and thus are S2
