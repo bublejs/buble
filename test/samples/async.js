@@ -124,5 +124,19 @@ module.exports = [
 		description: 'errors on top-level await if transform is enabled',
 		input: `const x = await someFunction();`,
 		error: /Transforming await is not implemented/
+	},
+
+	{
+		description: 'passes through top-level for-await-of if transform is disabled',
+		options: { transforms: { asyncAwait: false, forOf: false } },
+		input: `for await (const x of someFunction()) { x() }`,
+		output: `for await (var x of someFunction()) { x() }`
+	},
+
+	{
+		description: 'errors on top-level for-await-of if transform is enabled',
+		options: { transforms: { asyncAwait: true, dangerousForOf: true } },
+		input: `for await (const x of someFunction()) { x() }`,
+		error: /Transforming for-await-of statements is not implemented/
 	}
 ];

@@ -6,6 +6,8 @@ export default class ForOfStatement extends LoopStatement {
 	initialise(transforms) {
 		if (transforms.forOf && !transforms.dangerousForOf)
 			CompileError.missingTransform("for-of statements", "forOf", this, "dangerousForOf");
+		if (this.await && transforms.asyncAwait)
+			CompileError.missingTransform("for-await-of statements", "asyncAwait", this);
 		super.initialise(transforms);
 	}
 
