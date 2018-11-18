@@ -19,7 +19,7 @@ module.exports = [
 	{
 		description: 'errors on async function declarations if transform is enabled',
 		input: `async function A() {}`,
-		error: /Transforming async functions is not implemented/
+		output: `function A() { return Promise.resolve(); }`
 	},
 
 	{
@@ -33,7 +33,7 @@ module.exports = [
 	{
 		description: 'errors on async arrow functions if transform is enabled',
 		input: `(async () => {})`,
-		error: /Transforming async arrow functions is not implemented/
+		output: `(function() { return Promise.resolve(); })`
 	},
 
 	{
@@ -46,7 +46,7 @@ module.exports = [
 	{
 		description: 'errors on async function expressions if transform is enabled',
 		input: `const A = async function () {}`,
-		error: /Transforming async functions is not implemented/
+		output: `var A = function A() { return Promise.resolve(); })`
 	},
 
 	{
@@ -60,7 +60,7 @@ module.exports = [
 	{
 		description: 'errors on async short-hand methods if transform is enabled',
 		input: `({ async x() {} })`,
-		error: /Transforming async functions is not implemented/
+		output: `({ x: function x() { return Promise.resolve(); }})`
 	},
 
 	{
@@ -96,7 +96,7 @@ module.exports = [
 	{
 		description: 'errors on async function properties if transform is enabled',
 		input: `({ x: async function() {} })`,
-		error: /Transforming async functions is not implemented/
+		output: `({ x: function() { return Promise.resolve(); }})`
 	},
 
 	{
@@ -110,7 +110,7 @@ module.exports = [
 	{
 		description: 'errors on async arrow function properties if transform is enabled',
 		input: `({ x: async () => {} })`,
-		error: /Transforming async arrow functions is not implemented/
+		output: `({ x: function x() { return Promise.resolve(); }})`
 	},
 
 	{
@@ -138,5 +138,42 @@ module.exports = [
 		options: { transforms: { asyncAwait: true, dangerousForOf: true } },
 		input: `for await (const x of someFunction()) { x() }`,
 		error: /Transforming for-await-of statements is not implemented/
+	},
+
+	// variables interaction with async :
+	{
+		description: 'transpiles a variable decleration with await',
+		options: { transforms: { asyncAwait: true } },
+		input: `async function f() { const a = await f1(); return a + 1; }`,
+		output: `function f() { return Promise.resolve().then(function(){ return f1(); }).then(function(a){ return a + 1;})`
+	},
+
+	{
+		description: 'transpiles multiple variable declerations in a row',
+		options: { transforms: { asyncAwait: true } },
+		input: `async function f() { const a1 = await f1(); const a2 = await f2(); return a1 + a2; }`,
+		output: `function f() { const a1; const a2; return Promise.resolve().then(function(){ return f1(); }).then(function(ref){ a1 = ref; return f2(); }).then(function(ref) { a2 = ref; return a1 + a2; }); }`
+	},
+
+	{
+		description: 'should not allow changes to constant variables',
+		options: { transforms: { asyncAwait: true } },
+		input: `async function f() { const x = await f1(); x = await f2(); }`,
+		error: /x is read-only/
+	},
+
+	{
+		description: 'transpiles a object destructure of await result',
+		options: { transforms: { asyncAwait: true } },
+		input: `async function f() { const { a1, a2 } = await f1(); return a1 + a2; }`,
+		output: `function f() { var a1; var a2; return Promise.resolve().then(function(){ return f1(); }).then(function(ref){ a1 = ref.a1; a2 = ref.a2; return a1 + a2; });}`
+	},
+
+	{
+		description: 'transpiles an array destructure of await result',
+		options: { transforms: { asyncAwait: true } },
+		input: `async function f() { const [ a1, a2 ] = await f1(); return a1 + a2; }`,
+		output: `function f() { var a1; var a2; return Promise.resolve().then(function(){ return f1(); }).then(function(ref){ a1 = ref[0]; a2 = ref[1]; return a1 + a2; });}`
 	}
+	// END variables interaction with async
 ];
