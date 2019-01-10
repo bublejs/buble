@@ -1,5 +1,5 @@
 import Node from '../Node.js';
-import spread, { isArguments, inlineSpreads } from '../../utils/spread.js';
+import spread, { isArguments, inlineSpreads, needsParentheses } from '../../utils/spread.js';
 import removeTrailingComma from '../../utils/removeTrailingComma.js';
 
 export default class CallExpression extends Node {
@@ -77,7 +77,11 @@ export default class CallExpression extends Node {
 					_super.noCall = true; // bit hacky...
 
 					if (this.arguments.length > 1) {
-						if (firstArgument.type !== 'SpreadElement') {
+						if (firstArgument.type === 'SpreadElement') {
+							if (needsParentheses(firstArgument.argument)) {
+								code.prependRight(firstArgument.start, `( `);
+							}
+						} else {
 							code.prependRight(firstArgument.start, `[ `);
 						}
 
@@ -90,7 +94,11 @@ export default class CallExpression extends Node {
 					code.prependRight(firstArgument.start, `${context}, `);
 				} else {
 					if (firstArgument.type === 'SpreadElement') {
-						code.appendLeft(firstArgument.start, `${context}, `);
+						if (needsParentheses(firstArgument.argument)) {
+							code.appendLeft(firstArgument.start, `${context}, ( `);
+						} else {
+							code.appendLeft(firstArgument.start, `${context}, `);
+						}
 					} else {
 						code.appendLeft(firstArgument.start, `${context}, [ `);
 					}

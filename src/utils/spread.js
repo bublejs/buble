@@ -1,3 +1,5 @@
+import CompileError from './CompileError.js';
+
 export function isArguments(node) {
 	return node.type === 'Identifier' && node.name === 'arguments';
 }
@@ -55,6 +57,28 @@ export function inlineSpreads(
 	}
 }
 
+// Returns false if it’s safe to simply append a method call to the node,
+// e.g. `a` → `a.concat()`.
+//
+// Returns true if it may not be and so parentheses should be employed,
+// e.g. `a ? b : c` → `a ? b : c.concat()` would be wrong.
+//
+// This test may be overcautious; if desired it can be refined over time.
+export function needsParentheses(node) {
+	switch (node.type) {
+		// Currently whitelisted are all relevant ES5 node types ('Literal' and
+		// 'ObjectExpression' are skipped as irrelevant for array/call spread.)
+		case 'ArrayExpression':
+		case 'CallExpression':
+		case 'Identifier':
+		case 'ParenthesizedExpression':
+		case 'ThisExpression':
+			return false;
+		default:
+			return true;
+	}
+}
+
 export default function spread(
 	code,
 	elements,
@@ -100,8 +124,28 @@ export default function spread(
 	const previousElement = elements[firstSpreadIndex - 1];
 
 	if (!previousElement) {
-		code.remove(start, element.start);
-		code.overwrite(element.end, elements[1].start, '.concat( ');
+		// We may need to parenthesize it to handle ternaries like [...a ? b : c].
+		let addClosingParen;
+		if (start !== element.start) {
+			if ((addClosingParen = needsParentheses(element.argument))) {
+				code.overwrite(start, element.start, '( ');
+			} else {
+				code.remove(start, element.start);
+			}
+		} else if (element.parent.type === 'CallExpression') {
+			// CallExpression inserts `( ` itself, we add the ).
+			// (Yeah, CallExpression did the needsParentheses call already,
+			// but we don’t have its result handy, so do it again. It’s cheap.)
+			addClosingParen = needsParentheses(element.argument);
+		} else {
+			// Should be unreachable, but doing this is more robust.
+			throw new CompileError(
+				'Unsupported spread construct, please raise an issue at https://github.com/Rich-Harris/buble/issues',
+				element
+			);
+		}
+		code.overwrite(element.end, elements[1].start,
+			addClosingParen ? ' ).concat( ' : '.concat( ');
 	} else {
 		code.overwrite(previousElement.end, element.start, ' ].concat( ');
 	}
