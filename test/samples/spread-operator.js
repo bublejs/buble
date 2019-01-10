@@ -882,4 +882,12 @@ module.exports = [
 			new f(w, x, y, z);
 		`
 	},
+
+	{
+		description: 'transpiles a first spread element comprising a ternary operator',
+
+		input: '[...a ? b : c, d]',
+
+		output: '( a ? b : c ).concat( [d])',
+	}
 ];
