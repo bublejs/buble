@@ -2,6 +2,59 @@ export function isArguments(node) {
 	return node.type === 'Identifier' && node.name === 'arguments';
 }
 
+export function inlineSpreads(
+	code,
+	node,
+	elements
+) {
+	let i = elements.length;
+
+	while (i--) {
+		const element = elements[i];
+		if (!element || element.type !== 'SpreadElement') {
+			continue;
+		}
+		const argument = element.argument;
+		if (argument.type !== 'ArrayExpression') {
+			continue;
+		}
+		const subelements = argument.elements;
+		if (subelements.some(subelement => subelement === null)) {
+			// Not even going to try inlining spread arrays with holes.
+			// It's a lot of work (got to be VERY careful in comma counting for
+			// ArrayExpression, and turn blanks into undefined for
+			// CallExpression and NewExpression), and probably literally no one
+			// would ever benefit from it.
+			continue;
+		}
+		// We can inline it: drop the `...[` and `]` and sort out any commas.
+		const isLast = i === elements.length - 1;
+		if (subelements.length === 0) {
+			code.remove(
+				isLast && i !== 0
+					? elements[i - 1].end  // Take the previous comma too
+					: element.start,
+				isLast
+					? node.end - 1  // Must remove trailing comma; element.end wouldn’t
+					: elements[i + 1].start);
+		} else {
+			// Strip the `...[` and the `]` with a possible trailing comma before it,
+			// leaving just the possible trailing comma after it.
+			code.remove(element.start, subelements[0].start);
+			code.remove(
+				// Strip a possible trailing comma after the last element
+				subelements[subelements.length - 1].end,
+				// And also a possible trailing comma after the spread
+				isLast
+					? node.end - 1
+					: element.end
+			);
+		}
+		elements.splice(i, 1, ...subelements);
+		i += subelements.length;
+	}
+}
+
 export default function spread(
 	code,
 	elements,

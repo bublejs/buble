@@ -1,5 +1,5 @@
 import Node from '../Node.js';
-import spread, { isArguments } from '../../utils/spread.js';
+import spread, { isArguments, inlineSpreads } from '../../utils/spread.js';
 import removeTrailingComma from '../../utils/removeTrailingComma.js';
 
 export default class NewExpression extends Node {
@@ -22,6 +22,11 @@ export default class NewExpression extends Node {
 
 	transpile(code, transforms) {
 		super.transpile(code, transforms);
+
+		if (transforms.spreadRest && this.arguments.length) {
+			inlineSpreads(code, this, this.arguments);
+			// this.arguments.length may have changed, must retest.
+		}
 
 		if (transforms.spreadRest && this.arguments.length) {
 			const firstArgument = this.arguments[0];

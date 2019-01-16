@@ -277,6 +277,61 @@ for( var a = c.a, rest = objectWithoutProperties( c, ["a"] ), b = rest;; ) {}`
 	input: `for( var {...b} = c;; ) {}`,
 	output: `function objectWithoutProperties (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
 for( var rest = objectWithoutProperties( c, [] ), b = rest;; ) {}`
-	}
+	},
 
+	{
+		description: 'inlines object spread with one object',
+		input: `var obj = {...{a: 1}};`,
+		output: `var obj = {a: 1};`
+	},
+
+	{
+		description: 'inlines object spread with two objects',
+		input: `var obj = {...{a: 1}, ...{b: 2}};`,
+		output: `var obj = {a: 1, b: 2};`
+	},
+
+	{
+		description: 'inlines object spread with regular keys in between',
+		input: `var obj = { ...{a: 1}, b: 2, c: 3 };`,
+		output: `var obj = { a: 1, b: 2, c: 3 };`
+	},
+
+	{
+		description: 'inlines object spread mixed',
+		input: `var obj = { ...{a: 1}, b: 2, ...{c: 3}, e};`,
+		output: `var obj = { a: 1, b: 2, c: 3, e: e};`
+	},
+
+	{
+		description: 'inlines object spread very mixed',
+		options: {
+			objectAssign: 'Object.assign'
+		},
+		input: `var obj = { ...{a: 1}, b: 2, ...c, e};`,
+		output: `var obj = Object.assign({}, {a: 1, b: 2}, c, {e: e});`
+	},
+
+	{
+		description: 'inlines object spread without extraneous trailing commas',
+		options: {
+			objectAssign: 'Object.assign'
+		},
+		input: `
+			var obj = { ...{a: 1,}, b: 2, ...{c: 3,}, ...d, e, ...{f: 6,},};
+			obj = { a: 1, b: 2, };
+			obj = { a: 1, ...{b: 2} };
+			obj = { a: 1, ...{b: 2,} };
+			obj = { a: 1, ...{b: 2}, };
+			obj = { a: 1, ...{b: 2,}, };
+		`,
+		output: `
+			var obj = Object.assign({}, {a: 1, b: 2, c: 3}, d, {e: e, f: 6});
+			obj = { a: 1, b: 2, };
+			obj = { a: 1, b: 2 };
+			obj = { a: 1, b: 2 };
+			obj = { a: 1, b: 2, };
+			obj = { a: 1, b: 2, };
+		`
+	}
 ];

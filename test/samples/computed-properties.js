@@ -238,7 +238,7 @@ module.exports = [
 			let a = {
 				[foo] (x, y) {
 					return {
-						...{abc: '123'}
+						...c
 					};
 				},
 			};
@@ -246,7 +246,7 @@ module.exports = [
 		output: `
 			var a = {};
 			a[foo] = function (x, y) {
-					return Object.assign({}, {abc: '123'});
+					return Object.assign({}, c);
 				};
 		`
 	},

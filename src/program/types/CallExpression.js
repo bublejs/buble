@@ -1,5 +1,5 @@
 import Node from '../Node.js';
-import spread, { isArguments } from '../../utils/spread.js';
+import spread, { isArguments, inlineSpreads } from '../../utils/spread.js';
 import removeTrailingComma from '../../utils/removeTrailingComma.js';
 
 export default class CallExpression extends Node {
@@ -20,6 +20,11 @@ export default class CallExpression extends Node {
 	}
 
 	transpile(code, transforms) {
+		if (transforms.spreadRest && this.arguments.length) {
+			inlineSpreads(code, this, this.arguments);
+			// this.arguments.length may have changed, must retest.
+		}
+
 		if (transforms.spreadRest && this.arguments.length) {
 			let hasSpreadElements = false;
 			let context;

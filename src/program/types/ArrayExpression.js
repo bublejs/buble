@@ -1,5 +1,5 @@
 import Node from '../Node.js';
-import spread, { isArguments } from '../../utils/spread.js';
+import spread, { isArguments, inlineSpreads } from '../../utils/spread.js';
 
 export default class ArrayExpression extends Node {
 	initialise(transforms) {
@@ -26,6 +26,7 @@ export default class ArrayExpression extends Node {
 		super.transpile(code, transforms);
 
 		if (transforms.spreadRest) {
+			inlineSpreads(code, this, this.elements);
 			// erase trailing comma after last array element if not an array hole
 			if (this.elements.length) {
 				const lastElement = this.elements[this.elements.length - 1];
