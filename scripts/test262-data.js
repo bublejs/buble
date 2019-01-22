@@ -952,6 +952,9 @@ exports.skip_list = [
 	]},
 
 	// Runtime behaviour
+	{ desc: 'runtimeRegexp', files: [
+		'built-ins/RegExp/duplicate-flags.js',
+	] },
 	{ desc: "tco", files: [ "language/(expressions/tagged-template|statements/for)/tco-*" ] },
 	{ desc: "runtimeBigInt", files: [
 		"built-ins/BigInt/asIntN/bigint-tobigint-errors.js",
