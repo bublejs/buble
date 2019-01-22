@@ -435,6 +435,25 @@ module.exports = [
 				console.log(JSON.stringify(this.a));
 			}
 			var obj = { Test };
+			var a = [1, 2];
+			var b = [3, 4];
+			var c = [7, 8];
+
+			new Test(...a);
+			new obj.Test(...a);
+			new (null || obj).Test(...a);
+
+			new Test(0, ...a);
+			new obj.Test(0, ...a);
+			new (null || obj).Test(0, ...a);
+
+			new Test(...a, ...b, 5);
+			new obj.Test(...a, ...b, 5);
+			new (null || obj).Test(...a, ...b, 5);
+
+			new Test(...a, new Test(...c), ...b, 5);
+			new obj.Test(...a, new Test(...c), ...b, 5);
+			new (null || obj).Test(...a, new Test(...c), ...b, 5);
 
 			new Test(...[1, 2]);
 			new obj.Test(...[1, 2]);
@@ -471,22 +490,41 @@ module.exports = [
 				console.log(JSON.stringify(this.a));
 			}
 			var obj = { Test: Test };
+			var a = [1, 2];
+			var b = [3, 4];
+			var c = [7, 8];
 
-			new (Function.prototype.bind.apply( Test, [ null ].concat( [1, 2]) ));
-			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2]) ));
-			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2]) ));
+			new (Function.prototype.bind.apply( Test, [ null ].concat( a) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( a) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( a) ));
 
-			new (Function.prototype.bind.apply( Test, [ null ].concat( [0], [1, 2]) ));
-			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [0], [1, 2]) ));
-			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [0], [1, 2]) ));
+			new (Function.prototype.bind.apply( Test, [ null ].concat( [0], a) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [0], a) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [0], a) ));
 
-			new (Function.prototype.bind.apply( Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
-			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
-			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( Test, [ null ].concat( a, b, [5]) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( a, b, [5]) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( a, b, [5]) ));
 
-			new (Function.prototype.bind.apply( Test, [ null ].concat( [1, 2], [new (Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
-			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( [1, 2], [new (Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
-			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( [1, 2], [new (Function.prototype.bind.apply( Test, [ null ].concat( [7, 8]) ))], [3, 4], [5]) ));
+			new (Function.prototype.bind.apply( Test, [ null ].concat( a, [new (Function.prototype.bind.apply( Test, [ null ].concat( c) ))], b, [5]) ));
+			new (Function.prototype.bind.apply( obj.Test, [ null ].concat( a, [new (Function.prototype.bind.apply( Test, [ null ].concat( c) ))], b, [5]) ));
+			new (Function.prototype.bind.apply( (null || obj).Test, [ null ].concat( a, [new (Function.prototype.bind.apply( Test, [ null ].concat( c) ))], b, [5]) ));
+
+			new Test(1, 2);
+			new obj.Test(1, 2);
+			new (null || obj).Test(1, 2);
+
+			new Test(0, 1, 2);
+			new obj.Test(0, 1, 2);
+			new (null || obj).Test(0, 1, 2);
+
+			new Test(1, 2, 3, 4, 5);
+			new obj.Test(1, 2, 3, 4, 5);
+			new (null || obj).Test(1, 2, 3, 4, 5);
+
+			new Test(1, 2, new Test(7, 8), 3, 4, 5);
+			new obj.Test(1, 2, new Test(7, 8), 3, 4, 5);
+			new (null || obj).Test(1, 2, new Test(7, 8), 3, 4, 5);
 
 			(function () {
 				var i = arguments.length, argsArray = Array(i);
@@ -617,5 +655,231 @@ module.exports = [
 		input: `new X(...A, () => 'B')`,
 
 		output: `new (Function.prototype.bind.apply( X, [ null ].concat( A, [function () { return 'B'; }]) ))`
-	}
+	},
+
+	{
+		description: 'inlines unreasonably deep spreads',
+		input: `
+			[...[...[...[1, ...[...[...[2, 3]], 4]]]]];
+			f(...[...[...[1, ...[...[...[2, 3]], 4]]]]);
+			new f(...[...[...[1, ...[...[...[2, 3]], 4]]]]);
+		`,
+		output: `
+			[1, 2, 3, 4];
+			f(1, 2, 3, 4);
+			new f(1, 2, 3, 4);
+		`
+	},
+
+	{
+		description: 'does not (yet) inline spread arrays with holes',
+		input: `
+			[...[,]];
+			f(...[,]);
+			new f(...[,]);
+		`,
+		output: `
+			[].concat( [,] );
+			f.apply(void 0, [,]);
+			new (Function.prototype.bind.apply( f, [ null ].concat( [,]) ));
+		`
+	},
+
+	{
+		description: 'inlines array spreads without extraneous trailing commas',
+		input: `
+			[...[]];
+			[...[],];
+			[...[x]];
+			[...[x,]];
+			[...[x, y]];
+			[...[x, y,]];
+			[...[x, y],];
+			[...[x, y,],];
+
+			[w, ...[]];
+			[w, ...[],];
+			[w, ...[x]];
+			[w, ...[x,]];
+			[w, ...[x, y]];
+			[w, ...[x, y,]];
+			[w, ...[x, y],];
+			[w, ...[x, y,],];
+
+			[...[], z];
+			[...[x], z];
+			[...[x,], z];
+			[...[x, y], z];
+			[...[x, y,], z];
+
+			[w, ...[], z];
+			[w, ...[x], z];
+			[w, ...[x,], z];
+			[w, ...[x, y], z];
+			[w, ...[x, y,], z];
+		`,
+		output: `
+			[];
+			[];
+			[x];
+			[x ];
+			[x, y];
+			[x, y ];
+			[x, y ];
+			[x, y ];
+
+			[w ];
+			[w ];
+			[w, x];
+			[w, x ];
+			[w, x, y];
+			[w, x, y ];
+			[w, x, y ];
+			[w, x, y ];
+
+			[z];
+			[x, z];
+			[x, z];
+			[x, y, z];
+			[x, y, z];
+
+			[w, z];
+			[w, x, z];
+			[w, x, z];
+			[w, x, y, z];
+			[w, x, y, z];
+		`
+	},
+
+	{
+		description: 'inlines call spreads without extraneous trailing commas',
+		input: `
+			f(...[]);
+			f(...[],);
+			f(...[x]);
+			f(...[x,]);
+			f(...[x, y]);
+			f(...[x, y,]);
+			f(...[x, y],);
+			f(...[x, y,],);
+
+			f(w, ...[]);
+			f(w, ...[],);
+			f(w, ...[x]);
+			f(w, ...[x,]);
+			f(w, ...[x, y]);
+			f(w, ...[x, y,]);
+			f(w, ...[x, y],);
+			f(w, ...[x, y,],);
+
+			f(...[], z);
+			f(...[x], z);
+			f(...[x,], z);
+			f(...[x, y], z);
+			f(...[x, y,], z);
+
+			f(w, ...[], z);
+			f(w, ...[x], z);
+			f(w, ...[x,], z);
+			f(w, ...[x, y], z);
+			f(w, ...[x, y,], z);
+		`,
+		output: `
+			f();
+			f();
+			f(x);
+			f(x);
+			f(x, y);
+			f(x, y);
+			f(x, y);
+			f(x, y);
+
+			f(w);
+			f(w);
+			f(w, x);
+			f(w, x);
+			f(w, x, y);
+			f(w, x, y);
+			f(w, x, y);
+			f(w, x, y);
+
+			f(z);
+			f(x, z);
+			f(x, z);
+			f(x, y, z);
+			f(x, y, z);
+
+			f(w, z);
+			f(w, x, z);
+			f(w, x, z);
+			f(w, x, y, z);
+			f(w, x, y, z);
+		`
+	},
+
+	{
+		description: 'inlines new call spreads without extraneous trailing commas',
+		input: `
+			new f(...[]);
+			new f(...[],);
+			new f(...[x]);
+			new f(...[x,]);
+			new f(...[x, y]);
+			new f(...[x, y,]);
+			new f(...[x, y],);
+			new f(...[x, y,],);
+
+			new f(w, ...[]);
+			new f(w, ...[],);
+			new f(w, ...[x]);
+			new f(w, ...[x,]);
+			new f(w, ...[x, y]);
+			new f(w, ...[x, y,]);
+			new f(w, ...[x, y],);
+			new f(w, ...[x, y,],);
+
+			new f(...[], z);
+			new f(...[x], z);
+			new f(...[x,], z);
+			new f(...[x, y], z);
+			new f(...[x, y,], z);
+
+			new f(w, ...[], z);
+			new f(w, ...[x], z);
+			new f(w, ...[x,], z);
+			new f(w, ...[x, y], z);
+			new f(w, ...[x, y,], z);
+		`,
+		output: `
+			new f();
+			new f();
+			new f(x);
+			new f(x);
+			new f(x, y);
+			new f(x, y);
+			new f(x, y);
+			new f(x, y);
+
+			new f(w);
+			new f(w);
+			new f(w, x);
+			new f(w, x);
+			new f(w, x, y);
+			new f(w, x, y);
+			new f(w, x, y);
+			new f(w, x, y);
+
+			new f(z);
+			new f(x, z);
+			new f(x, z);
+			new f(x, y, z);
+			new f(x, y, z);
+
+			new f(w, z);
+			new f(w, x, z);
+			new f(w, x, z);
+			new f(w, x, y, z);
+			new f(w, x, y, z);
+		`
+	},
 ];
