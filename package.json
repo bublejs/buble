@@ -69,7 +69,7 @@
     "test262-stream": "^1.2.0"
   },
   "dependencies": {
-    "acorn": "^6.0.5",
+    "acorn": "^6.1.0",
     "acorn-dynamic-import": "^4.0.0",
     "acorn-jsx": "^5.0.1",
     "chalk": "^2.4.2",
