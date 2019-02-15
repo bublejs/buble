@@ -234,14 +234,14 @@ describe('buble', () => {
 			assert.deepEqual(map.sourcesContent, [null]);
 		});
 
-		it('locates original content', () => {
+		it('locates original content', async () => {
 			var source = `const add = ( a, b ) => a + b;`;
 			var result = buble.transform(source, {
 				file: 'output.js',
 				source: 'input.js'
 			});
 
-			var smc = new SourceMapConsumer(result.map);
+			var smc = await new SourceMapConsumer(result.map);
 			var location = getLocation(result.code, 'add');
 			var expected = getLocation(source, 'add');
 
@@ -267,7 +267,7 @@ describe('buble', () => {
 			});
 		});
 
-		it('recovers names', () => {
+		it('recovers names', async () => {
 			var source = `
 				const foo = 1;
 				if ( x ) {
@@ -278,7 +278,7 @@ describe('buble', () => {
 				file: 'output.js',
 				source: 'input.js'
 			});
-			var smc = new SourceMapConsumer(result.map);
+			var smc = await new SourceMapConsumer(result.map);
 			var location = getLocation(result.code, 'var');
 			var actual = smc.originalPositionFor(location);
 
@@ -295,7 +295,7 @@ describe('buble', () => {
 			assert.equal(actual.name, 'foo');
 		});
 
-		it('handles moved content', () => {
+		it('handles moved content', async () => {
 			var source = `
 				for ( let i = 0; i < 10; i += 1 ) {
 					const square = i * i;
@@ -308,7 +308,7 @@ describe('buble', () => {
 				file: 'output.js',
 				source: 'input.js'
 			});
-			var smc = new SourceMapConsumer(result.map);
+			var smc = await new SourceMapConsumer(result.map);
 			var location = getLocation(result.code, 'i < 10');
 			var expected = getLocation(source, 'i < 10');
 
