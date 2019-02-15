@@ -7,7 +7,7 @@ module.exports = [
 
 	{
 		description: 'disallows export statement',
-		input: `export { foo };`,
+		input: `var foo; export { foo };`,
 		error: /export is not implemented/
 	},
 
@@ -21,16 +21,16 @@ module.exports = [
 	{
 		description: 'exports are ignored with `transforms.moduleExport === false`',
 		options: { transforms: { moduleExport: false } },
-		input: `export { foo };`,
-		output: `export { foo };`
+		input: `var foo; export { foo };`,
+		output: `var foo; export { foo };`
 	},
 
 	{
 		description:
 			'imports and exports are ignored with `transforms.modules === false`',
 		options: { transforms: { modules: false } },
-		input: `import 'foo'; export { foo };`,
-		output: `import 'foo'; export { foo };`
+		input: `import 'foo'; var foo; export { foo };`,
+		output: `import 'foo'; var foo; export { foo };`
 	},
 
 	{
