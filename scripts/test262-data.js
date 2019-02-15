@@ -437,7 +437,6 @@ exports.file_list = [
 
 	// buble bug: characters which are valid in template literal but not string literal need to be transpiled
 	{ level: 2, desc: "templateLiteralLineContinuationAndTerminator", files: [
-		"language/expressions/template-literal/tv-line-continuation.js",
 		"language/expressions/template-literal/tv-line-terminator-sequence.js",
 	]},
 
