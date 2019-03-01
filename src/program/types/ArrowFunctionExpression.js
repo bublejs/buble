@@ -13,9 +13,10 @@ export default class ArrowFunctionExpression extends Node {
 
 	transpile(code, transforms) {
 		let openParensPos = this.start;
-		for (let end = (this.body || this.params[0]).start - 1; code.original[openParensPos] !== '(' && openParensPos < end; ++openParensPos) {
+		for (let end = (this.body || this.params[0]).start - 1; code.original[openParensPos] !== '(' && openParensPos < end;) {
+			++openParensPos;
 		}
-		if (code.original[openParensPos] !== '(') openParensPos = -1
+		if (code.original[openParensPos] !== '(') openParensPos = -1;
 		const naked = openParensPos === -1;
 
 		if (transforms.arrow || this.needsArguments(transforms)) {
@@ -35,9 +36,9 @@ export default class ArrowFunctionExpression extends Node {
 			}
 
 			// standalone expression statement
-			let standalone = this.parent && this.parent.type === 'ExpressionStatement'
+			const standalone = this.parent && this.parent.type === 'ExpressionStatement';
 			let start, text = standalone ? '!' : '';
-			if (this.async) text += 'async '
+			if (this.async) text += 'async ';
 			text += 'function';
 			if (!standalone) text += ' ';
 			if (naked) {
@@ -47,7 +48,7 @@ export default class ArrowFunctionExpression extends Node {
 			}
 			// add function
 			if (start > this.start) {
-				code.overwrite(this.start, start, text/*, { contentOnly: true }*/);
+				code.overwrite(this.start, start, text);
 			} else {
 				code.prependRight(this.start, text);
 			}
