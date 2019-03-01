@@ -34,22 +34,6 @@ exports.file_list = [
 		"built-ins/String/raw/(return-the-string-value-from-template|special-characters|template-substitutions-are-appended-on-same-index|zero-literal-segments).js"
 	]},
 
-	// buble bug: async () => {} turned into function async() {}
-	// https://github.com/Rich-Harris/buble/issues/109
-	{ level: 1, desc: "asyncArrowFunctionEmittedAsName",
-		config: { transforms: { asyncAwait: false } },
-		files: [
-			"language/expressions/async-arrow-function/dflt-params-abrupt.js",
-			"language/expressions/async-arrow-function/dflt-params-arg-val-not-undefined.js",
-			"language/expressions/async-arrow-function/dflt-params-arg-val-undefined.js",
-			"language/expressions/async-arrow-function/dflt-params-ref-prior.js",
-			"language/expressions/async-arrow-function/params-trailing-comma-multiple.js",
-			"language/expressions/async-arrow-function/params-trailing-comma-single.js",
-			"language/expressions/async-arrow-function/try-return-finally-throw.js",
-			"language/expressions/async-arrow-function/try-throw-finally-throw.js",
-		]
-	},
-
 	// Acorn doesn't parse BigInt without acorn-bigint
 	{ level: 3, desc: "BigInt", files: [
 		"built-ins/BigInt/as(Ui|I)ntN/(a|bits|l|n|o)*",

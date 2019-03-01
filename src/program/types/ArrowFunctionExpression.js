@@ -12,7 +12,11 @@ export default class ArrowFunctionExpression extends Node {
 	}
 
 	transpile(code, transforms) {
-		const naked = this.params.length === 1 && this.start === this.params[0].start;
+		let openParensPos = this.start;
+		for (let end = (this.body || this.params[0]).start - 1; code.original[openParensPos] !== '(' && openParensPos < end; ++openParensPos) {
+		}
+		if (code.original[openParensPos] !== '(') openParensPos = -1
+		const naked = openParensPos === -1;
 
 		if (transforms.arrow || this.needsArguments(transforms)) {
 			// remove arrow
@@ -30,12 +34,22 @@ export default class ArrowFunctionExpression extends Node {
 				code.appendLeft(this.params[0].end, ')');
 			}
 
-			// add function
-			if (this.parent && this.parent.type === 'ExpressionStatement') {
-				// standalone expression statement
-				code.prependRight(this.start, '!function');
+			// standalone expression statement
+			let standalone = this.parent && this.parent.type === 'ExpressionStatement'
+			let start, text = standalone ? '!' : '';
+			if (this.async) text += 'async '
+			text += 'function';
+			if (!standalone) text += ' ';
+			if (naked) {
+				start = this.params[0].start;
 			} else {
-				code.prependRight(this.start, 'function ');
+				start = openParensPos;
+			}
+			// add function
+			if (start > this.start) {
+				code.overwrite(this.start, start, text/*, { contentOnly: true }*/);
+			} else {
+				code.prependRight(this.start, text);
 			}
 		} else {
 			super.transpile(code, transforms);

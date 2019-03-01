@@ -23,11 +23,10 @@ module.exports = [
 	},
 
 	{
-		skip: true, // https://github.com/Rich-Harris/buble/issues/109
 		description: 'passes through async arrow functions if transform is disabled',
 		options: { transforms: { asyncAwait: false } },
 		input: `(async () => {})`,
-		output: `(async function() {})`
+		output: `(async function () {})`
 	},
 
 	{
@@ -50,7 +49,7 @@ module.exports = [
 	},
 
 	{
-		skip: true, // https://github.com/Rich-Harris/buble/issues/109
+		skip: true, // https://github.com/Rich-Harris/buble/issues/146
 		description: 'passes through async short-hand methods if transform is disabled',
 		options: { transforms: { asyncAwait: false } },
 		input: `({ async x() {} })`,
@@ -64,7 +63,7 @@ module.exports = [
 	},
 
 	{
-		skip: true, // https://github.com/Rich-Harris/buble/issues/109
+		skip: true, // https://github.com/Rich-Harris/buble/issues/146
 		description: 'passes through async class methods if transform is disabled',
 		options: { transforms: { asyncAwait: false } },
 		input: `
@@ -100,16 +99,28 @@ module.exports = [
 	},
 
 	{
-		skip: true, // https://github.com/Rich-Harris/buble/issues/109
 		description: 'passes through async arrow function properties if transform is disabled',
 		options: { transforms: { asyncAwait: false } },
 		input: `({ x: async () => {} })`,
-		output: `({ x: async function() {} })`
+		output: `({ x: async function () {} })`
 	},
 
 	{
 		description: 'errors on async arrow function properties if transform is enabled',
 		input: `({ x: async () => {} })`,
+		error: /Transforming async arrow functions is not implemented/
+	},
+
+	{
+		description: 'passes through async arrow function with naked parameter if transform is disabled',
+		options: { transforms: { asyncAwait: false } },
+		input: `async a => {}`,
+		output: `!async function(a) {}`
+	},
+
+	{
+		description: 'errors on async arrow function with naked parameter if transform is enabled',
+		input: `async a => {}`,
 		error: /Transforming async arrow functions is not implemented/
 	},
 
