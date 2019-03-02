@@ -430,12 +430,13 @@ exports.file_list = [
 
 	// buble bug: Does not transpile unicode escapes
 	// https://github.com/Rich-Harris/buble/issues/75
-	{ level: 2, desc: "unicodeEscapes", files: [
+	{ level: 2, desc: "unicodeCodePointEscapes", files: [
 		"*escape-hex.js",
 		"annexB/built-ins/escape/escape-above-astral.js",
 		"built-ins/RegExp/dotall/without-dotall-unicode.js",
 		"built-ins/RegExp/dotall/without-dotall.js",
 		"built-ins/Function/prototype/toString/unicode.js",
+		"built-ins/RegExp/property-escapes/character-class.js",
 	]},
 
 	{ level: 1, desc: "taggedTemplateOperatorPrecedence", files: [
@@ -918,10 +919,6 @@ exports.file_list = [
 	{ level: 1, desc: "taggedTemplateRegistry", files: [
 		"language/expressions/tagged-template/cache-(differing-expressions|identical-source).js",
 		"language/expressions/tagged-template/template-object-template-map.js",
-	]},
-
-	{ level: 2, desc: "codePointEscapes", files: [
-		"built-ins/RegExp/property-escapes/character-class.js",
 	]},
 ].map(i => ({ config: i.config, desc: i.desc, level: i.level, pattern: mapFilePatterns(i.files) }));
 
