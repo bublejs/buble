@@ -62,7 +62,6 @@ module.exports = [
 	},
 
 	{
-		skip: true, // https://github.com/Rich-Harris/buble/issues/146
 		description: 'passes through async class methods if transform is disabled',
 		options: { transforms: { asyncAwait: false } },
 		input: `

@@ -183,7 +183,7 @@ export default class ClassBody extends Node {
 						: `${methodName} `;
 				const rhs =
 					(isAccessor ? `.${method.kind}` : '') +
-					` = function` +
+					` = ${method.value.async ? 'async ' : ''}function` +
 					(method.value.generator ? '* ' : ' ') +
 					funcName;
 				code.remove(c, method.value.start);
@@ -192,7 +192,17 @@ export default class ClassBody extends Node {
 
 				if (method.value.generator) code.remove(method.start, method.key.start);
 
-				code.prependRight(method.start, lhs);
+				let start = method.key.start;
+				if (method.computed && !fake_computed) {
+					while (code.original[start] != '[') {
+						--start;
+					}
+				}
+				if (method.start < start) {
+					code.overwrite(method.start, start, lhs);
+				} else {
+					code.prependRight(method.start, lhs);
+				}
 			});
 
 			if (prototypeGettersAndSetters.length || staticGettersAndSetters.length) {

@@ -1157,7 +1157,7 @@ module.exports = [
 
 			B[.000004] = function (){};
 			B[x] = function (){};
-			B [x-y] = function (){};
+			B[x-y] = function (){};
 			B[("Static computed " + name)] = function (){};
 		`
 	},
