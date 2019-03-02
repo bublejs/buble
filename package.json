@@ -63,6 +63,7 @@
     "rollup-plugin-commonjs": "=9.1.8",
     "rollup-plugin-json": "^3.1.0",
     "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-pluginutils": "2.3.3",
     "source-map": "^0.6.1",
     "source-map-support": "^0.5.10",
     "test262": "git+https://github.com/tc39/test262.git#4f1155c566a222238fd86f179c6635ecb4c289bb",
