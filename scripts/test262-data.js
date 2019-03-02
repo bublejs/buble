@@ -139,10 +139,14 @@ exports.file_list = [
 	]},
 
 	// buble bug: buble emits invalid code
-	{ level: 2, desc: "bubleBadArrowTranspiling", files: [
+	{ level: 2, desc: "badArrowTranspiling", files: [
 		"language/expressions/assignment/dstr/array-elem-init-fn-name-arrow.js",
 		"language/expressions/assignment/dstr/obj-prop-elem-init-fn-name-arrow.js",
 		"language/expressions/assignment/dstr/obj-id-init-fn-name-arrow.js",
+	]},
+
+	// buble bug: buble emits invalid code
+	{ level: 2, desc: "badAnonymousClassTranspiling", files: [
 		"language/expressions/object/fn-name-class.js",
 	]},
 
@@ -181,7 +185,7 @@ exports.file_list = [
 	]},
 
 	// buble bug: https://github.com/Rich-Harris/buble/issues/77
-	{ level: 2, desc: "functionToString", files: [
+	{ level: 2, desc: "classHeritage", files: [
 		"built-ins/Function/prototype/toString/class-declaration-complex-heritage.js"
 	]},
 
