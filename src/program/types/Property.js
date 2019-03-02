@@ -44,10 +44,10 @@ export default class Property extends Node {
 					name = ' ' + name;
 				}
 
-				if (this.value.generator) code.remove(this.start, this.key.start);
+				if (this.start < this.key.start) code.remove(this.start, this.key.start);
 				code.appendLeft(
 					this.key.end,
-					`: function${this.value.generator ? '*' : ''}${name}`
+					`: ${this.value.async ? 'async ' : ''}function${this.value.generator ? '*' : ''}${name}`
 				);
 			}
 		}

@@ -49,7 +49,6 @@ module.exports = [
 	},
 
 	{
-		skip: true, // https://github.com/Rich-Harris/buble/issues/146
 		description: 'passes through async short-hand methods if transform is disabled',
 		options: { transforms: { asyncAwait: false } },
 		input: `({ async x() {} })`,
