@@ -2,9 +2,9 @@
 
 ## 0.19.6 (2018-10-23)
 
-* Fix class expressions with heritage in arrow functions ([#150](https://github.com/Rich-Harris/buble/issues/150))
+* Fix class expressions with heritage in arrow functions ([#150](https://github.com/bublejs/buble/issues/150))
 * Support `objectAssign: true` in API as a short-hand for `objectAssign: "Object.assign"`
-* Bundle all acorn dependencies (for now), but no others ([#159](https://github.com/Rich-Harris/buble/issues/159))
+* Bundle all acorn dependencies (for now), but no others ([#159](https://github.com/bublejs/buble/issues/159))
 
 ## 0.19.5 (2018-10-16)
 
@@ -12,16 +12,16 @@
 * Add `/*@__PURE__*/` annotations to transpiled classes
 * Update support data
 * Allow disabling spread properties transpiling
-* Fix specific edge case with spread and computed properties ([#139](https://github.com/Rich-Harris/buble/issues/139))
+* Fix specific edge case with spread and computed properties ([#139](https://github.com/bublejs/buble/issues/139))
 * Allow global `return` statements
-* Don't create unnecessary `this` aliases with loops ([#120](https://github.com/Rich-Harris/buble/issues/120))
-* Don't allow getters and setters if IE8 is transpile target ([#20](https://github.com/Rich-Harris/buble/issues/20))
+* Don't create unnecessary `this` aliases with loops ([#120](https://github.com/bublejs/buble/issues/120))
+* Don't allow getters and setters if IE8 is transpile target ([#20](https://github.com/bublejs/buble/issues/20))
 
 ## 0.19.4 (2018-10-06)
 
-* Fix transpiling destructuring assignments in brace-less if statement's bodies ([#152](https://github.com/Rich-Harris/buble/issues/152))
-* Fix transpiling const and let after brace-less if statements ([#132](https://github.com/Rich-Harris/buble/issues/132))
-* Transpile binary and octal number literals if base prefix is upper-case ([#74](https://github.com/Rich-Harris/buble/issues/74))
+* Fix transpiling destructuring assignments in brace-less if statement's bodies ([#152](https://github.com/bublejs/buble/issues/152))
+* Fix transpiling const and let after brace-less if statements ([#132](https://github.com/bublejs/buble/issues/132))
+* Transpile binary and octal number literals if base prefix is upper-case ([#74](https://github.com/bublejs/buble/issues/74))
 * Mark classes as supported in Chrome 48
 * Mark destructuring of arrow function arguments as not supported in Firefox < 52
 
@@ -31,7 +31,7 @@
 
 ## 0.19.2 (2018-02-12)
 
-* Correctly specify browser field in package.json ([#107](https://github.com/Rich-Harris/buble/issues/107))
+* Correctly specify browser field in package.json ([#107](https://github.com/bublejs/buble/issues/107))
 * Fix a compile error about using `super` outside of class methods
 * Fix transpiling rest properties
 
@@ -45,69 +45,69 @@
 
 * Add support information for new environments
 * Add (pass-thru) support for aync generators and for-async-of
-* Add support for dynamic import ([#102](https://github.com/Rich-Harris/buble/pull/102))
-* Add support for JSX fragments ([#62](https://github.com/Rich-Harris/buble/issues/62))
-* Add unpkg build and transpile browser build for older environments ([#93](https://github.com/Rich-Harris/buble/issues/93))
-* Reuse tagged template quasis ([#67](https://github.com/Rich-Harris/buble/pull/67))
-* Transpile trailing commas in new expressions ([#63](https://github.com/Rich-Harris/buble/issues/63))
+* Add support for dynamic import ([#102](https://github.com/bublejs/buble/pull/102))
+* Add support for JSX fragments ([#62](https://github.com/bublejs/buble/issues/62))
+* Add unpkg build and transpile browser build for older environments ([#93](https://github.com/bublejs/buble/issues/93))
+* Reuse tagged template quasis ([#67](https://github.com/bublejs/buble/pull/67))
+* Transpile trailing commas in new expressions ([#63](https://github.com/bublejs/buble/issues/63))
 * Add support for destructuring in for-in and for-of loop heads
 * Add support for destructuring in catch clause params
 * Add support for rest properties in assignments
 
 ### Fixes
 
-* Don't remove commas in comments after the last argument ([#89](https://github.com/Rich-Harris/buble/issues/89))
-* Support transformations involving aliasing of variables in block scopes ([#60](https://github.com/Rich-Harris/buble/issues/60))
+* Don't remove commas in comments after the last argument ([#89](https://github.com/bublejs/buble/issues/89))
+* Support transformations involving aliasing of variables in block scopes ([#60](https://github.com/bublejs/buble/issues/60))
 * Evaluate expression only once with inline default pattern elements
 * Fix nested object and array patterns, rest properties and default values in for loop heads
 * Only put own properties in rest properties
 * Improve declaration of helper variables
-* Allow modification of mutable variables that shadow a const before declaration ([#59](https://github.com/Rich-Harris/buble/issues/59))
+* Allow modification of mutable variables that shadow a const before declaration ([#59](https://github.com/bublejs/buble/issues/59))
 * Correctly detect modification of immutable variables through destructuring assignments
-* In object methods, support destructuring declarations initialized with a variable having the same name as the method ([#86](https://github.com/Rich-Harris/buble/issues/86))
-* Fix properties with string literal keys after computed properties ([#91](https://github.com/Rich-Harris/buble/pull/91))
-* Fix methods after computed properties ([#101](https://github.com/Rich-Harris/buble/issues/101))
+* In object methods, support destructuring declarations initialized with a variable having the same name as the method ([#86](https://github.com/bublejs/buble/issues/86))
+* Fix properties with string literal keys after computed properties ([#91](https://github.com/bublejs/buble/pull/91))
+* Fix methods after computed properties ([#101](https://github.com/bublejs/buble/issues/101))
 * Fix short-hand generator methods
-* Fix template literals in array after spread element ([#105](https://github.com/Rich-Harris/buble/issues/105))
-* Fix arrow functions in array after spread element ([#100](https://github.com/Rich-Harris/buble/issues/100))
-* Fix arrow functions in new expression after spread element ([#100](https://github.com/Rich-Harris/buble/issues/100))
-* Restore decoding HTML entities in JSX ([#104](https://github.com/Rich-Harris/buble/issues/104))
+* Fix template literals in array after spread element ([#105](https://github.com/bublejs/buble/issues/105))
+* Fix arrow functions in array after spread element ([#100](https://github.com/bublejs/buble/issues/100))
+* Fix arrow functions in new expression after spread element ([#100](https://github.com/bublejs/buble/issues/100))
+* Restore decoding HTML entities in JSX ([#104](https://github.com/bublejs/buble/issues/104))
 * Correct various entries in support matrix
 
 ## 0.18.0
 
-* Allow anonymous functions and classes as default exports ([#37](https://github.com/Rich-Harris/buble/issues/37))
-* Handle non-breaking spaces in JSX ([#46](https://github.com/Rich-Harris/buble/issues/46))
-* Allow anonymous classes to be assigned to properties ([#33](https://github.com/Rich-Harris/buble/issues/33))
-* Add `trailingFunctionCommas` transformation ([#50](https://github.com/Rich-Harris/buble/issues/50))
+* Allow anonymous functions and classes as default exports ([#37](https://github.com/bublejs/buble/issues/37))
+* Handle non-breaking spaces in JSX ([#46](https://github.com/bublejs/buble/issues/46))
+* Allow anonymous classes to be assigned to properties ([#33](https://github.com/bublejs/buble/issues/33))
+* Add `trailingFunctionCommas` transformation ([#50](https://github.com/bublejs/buble/issues/50))
 
 ## 0.17.3
 
-* Move `chalk` to dependencies ([#35](https://github.com/Rich-Harris/buble/issues/35))
+* Move `chalk` to dependencies ([#35](https://github.com/bublejs/buble/issues/35))
 
 ## 0.17.2
 
-* Fix nested template literals regression ([#39](https://github.com/Rich-Harris/buble/issues/39))
+* Fix nested template literals regression ([#39](https://github.com/bublejs/buble/issues/39))
 
 ## 0.17.1
 
-* Error on nested rest elements ([#31](https://github.com/Rich-Harris/buble/pull/31))
-* Allow destructuring with computed properties ([#34](https://github.com/Rich-Harris/buble/pull/34))
+* Error on nested rest elements ([#31](https://github.com/bublejs/buble/pull/31))
+* Allow destructuring with computed properties ([#34](https://github.com/bublejs/buble/pull/34))
 
 ## 0.17.0
 
 * Update dependencies
-* Transpile arrow functions unconditionally if spread arguments need transpilation ([#22](https://github.com/Rich-Harris/buble/pull/22))
-* Better object spread support ([#25](https://github.com/Rich-Harris/buble/pull/25))
-* Rest properties ([#30](https://github.com/Rich-Harris/buble/pull/30))
-* Fix ([#24](https://github.com/Rich-Harris/buble/pull/24))
+* Transpile arrow functions unconditionally if spread arguments need transpilation ([#22](https://github.com/bublejs/buble/pull/22))
+* Better object spread support ([#25](https://github.com/bublejs/buble/pull/25))
+* Rest properties ([#30](https://github.com/bublejs/buble/pull/30))
+* Fix ([#24](https://github.com/bublejs/buble/pull/24))
 
 ## 0.16.0
 
-* Allow truthy dash-cased props ([#2](https://github.com/Rich-Harris/buble/pull/2))
-* Make class accessors configurable ([#3](https://github.com/Rich-Harris/buble/pull/3))
-* Support JSX pragma comments ([#5](https://github.com/Rich-Harris/buble/pull/5))
-* Handle JSX with no spaces between attributes ([#6](https://github.com/Rich-Harris/buble/pull/6))
+* Allow truthy dash-cased props ([#2](https://github.com/bublejs/buble/pull/2))
+* Make class accessors configurable ([#3](https://github.com/bublejs/buble/pull/3))
+* Support JSX pragma comments ([#5](https://github.com/bublejs/buble/pull/5))
+* Handle JSX with no spaces between attributes ([#6](https://github.com/bublejs/buble/pull/6))
 
 ## 0.15.2
 

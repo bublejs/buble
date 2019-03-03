@@ -34,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Rich-Harris/buble.git"
+    "url": "git+https://github.com/bublejs/buble.git"
   },
   "keywords": [
     "javascript",
@@ -49,9 +49,9 @@
   "author": "Rich Harris",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Rich-Harris/buble/issues"
+    "url": "https://github.com/bublejs/buble/issues"
   },
-  "homepage": "https://github.com/Rich-Harris/buble#README",
+  "homepage": "https://github.com/bublejs/buble#README",
   "devDependencies": {
     "console-group": "^0.3.3",
     "eslint": "^4.19.1",

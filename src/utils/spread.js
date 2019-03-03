@@ -140,7 +140,7 @@ export default function spread(
 		} else {
 			// Should be unreachable, but doing this is more robust.
 			throw new CompileError(
-				'Unsupported spread construct, please raise an issue at https://github.com/Rich-Harris/buble/issues',
+				'Unsupported spread construct, please raise an issue at https://github.com/bublejs/buble/issues',
 				element
 			);
 		}

@@ -184,7 +184,7 @@ exports.file_list = [
 		"language/expressions/class/name.js",
 	]},
 
-	// buble bug: https://github.com/Rich-Harris/buble/issues/77
+	// buble bug: https://github.com/bublejs/buble/issues/77
 	{ level: 2, desc: "classHeritage", files: [
 		"built-ins/Function/prototype/toString/class-declaration-complex-heritage.js"
 	]},
@@ -321,7 +321,7 @@ exports.file_list = [
 		"language/computed-property-names/class/method/number.js",
 	]},
 
-	// buble bug: https://github.com/Rich-Harris/buble/issues/69
+	// buble bug: https://github.com/bublejs/buble/issues/69
 	{ level: 2, desc: "computedGetterSetter", files: [
 		"*object/accessor-name-*",
 		"built-ins/Function/prototype/toString/getter-object.js",
@@ -429,7 +429,7 @@ exports.file_list = [
 	]},
 
 	// buble bug: Does not transpile unicode escapes
-	// https://github.com/Rich-Harris/buble/issues/75
+	// https://github.com/bublejs/buble/issues/75
 	{ level: 2, desc: "unicodeCodePointEscapes", files: [
 		"*escape-hex.js",
 		"annexB/built-ins/escape/escape-above-astral.js",
@@ -848,7 +848,7 @@ exports.file_list = [
 	]},
 
 	// buble bug: emits code with invalid runtime behavior for rest properties in for-of loop heads
-	// https://github.com/Rich-Harris/buble/issues/110
+	// https://github.com/bublejs/buble/issues/110
 	{ level: 1, desc: "invalidRestPropertiesForOf", files: [
 		"*/for-of/dstr/obj-rest-(c|d|e|n|o|p|s|t|v)*",
 		"*/for-of/dstr/obj-rest-getter.js",
@@ -914,7 +914,7 @@ exports.file_list = [
 		'built-ins/RegExp/prototype/flags/this-val-regexp.js',
 	]},
 
-	// Contrary to what I argued in https://github.com/Rich-Harris/buble/pull/67
+	// Contrary to what I argued in https://github.com/bublejs/buble/pull/67
 	// and what V8 does, the template cache is keyed based on node, not content.
 	{ level: 1, desc: "taggedTemplateRegistry", files: [
 		"language/expressions/tagged-template/cache-(differing-expressions|identical-source).js",
