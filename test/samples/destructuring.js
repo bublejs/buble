@@ -364,6 +364,37 @@ module.exports = [
 	},
 
 	{
+		description: 'destructured object declaration with computed properties and rest',
+		input: `
+			var { [FirstProp]: one, [SecondProp]: two = 'Too', Fore: four, ...rest } = x;
+		`,
+		output: `
+			function objectWithoutProperties (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+var one = x[FirstProp];
+			var two = x[SecondProp]; if ( two === void 0 ) two = 'Too';
+			var four = x.Fore;
+			var rest$1 = objectWithoutProperties( x, [String(FirstProp), String(SecondProp), "Fore"] );
+			var rest = rest$1;
+		`
+	},
+
+	{
+		description: 'destructured object declaration with numeric properties and rest',
+		input: `
+			var { 1: a, 2.: b, .3: c, 4e0: d, ...rest } = x;
+		`,
+		output: `
+			function objectWithoutProperties (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
+var a = x[1];
+			var b = x[2.];
+			var c = x[.3];
+			var d = x[4e0];
+			var rest$1 = objectWithoutProperties( x, ["1", "2", "0.3", "4"] );
+			var rest = rest$1;
+		`
+	},
+
+	{
 		description: 'destructured object with computed properties in parameters',
 		input: `
 			function foo({ [FirstProp]: one, [SecondProp]: two = 'Too', 3: three, Fore: four } = x) {

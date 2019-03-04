@@ -138,13 +138,18 @@ function destructureObjectPattern(
 		let value;
 		let content;
 		if (prop.type === 'Property') {
-			const isComputedKey = prop.computed || prop.key.type !== 'Identifier';
-			const key = isComputedKey
-				? code.slice(prop.key.start, prop.key.end)
-				: prop.key.name;
-			value = isComputedKey ? `${ref}[${key}]` : `${ref}.${key}`;
 			content = prop.value;
-			nonRestKeys.push(isComputedKey ? key : '"' + key + '"');
+			if (!prop.computed && prop.key.type === 'Identifier') {
+				value = `${ref}.${prop.key.name}`;
+				nonRestKeys.push(`"${prop.key.name}"`);
+			} else if (!prop.computed && prop.key.type === 'Literal') {
+				value = `${ref}[${prop.key.raw}]`;
+				nonRestKeys.push(JSON.stringify(String(prop.key.value)));
+			} else {
+				const expr = code.slice(prop.key.start, prop.key.end);
+				value = `${ref}[${expr}]`;
+				nonRestKeys.push(`String(${expr})`);
+			}
 		} else if (prop.type === 'RestElement') {
 			content = prop.argument;
 			value = createIdentifier('rest');
