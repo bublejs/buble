@@ -1,5 +1,17 @@
 # buble changelog
 
+## 0.19.7 (2019-03-11)
+
+* Throw error on dynamic import expression if transform is not disabled
+* Throw error on async and await if transform is not disabled
+* Allow await outside of functions
+* Don't bundle acorn dependencies ([#165](https://github.com/bublejs/buble/pull/165))
+* Inline spread elements where possible ([#179](https://github.com/bublejs/buble/pull/179))
+* Correctly handle operator precedence for array spread ([#177](https://github.com/bublejs/buble/issues/177))
+* Correctly pass-through async arrow functions and methods ([#109](https://github.com/bublejs/buble/issues/109), [#146](https://github.com/bublejs/buble/issues/146))
+* Move repository to https://github.com/bublejs/buble
+* Exclude non-string keys from rest properties ([#149](https://github.com/bublejs/buble/issues/149))
+
 ## 0.19.6 (2018-10-23)
 
 * Fix class expressions with heritage in arrow functions ([#150](https://github.com/bublejs/buble/issues/150))
