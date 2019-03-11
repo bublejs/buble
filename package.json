@@ -77,6 +77,6 @@
     "magic-string": "^0.25.2",
     "minimist": "^1.2.0",
     "os-homedir": "^1.0.1",
-    "regexpu-core": "^4.4.0"
+    "regexpu-core": "^4.5.4"
   }
 }
