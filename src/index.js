@@ -59,6 +59,7 @@ export function transform(source, options = {}) {
 			sourceType: 'module',
 			allowAwaitOutsideFunction: true,
 			allowReturnOutsideFunction: true,
+			allowHashBang: true,
 			onComment: (block, text) => {
 				if (!jsx) {
 					const match = /@jsx\s+([^\s]+)/.exec(text);
