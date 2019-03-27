@@ -67,6 +67,13 @@ module.exports = [
 	},
 
 	{
+		description: 'correctly positions the templateObject at the start of the source file',
+		options: { transforms: { dangerousTaggedTemplateString: true } },
+		input: '() => tagged`template literal`',
+		output: 'var templateObject = Object.freeze(["template literal"]);\n!function() { return tagged(templateObject); }'
+	},
+
+	{
 		description: 'parenthesises template strings as necessary',
 		input: 'var str = `x${y}`.toUpperCase();',
 		output: 'var str = ("x" + y).toUpperCase();'

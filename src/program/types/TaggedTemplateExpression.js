@@ -32,7 +32,7 @@ export default class TaggedTemplateExpression extends Node {
 			let templateObject = this.program.templateLiteralQuasis[templateStrings];
 			if (!templateObject) {
 				templateObject = rootScope.createIdentifier('templateObject');
-				code.prependRight(this.program.prependAt, `var ${templateObject} = Object.freeze([${templateStrings}]);\n`);
+				code.prependLeft(this.program.prependAt, `var ${templateObject} = Object.freeze([${templateStrings}]);\n`);
 
 				this.program.templateLiteralQuasis[templateStrings] = templateObject;
 			}
