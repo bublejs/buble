@@ -95,4 +95,28 @@ module.exports = [
 		output: `
 			function f(a/*a*/) {}`
 	},
+
+	{
+		description: 'does not freeze on multiline calls without trailing comma',
+
+		input: `
+			f(a//
+)`,
+
+		output: `
+			f(a//
+)`
+	},
+
+	{
+		description: 'does not remove commas after closing parens',
+
+		input: `
+			function x(a//
+){return{b:1,c:2}}`,
+
+		output: `
+			function x(a//
+){return{b:1,c:2}}`
+	}
 ];
