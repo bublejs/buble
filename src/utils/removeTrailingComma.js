@@ -6,7 +6,11 @@ export default function removeTrailingComma(code, c) {
 		}
 
 		if (code.original[c] === '/') {
-			c = code.original.indexOf(code.original[c + 1] === '/' ? '\n' : '*/', c) + 1;
+			if (code.original[c + 1] === '/') {
+				c = code.original.indexOf('\n', c);
+			} else {
+				c = code.original.indexOf('*/', c) + 1;
+			}
 		}
 		c += 1;
 	}
