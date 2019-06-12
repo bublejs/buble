@@ -7,6 +7,7 @@ export default function Program(source, ast, transforms, options) {
 
 	// options
 	this.jsx = options.jsx || 'React.createElement';
+	this.jsxFragment = options.jsxFragment || 'React.Fragment';
 	this.options = options;
 
 	this.source = source;
