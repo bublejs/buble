@@ -127,6 +127,20 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles string-keyed properties after computed properties with excessive whitespaces after the key',
+
+		input: `
+			fn({['computed']: 1, 'some-var':2, 'some-var-2': 3, 'some-var-3' :4, 'some-var-4'    : 5, a: 6});
+		`,
+
+		output: `
+			var obj;
+
+			fn(( obj = {}, obj['computed'] = 1, obj['some-var'] = 2, obj['some-var-2'] = 3, obj['some-var-3'] = 4, obj['some-var-4'] = 5, obj.a = 6, obj ));
+		`,
+	},
+
+	{
 		description: 'avoids shadowing free variables with method names (#166)',
 		input: `
 			let x = {
