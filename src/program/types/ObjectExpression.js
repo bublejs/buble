@@ -201,7 +201,7 @@ export default class ObjectExpression extends Node {
 					if (prop.key.type === 'Literal' && !prop.computed) {
 						code.overwrite(
 							prop.start,
-							prop.key.end + 1,
+							prop.value.start,
 							'[' + code.slice(prop.start, prop.key.end) + '] = '
 						);
 					} else if (prop.shorthand || (prop.method && !prop.computed && transforms.conciseMethodProperty)) {
