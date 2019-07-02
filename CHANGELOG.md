@@ -1,5 +1,13 @@
 # buble changelog
 
+## 0.19.8 (2019-07-03)
+
+* Allow shebang ([#191](https://github.com/bublejs/buble/pull/191))
+* Fix tagged template literal in certain cases ([#190](https://github.com/bublejs/buble/issues/190))
+* Fix removing of trailing commas in certain cases ([#194](https://github.com/bublejs/buble/pull/194))
+* Make JSX Fragment configurable ([#198](https://github.com/bublejs/buble/issues/198))
+* Fix transpiling string-keyed properties with whitespaces before colons ([#200](https://github.com/bublejs/buble/pull/200))
+
 ## 0.19.7 (2019-03-11)
 
 * Throw error on dynamic import expression if transform is not disabled
