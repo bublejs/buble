@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
-var homedir = require('os-homedir');
+var homedir = require('os').homedir;
 var buble = require('./');
 
 var original = require.extensions[ '.js' ];
