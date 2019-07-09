@@ -1229,6 +1229,27 @@ module.exports = [
 	},
 
 	{
+		description: "don't collide with superclass name (#196)",
+
+		input: `
+			A = class extends A {}
+		`,
+		output: `
+			A = /*@__PURE__*/(function (A$1) {
+				function A () {
+					A$1.apply(this, arguments);
+				}if ( A$1 ) A.__proto__ = A$1;
+				A.prototype = Object.create( A$1 && A$1.prototype );
+				A.prototype.constructor = A;
+
+				
+
+				return A;
+			}(A))
+		`
+	},
+
+	{
 		description: "transpiles class with super class in arrow function (#150)",
 
 		input: `
