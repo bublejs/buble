@@ -19,8 +19,10 @@ export default class ClassExpression extends Node {
 
 	transpile(code, transforms) {
 		if (transforms.classes) {
-			const superName =
-				this.superClass && (this.superClass.name || 'superclass');
+			let superName = this.superClass && (this.superClass.name || 'superclass');
+			if (superName === this.name) {
+				superName = this.findScope(true).createIdentifier(this.name);
+			}
 
 			const i0 = this.getIndentation();
 			const i1 = i0 + code.getIndentString();
