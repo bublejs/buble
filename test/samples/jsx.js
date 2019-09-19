@@ -281,17 +281,18 @@ module.exports = [
 	},
 
 	{
-		description: 'handles non-breaking white-space entities',
+		description: 'respects non-breaking and advanced white-space characters',
 
 		input: `
 			<div>
-				<a>1</a>&nbsp;
-				&nbsp;
+				<a>\u00a01\u00a0</a>&nbsp;
+				&nbsp;\u00a0
+				\u2004\u2000
 			</div>
 		`,
 		output: `
 			React.createElement( 'div', null,
-				React.createElement( 'a', null, "1" ), "&nbsp; &nbsp;")
+				React.createElement( 'a', null, "\u00a01\u00a0" ), "\u00a0 \u00a0\u00a0 \u2004\u2000")
 		`
 	},
 
@@ -300,12 +301,12 @@ module.exports = [
 
 		input: `
 			<div>
-				<a>1&lt;</a>&nbsp;
+				<a>1&lt;&aacute;</a>&nbsp;
 			</div>
 		`,
 		output: `
 			React.createElement( 'div', null,
-				React.createElement( 'a', null, "1<" ), "&nbsp;")
+				React.createElement( 'a', null, "1<á" ), "\u00a0")
 		`
 	}
 ];
