@@ -2,15 +2,13 @@ import Node from '../Node.js';
 
 function normalise(str, removeTrailingWhitespace) {
 
-	str = str.replace(/\u00a0/g, '&nbsp;');
-
 	if (removeTrailingWhitespace && /\n/.test(str)) {
-		str = str.replace(/\s+$/, '');
+		str = str.replace(/[ \f\n\r\t\v]+$/, '');
 	}
 
 	str = str
-		.replace(/^\n\r?\s+/, '') // remove leading newline + space
-		.replace(/\s*\n\r?\s*/gm, ' '); // replace newlines with spaces
+		.replace(/^\n\r?[ \f\n\r\t\v]+/, '') // remove leading newline + space
+		.replace(/[ \f\n\r\t\v]*\n\r?[ \f\n\r\t\v]*/gm, ' '); // replace newlines with spaces
 
 	// TODO prefer single quotes?
 	return JSON.stringify(str);
@@ -24,7 +22,7 @@ export default class JSXElement extends Node {
 			if (child.type !== 'JSXText') return true;
 
 			// remove whitespace-only literals, unless on a single line
-			return /\S/.test(child.raw) || !/\n/.test(child.raw);
+			return /[^ \f\n\r\t\v]/.test(child.raw) || !/\n/.test(child.raw);
 		});
 
 		if (children.length) {
