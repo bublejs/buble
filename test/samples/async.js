@@ -147,5 +147,40 @@ module.exports = [
 		options: { transforms: { asyncAwait: true, dangerousForOf: true } },
 		input: `for await (const x of someFunction()) { x() }`,
 		error: /Transforming for-await-of statements is not implemented/
-	}
+	},
+
+	{
+		description: 'ignores async "loop" function if transform is disabled',
+		options: { transforms: { asyncAwait: false } },
+		input: `
+			async function foo() {
+				do {
+						await Promise.resolve();
+						const b = "string";
+		
+						function x() {
+								console.log(b);
+						}
+		
+						x();
+				} while (1);
+			}`,
+		output: `
+			async function foo() {
+				var loop = async function () {
+						await Promise.resolve();
+						var b = "string";
+		
+						function x() {
+								console.log(b);
+						}
+		
+						x();
+				};
+
+				do {
+					loop();
+				} while (1);
+			}`
+	},
 ];

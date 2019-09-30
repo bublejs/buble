@@ -66,9 +66,12 @@ export default class LoopStatement extends Node {
 
 			const functionScope = this.findScope(true);
 			const loop = functionScope.createIdentifier('loop');
+			const nearestFunction = this.findNearest(/Function/);
+			const isAsyncFunction = nearestFunction && nearestFunction.async;
+			const isGeneratorFunction = nearestFunction && nearestFunction.generator;
 
 			const before =
-				`var ${loop} = function (${paramString}) ` +
+				`var ${loop} = ${isAsyncFunction ? 'async ': ''}function${isGeneratorFunction ? '*' : ''} (${paramString}) ` +
 				(this.body.synthetic ? `{\n${i0}${code.getIndentString()}` : '');
 			const after = (this.body.synthetic ? `\n${i0}}` : '') + `;\n\n${i0}`;
 

@@ -88,5 +88,40 @@ module.exports = [
 			Foo.prototype.foo = function* foo () {
 				// code goes here
 			};`
+	},
+
+	{
+		description: 'ignores generator "loop" function with `transforms.generator: false`',
+		options: { transforms: { generator: false } },
+		input: `
+			function* foo() {
+				do {
+						yield 1;
+						const b = "string";
+		
+						function x() {
+								console.log(b);
+						}
+		
+						x();
+				} while (1);
+			}`,
+		output: `
+			function* foo() {
+				var loop = function* () {
+						yield 1;
+						var b = "string";
+		
+						function x() {
+								console.log(b);
+						}
+		
+						x();
+				};
+
+				do {
+					loop();
+				} while (1);
+			}`
 	}
 ];
