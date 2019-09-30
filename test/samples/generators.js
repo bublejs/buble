@@ -104,6 +104,8 @@ module.exports = [
 						}
 		
 						x();
+						
+						yield 2;
 				} while (1);
 			}`,
 		output: `
@@ -117,10 +119,12 @@ module.exports = [
 						}
 		
 						x();
+						
+						yield 2;
 				};
 
 				do {
-					loop();
+					yield* loop();
 				} while (1);
 			}`
 	}

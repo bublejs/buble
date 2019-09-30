@@ -179,7 +179,7 @@ module.exports = [
 				};
 
 				do {
-					loop();
+					await loop();
 				} while (1);
 			}`
 	},

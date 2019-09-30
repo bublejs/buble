@@ -82,7 +82,7 @@ export default class LoopStatement extends Node {
 			if (this.canBreak || this.canReturn) {
 				const returned = functionScope.createIdentifier('returned');
 
-				let insert = `{\n${i1}var ${returned} = ${loop}(${argString});\n`;
+				let insert = `{\n${i1}var ${returned} = ${isAsyncFunction ? 'await ' : ''}${isGeneratorFunction ? 'yield* ' : ''}${loop}(${argString});\n`;
 				if (this.canBreak)
 					insert += `\n${i1}if ( ${returned} === 'break' ) break;`;
 				if (this.canReturn)
@@ -91,7 +91,7 @@ export default class LoopStatement extends Node {
 
 				code.prependRight(this.body.end, insert);
 			} else {
-				const callExpression = `${loop}(${argString});`;
+				const callExpression = `${isAsyncFunction ? 'await ' : ''}${isGeneratorFunction ? 'yield* ' : ''}${loop}(${argString});`;
 
 				if (this.type === 'DoWhileStatement') {
 					code.overwrite(
