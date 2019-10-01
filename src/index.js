@@ -49,6 +49,10 @@ export function target(target) {
 }
 
 export function transform(source, options = {}) {
+	// We clone the options object because we mutate it later on. If we don't, then
+	// issues crop up if the caller re-uses the same options object between calls
+	// to this function.
+	options = Object.assign({}, options);
 	let ast;
 	let jsx = null;
 
