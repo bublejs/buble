@@ -351,6 +351,7 @@ export default class BlockStatement extends Node {
 					const alias = this.scope.createIdentifier(name);
 
 					if (name !== alias) {
+						const declarationParent = declaration.node.parent;
 						declaration.name = alias;
 						code.overwrite(
 							declaration.node.start,
@@ -358,12 +359,21 @@ export default class BlockStatement extends Node {
 							alias,
 							{ storeName: true }
 						);
+						if (declarationParent.type === 'Property' && declarationParent.shorthand) {
+							declarationParent.shorthand = false;
+							code.prependLeft(declaration.node.start,       `${name}: `);
+						}
 
 						for (const identifier of declaration.instances) {
 							identifier.rewritten = true;
+							const identifierParent = identifier.parent;
 							code.overwrite(identifier.start, identifier.end, alias, {
 								storeName: true
 							});
+							if (identifierParent.type === 'Property' && identifierParent.shorthand) {
+								identifierParent.shorthand = false;
+								code.prependLeft(identifier.start, `${name}: `);
+							}
 						}
 					}
 				}
