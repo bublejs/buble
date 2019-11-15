@@ -1,3 +1,11 @@
+# Maintenance status
+
+Bublé was created when ES2015 was still the future. Nowadays, all modern browsers support all of ES2015 and (in some cases) beyond. Unless you need to support IE11, you probably don't need to use Bublé to convert your code to ES5.
+
+Since IE11 is an unfortunate reality for some people, we will continue to release bugfixes, but new features won't be added unless in exceptional circumstances.
+
+---
+
 # Bublé
 
 ## The blazing fast, batteries-included ES2015 compiler
