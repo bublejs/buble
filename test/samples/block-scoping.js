@@ -544,5 +544,43 @@ module.exports = [
 		input: 'if(0);const e=0',
 
 		output: 'if(0){ ; }var e=0'
+	},
+
+	{
+		description: 'properly replaces keys of renamed properties when conciseMethodProperty is false',
+		options: { transforms: { letConst: true, conciseMethodProperty: false } },
+		input: `
+			const x = 1;
+			if (true) {
+				const x = 2;
+				const y = { x };
+			}
+		`,
+		output: `
+			var x = 1;
+			if (true) {
+				var x$1 = 2;
+				var y = { x: x$1 };
+			}
+		`
+	},
+
+	{
+		description: 'properly replaces keys of renamed properties in destructuring when conciseMethodProperty is false',
+		options: { transforms: { letConst: true, destructuring: false } },
+		input: `
+			const x = 1;
+			if (true) {
+				const y = {};
+				const { x } = y;
+			}
+		`,
+		output: `
+			var x = 1;
+			if (true) {
+				var y = {};
+				var { x: x$1 } = y;
+			}
+		`
 	}
 ];
