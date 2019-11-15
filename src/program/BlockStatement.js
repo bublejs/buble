@@ -361,7 +361,7 @@ export default class BlockStatement extends Node {
 						);
 						if (declarationParent.type === 'Property' && declarationParent.shorthand) {
 							declarationParent.shorthand = false;
-							code.prependLeft(declaration.node.start,       `${name}: `);
+							code.prependLeft(declaration.node.start, `${name}: `);
 						}
 
 						for (const identifier of declaration.instances) {
