@@ -1,11 +1,24 @@
 import LoopStatement from './shared/LoopStatement.js';
 import extractNames from '../extractNames.js';
+import Scope from '../Scope.js';
 
 export default class ForStatement extends LoopStatement {
+	initialise(transforms) {
+		this.createdDeclarations = [];
+
+		this.scope = new Scope({
+			block: true,
+			parent: this.parent.findScope(false),
+			declare: id => this.createdDeclarations.push(id)
+		});
+
+		super.initialise(transforms);
+	}
+
 	findScope(functionScope) {
-		return functionScope || !this.createdScope
+		return functionScope
 			? this.parent.findScope(functionScope)
-			: this.body.scope;
+			: this.scope;
 	}
 
 	transpile(code, transforms) {

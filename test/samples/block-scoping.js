@@ -86,6 +86,53 @@ module.exports = [
 	},
 
 	{
+		description: 'allows reassignment of mutable variables that are shadowed by constants in for loops',
+		input: `
+			for (let i = 0; i < 10; i++) {
+				const i = 1;
+			}
+		`,
+		output: `
+			for (var i = 0; i < 10; i++) {
+				var i$1 = 1;
+			}
+		`
+	},
+
+	{
+		description: 'allows reassignment of mutable variables that are shadowed by constants in for in loops',
+		input: `
+			let i = { x: 1 };
+			for (i in i) {
+				const i = 1;
+			}
+		`,
+		output: `
+			var i = { x: 1 };
+			for (i in i) {
+				var i$1 = 1;
+			}
+		`
+	},
+
+	{
+		description: 'allows reassignment of mutable variables that are shadowed by constants in for of loops',
+		input: `
+			let i = { x: 1 };
+			for (i of i) {
+				const i = 1;
+			}
+		`,
+		output: `
+			var i = { x: 1 };
+			for (i of i) {
+				var i$1 = 1;
+			}
+		`,
+		options: { transforms: { forOf: false } }
+	},
+
+	{
 		description: 'disallows destructured reassignment to constants, short-hand property',
 		input: `
 			const x = 1;

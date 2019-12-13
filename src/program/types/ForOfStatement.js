@@ -1,6 +1,7 @@
 import LoopStatement from './shared/LoopStatement.js';
 import CompileError from '../../utils/CompileError.js';
 import destructure from '../../utils/destructure.js';
+import Scope from '../Scope.js';
 
 export default class ForOfStatement extends LoopStatement {
 	initialise(transforms) {
@@ -8,7 +9,22 @@ export default class ForOfStatement extends LoopStatement {
 			CompileError.missingTransform("for-of statements", "forOf", this, "dangerousForOf");
 		if (this.await && transforms.asyncAwait)
 			CompileError.missingTransform("for-await-of statements", "asyncAwait", this);
+
+		this.createdDeclarations = [];
+
+		this.scope = new Scope({
+			block: true,
+			parent: this.parent.findScope(false),
+			declare: id => this.createdDeclarations.push(id)
+		});
+
 		super.initialise(transforms);
+	}
+
+	findScope(functionScope) {
+		return functionScope
+			? this.parent.findScope(functionScope)
+			: this.scope;
 	}
 
 	transpile(code, transforms) {

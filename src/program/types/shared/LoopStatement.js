@@ -18,16 +18,24 @@ export default class LoopStatement extends Node {
 		this.thisRefs = [];
 
 		super.initialise(transforms);
+		if (this.scope) {
+			this.scope.consolidate();
+		}
+
+		const declarations = Object.assign({}, this.body.scope.declarations);
+		if (this.scope) {
+			Object.assign(declarations, this.scope.declarations);
+		}
 
 		if (transforms.letConst) {
 			// see if any block-scoped declarations are referenced
 			// inside function expressions
-			const names = Object.keys(this.body.scope.declarations);
+			const names = Object.keys(declarations);
 
 			let i = names.length;
 			while (i--) {
 				const name = names[i];
-				const declaration = this.body.scope.declarations[name];
+				const declaration = declarations[name];
 
 				let j = declaration.instances.length;
 				while (j--) {
