@@ -29,7 +29,7 @@ export default class ForInStatement extends LoopStatement {
 		super.transpile(code, transforms);
 
 		const maybePattern = hasDeclaration ? this.left.declarations[0].id : this.left;
-		if (maybePattern.type !== 'Identifier') {
+		if (maybePattern.type !== 'Identifier' && maybePattern.type !== 'MemberExpression') {
 			this.destructurePattern(code, maybePattern, hasDeclaration);
 		}
 	}

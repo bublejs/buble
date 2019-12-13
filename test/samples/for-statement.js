@@ -21,5 +21,17 @@ module.exports = [
 		};
 
 		for (;idx < sw.tabs.length;) loop(  );`
+	},
+
+	{
+		description: 'for in with member expression',
+		input: `
+			for (a[0] in a) {
+			}
+		`,
+		output: `
+			for (a[0] in a) {
+			}
+		`
 	}
 ];
