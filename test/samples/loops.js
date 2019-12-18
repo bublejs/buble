@@ -855,5 +855,57 @@ module.exports = [
 				var b = ref[1]; if ( b === void 0 ) b = "_";
 
 				f(a, b) }`
+	},
+
+	{
+		description: 'labelled breaks/continues are not renamed',
+
+		input: `
+			function f(x) {
+				x:
+				for (let x = 0;;) {
+					if (x > 1) { break x; }
+					else { continue x; }
+				}
+			}
+		`,
+
+		output: `
+			function f(x) {
+				x:
+				for (var x$1 = 0;;) {
+					if (x$1 > 1) { break x; }
+					else { continue x; }
+				}
+			}
+		`
+	},
+
+	{
+		description: 'Labels are not renamed',
+
+		input: `
+			function f() {
+				let x = 1;
+				{
+					let x = 2;
+					x:
+					for (;;) {
+					}
+				}
+			}
+		`,
+
+		output: `
+			function f() {
+				var x = 1;
+				{
+					var x$1 = 2;
+					x:
+					for (;;) {
+					}
+				}
+			}
+		`
 	}
 ];
