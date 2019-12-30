@@ -514,7 +514,7 @@ exports.file_list = [
 		//"language/statements/block/scope-lex-open.js",
 		"language/statements/for-of/scope-head-lex-open.js",
 		"language/statements/for-of/scope-body-lex-open.js",
-		"language/statements/try/scope-catch-param-lex-open.js",
+		//"language/statements/try/scope-catch-param-lex-open.js",
 		//"language/statements/try/scope-catch-block-lex-open.js",
 		//"language/expressions/class/scope-name-lex-close.js",
 		//"language/expressions/call/scope-lex-close.js",
