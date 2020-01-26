@@ -642,5 +642,38 @@ module.exports = [
 			var x = 1;
 			for (var x$1 in { x: x$1 }) {}
 		`
+	},
+
+	{
+		description: 'deconflicts blocks in switch-statement and parent function scope',
+		options: { transforms: { letConst: true } },
+		input: `
+			function foo() {
+				const n = 1;
+				for (let i = 0; i < n; i++) {
+					const o = n;
+					switch (n) {
+						case 1:
+							const n = 12;
+							console.log(n);
+							break;
+					}
+				}
+			}
+		`,
+		output:`
+			function foo() {
+				var n = 1;
+				for (var i = 0; i < n; i++) {
+					var o = n;
+					switch (n) {
+						case 1:
+							var n$1 = 12;
+							console.log(n$1);
+							break;
+					}
+				}
+			}
+		`
 	}
 ];

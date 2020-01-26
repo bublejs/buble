@@ -108,6 +108,21 @@ Scope.prototype = {
 		);
 	},
 
+	findDeclarationScope(name, initialScope = this) {
+		if (
+			this.declarations[name] ||
+			(this.blockScopedDeclarations && this.blockScopedDeclarations[name])
+		) {
+			return this;
+		}
+
+		if (this.parent) {
+			return this.parent.findDeclarationScope(name, initialScope);
+		}
+
+		return initialScope;
+	},
+
 	// Sometimes, block scope declarations change name during transpilation
 	resolveName(name) {
 		const declaration = this.findDeclaration(name);
