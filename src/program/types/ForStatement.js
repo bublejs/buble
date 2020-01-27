@@ -9,6 +9,7 @@ export default class ForStatement extends LoopStatement {
 		this.scope = new Scope({
 			block: true,
 			parent: this.parent.findScope(false),
+			parentType: this.parent.type,
 			declare: id => this.createdDeclarations.push(id)
 		});
 

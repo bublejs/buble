@@ -5,6 +5,7 @@ export default function Scope(options) {
 	options = options || {};
 
 	this.parent = options.parent;
+	this.parentType = options.parentType;
 	this.isBlockScope = !!options.block;
 	this.createDeclarationCallback = options.declare;
 
@@ -111,7 +112,9 @@ Scope.prototype = {
 	findDeclarationScope(name, initialScope = this) {
 		if (
 			this.declarations[name] ||
-			(this.blockScopedDeclarations && this.blockScopedDeclarations[name])
+			(this.blockScopedDeclarations && this.blockScopedDeclarations[name]) ||
+			// Creation of new lexical environment for `catch` block: https://github.com/bublejs/buble/pull/240
+			this.parentType === 'CatchClause'
 		) {
 			return this;
 		}
