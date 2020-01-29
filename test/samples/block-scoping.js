@@ -675,5 +675,29 @@ module.exports = [
 				}
 			}
 		`
+	},
+	{
+		description: 'deconflicts blocks in class declaration and for statement',
+		options: { transforms: { letConst: true, classes: false } },
+		input: `
+			class e {
+				run() {
+					if(this instanceof e) {
+						for(let e = 0; e < 1; e++) console.log('here');
+					}
+				}
+			}
+			new e().run();
+		`,
+		output:`
+			class e {
+				run() {
+					if(this instanceof e) {
+						for(var e$1 = 0; e$1 < 1; e$1++) { console.log('here'); }
+					}
+				}
+			}
+			new e().run();
+		`
 	}
 ];
