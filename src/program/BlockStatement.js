@@ -16,6 +16,7 @@ export default class BlockStatement extends Node {
 		this.scope = new Scope({
 			block: !this.isFunctionBlock,
 			parent: this.parent.findScope(false),
+			parentType: this.parent.type,
 			declare: id => this.createdDeclarations.push(id)
 		});
 

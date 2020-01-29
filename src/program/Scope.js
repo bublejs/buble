@@ -5,6 +5,7 @@ export default function Scope(options) {
 	options = options || {};
 
 	this.parent = options.parent;
+	this.parentType = options.parentType;
 	this.isBlockScope = !!options.block;
 	this.createDeclarationCallback = options.declare;
 
@@ -106,6 +107,23 @@ Scope.prototype = {
 			this.declarations[name] ||
 			(this.parent && this.parent.findDeclaration(name))
 		);
+	},
+
+	findDeclarationScope(name, initialScope = this) {
+		if (
+			this.declarations[name] ||
+			(this.blockScopedDeclarations && this.blockScopedDeclarations[name]) ||
+			// Creation of new lexical environment for `catch` block: https://github.com/bublejs/buble/pull/240
+			this.parentType === 'CatchClause'
+		) {
+			return this;
+		}
+
+		if (this.parent) {
+			return this.parent.findDeclarationScope(name, initialScope);
+		}
+
+		return initialScope;
 	},
 
 	// Sometimes, block scope declarations change name during transpilation
