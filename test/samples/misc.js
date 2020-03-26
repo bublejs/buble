@@ -185,5 +185,28 @@ module.exports = [
 				return bar;
 			}
 		`
+	},
+
+	{
+		description: 'catch clauses have their own scope',
+		input: `
+			const l = 2;
+			try {
+				throw new Error();
+			} catch(l) {
+				l = 1;
+				alert(l);
+			}
+		`,
+		output: `
+			var l = 2;
+			try {
+				throw new Error();
+			} catch(l$1) {
+				l$1 = 1;
+				alert(l$1);
+			}
+		`
 	}
+
 ];

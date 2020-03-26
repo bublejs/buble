@@ -5,6 +5,7 @@ import AwaitExpression from './AwaitExpression.js';
 import BinaryExpression from './BinaryExpression.js';
 import BreakStatement from './BreakStatement.js';
 import CallExpression from './CallExpression.js';
+import CatchClause from './CatchClause.js';
 import ClassBody from './ClassBody.js';
 import ClassDeclaration from './ClassDeclaration.js';
 import ClassExpression from './ClassExpression.js';
@@ -55,6 +56,7 @@ export default {
 	BinaryExpression,
 	BreakStatement,
 	CallExpression,
+	CatchClause,
 	ClassBody,
 	ClassDeclaration,
 	ClassExpression,
