@@ -1,5 +1,19 @@
 # buble changelog
 
+## 0.20.0 (2020-03-26)
+
+* **Breaking**: Drop Node v4 && v6 testing on CI; Buble will likely continue to work on these versions, but support for them is no longer actively maintained. [#250](https://github.com/bublejs/buble/pull/250)
+* Fix recognition of catch-declared variables ([#237](https://github.com/bublejs/buble/pull/237))
+* Prevent labels from being renamed due to let/const transpilation. ([#236](https://github.com/bublejs/buble/pull/236))
+* Fix scoping of variables declared in for loops. ([#233](https://github.com/bublejs/buble/pull/233))
+* Fix an error when transpiling `for (a[0] in b)`. ([#232](https://github.com/bublejs/buble/pull/232))
+* Fix an error when transpiling `for` with an empty init. ([#226](https://github.com/bublejs/buble/pull/226))
+* Fix `let`/`const` transpilation when combined with shorthand properties. ([#229](https://github.com/bublejs/buble/pull/229))
+* Fix JSX not respecting advanced white space characters. ([#218](https://github.com/bublejs/buble/pull/218))
+* Fix name collision when transpiling `A = class extends A {}`. ([#209](https://github.com/bublejs/buble/pull/209))
+* Fix `os-homedir` dependency warnings on install. ([#207](https://github.com/bublejs/buble/pull/207))
+* Upgrade dependencies to their latest patch versions, fixing security audit warnings. ([#250](https://github.com/bublejs/buble/pull/250))
+
 ## 0.19.8 (2019-07-03)
 
 * Allow shebang ([#191](https://github.com/bublejs/buble/pull/191))
@@ -64,7 +78,7 @@
 ### Enhancements
 
 * Add support information for new environments
-* Add (pass-thru) support for aync generators and for-async-of
+* Add (pass-thru) support for async generators and for-async-of
 * Add support for dynamic import ([#102](https://github.com/bublejs/buble/pull/102))
 * Add support for JSX fragments ([#62](https://github.com/bublejs/buble/issues/62))
 * Add unpkg build and transpile browser build for older environments ([#93](https://github.com/bublejs/buble/issues/93))
