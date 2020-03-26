@@ -1,7 +1,7 @@
 language: node_js
 node_js:
   - "stable"
-  - "10"
+  - "8"
 
 env:
   global:
@@ -9,7 +9,7 @@ env:
 
 script:
   - npm run test:register
-  - if [ $TRAVIS_NODE_VERSION -eq 10 ]; then
+  - if [ $TRAVIS_NODE_VERSION -eq 8 ]; then
       set -e;
       npm run lint;
       node_modules/.bin/acorn --ecma3 dist/buble-browser.cjs.js > /dev/null;
