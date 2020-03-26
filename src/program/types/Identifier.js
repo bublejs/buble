@@ -16,6 +16,10 @@ export default class Identifier extends Node {
 	}
 
 	initialise(transforms) {
+		if (this.isLabel()) {
+			return;
+		}
+
 		if (isReference(this, this.parent)) {
 			if (
 				transforms.arrow &&
@@ -40,6 +44,15 @@ export default class Identifier extends Node {
 			}
 
 			this.findScope(false).addReference(this);
+		}
+	}
+
+	isLabel() {
+		switch (this.parent.type) {
+			case 'BreakStatement': return true;
+			case 'ContinueStatement': return true;
+			case 'LabeledStatement': return true;
+			default: return false;
 		}
 	}
 
