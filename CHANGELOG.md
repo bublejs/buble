@@ -2,7 +2,7 @@
 
 ## 0.20.0 (2020-03-26)
 
-* **Breaking**: Drop Node v4 && v6 testing on CI; Buble will likely continue to work on these versions, but support for them is no longer actively maintained. [#250](https://github.com/bublejs/buble/pull/250)
+* This is the last Buble version to work on Node v4 & v6. Going forward, support for old Node versions that reached End-of-Life will not be actively maintained. [#250](https://github.com/bublejs/buble/pull/250)
 * Fix recognition of catch-declared variables ([#237](https://github.com/bublejs/buble/pull/237))
 * Prevent labels from being renamed due to let/const transpilation. ([#236](https://github.com/bublejs/buble/pull/236))
 * Fix scoping of variables declared in for loops. ([#233](https://github.com/bublejs/buble/pull/233))
