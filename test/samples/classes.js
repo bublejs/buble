@@ -1269,6 +1269,47 @@ module.exports = [
 					return a;
 				}(b)); };
 		`
+	},
+
+	{
+		description: "transpiles class extend expression (#251)",
+
+		input: `
+			class A extends class B extends class C{c(){}}{b(){}}{a(){}}
+		`,
+		output: `
+			var A = /*@__PURE__*/(function (B) {
+				function A () {
+					B.apply(this, arguments);
+				}
+
+				if ( B ) A.__proto__ = B;
+				A.prototype = Object.create( B && B.prototype );
+				A.prototype.constructor = A;
+
+				A.prototype.a = function a (){};
+
+				return A;
+			}(/*@__PURE__*/(function (C) {
+				function B () {
+					C.apply(this, arguments);
+				}
+
+				if ( C ) B.__proto__ = C;
+				B.prototype = Object.create( C && C.prototype );
+				B.prototype.constructor = B;
+
+				B.prototype.b = function b (){};
+
+				return B;
+			}(/*@__PURE__*/(function () {
+				function C () {}
+
+				C.prototype.c = function c (){};
+
+				return C;
+			}())))));
+		`
 	}
 
 	// TODO more tests. e.g. getters and setters.
