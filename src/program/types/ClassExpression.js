@@ -28,6 +28,7 @@ export default class ClassExpression extends Node {
 			const i1 = i0 + code.getIndentString();
 
 			if (this.superClass) {
+				this.superClass.transpile(code, transforms);
 				code.remove(this.start, this.superClass.start);
 				code.remove(this.superClass.end, this.body.start);
 				code.appendRight(this.start, `/*@__PURE__*/(function (${superName}) {\n${i1}`);

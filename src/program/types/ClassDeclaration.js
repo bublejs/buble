@@ -40,6 +40,7 @@ export default class ClassDeclaration extends Node {
 			}
 
 			if (this.superClass) {
+				this.superClass.transpile(code, transforms);
 				if (this.superClass.end === this.body.start) {
 					code.remove(c, this.superClass.start);
 					code.appendLeft(c, ` = /*@__PURE__*/(function (${superName}) {\n${i1}`);
