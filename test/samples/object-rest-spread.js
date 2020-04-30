@@ -28,8 +28,14 @@ module.exports = [
 		options: {
 			objectAssign: 'Object.assign'
 		},
-		input: `var obj = { ...a, b: 1, c: 2 };`,
-		output: `var obj = Object.assign({}, a, {b: 1, c: 2});`
+		input: `
+			var obj = { ...a, b: 1, c: 2 };
+		`,
+		output: `
+			var obj = Object.assign({}, a);
+			obj.b = 1;
+			obj.c = 2;
+		`
 	},
 
 	{
@@ -37,8 +43,15 @@ module.exports = [
 		options: {
 			objectAssign: 'Object.assign'
 		},
-		input: `var obj = { ...a, b: 1, ...d, e};`,
-		output: `var obj = Object.assign({}, a, {b: 1}, d, {e: e});`
+		input: `
+			var obj = { ...a, b: 1, ...d, e};
+		`,
+		output: `
+			var obj = Object.assign({}, a);
+			obj.b = 1;
+			Object.assign(obj, d);
+			obj.e = e;
+		`
 	},
 
 	{
@@ -62,11 +75,17 @@ module.exports = [
 			var a12 = { ...b, [c]:3, d:4 };
 		`,
 		output: `
-			var obj, obj$1, obj$2, obj$3, obj$4, obj$5, obj$6, obj$7, obj$8;
-
-			var a0 = Object.assign(( obj = {}, obj[ x ] = true, obj ), y);
-			var a1 = Object.assign(( obj$1 = {}, obj$1[ w ] = 0, obj$1[ x ] = true, obj$1 ), y);
-			var a2 = Object.assign(( obj$2 = { v: v }, obj$2[ w ] = 0, obj$2[ x ] = true, obj$2 ), y);
+			var a0 = {};
+			a0[ x ] = true;
+			Object.assign(a0, y);
+			var a1 = {};
+			a1[ w ] = 0;
+			a1[ x ] = true;
+			Object.assign(a1, y);
+			var a2 = { v: v };
+			a2[ w ] = 0;
+			a2[ x ] = true;
+			Object.assign(a2, y);
 			var a3 = {};
 			a3[ w ] = 0;
 			a3[ x ] = true;
@@ -74,19 +93,31 @@ module.exports = [
 			a4[ w ] = 0;
 			a4[ x ] = true;
 			a4.y = y;
-			var a5 = Object.assign(( obj$3 = { k : 9 }, obj$3[ x ] = true, obj$3 ), y);
-			var a6 = Object.assign({}, y, ( obj$4 = {}, obj$4[ x ] = true, obj$4 ));
-			var a7 = Object.assign({}, y, ( obj$5 = {}, obj$5[ w ] = 0, obj$5[ x ] = true, obj$5 ));
-			var a8 = Object.assign({ k : 9 }, y, ( obj$6 = {}, obj$6[ x ] = true, obj$6 ));
+			var a5 = { k : 9 };
+			a5[ x ] = true;
+			Object.assign(a5, y);
+			var a6 = Object.assign({}, y);
+			a6[ x ] = true;
+			var a7 = Object.assign({}, y);
+			a7[ w ] = 0;
+			a7[ x ] = true;
+			var a8 = Object.assign({ k : 9 }, y);
+			a8[ x ] = true;
 			var a9 = {};
 			a9[ x ] = true;
 			a9[ y ] = false;
 			a9[ z ] = 9;
-			var a10 = Object.assign(( obj$7 = {}, obj$7[ x ] = true, obj$7 ), y, {p: p}, q);
+			var a10 = {};
+			a10[ x ] = true;
+			Object.assign(a10, y);
+			a10.p = p;
+			Object.assign(a10, q);
 			var a11 = { x: x };
 			a11[c] = 9;
 			a11.y = y;
-			var a12 = Object.assign({}, b, ( obj$8 = {}, obj$8[c] = 3, obj$8 ), {d:4});
+			var a12 = Object.assign({}, b);
+			a12[c] = 3;
+			a12.d = 4;
 		`
 	},
 	{
@@ -136,7 +167,7 @@ module.exports = [
 			var a0 = { [ x ] : true , ... y };
 		`,
 		output: `
-			var a0 = Object.assign({}, {[ x ] : true} , y);
+			var a0 = Object.assign({ [ x ] : true } , y);
 		`,
 	},
 	{
@@ -149,9 +180,9 @@ module.exports = [
 			var a0 = { [ x ] : true , ... y };
 		`,
 		output: `
-			var obj;
-
-			var a0 = Object.assign(( obj = {}, obj[ x ] = true, obj ), y);
+			var a0 = {};
+			a0[ x ] = true;
+			Object.assign(a0, y);
 		`,
 	},
 	{
@@ -178,19 +209,19 @@ module.exports = [
 		output: `
 			var obj, obj$1, obj$2, obj$3, obj$4, obj$5, obj$6, obj$7, obj$8, obj$9, obj$10, obj$11, obj$12;
 
-			f0( Object.assign(( obj = {}, obj[ x ] = true, obj ), y) );
-			f1( Object.assign(( obj$1 = {}, obj$1[ w ] = 0, obj$1[ x ] = true, obj$1 ), y) );
-			f2( Object.assign(( obj$2 = { v: v }, obj$2[ w ] = 0, obj$2[ x ] = true, obj$2 ), y) );
+			f0( ( obj = {}, obj[ x ] = true, Object.assign(obj, y) ) );
+			f1( ( obj$1 = {}, obj$1[ w ] = 0, obj$1[ x ] = true, Object.assign(obj$1, y) ) );
+			f2( ( obj$2 = { v: v }, obj$2[ w ] = 0, obj$2[ x ] = true, Object.assign(obj$2, y) ) );
 			f3( ( obj$3 = {}, obj$3[ w ] = 0, obj$3[ x ] = true, obj$3 ) );
 			f4( ( obj$4 = {}, obj$4[ w ] = 0, obj$4[ x ] = true, obj$4.y = y, obj$4 ) );
-			f5( Object.assign(( obj$5 = { k : 9 }, obj$5[ x ] = true, obj$5 ), y) );
-			f6( Object.assign({}, y, ( obj$6 = {}, obj$6[ x ] = true, obj$6 )) );
-			f7( Object.assign({}, y, ( obj$7 = {}, obj$7[ w ] = 0, obj$7[ x ] = true, obj$7 )) );
-			f8( Object.assign({ k : 9 }, y, ( obj$8 = {}, obj$8[ x ] = true, obj$8 )) );
+			f5( ( obj$5 = { k : 9 }, obj$5[ x ] = true, Object.assign(obj$5, y) ) );
+			f6( ( obj$6 = Object.assign({}, y), obj$6[ x ] = true, obj$6 ) );
+			f7( ( obj$7 = Object.assign({}, y), obj$7[ w ] = 0, obj$7[ x ] = true, obj$7 ) );
+			f8( ( obj$8 = Object.assign({ k : 9 }, y), obj$8[ x ] = true, obj$8 ) );
 			f9( ( obj$9 = {}, obj$9[ x ] = true, obj$9[ y ] = false, obj$9[ z ] = 9, obj$9 ) );
-			f10( Object.assign(( obj$10 = {}, obj$10[ x ] = true, obj$10 ), y, {p: p}, q) );
+			f10( ( obj$10 = {}, obj$10[ x ] = true, Object.assign(obj$10, y), obj$10.p = p, Object.assign(obj$10, q) ) );
 			f11( ( obj$11 = { x: x }, obj$11[c] = 9, obj$11.y = y, obj$11 ) );
-			f12(Object.assign({}, b, ( obj$12 = {}, obj$12[c] = 3, obj$12 ), {d:4}));
+			f12(( obj$12 = Object.assign({}, b), obj$12[c] = 3, obj$12.d = 4, obj$12 ));
 		`
 	},
 
@@ -199,8 +230,17 @@ module.exports = [
 		options: {
 			objectAssign: 'Object.assign'
 		},
-		input: `var obj = { ...a, b: 1, dd: {...d, f: 1}, e};`,
-		output: `var obj = Object.assign({}, a, {b: 1, dd: Object.assign({}, d, {f: 1}), e: e});`
+		input: `
+			var obj = { ...a, b: 1, dd: {...d, f: 1}, e};
+		`,
+		output: `
+			var obj$1;
+
+			var obj = Object.assign({}, a);
+			obj.b = 1;
+			obj.dd = ( obj$1 = Object.assign({}, d), obj$1.f = 1, obj$1 );
+			obj.e = e;
+		`
 	},
 
 	{
@@ -208,8 +248,17 @@ module.exports = [
 		options: {
 			objectAssign: 'Object.assign'
 		},
-		input: `const c = { ...a, b: 1, dd: {...d, f: 1, gg: {h, ...g, ii: {...i}}}, e};`,
-		output: `var c = Object.assign({}, a, {b: 1, dd: Object.assign({}, d, {f: 1, gg: Object.assign({}, {h: h}, g, {ii: Object.assign({}, i)})}), e: e});`
+		input: `
+			const c = { ...a, b: 1, dd: {...d, f: 1, gg: {h, ...g, ii: {...i}}}, e};
+		`,
+		output: `
+			var obj, obj$1;
+
+			var c = Object.assign({}, a);
+			c.b = 1;
+			c.dd = ( obj$1 = Object.assign({}, d), obj$1.f = 1, obj$1.gg = ( obj = Object.assign({h: h}, g), obj.ii = Object.assign({}, i), obj ), obj$1 );
+			c.e = e;
+		`
 	},
 
 	{
@@ -217,8 +266,17 @@ module.exports = [
 		options: {
 			objectAssign: 'angular.extend'
 		},
-		input: `var obj = { ...a, b: 1, dd: {...d, f: 1}, e};`,
-		output: `var obj = angular.extend({}, a, {b: 1, dd: angular.extend({}, d, {f: 1}), e: e});`
+		input: `
+			var obj = { ...a, b: 1, dd: {...d, f: 1}, e};
+		`,
+		output: `
+			var obj$1;
+
+			var obj = angular.extend({}, a);
+			obj.b = 1;
+			obj.dd = ( obj$1 = angular.extend({}, d), obj$1.f = 1, obj$1 );
+			obj.e = e;
+		`
 	},
 
 	{
@@ -308,8 +366,13 @@ for( var rest = objectWithoutProperties( c, [] ), b = rest;; ) {}`
 		options: {
 			objectAssign: 'Object.assign'
 		},
-		input: `var obj = { ...{a: 1}, b: 2, ...c, e};`,
-		output: `var obj = Object.assign({}, {a: 1, b: 2}, c, {e: e});`
+		input: `
+			var obj = { ...{a: 1}, b: 2, ...c, e};
+		`,
+		output: `
+			var obj = Object.assign({ a: 1, b: 2}, c);
+			obj.e = e;
+		`
 	},
 
 	{
@@ -326,12 +389,44 @@ for( var rest = objectWithoutProperties( c, [] ), b = rest;; ) {}`
 			obj = { a: 1, ...{b: 2,}, };
 		`,
 		output: `
-			var obj = Object.assign({}, {a: 1, b: 2, c: 3}, d, {e: e, f: 6});
+			var obj = Object.assign({ a: 1, b: 2, c: 3}, d);
+			obj.e = e;
+			obj.f = 6;
 			obj = { a: 1, b: 2, };
 			obj = { a: 1, b: 2 };
 			obj = { a: 1, b: 2 };
 			obj = { a: 1, b: 2, };
 			obj = { a: 1, b: 2, };
+		`
+	},
+
+	{
+		description: 'does not inline object spread with getters',
+		options: {
+			objectAssign: 'Object.assign'
+		},
+		input: `
+			var obj = { a: 1, ...{ b: 2, get c() { return 3; } }, d: 4 };
+		`,
+		output: `
+			var obj = Object.assign({ a: 1 }, { b: 2, get c() { return 3; } });
+			obj.d = 4;
+		`
+	},
+
+	{
+		description: 'does not inline object spread with getters when mixed',
+		options: {
+			objectAssign: 'Object.assign'
+		},
+		input: `
+			var obj = { a: 1, [ x ]: 2, ...{ get c() { return 3; } }, ...d, e };
+		`,
+		output: `
+			var obj = { a: 1 };
+			obj[ x ] = 2;
+			Object.assign(obj, { get c() { return 3; } }, d);
+			obj.e = e;
 		`
 	}
 ];

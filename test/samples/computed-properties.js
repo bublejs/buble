@@ -291,5 +291,112 @@ module.exports = [
 			var obj$1;
 var obj = 2; console.log([( obj$1 = {}, obj$1[x] = 1, obj$1 ), obj]);})(3);
 		`
+	},
+
+	{
+		description: 'spread and computed properties in arrow function',
+
+		options: {
+			objectAssign: 'Object.assign'
+		},
+
+		input: `
+			v => v && { ...o, [k]: v };
+		`,
+
+		output: `
+			!function(v) {
+				var obj;
+
+				return v && ( obj = Object.assign({}, o), obj[k] = v, obj );
+			};
+		`
+	},
+
+	{
+		description:
+			'spread and computed properties in arrow function, with the spread in the middle',
+
+		options: {
+			objectAssign: 'Object.assign'
+		},
+
+		input: `
+			v => v && { p, ...o, [k]: v };
+		`,
+
+		output: `
+			!function(v) {
+				var obj;
+
+				return v && ( obj = Object.assign({ p: p }, o), obj[k] = v, obj );
+			};
+		`
+	},
+
+	{
+		description:
+			'many alternating spread, computed, and normal properties in arrow function',
+
+		options: {
+			objectAssign: 'Object.assign'
+		},
+
+		input: `
+			v => v && { p, ...o, q, [k]: v, r, ...s, t };
+		`,
+
+		output: `
+			!function(v) {
+				var obj;
+
+				return v && ( obj = Object.assign({ p: p }, o), obj.q = q, obj[k] = v, obj.r = r, Object.assign(obj, s), obj.t = t, obj );
+			};
+		`
+	},
+
+	{
+		description:
+			'arrow function with nested spread and computed properties (bublejs/buble#212)',
+
+		options: {
+			objectAssign: 'Object.assign'
+		},
+
+		input: `
+			setState(previousState => ({
+				...previousState,
+					field: {
+						...previousState.field,
+						[field]: true
+					}
+			}))
+		`,
+
+		output: `
+			setState(function (previousState) {
+				var obj, obj$1;
+
+				return (( obj$1 = Object.assign({}, previousState), obj$1.field = ( obj = Object.assign({}, previousState.field), obj[field] = true, obj ), obj$1 ));
+			})
+		`
+	},
+
+	{
+		description: 'nested spread and computed properties (bublejs/buble#163)',
+
+		options: {
+			objectAssign: 'Object.assign'
+		},
+
+		input: `
+			({ ...o, [k]: { ...o, [k]: v } });
+		`,
+
+		output: `
+			var obj, obj$1;
+
+			(( obj$1 = Object.assign({}, o), obj$1[k] = ( obj = Object.assign({}, o), obj[k] = v, obj ), obj$1 ));
+		`
 	}
 ];
