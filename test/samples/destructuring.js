@@ -933,6 +933,6 @@ var a = x[1];
 		output: `
 var obj;
 var z1 = {};
-z1[b] = Object.assign({}, c, ( obj = {}, obj[d] = 'Hello, World!', obj ))`
+z1[b] = ( obj = Object.assign({}, c), obj[d] = 'Hello, World!', obj )`
 	}
 ];
