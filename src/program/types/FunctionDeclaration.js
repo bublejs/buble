@@ -1,6 +1,7 @@
 import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
 import removeTrailingComma from '../../utils/removeTrailingComma.js';
+import AwaitExpression from './AwaitExpression';
 
 export default class FunctionDeclaration extends Node {
 	initialise(transforms) {
@@ -20,6 +21,7 @@ export default class FunctionDeclaration extends Node {
 	}
 
 	transpile(code, transforms) {
+		AwaitExpression.removeAsync(code, transforms, this.async, this.start);
 		super.transpile(code, transforms);
 		if (transforms.trailingFunctionCommas && this.params.length) {
 			removeTrailingComma(code, this.params[this.params.length - 1].end);
