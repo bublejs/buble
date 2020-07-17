@@ -49,6 +49,34 @@ export default class ClassBody extends Node {
 				if (!inFunctionExpression) code.appendLeft(constructor.end, ';');
 			}
 
+			const classFields = [];
+			this.body.forEach(element => {
+				if (element.type === 'FieldDefinition') {
+					if (element.computed) {
+						classFields.push(`this${code.slice(element.start, element.end)};`);
+					} else {
+						classFields.push(`this.${code.slice(element.start, element.end)};`);
+					}
+
+					code.remove(element.start, element.end);
+
+					if (code.byStart[element.end].content !== '') {
+						let toEnd = 0;
+						for (; toEnd < code.byStart[element.end].content.length; toEnd++) {
+							const chars = code.byStart[element.end].content.slice(0, toEnd);
+
+							if (chars.indexOf(';') !== -1) {
+								break;
+							}
+						}
+
+						if (toEnd > 0) {
+							code.remove(element.end, element.end + toEnd);
+						}
+					}
+				}
+			});
+
 			const namedFunctions =
 				this.program.options.namedFunctionExpressions !== false;
 			const namedConstructor =
@@ -67,6 +95,7 @@ export default class ClassBody extends Node {
 				} else {
 					const fn =
 						`function ${name} () {` +
+						(classFields.length ? `\n${i1}` + classFields.join(`\n${i1}`) + `\n${i1}` : '') +
 						(superName
 							? `\n${i1}${superName}.apply(this, arguments);\n${i0}}`
 							: `}`) +
@@ -77,11 +106,22 @@ export default class ClassBody extends Node {
 					introBlock += inheritanceBlock + `\n\n${i0}`;
 				}
 			} else if (!constructor) {
-				let fn = 'function ' + (namedConstructor ? name + ' ' : '') + '() {}';
+				let fn =
+					'function ' +
+					(namedConstructor ? name + ' ' : '') +
+					'() {' +
+					(classFields.length ? `\n${i1}` + classFields.join(`\n${i1}`) + `\n${i0}` : '') +
+					'}';
 				if (this.parent.type === 'ClassDeclaration') fn += ';';
 				if (this.body.length) fn += `\n\n${i0}`;
 
 				introBlock += fn;
+			}
+
+			if (constructor) {
+				if (classFields.length) {
+					code.appendLeft(constructor.value.body.start + 1, `\n${i1}` + classFields.join(`\n${i1}`));
+				}
 			}
 
 			const scope = this.findScope(false);
@@ -94,6 +134,10 @@ export default class ClassBody extends Node {
 			this.body.forEach((method, i) => {
 				if ((method.kind === 'get' || method.kind === 'set') && transforms.getterSetter) {
 					CompileError.missingTransform("getters and setters", "getterSetter", method);
+				}
+
+				if (method.type === 'FieldDefinition') {
+					return;
 				}
 
 				if (method.kind === 'constructor') {

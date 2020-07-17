@@ -2,9 +2,7 @@ exports.features_list = {
 	//generators: [4, "generators"],
 
 	// test262 features acorn doesn't parse and thus are S3
-	"class-fields-private": [3, "unsupportedFeatures"],
-	"class-fields-public": [3, "unsupportedFeatures"],
-	"class-methods-private": [3, "unsupportedFeatures"],
+	"class-methods-private": [3, "privateMethods"],
 	"class-static-fields-private": [3, "unsupportedFeatures"],
 	"class-static-fields-public": [3, "unsupportedFeatures"],
 	"class-static-methods-private": [3, "unsupportedFeatures"],
@@ -20,6 +18,7 @@ exports.features_list = {
 	// buble bug: Does not transpile new.target
 	"new.target": [2, "newTarget"],
 	"regexp-lookbehind": [2, "notTranspiledFeatures"],
+	"class-fields-private": [2, "privateFields"],
 };
 
 const mapFilePatterns = files => {
@@ -202,10 +201,11 @@ exports.file_list = [
 		"built-ins/Function/prototype/toString/method-*",
 	]},
 
-	// buble bug: class methods should not be enumerable on the prototype
+	// buble bug: class methods and fields should not be enumerable on the prototype
 	{ level: 1, desc: "nonEnumerablePrototypeProperties", files: [
 		"language/computed-property-names/to-name-side-effects/class.js",
 		"language/computed-property-names/to-name-side-effects/numbers-class.js"
+		"*/class/elements/*(computed-names|computed-symbol-names).js",
 	]},
 
 	// buble bug: destructuring null or undefined should fail
@@ -437,6 +437,7 @@ exports.file_list = [
 		"built-ins/RegExp/dotall/without-dotall.js",
 		"built-ins/Function/prototype/toString/unicode.js",
 		"built-ins/RegExp/property-escapes/character-class.js",
+		"language/*/class/elements/*(grammar-privatename-identifier-semantics-stringvalue|grammar-field-identifier-alt|grammar-field-identifier|rs-static-privatename-identifier-alt|rs-static-async-method-privatename-identifier|rs-privatename-identifier-initializer-alt|rs-private-getter-alt|rs-private-setter|grammar-privatename-identifier|rs-static-privatename-identifier-by-classname|rs-static-privatename-identifier-alt-by-classname|rs-static-privatename-identifier-initializer|rs-private-getter|rs-private-method|rs-privatename-identifier|rs-static-privatename-identifier-initializer-alt|rs-private-method-alt|rs-static-generator-method-privatename-identifier|grammar-field-classelementname-initializer-alt|rs-static-async-generator-method-privatename-identifier|grammar-privatename-classelementname-initializer|rs-static-method-privatename-identifier|grammar-field-classelementname-initializer|rs-field-identifier|rs-field-identifier-initializer|rs-privatename-identifier-alt|rs-privatename-identifier-initializer|rs-static-privatename-identifier-initializer-alt-by-classname|rs-static-privatename-identifier|rs-private-setter-alt|grammar-privatename-classelementname-initializer-alt).js"
 	]},
 
 	{ level: 1, desc: "taggedTemplateOperatorPrecedence", files: [
@@ -606,6 +607,7 @@ exports.file_list = [
 	]},
 
 	{ level: 4, desc: "generators", files: [
+		"*/class/elements/*-gen-*",
 		"*Generator*", "*generator*", "*gen-meth-*", "*gen-func-*",
 		"*gen-named-func-expr-*", "*gen-method*", "*async-gen-*",
 		"*fn-name-gen.js",
@@ -919,6 +921,18 @@ exports.file_list = [
 	{ level: 1, desc: "taggedTemplateRegistry", files: [
 		"language/expressions/tagged-template/cache-(differing-expressions|identical-source).js",
 		"language/expressions/tagged-template/template-object-template-map.js",
+	]},
+
+	// Field names should be converted to strings on class declaration
+	// Transpiled code does not convert them until instantiation
+	{ level: 1, desc: "fieldNameToStringOnClassDeclaration", files: [
+		"*evaluation-error/computed-name*",
+	]},
+
+	// Class fields without initializer should be defined but have value undefined
+	// Transpiled code does not define them
+	{ level: 1, desc: "uninitializedClassFields", files: [
+		"*/class/elements/*-(literal-names|string-literal-names|literal-names-asi).js",
 	]},
 ].map(i => ({ config: i.config, desc: i.desc, level: i.level, pattern: mapFilePatterns(i.files) }));
 

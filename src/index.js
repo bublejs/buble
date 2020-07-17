@@ -1,11 +1,12 @@
 import { Parser } from 'acorn';
 import acornJsx from 'acorn-jsx';
 import acornDynamicImport from 'acorn-dynamic-import';
+import classFields from 'acorn-class-fields';
 import Program from './program/Program.js';
 import { features, matrix } from './support.js';
 import getSnippet from './utils/getSnippet.js';
 
-const parser = Parser.extend(acornDynamicImport, acornJsx());
+const parser = Parser.extend(acornDynamicImport, acornJsx(), classFields);
 
 const dangerousTransforms = ['dangerousTaggedTemplateString', 'dangerousForOf'];
 
