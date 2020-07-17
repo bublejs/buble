@@ -49,6 +49,7 @@ function compileFile(from, to, command, options) {
 		source: from,
 		file: to,
 		jsx: options.jsx,
+		jsxFragment: options.jsxFragment,
 		objectAssign: options.objectAssign,
 		namedFunctionExpressions: options.namedFunctionExpressions
 	});
@@ -92,6 +93,7 @@ module.exports = function(command) {
 		target: {},
 		transforms: {},
 		jsx: command.jsx,
+		jsxFragment: command['jsx-fragment'],
 		objectAssign: command.objectAssign,
 		namedFunctionExpressions: command['named-function-expr'] !== false
 	};
