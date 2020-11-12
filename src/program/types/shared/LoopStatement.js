@@ -91,7 +91,7 @@ export default class LoopStatement extends Node {
 				if (this.canBreak)
 					insert += `\n${i1}if ( ${returned} === 'break' ) break;`;
 				if (this.canReturn)
-					insert += `\n${i1}if ( ${returned} ) return ${returned}.v;`;
+					insert += `\n${i1}if ( typeof ${returned} !== void 0 ) return ${returned}.v;`;
 				insert += `\n${i0}}`;
 
 				code.prependRight(this.body.end, insert);
