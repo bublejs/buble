@@ -51,67 +51,10 @@ export default class BlockStatement extends Node {
 	}
 
 	findScope(functionScope) {
-		if (functionScope && !this.isFunctionBlock)
-			return this.parent.findScope(functionScope);
 		return this.scope;
 	}
 
-	getArgumentsAlias() {
-		if (!this.argumentsAlias) {
-			this.argumentsAlias = this.scope.createIdentifier('arguments');
-		}
-
-		return this.argumentsAlias;
-	}
-
-	getArgumentsArrayAlias() {
-		if (!this.argumentsArrayAlias) {
-			this.argumentsArrayAlias = this.scope.createIdentifier('argsArray');
-		}
-
-		return this.argumentsArrayAlias;
-	}
-
-	getThisAlias() {
-		if (!this.thisAlias) {
-			this.thisAlias = this.scope.createIdentifier('this');
-		}
-
-		return this.thisAlias;
-	}
-
 	getIndentation() {
-		if (this.indentation === undefined) {
-			const source = this.program.magicString.original;
-
-			const useOuter = this.synthetic || !this.body.length;
-			let c = useOuter ? this.start : this.body[0].start;
-
-			while (c && source[c] !== '\n') c -= 1;
-
-			this.indentation = '';
-
-			// eslint-disable-next-line no-constant-condition
-			while (true) {
-				c += 1;
-				const char = source[c];
-
-				if (char !== ' ' && char !== '\t') break;
-
-				this.indentation += char;
-			}
-
-			const indentString = this.program.magicString.getIndentString();
-
-			// account for dedented class constructors
-			let parent = this.parent;
-			while (parent) {
-				parent = parent.parent;
-			}
-
-			if (useOuter) this.indentation += indentString;
-		}
-
 		return this.indentation;
 	}
 

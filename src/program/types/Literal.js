@@ -12,30 +12,9 @@ export default class Literal extends Node {
 	}
 
 	transpile(code, transforms) {
-		if (transforms.numericLiteral) {
-			if (this.raw.match(/^0[bo]/i)) {
-				code.overwrite(this.start, this.end, String(this.value), {
-					storeName: true,
-					contentOnly: true
-				});
-			}
-		}
 
 		if (this.regex) {
 			const { pattern, flags } = this.regex;
-
-			if (transforms.stickyRegExp && /y/.test(flags))
-				CompileError.missingTransform('the regular expression sticky flag', 'stickyRegExp', this);
-			if (transforms.unicodeRegExp && /u/.test(flags)) {
-				code.overwrite(
-					this.start,
-					this.end,
-					`/${rewritePattern(pattern, flags)}/${flags.replace('u', '')}`,
-					{
-						contentOnly: true
-					}
-				);
-			}
 		} else if (typeof this.value === "string" && this.value.match(nonAsciiLsOrPs)) {
 			code.overwrite(
 				this.start,

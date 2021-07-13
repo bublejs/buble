@@ -21,28 +21,6 @@ export default class Identifier extends Node {
 		}
 
 		if (isReference(this, this.parent)) {
-			if (
-				transforms.arrow &&
-				this.name === 'arguments' &&
-				!this.findScope(false).contains(this.name)
-			) {
-				const lexicalBoundary = this.findLexicalBoundary();
-				const arrowFunction = this.findNearest('ArrowFunctionExpression');
-				const loop = this.findNearest(loopStatement);
-
-				if (arrowFunction && arrowFunction.depth > lexicalBoundary.depth) {
-					this.alias = lexicalBoundary.getArgumentsAlias();
-				}
-
-				if (
-					loop &&
-					loop.body.contains(this) &&
-					loop.depth > lexicalBoundary.depth
-				) {
-					this.alias = lexicalBoundary.getArgumentsAlias();
-				}
-			}
-
 			this.findScope(false).addReference(this);
 		}
 	}
