@@ -1,16 +1,4 @@
 import ArrowFunctionExpression from './ArrowFunctionExpression.js';
-import BreakStatement from './BreakStatement.js';
-import CallExpression from './CallExpression.js';
-import CatchClause from './CatchClause.js';
-import ClassBody from './ClassBody.js';
-import ClassDeclaration from './ClassDeclaration.js';
-import ClassExpression from './ClassExpression.js';
-import ContinueStatement from './ContinueStatement.js';
-import ExportDefaultDeclaration from './ExportDefaultDeclaration.js';
-import ExportNamedDeclaration from './ExportNamedDeclaration.js';
-import ForStatement from './ForStatement.js';
-import ForInStatement from './ForInStatement.js';
-import ForOfStatement from './ForOfStatement.js';
 import FunctionDeclaration from './FunctionDeclaration.js';
 import FunctionExpression from './FunctionExpression.js';
 import Identifier from './Identifier.js';
@@ -46,19 +34,6 @@ import VariableDeclarator from './VariableDeclarator.js';
 
 export default {
 	ArrowFunctionExpression,
-	BreakStatement,
-	CallExpression,
-	CatchClause,
-	ClassBody,
-	ClassDeclaration,
-	ClassExpression,
-	ContinueStatement,
-	DoWhileStatement: LoopStatement,
-	ExportNamedDeclaration,
-	ExportDefaultDeclaration,
-	ForStatement,
-	ForInStatement,
-	ForOfStatement,
 	FunctionDeclaration,
 	FunctionExpression,
 	Identifier,
