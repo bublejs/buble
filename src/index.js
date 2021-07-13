@@ -38,7 +38,7 @@ export function target(target) {
 
 	const transforms = Object.create(null);
 	features.forEach((name, i) => {
-		transforms[name] = !(bitmask & (1 << i));
+		transforms[name] = false;
 	});
 
 	dangerousTransforms.forEach(name => {

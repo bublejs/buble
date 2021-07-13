@@ -56,7 +56,7 @@ module.exports = [
 		output: `
 			var div = (
 				React.createElement( 'div', null,
-					images.map( function (src) { return React.createElement( 'img', { src: src }); } )
+					images.map( src => React.createElement( 'img', { src: src }) )
 				)
 			);`
 	},
