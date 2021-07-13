@@ -12,7 +12,6 @@ import JSXOpeningElement from './JSXOpeningElement.js';
 import JSXOpeningFragment from './JSXOpeningFragment.js';
 import JSXSpreadAttribute from './JSXSpreadAttribute.js';
 import Literal from './Literal.js';
-import LoopStatement from './shared/LoopStatement.js';
 import MemberExpression from './MemberExpression.js';
 import ObjectExpression from './ObjectExpression.js';
 import Property from './Property.js';
@@ -43,5 +42,4 @@ export default {
 	UpdateExpression,
 	VariableDeclaration,
 	VariableDeclarator,
-	WhileStatement: LoopStatement
 };
