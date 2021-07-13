@@ -60,46 +60,7 @@ export default class ObjectExpression extends Node {
 			const moveStart = i > 0 ? this.properties[i - 1].end : this.start + 1;
 			const prevState = state;
 
-			if (prop.type === 'SpreadElement') {
-				// First see if we can inline the spread, to save needing objectAssign.
-				const argument = prop.argument;
-				if (
-					argument.type === 'ObjectExpression' && safeToInline(argument) || (
-						argument.type === 'Literal' &&
-						typeof argument.value !== 'string'
-					)
-				) {
-					if (argument.type === 'ObjectExpression' && argument.properties.length > 0) {
-						// Strip the `...{` and the `}` with a possible trailing comma before it,
-						// leaving just the possible trailing comma after it.
-						code.remove(prop.start, argument.properties[0].start);
-						code.remove(argument.properties[argument.properties.length - 1].end, prop.end);
-						this.properties.splice(i, 1, ...argument.properties);
-						i--;
-					} else {
-						// An empty object, boolean, null, undefined, number or regexp (but NOT
-						// string) will spread to nothing, so just remove the element altogether,
-						// including a possible trailing comma.
-						code.remove(prop.start, i === this.properties.length - 1
-							? prop.end
-							: this.properties[i + 1].start);
-						this.properties.splice(i, 1);
-						i--;
-					}
-					continue;
-				} else if (state === STATE_ASSIGNMENTS || transforms.objectRestSpread) {
-					// If we have already started assigning to the object, we have to use
-					// objectAssign even if objectRestSpread is off.
-					if (!this.program.options.objectAssign) {
-						throw new CompileError(
-							"Object spread operator requires specified objectAssign option with 'Object.assign' or polyfill helper.",
-							this
-						);
-					}
-
-					state = STATE_SPREAD;
-				}
-			} else if (
+			if (
 				prevState === STATE_SPREAD ||
 				prevState === STATE_INITIAL && prop.computed && transforms.computedProperty
 			) {
