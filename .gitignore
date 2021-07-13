@@ -4,3 +4,5 @@ dist
 test/**/actual
 sandbox
 test/bundlers/package-lock.json
+.nyc_output
+*.swp

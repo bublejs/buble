@@ -1,6 +1,5 @@
 import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
-import removeTrailingComma from '../../utils/removeTrailingComma.js';
 
 export default class ArrowFunctionExpression extends Node {
 	initialise(transforms) {
@@ -54,10 +53,6 @@ export default class ArrowFunctionExpression extends Node {
 			}
 		} else {
 			super.transpile(code, transforms);
-		}
-
-		if (transforms.trailingFunctionCommas && this.params.length && !naked) {
-			removeTrailingComma(code, this.params[this.params.length - 1].end);
 		}
 	}
 
