@@ -1,5 +1,4 @@
 import ArrowFunctionExpression from './ArrowFunctionExpression.js';
-import FunctionDeclaration from './FunctionDeclaration.js';
 import FunctionExpression from './FunctionExpression.js';
 import Identifier from './Identifier.js';
 import IfStatement from './IfStatement.js';
@@ -19,7 +18,6 @@ import JSXSpreadAttribute from './JSXSpreadAttribute.js';
 import Literal from './Literal.js';
 import LoopStatement from './shared/LoopStatement.js';
 import MemberExpression from './MemberExpression.js';
-import NewExpression from './NewExpression.js';
 import ObjectExpression from './ObjectExpression.js';
 import Property from './Property.js';
 import ReturnStatement from './ReturnStatement.js';
@@ -34,7 +32,6 @@ import VariableDeclarator from './VariableDeclarator.js';
 
 export default {
 	ArrowFunctionExpression,
-	FunctionDeclaration,
 	FunctionExpression,
 	Identifier,
 	IfStatement,
@@ -53,7 +50,6 @@ export default {
 	JSXSpreadAttribute,
 	Literal,
 	MemberExpression,
-	NewExpression,
 	ObjectExpression,
 	Property,
 	ReturnStatement,
