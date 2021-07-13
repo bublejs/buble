@@ -106,10 +106,6 @@ export default class BlockStatement extends Node {
 			// account for dedented class constructors
 			let parent = this.parent;
 			while (parent) {
-				if (parent.kind === 'constructor' && !parent.parent.parent.superClass) {
-					this.indentation = this.indentation.replace(indentString, '');
-				}
-
 				parent = parent.parent;
 			}
 
@@ -124,34 +120,6 @@ export default class BlockStatement extends Node {
 
 		const introStatementGenerators = [];
 
-		if (this.argumentsAlias) {
-			introStatementGenerators.push((start, prefix, suffix) => {
-				const assignment = `${prefix}var ${this.argumentsAlias} = arguments${
-					suffix
-				}`;
-				code.appendLeft(start, assignment);
-			});
-		}
-
-		if (this.thisAlias) {
-			introStatementGenerators.push((start, prefix, suffix) => {
-				const assignment = `${prefix}var ${this.thisAlias} = this${suffix}`;
-				code.appendLeft(start, assignment);
-			});
-		}
-
-		if (this.argumentsArrayAlias) {
-			introStatementGenerators.push((start, prefix, suffix) => {
-				const i = this.scope.createIdentifier('i');
-				const assignment = `${prefix}var ${i} = arguments.length, ${
-					this.argumentsArrayAlias
-				} = Array(${i});\n${indentation}while ( ${i}-- ) ${
-					this.argumentsArrayAlias
-				}[${i}] = arguments[${i}]${suffix}`;
-				code.appendLeft(start, assignment);
-			});
-		}
-
 		if (/Function/.test(this.parent.type)) {
 			this.transpileParameters(
 				this.parent.params,
@@ -160,18 +128,6 @@ export default class BlockStatement extends Node {
 				indentation,
 				introStatementGenerators
 			);
-		} else if ('CatchClause' === this.parent.type) {
-			this.transpileParameters(
-				[this.parent.param],
-				code,
-				transforms,
-				indentation,
-				introStatementGenerators
-			);
-		}
-
-		if (transforms.letConst && this.isFunctionBlock) {
-			this.transpileBlockScopedIdentifiers(code);
 		}
 
 		super.transpile(code, transforms);
