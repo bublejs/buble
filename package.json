@@ -1,7 +1,7 @@
 {
-  "name": "buble",
+  "name": "buble-jsx-only",
   "version": "0.20.0",
-  "description": "The blazing fast, batteries-included ES2015 compiler",
+  "description": "Bublé, but just JSX.",
   "main": "dist/buble.cjs.js",
   "module": "dist/buble.es.js",
   "browser": {
@@ -34,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bublejs/buble.git"
+    "url": "git+https://github.com/datavis-tech/buble-jsx-only"
   },
   "keywords": [
     "javascript",

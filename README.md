@@ -1,36 +1,12 @@
-# Maintenance status
+# Bublé JSX Only
 
-Bublé was created when ES2015 was still the future. Nowadays, all modern browsers support all of ES2015 and (in some cases) beyond. Unless you need to support IE11, you probably don't need to use Bublé to convert your code to ES5.
+A fork of [Bublé](https://github.com/bublejs/buble) that only transforms JSX.
 
-Since IE11 is an unfortunate reality for some people, we will continue to release bugfixes, but new features won't be added unless in exceptional circumstances.
+Why? To transpile JSX in the browser, using a Rollup plugin, with a minimal footprint. Bublé itself does an excellent job of this, however its bundle size is rather large. Most of the library deals with ES6 transformations, which we don't need. The premise of this library is to remove all that unnecessary code, so we end up with a minimal library that does JSX transformations.
 
----
+How? Forked Bublé (as of July 2021), removed all tests except those for JSX, and used [Istanbul](https://istanbul.js.org/) to detect which code was not covered by the tests. Manually removed each piece of code not required for JSX transforms.
 
-# Bublé
+Details:
 
-## The blazing fast, batteries-included ES2015 compiler
-
-* Try it out at [buble.surge.sh](https://buble.surge.sh)
-* Read the docs at [buble.surge.sh/guide](https://buble.surge.sh/guide)
-
-
-## Quickstart
-
-Via the command line...
-
-```bash
-npm install -g buble
-buble input.js > output.js
-```
-
-...or via the JavaScript API:
-
-```js
-var buble = require( 'buble' );
-var result = buble.transform( source ); // { code: ..., map: ... }
-```
-
-
-## License
-
-MIT
+ * [Bublé issue: JSX Only?](https://github.com/bublejs/buble/issues/213)
+ * [Pull Request with the changes](https://github.com/datavis-tech/buble-jsx-only/pull/3)
