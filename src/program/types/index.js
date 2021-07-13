@@ -1,8 +1,4 @@
-import ArrayExpression from './ArrayExpression.js';
 import ArrowFunctionExpression from './ArrowFunctionExpression.js';
-import AssignmentExpression from './AssignmentExpression.js';
-import AwaitExpression from './AwaitExpression.js';
-import BinaryExpression from './BinaryExpression.js';
 import BreakStatement from './BreakStatement.js';
 import CallExpression from './CallExpression.js';
 import CatchClause from './CatchClause.js';
@@ -49,11 +45,7 @@ import VariableDeclaration from './VariableDeclaration.js';
 import VariableDeclarator from './VariableDeclarator.js';
 
 export default {
-	ArrayExpression,
 	ArrowFunctionExpression,
-	AssignmentExpression,
-	AwaitExpression,
-	BinaryExpression,
 	BreakStatement,
 	CallExpression,
 	CatchClause,

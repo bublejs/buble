@@ -66,67 +66,6 @@ describe('buble', () => {
 
 	if (subset) return;
 
-	describe('cli', () => {
-		fs.readdirSync('test/cli').forEach(dir => {
-			if (dir[0] === '.') return; // .DS_Store
-
-			it(dir, done => {
-				dir = path.resolve('test/cli', dir);
-				rimraf.sync(path.resolve(dir, 'actual'));
-				fs.mkdirSync(path.resolve(dir, 'actual'));
-
-				var binFile = path.resolve(__dirname, '../bin/buble');
-				var commandFile = path.resolve(dir, 'command.sh');
-
-				var command = fs
-					.readFileSync(commandFile, 'utf-8')
-					.replace('buble', 'node "' + binFile + '"');
-				child_process.exec(
-					command,
-					{
-						cwd: dir
-					},
-					(err, stdout, stderr) => {
-						if (err) return done(err);
-
-						if (stdout) console.log(stdout);
-						if (stderr) console.error(stderr);
-
-						function catalogue(subdir) {
-							subdir = path.resolve(dir, subdir);
-
-							return glob
-								.sync('**/*.js?(.map)', { cwd: subdir })
-								.sort()
-								.map(name => {
-									var contents = fs
-										.readFileSync(path.resolve(subdir, name), 'utf-8')
-										.replace(/\r\n/g, '\n')
-										.trim();
-
-									if (path.extname(name) === '.map') {
-										contents = JSON.parse(contents);
-									}
-
-									return { name, contents };
-								});
-						}
-
-						var expected = catalogue('expected');
-						var actual = catalogue('actual');
-
-						try {
-							assert.deepEqual(actual, expected);
-							done();
-						} catch (err) {
-							done(err);
-						}
-					}
-				);
-			});
-		});
-	});
-
 	describe('errors', () => {
 		it('reports the location of a syntax error', () => {
 			var source = `var 42 = nope;`;
