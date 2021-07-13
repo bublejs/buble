@@ -10,9 +10,6 @@ import JSXOpeningElement from './JSXOpeningElement.js';
 import JSXOpeningFragment from './JSXOpeningFragment.js';
 import JSXSpreadAttribute from './JSXSpreadAttribute.js';
 import Literal from './Literal.js';
-import MemberExpression from './MemberExpression.js';
-import Property from './Property.js';
-import ThisExpression from './ThisExpression.js';
 import VariableDeclaration from './VariableDeclaration.js';
 import VariableDeclarator from './VariableDeclarator.js';
 
@@ -29,9 +26,6 @@ export default {
 	JSXOpeningFragment,
 	JSXSpreadAttribute,
 	Literal,
-	MemberExpression,
-	Property,
-	ThisExpression,
 	VariableDeclaration,
 	VariableDeclarator,
 };

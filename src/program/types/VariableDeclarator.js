@@ -12,19 +12,6 @@ export default class VariableDeclarator extends Node {
 	}
 
 	transpile(code, transforms) {
-		if (!this.init && transforms.letConst && this.parent.kind !== 'var') {
-			const inLoop = this.findNearest(
-				/Function|^For(In|Of)?Statement|^(?:Do)?WhileStatement/
-			);
-			if (
-				inLoop &&
-				!/Function/.test(inLoop.type) &&
-				!this.isLeftDeclaratorOfLoop()
-			) {
-				code.appendLeft(this.id.end, ' = (void 0)');
-			}
-		}
-
 		if (this.id) this.id.transpile(code, transforms);
 		if (this.init) this.init.transpile(code, transforms);
 	}
