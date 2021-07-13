@@ -215,90 +215,11 @@ export default class BlockStatement extends Node {
 		const prefix = `\n${indentation}`;
 		let suffix = ';';
 		introStatementGenerators.forEach((fn, i) => {
-			if (i === introStatementGenerators.length - 1) suffix = `;\n`;
 			fn(start, prefix, suffix);
 		});
 	}
 
 	transpileParameters(params, code, transforms, indentation, introStatementGenerators) {
-		params.forEach(param => {
-			if (
-				param.type === 'AssignmentPattern' &&
-				param.left.type === 'Identifier'
-			) {
-				if (transforms.defaultParameter) {
-					introStatementGenerators.push((start, prefix, suffix) => {
-						const lhs = `${prefix}if ( ${param.left.name} === void 0 ) ${
-							param.left.name
-						}`;
-
-						code
-							.prependRight(param.left.end, lhs)
-							.move(param.left.end, param.right.end, start)
-							.appendLeft(param.right.end, suffix);
-					});
-				}
-			} else if (param.type === 'RestElement') {
-				if (transforms.spreadRest) {
-					introStatementGenerators.push((start, prefix, suffix) => {
-						const penultimateParam = params[params.length - 2];
-
-						if (penultimateParam) {
-							code.remove(
-								penultimateParam ? penultimateParam.end : param.start,
-								param.end
-							);
-						} else {
-							let start = param.start,
-								end = param.end; // TODO https://gitlab.com/Rich-Harris/buble/issues/8
-
-							while (/\s/.test(code.original[start - 1])) start -= 1;
-							while (/\s/.test(code.original[end])) end += 1;
-
-							code.remove(start, end);
-						}
-
-						const name = param.argument.name;
-						const len = this.scope.createIdentifier('len');
-						const count = params.length - 1;
-
-						if (count) {
-							code.prependRight(
-								start,
-								`${prefix}var ${name} = [], ${len} = arguments.length - ${
-									count
-								};\n${indentation}while ( ${len}-- > 0 ) ${name}[ ${
-									len
-								} ] = arguments[ ${len} + ${count} ]${suffix}`
-							);
-						} else {
-							code.prependRight(
-								start,
-								`${prefix}var ${name} = [], ${len} = arguments.length;\n${
-									indentation
-								}while ( ${len}-- ) ${name}[ ${len} ] = arguments[ ${len} ]${
-									suffix
-								}`
-							);
-						}
-					});
-				}
-			} else if (param.type !== 'Identifier') {
-				if (transforms.parameterDestructuring) {
-					const ref = this.scope.createIdentifier('ref');
-					destructure(
-						code,
-						id => this.scope.createIdentifier(id),
-						({ name }) => this.scope.resolveName(name),
-						param,
-						ref,
-						false,
-						introStatementGenerators
-					);
-					code.prependRight(param.start, ref);
-				}
-			}
-		});
 	}
 
 	transpileBlockScopedIdentifiers(code) {
