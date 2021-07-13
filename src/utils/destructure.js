@@ -1,5 +1,4 @@
 import CompileError from '../utils/CompileError.js';
-import { findIndex } from './array.js';
 
 const handlers = {
 	Identifier: destructureIdentifier,
@@ -342,33 +341,6 @@ function handleProperty(
 					}
 					c = element.end;
 				});
-			} else {
-				const index = findIndex(node.elements, Boolean);
-				const element = node.elements[index];
-				if (element.type === 'RestElement') {
-					handleProperty(
-						code,
-						createIdentifier,
-						resolveName,
-						c,
-						element.argument,
-						`${value}.slice(${index})`,
-						inline,
-						statementGenerators
-					);
-				} else {
-					handleProperty(
-						code,
-						createIdentifier,
-						resolveName,
-						c,
-						element,
-						`${value}[${index}]`,
-						inline,
-						statementGenerators
-					);
-				}
-				c = element.end;
 			}
 
 			code.remove(c, node.end);
