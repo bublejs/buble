@@ -1,6 +1,6 @@
 {
   "name": "buble-jsx-only",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "description": "Bublé, but just JSX.",
   "main": "dist/buble.cjs.js",
   "module": "dist/buble.es.js",
