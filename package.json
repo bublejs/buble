@@ -34,17 +34,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/datavis-tech/buble-jsx-only"
+    "url": "git+https://github.com/vizhub-open-core/buble-jsx-only"
   },
   "keywords": [
     "javascript",
     "transpilation",
     "compilation",
-    "esnext",
-    "es2015",
-    "es2017",
-    "es6",
-    "es7"
+    "JSX"
   ],
   "author": "Rich Harris",
   "license": "MIT",
