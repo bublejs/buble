@@ -68,6 +68,12 @@ module.exports = [
 	},
 
 	{
+		description: 'transpiles JSX component with optional chaining',
+		input: `var element = <Hello name={name.foo?.()}/>;`,
+		output: `var element = React.createElement( Hello, { name: name.foo?.() });`
+	},
+
+	{
 		description: 'transpiles empty JSX expression block',
 		input: `var element = <Foo>{}</Foo>;`,
 		output: `var element = React.createElement( Foo, null );`
