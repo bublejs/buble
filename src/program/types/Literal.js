@@ -1,6 +1,5 @@
 import Node from '../Node.js';
 import CompileError from '../../utils/CompileError.js';
-import rewritePattern from 'regexpu-core';
 
 const nonAsciiLsOrPs = /[\u2028-\u2029]/g;
 
