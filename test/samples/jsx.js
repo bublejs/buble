@@ -67,6 +67,19 @@ module.exports = [
 		output: `var element = React.createElement( Hello, { name: name });`
 	},
 
+// TODO Solve these! https://github.com/bublejs/buble/issues/267
+//	{
+//		description: 'transpiles optional chaining',
+//		input: `var x = name.foo?.bar;`,
+//		output: `var x = name.foo ? name.foo.bar : null;`
+//	},
+//
+//	{
+//		description: 'transpiles JSX component with optional chaining',
+//		input: `var element = <Hello name={name.foo?.bar}/>;`,
+//		output: `var element = React.createElement( Hello, { name: name });`
+//	},
+
 	{
 		description: 'transpiles empty JSX expression block',
 		input: `var element = <Foo>{}</Foo>;`,
