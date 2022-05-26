@@ -160,7 +160,7 @@ export default class BlockStatement extends Node {
 				indentation,
 				introStatementGenerators
 			);
-		} else if ('CatchClause' === this.parent.type) {
+		} else if ('CatchClause' === this.parent.type && this.parent.param) {
 			this.transpileParameters(
 				[this.parent.param],
 				code,
