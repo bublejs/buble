@@ -17,7 +17,7 @@ export default function Program(source, ast, transforms, options) {
 	this.depth = 0;
 
 	wrap((this.body = ast), this);
-	this.body.__proto__ = BlockStatement.prototype;
+	Object.setPrototypeOf(this.body, BlockStatement.prototype);
 
 	this.templateLiteralQuasis = Object.create(null);
 	for (let i = 0; i < this.body.body.length; ++i) {

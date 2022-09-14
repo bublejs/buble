@@ -64,5 +64,5 @@ export default function wrap(raw, parent) {
 
 	const type =
 		(raw.type === 'BlockStatement' ? BlockStatement : types[raw.type]) || Node;
-	raw.__proto__ = type.prototype;
+	Object.setPrototypeOf(raw, type.prototype);
 }
