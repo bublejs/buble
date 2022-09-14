@@ -56,9 +56,9 @@ export default class ClassBody extends Node {
 				this.parent.superClass ||
 				this.parent.type !== 'ClassDeclaration';
 			if (this.parent.superClass) {
-				let inheritanceBlock = `if ( ${superName} ) ${name}.__proto__ = ${
+				let inheritanceBlock = `if ( ${superName} ) Object.setPrototypeOf(${name}, ${
 					superName
-				};\n${i0}${name}.prototype = Object.create( ${superName} && ${
+				});\n${i0}${name}.prototype = Object.create( ${superName} && ${
 					superName
 				}.prototype );\n${i0}${name}.prototype.constructor = ${name};`;
 

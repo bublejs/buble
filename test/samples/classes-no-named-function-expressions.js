@@ -128,7 +128,7 @@ module.exports = [
 					Bar.apply(this, arguments);
 				}
 
-				if ( Bar ) Foo.__proto__ = Bar;
+				if ( Bar ) Object.setPrototypeOf(Foo, Bar);
 				Foo.prototype = Object.create( Bar && Bar.prototype );
 				Foo.prototype.constructor = Foo;
 
@@ -163,7 +163,7 @@ module.exports = [
 					this.y = 'z';
 				}
 
-				if ( Bar ) Foo.__proto__ = Bar;
+				if ( Bar ) Object.setPrototypeOf(Foo, Bar);
 				Foo.prototype = Object.create( Bar && Bar.prototype );
 				Foo.prototype.constructor = Foo;
 
@@ -201,7 +201,7 @@ module.exports = [
 					Bar.apply(this, arguments);
 				}
 
-				if ( Bar ) Foo.__proto__ = Bar;
+				if ( Bar ) Object.setPrototypeOf(Foo, Bar);
 				Foo.prototype = Object.create( Bar && Bar.prototype );
 				Foo.prototype.constructor = Foo;
 
@@ -273,7 +273,7 @@ module.exports = [
 					Bar.apply(this, arguments);
 				}
 
-				if ( Bar ) Foo.__proto__ = Bar;
+				if ( Bar ) Object.setPrototypeOf(Foo, Bar);
 				Foo.prototype = Object.create( Bar && Bar.prototype );
 				Foo.prototype.constructor = Foo;
 
@@ -305,7 +305,7 @@ module.exports = [
 					Bar.apply(this, arguments);
 				}
 
-				if ( Bar ) Foo.__proto__ = Bar;
+				if ( Bar ) Object.setPrototypeOf(Foo, Bar);
 				Foo.prototype = Object.create( Bar && Bar.prototype );
 				Foo.prototype.constructor = Foo;
 
@@ -523,7 +523,7 @@ module.exports = [
 					this.radius = radius;
 				}
 
-				if ( Shape ) Circle.__proto__ = Shape;
+				if ( Shape ) Object.setPrototypeOf(Circle, Shape);
 				Circle.prototype = Object.create( Shape && Shape.prototype );
 				Circle.prototype.constructor = Circle;
 
@@ -596,7 +596,7 @@ module.exports = [
 					superclass.apply(this, arguments);
 				}
 
-				if ( superclass ) b.__proto__ = superclass;
+				if ( superclass ) Object.setPrototypeOf(b, superclass);
 				b.prototype = Object.create( superclass && superclass.prototype );
 				b.prototype.constructor = b;
 
@@ -629,7 +629,7 @@ module.exports = [
 					superclass.apply(this, arguments);
 				}
 
-				if ( superclass ) b.__proto__ = superclass;
+				if ( superclass ) Object.setPrototypeOf(b, superclass);
 				b.prototype = Object.create( superclass && superclass.prototype );
 				b.prototype.constructor = b;
 
@@ -656,7 +656,7 @@ module.exports = [
 					superclass.call(this);
 				}
 
-				if ( superclass ) b.__proto__ = superclass;
+				if ( superclass ) Object.setPrototypeOf(b, superclass);
 				b.prototype = Object.create( superclass && superclass.prototype );
 				b.prototype.constructor = b;
 
@@ -681,7 +681,7 @@ module.exports = [
 					SuperClass.call(this);
 				}
 
-				if ( SuperClass ) SubClass.__proto__ = SuperClass;
+				if ( SuperClass ) Object.setPrototypeOf(SubClass, SuperClass);
 				SubClass.prototype = Object.create( SuperClass && SuperClass.prototype );
 				SubClass.prototype.constructor = SubClass;
 
@@ -756,7 +756,7 @@ module.exports = [
 					Bar.apply(this, arguments);
 				}
 
-				if ( Bar ) Foo.__proto__ = Bar;
+				if ( Bar ) Object.setPrototypeOf(Foo, Bar);
 				Foo.prototype = Object.create( Bar && Bar.prototype );
 				Foo.prototype.constructor = Foo;
 
@@ -807,7 +807,7 @@ module.exports = [
 					D.apply(this, arguments);
 				}
 
-				if ( D ) C.__proto__ = D;
+				if ( D ) Object.setPrototypeOf(C, D);
 				C.prototype = Object.create( D && D.prototype );
 				C.prototype.constructor = C;
 
@@ -821,7 +821,7 @@ module.exports = [
 					F.apply(this, arguments);
 				}
 
-				if ( F ) E.__proto__ = F;
+				if ( F ) Object.setPrototypeOf(E, F);
 				E.prototype = Object.create( F && F.prototype );
 				E.prototype.constructor = E;
 
@@ -940,7 +940,7 @@ module.exports = [
 					render();
 				}
 
-				if ( Bar ) Foo.__proto__ = Bar;
+				if ( Bar ) Object.setPrototypeOf(Foo, Bar);
 				Foo.prototype = Object.create( Bar && Bar.prototype );
 				Foo.prototype.constructor = Foo;
 
@@ -972,7 +972,7 @@ module.exports = [
 					SuperClass.apply( this, args );
 				}
 
-				if ( SuperClass ) SubClass.__proto__ = SuperClass;
+				if ( SuperClass ) Object.setPrototypeOf(SubClass, SuperClass);
 				SubClass.prototype = Object.create( SuperClass && SuperClass.prototype );
 				SubClass.prototype.constructor = SubClass;
 
@@ -1000,7 +1000,7 @@ module.exports = [
 					SuperClass.apply( this, [ 1 ].concat( args, [2] ) );
 				}
 
-				if ( SuperClass ) SubClass.__proto__ = SuperClass;
+				if ( SuperClass ) Object.setPrototypeOf(SubClass, SuperClass);
 				SubClass.prototype = Object.create( SuperClass && SuperClass.prototype );
 				SubClass.prototype.constructor = SubClass;
 
@@ -1135,7 +1135,7 @@ module.exports = [
 					});
 				}
 
-				if ( B ) A.__proto__ = B;
+				if ( B ) Object.setPrototypeOf(A, B);
 				A.prototype = Object.create( B && B.prototype );
 				A.prototype.constructor = A;
 
